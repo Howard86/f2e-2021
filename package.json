@@ -48,7 +48,8 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-icons": "^4.3.1",
-    "react-redux": "^7.2.6"
+    "react-redux": "^7.2.6",
+    "sharp": "^0.29.2"
   },
   "devDependencies": {
     "@chakra-ui/cli": "^1.5.3",
