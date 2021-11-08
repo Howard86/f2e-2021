@@ -4,22 +4,22 @@ const Text: ComponentStyleConfig = {
   variants: {
     'headline-1': {
       fontWeight: 'bold',
-      fontSize: 12,
+      fontSize: 48,
     },
     'headline-2': {
       fontWeight: 'bold',
-      fontSize: 8,
+      fontSize: 32,
     },
     'headline-3': {
       fontWeight: 'bold',
-      fontSize: 7,
+      fontSize: 28,
     },
     subtitle: {
       fontWeight: 'bold',
-      fontSize: 4,
+      fontSize: 16,
     },
     body: {
-      fontSize: 3.5,
+      fontSize: 14,
     },
   },
 };
