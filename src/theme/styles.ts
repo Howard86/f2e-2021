@@ -7,6 +7,7 @@ const styles: ChakraTheme['styles'] = {
     },
     body: {
       h: 'full',
+      bgColor: '#E5D9BD',
       fontFamily: 'Noto Sans TC, sans-serif',
     },
   },
