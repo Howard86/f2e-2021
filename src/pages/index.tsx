@@ -1,97 +1,334 @@
 import React from 'react';
 
 import {
+  Avatar,
   Box,
+  Button,
   Container,
-  Heading,
-  Link,
-  SimpleGrid,
-  Skeleton,
+  Divider,
+  Flex,
+  HStack,
+  Icon,
+  IconButton,
   Text,
+  VStack,
 } from '@chakra-ui/react';
-import Head from 'next/head';
+import Image from 'next/image';
+import { AiFillStar, AiOutlineEye } from 'react-icons/ai';
+import { BiChevronLeft, BiChevronRight } from 'react-icons/bi';
+import { FiBookmark, FiMapPin, FiSearch } from 'react-icons/fi';
 
-import Image from '@/components/Image';
-import RouteLink from '@/components/RouteLink';
-import { useGetNameQuery } from '@/services/local';
+import Logo from '@/components/icons/Logo';
+import SunnyIcon from '@/components/icons/SunnyIcon';
+import mainBackground from '@/static/background/main.png';
+import cardBackground from '@/static/card/spot.png';
+import mockCard from '@/static/mock/card.png';
+import mockFood from '@/static/mock/food.png';
 
-const Home = (): JSX.Element => {
-  const { data, isSuccess, fulfilledTimeStamp } = useGetNameQuery();
-
-  return (
-    <Container>
-      <Box>
-        Go to <RouteLink href="/new-page">New Page</RouteLink>
-        <Skeleton isLoaded={isSuccess}>
-          Local API /hello responds {data?.name} called{' '}
-          {data?.timestamp - fulfilledTimeStamp}ms ago
-        </Skeleton>
+const HomePage = () => (
+  <>
+    <Flex
+      pos="fixed"
+      w="full"
+      bg="transparent"
+      borderColor="transparent"
+      my="4"
+      px="8"
+      justify="flex-end"
+    >
+      <HStack
+        color="text.body"
+        divider={
+          <Divider orientation="vertical" borderColor="blackAlpha.500" />
+        }
+        spacing={4}
+      >
+        <Text variant="subtitle">活動新訓</Text>
+        <Text variant="subtitle">景點</Text>
+        <Text variant="subtitle">美食</Text>
+        <Text variant="subtitle">住宿</Text>
+        <Text variant="subtitle">交通</Text>
+        <IconButton
+          variant="ghost"
+          aria-label="search scene"
+          fontSize="2xl"
+          icon={<FiSearch />}
+        />
+        <Avatar size="sm" />
+      </HStack>
+    </Flex>
+    <Container h="100vh" centerContent>
+      <Box
+        pos="absolute"
+        top="0"
+        left="0"
+        right="0"
+        h="100vh"
+        w="100vw"
+        overflow="hidden"
+        zIndex="hide"
+      >
+        <Image
+          alt="background"
+          src={mainBackground}
+          placeholder="blur"
+          layout="fill"
+          objectFit="cover"
+          quality={100}
+        />
       </Box>
-      <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
-      <Box as="main">
-        <Heading as="h1">
-          Welcome to{' '}
-          <Link href="https://nextjs.org" isExternal>
-            Next.js!
-          </Link>
-        </Heading>
-
-        <Text>
-          Get started by editing <Text as="code">pages/index.js</Text>
-        </Text>
-
-        <SimpleGrid>
-          <Link href="https://nextjs.org/docs" isExternal>
-            <Heading as="h3">Documentation &rarr;</Heading>
-            <Text>
-              Find in-depth information about Next.js features and API.
-            </Text>
-          </Link>
-
-          <Link href="https://nextjs.org/learn" isExternal>
-            <Heading as="h3">Learn &rarr;</Heading>
-            <Text>
-              Learn about Next.js in an interactive course with quizzes!
-            </Text>
-          </Link>
-
-          <Link
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            isExternal
-          >
-            <Heading as="h3">Examples &rarr;</Heading>
-            <Text>
-              Discover and deploy boilerplate example Next.js projects.
-            </Text>
-          </Link>
-
-          <Link
-            href="https://vercel.com/import?filter=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            isExternal
-          >
-            <Heading as="h3">Deploy &rarr;</Heading>
-            <Text>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </Text>
-          </Link>
-        </SimpleGrid>
-      </Box>
-
-      <Box as="footer">
-        <Link
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          isExternal
-        >
-          Powered by{' '}
-          <Image src="/vercel.svg" alt="Vercel Logo" width={64} height={64} />
-        </Link>
-      </Box>
+      <Logo my="12" w="284" h="218" />
     </Container>
-  );
-};
+    <Flex
+      flexDir="column"
+      justify="center"
+      py="14"
+      minH="360"
+      bgGradient="linear(to-b, brand.5, white)"
+    >
+      <Container maxW="container.md" textAlign="center">
+        <Text variant="subtitle" color="blackAlpha.500">
+          台灣許多美景媲美國外，值此五倍券、國旅券及觀光業者加碼優惠盡出之際，旅行台灣就是現在！
+          到哪裡旅遊還沒有想法的民眾，歡迎到台灣觀光，體驗「台灣之美」!
+        </Text>
+      </Container>
+      <HStack color="blackAlpha.500" justify="center" mt="8" spacing={6}>
+        <IconButton
+          aria-label="show previous wether"
+          rounded="full"
+          icon={<BiChevronLeft />}
+        />
+        <Flex flexDir="column" justify="center" align="center">
+          <Text>台北市</Text>
+          <SunnyIcon boxSize="20" mt="4" mb="6" />
+          <Text variant="headline-1" lineHeight="3">
+            24
+            <Text as="sup" variant="subtitle" verticalAlign="top">
+              &deg;C
+            </Text>
+          </Text>
+        </Flex>
+        <IconButton
+          rounded="full"
+          aria-label="show next wether"
+          icon={<BiChevronRight />}
+        />
+      </HStack>
+    </Flex>
+    <Flex flexDir="column" bgColor="white">
+      <HStack spacing={6} mx="6">
+        <Box pos="relative">
+          <Box
+            right="2"
+            top="-2"
+            textAlign="center"
+            fontWeight="bold"
+            fontSize="3xl"
+            pos="absolute"
+            zIndex="docked"
+            bg="white"
+            shadow="xl"
+            borderColor="blackAlpha.300"
+            rounded="md"
+            borderWidth="1px"
+            py="4"
+            sx={{ writingMode: 'vertical-rl' }}
+          >
+            景點
+          </Box>
+          <Image src={cardBackground} width={285} height={380} />
+        </Box>
+      </HStack>
+      <Flex
+        bg="brand.0"
+        px="12"
+        py="2"
+        my="10"
+        justify="space-between"
+        align="center"
+      >
+        <Text variant="headline-2" color="white">
+          熱門景點
+        </Text>
+        <Button
+          variant="outline"
+          color="white"
+          _hover={{ bg: 'white', color: 'brand.0' }}
+        >
+          查看更多
+        </Button>
+      </Flex>
+      <HStack mx="8">
+        <Flex
+          pos="relative"
+          flexDir="column"
+          w="368px"
+          h="420px"
+          overflow="hidden"
+          rounded="2xl"
+        >
+          <Flex m="4" justify="space-between">
+            <HStack
+              zIndex="docked"
+              fontWeight="bold"
+              bg="white"
+              px="4"
+              py="2"
+              rounded="full"
+              shadow="lg"
+            >
+              <Icon as={AiFillStar} color="yellow.300" boxSize="24px" />
+              <Text as="span" color="blackAlpha.400">
+                4.5
+              </Text>
+              <Icon as={AiOutlineEye} color="blackAlpha.500" boxSize="24px" />
+              <Text as="span" color="blackAlpha.400">
+                6 萬
+              </Text>
+            </HStack>
+            <IconButton
+              aria-label="save to favorite"
+              icon={<FiBookmark />}
+              fontSize="xl"
+              rounded="full"
+              colorScheme="gray"
+              zIndex="docked"
+              bgColor="white"
+            />
+          </Flex>
+          <Box flexGrow={1} />
+          <Flex
+            display="flex"
+            bgColor="blackAlpha.700"
+            p="4"
+            color="white"
+            justify="space-between"
+            roundedBottom="3xl"
+            zIndex="docked"
+          >
+            <Text variant="headline-3">台北101</Text>
+            <HStack>
+              <Icon as={FiMapPin} boxSize="24px" />
+              <Text as="span">台北</Text>
+            </HStack>
+          </Flex>
+          <Box pos="absolute" top="0">
+            <Image src={mockCard} width={368} height={420} />
+          </Box>
+        </Flex>
+      </HStack>
+      <Flex
+        bg="brand.4"
+        px="12"
+        py="2"
+        my="10"
+        justify="space-between"
+        align="center"
+      >
+        <Text variant="headline-2" color="white">
+          熱門美食
+        </Text>
+        <Button
+          variant="outline"
+          color="white"
+          _hover={{ bg: 'white', color: 'brand.4' }}
+        >
+          查看更多
+        </Button>
+      </Flex>
+      <HStack mx="8">
+        <Flex
+          pos="relative"
+          flexDir="column"
+          rounded="2xl"
+          border="1px"
+          borderColor="blackAlpha.600"
+        >
+          <Flex
+            pos="absolute"
+            top="0"
+            left="0"
+            right="0"
+            m="4"
+            justify="space-between"
+            zIndex="docked"
+          >
+            <HStack
+              fontWeight="bold"
+              bg="white"
+              px="4"
+              py="2"
+              rounded="full"
+              shadow="lg"
+            >
+              <Icon as={AiFillStar} color="yellow.300" boxSize="24px" />
+              <Text as="span" color="blackAlpha.400">
+                4.5
+              </Text>
+              <Icon as={AiOutlineEye} color="blackAlpha.500" boxSize="24px" />
+              <Text as="span" color="blackAlpha.400">
+                6 萬
+              </Text>
+            </HStack>
+            <IconButton
+              aria-label="save to favorite"
+              icon={<FiBookmark />}
+              fontSize="xl"
+              rounded="full"
+              colorScheme="gray"
+              bgColor="white"
+            />
+          </Flex>
+          <Image src={mockFood} width={400} height={300} />
+          <Flex flexDir="column" m="2">
+            <Flex justify="space-between">
+              <Text variant="headline-2" noOfLines={1}>
+                胡切仔麵
+              </Text>
+              <HStack>
+                <Icon as={FiMapPin} boxSize="24px" />
+                <Text as="span">南投縣</Text>
+              </HStack>
+            </Flex>
+            <Text fontWeight="bold" color="text.body">
+              南投縣545埔里鎮新生路10號
+            </Text>
+            <Text variant="body" color="text.body">
+              營業時間：16:00-22:00
+            </Text>
+            <Text variant="body" color="text.body">
+              電話：04-92994225
+            </Text>
+          </Flex>
+        </Flex>
+      </HStack>
+    </Flex>
+    <Box as="footer">
+      <HStack
+        px="8"
+        pt="20"
+        pb="36"
+        justify="center"
+        bgGradient="linear(to-t, brand.1, white)"
+      >
+        <VStack>
+          <Text variant="headline-3">活動新訊</Text>
+          <Text>最新消息</Text>
+          <Text>活動異動</Text>
+          <Text>熱門話題</Text>
+        </VStack>
+      </HStack>
+      <Flex py="4" bg="brand.2">
+        <Logo w="48px" h="48px" ml="8" mr="4" />
+        <Box>
+          <Text>24小時免付費旅遊諮詢熱線：0800-011765</Text>
+          <Text>
+            免付費國旅券專線：0800-211734（服務時間：週一至週日8:30~18:30）
+          </Text>
+        </Box>
+      </Flex>
+    </Box>
+  </>
+);
 
-export default Home;
+export default HomePage;
