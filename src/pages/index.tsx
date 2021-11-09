@@ -3,7 +3,6 @@ import React from 'react';
 import {
   Avatar,
   Box,
-  Button,
   Container,
   Divider,
   Flex,
@@ -18,6 +17,7 @@ import Image from 'next/image';
 import { AiFillStar, AiOutlineEye } from 'react-icons/ai';
 import { FiBookmark, FiMapPin, FiSearch } from 'react-icons/fi';
 
+import Banner from '@/components/Banner';
 import Logo from '@/components/icons/Logo';
 import SiteCardGrid from '@/components/SiteCardGrid';
 import WeatherCarousel from '@/components/WeatherCarousel';
@@ -101,25 +101,7 @@ const HomePage = ({ weathers }: HomePageProps) => (
     </Flex>
     <Flex flexDir="column" bgColor="white">
       <SiteCardGrid />
-      <Flex
-        bg="brand.0"
-        px="12"
-        py="2"
-        my="10"
-        justify="space-between"
-        align="center"
-      >
-        <Text variant="headline-2" color="white">
-          熱門景點
-        </Text>
-        <Button
-          variant="outline"
-          color="white"
-          _hover={{ bg: 'white', color: 'brand.0' }}
-        >
-          查看更多
-        </Button>
-      </Flex>
+      <Banner title="熱門景點" mainColor="brand.0" href="/scenes" />
       <HStack mx="8">
         <Flex
           pos="relative"
@@ -179,25 +161,8 @@ const HomePage = ({ weathers }: HomePageProps) => (
           </Box>
         </Flex>
       </HStack>
-      <Flex
-        bg="brand.4"
-        px="12"
-        py="2"
-        my="10"
-        justify="space-between"
-        align="center"
-      >
-        <Text variant="headline-2" color="white">
-          熱門美食
-        </Text>
-        <Button
-          variant="outline"
-          color="white"
-          _hover={{ bg: 'white', color: 'brand.4' }}
-        >
-          查看更多
-        </Button>
-      </Flex>
+      <Banner title="熱門美食" mainColor="brand.2" href="/restaurants" />
+
       <HStack mx="8">
         <Flex
           pos="relative"
@@ -264,6 +229,7 @@ const HomePage = ({ weathers }: HomePageProps) => (
           </Flex>
         </Flex>
       </HStack>
+      <Banner title="住宿推薦" mainColor="brand.4" href="/hotels" />
     </Flex>
     <Box as="footer">
       <HStack
