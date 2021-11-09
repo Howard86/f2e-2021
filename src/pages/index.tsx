@@ -19,10 +19,10 @@ import { AiFillStar, AiOutlineEye } from 'react-icons/ai';
 import { FiBookmark, FiMapPin, FiSearch } from 'react-icons/fi';
 
 import Logo from '@/components/icons/Logo';
+import SiteCardGrid from '@/components/SiteCardGrid';
 import WeatherCarousel from '@/components/WeatherCarousel';
 import { getWeathers } from '@/services/weather';
 import mainBackground from '@/static/background/main.png';
-import cardBackground from '@/static/card/spot.png';
 import mockCard from '@/static/mock/card.png';
 import mockFood from '@/static/mock/food.png';
 
@@ -100,29 +100,7 @@ const HomePage = ({ weathers }: HomePageProps) => (
       <WeatherCarousel weathers={weathers} />
     </Flex>
     <Flex flexDir="column" bgColor="white">
-      <HStack spacing={6} mx="6">
-        <Box pos="relative">
-          <Box
-            right="2"
-            top="-2"
-            textAlign="center"
-            fontWeight="bold"
-            fontSize="3xl"
-            pos="absolute"
-            zIndex="docked"
-            bg="white"
-            shadow="xl"
-            borderColor="blackAlpha.300"
-            rounded="md"
-            borderWidth="1px"
-            py="4"
-            sx={{ writingMode: 'vertical-rl' }}
-          >
-            景點
-          </Box>
-          <Image src={cardBackground} width={285} height={380} />
-        </Box>
-      </HStack>
+      <SiteCardGrid />
       <Flex
         bg="brand.0"
         px="12"
