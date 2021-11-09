@@ -13,19 +13,24 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
+import { GetStaticPropsContext, GetStaticPropsResult } from 'next';
 import Image from 'next/image';
 import { AiFillStar, AiOutlineEye } from 'react-icons/ai';
-import { BiChevronLeft, BiChevronRight } from 'react-icons/bi';
 import { FiBookmark, FiMapPin, FiSearch } from 'react-icons/fi';
 
 import Logo from '@/components/icons/Logo';
-import SunnyIcon from '@/components/icons/SunnyIcon';
+import WeatherCarousel from '@/components/WeatherCarousel';
+import { getWeathers } from '@/services/weather';
 import mainBackground from '@/static/background/main.png';
 import cardBackground from '@/static/card/spot.png';
 import mockCard from '@/static/mock/card.png';
 import mockFood from '@/static/mock/food.png';
 
-const HomePage = () => (
+interface HomePageProps {
+  weathers: Weather.City[];
+}
+
+const HomePage = ({ weathers }: HomePageProps) => (
   <>
     <Flex
       pos="fixed"
@@ -92,28 +97,7 @@ const HomePage = () => (
           到哪裡旅遊還沒有想法的民眾，歡迎到台灣觀光，體驗「台灣之美」!
         </Text>
       </Container>
-      <HStack color="blackAlpha.500" justify="center" mt="8" spacing={6}>
-        <IconButton
-          aria-label="show previous wether"
-          rounded="full"
-          icon={<BiChevronLeft />}
-        />
-        <Flex flexDir="column" justify="center" align="center">
-          <Text>台北市</Text>
-          <SunnyIcon boxSize="20" mt="4" mb="6" />
-          <Text variant="headline-1" lineHeight="3">
-            24
-            <Text as="sup" variant="subtitle" verticalAlign="top">
-              &deg;C
-            </Text>
-          </Text>
-        </Flex>
-        <IconButton
-          rounded="full"
-          aria-label="show next wether"
-          icon={<BiChevronRight />}
-        />
-      </HStack>
+      <WeatherCarousel weathers={weathers} />
     </Flex>
     <Flex flexDir="column" bgColor="white">
       <HStack spacing={6} mx="6">
@@ -330,5 +314,17 @@ const HomePage = () => (
     </Box>
   </>
 );
+
+export const getStaticProps = async (
+  _context: GetStaticPropsContext,
+): Promise<GetStaticPropsResult<HomePageProps>> => {
+  const weathers = await getWeathers();
+
+  return {
+    props: {
+      weathers,
+    },
+  };
+};
 
 export default HomePage;
