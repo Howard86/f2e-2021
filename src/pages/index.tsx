@@ -10,13 +10,13 @@ import {
   IconButton,
   SimpleGrid,
   Text,
-  VStack,
 } from '@chakra-ui/react';
 import { GetStaticPropsContext, GetStaticPropsResult } from 'next';
 import Image from 'next/image';
 import { FiSearch } from 'react-icons/fi';
 
 import Banner from '@/components/Banner';
+import Footer from '@/components/Footer';
 import Logo from '@/components/icons/Logo';
 import PlaceCard from '@/components/PlaceCard';
 import SceneCard from '@/components/SceneCard';
@@ -151,31 +151,7 @@ const HomePage = ({ weathers, scenes, restaurants, hotels }: HomePageProps) => (
         ))}
       </SimpleGrid>
     </Flex>
-    <Box as="footer">
-      <HStack
-        px="8"
-        pt="20"
-        pb="36"
-        justify="center"
-        bgGradient="linear(to-t, brand.1, white)"
-      >
-        <VStack>
-          <Text variant="headline-3">活動新訊</Text>
-          <Text>最新消息</Text>
-          <Text>活動異動</Text>
-          <Text>熱門話題</Text>
-        </VStack>
-      </HStack>
-      <Flex py="4" bg="brand.2">
-        <Logo w="48px" h="48px" ml="8" mr="4" />
-        <Box>
-          <Text>24小時免付費旅遊諮詢熱線：0800-011765</Text>
-          <Text>
-            免付費國旅券專線：0800-211734（服務時間：週一至週日8:30~18:30）
-          </Text>
-        </Box>
-      </Flex>
-    </Box>
+    <Footer />
   </>
 );
 
