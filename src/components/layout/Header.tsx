@@ -11,8 +11,8 @@ import {
 import throttle from 'lodash.throttle';
 import { FiSearch } from 'react-icons/fi';
 
-import Logo from './icons/Logo';
-import RouteLink from './RouteLink';
+import Logo from '../icons/Logo';
+import RouteLink from '../RouteLink';
 
 const THROTTLED_TIME_MS = 500;
 

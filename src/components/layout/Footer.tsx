@@ -11,7 +11,7 @@ import {
   Text,
 } from '@chakra-ui/react';
 
-import Logo from './icons/Logo';
+import Logo from '../icons/Logo';
 
 type FooterConfig = {
   headline: string;

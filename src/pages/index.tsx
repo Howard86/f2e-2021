@@ -5,9 +5,8 @@ import { GetStaticPropsContext, GetStaticPropsResult } from 'next';
 import Image from 'next/image';
 
 import Banner from '@/components/Banner';
-import Footer from '@/components/Footer';
-import Header from '@/components/Header';
 import Logo from '@/components/icons/Logo';
+import Layout from '@/components/layout/Layout';
 import PlaceCard from '@/components/PlaceCard';
 import SceneCard from '@/components/SceneCard';
 import SiteCardGrid from '@/components/SiteCardGrid';
@@ -27,7 +26,6 @@ interface HomePageProps {
 
 const HomePage = ({ weathers, scenes, restaurants, hotels }: HomePageProps) => (
   <>
-    <Header />
     <Container h="100vh" centerContent>
       <Box
         pos="absolute"
@@ -112,7 +110,6 @@ const HomePage = ({ weathers, scenes, restaurants, hotels }: HomePageProps) => (
         ))}
       </SimpleGrid>
     </Flex>
-    <Footer />
   </>
 );
 
@@ -135,5 +132,7 @@ export const getStaticProps = async (
     },
   };
 };
+
+HomePage.Layout = Layout;
 
 export default HomePage;
