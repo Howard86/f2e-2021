@@ -47,7 +47,7 @@ const Header = (props: FlexProps) => {
   return (
     <Flex
       as="header"
-      bg={isSolid ? 'brand.0' : 'transparent'}
+      bg={isSolid ? 'brand.2' : 'transparent'}
       shadow={isSolid ? 'xl' : 'none'}
       borderBottomColor="purple.600"
       left="0"
