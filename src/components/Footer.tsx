@@ -83,7 +83,7 @@ const Footer = (props: BoxProps) => (
       </SimpleGrid>
     </Box>
     <Flex py="4" bg="brand.2" align="center">
-      <Logo w="48px" h="48px" ml="8" mr="4" />
+      <Logo color="white" w="48px" h="48px" ml="8" mr="4" />
       <Box>
         <Text>24小時免付費旅遊諮詢熱線：0800-011765</Text>
         <Text>

@@ -1,22 +1,12 @@
 import React from 'react';
 
-import {
-  Avatar,
-  Box,
-  Container,
-  Divider,
-  Flex,
-  HStack,
-  IconButton,
-  SimpleGrid,
-  Text,
-} from '@chakra-ui/react';
+import { Box, Container, Flex, SimpleGrid, Text } from '@chakra-ui/react';
 import { GetStaticPropsContext, GetStaticPropsResult } from 'next';
 import Image from 'next/image';
-import { FiSearch } from 'react-icons/fi';
 
 import Banner from '@/components/Banner';
 import Footer from '@/components/Footer';
+import Header from '@/components/Header';
 import Logo from '@/components/icons/Logo';
 import PlaceCard from '@/components/PlaceCard';
 import SceneCard from '@/components/SceneCard';
@@ -37,36 +27,7 @@ interface HomePageProps {
 
 const HomePage = ({ weathers, scenes, restaurants, hotels }: HomePageProps) => (
   <>
-    <Flex
-      pos="fixed"
-      w="full"
-      bg="transparent"
-      borderColor="transparent"
-      my="4"
-      px="8"
-      justify="flex-end"
-    >
-      <HStack
-        color="text.body"
-        divider={
-          <Divider orientation="vertical" borderColor="blackAlpha.500" />
-        }
-        spacing={4}
-      >
-        <Text variant="subtitle">活動新訓</Text>
-        <Text variant="subtitle">景點</Text>
-        <Text variant="subtitle">美食</Text>
-        <Text variant="subtitle">住宿</Text>
-        <Text variant="subtitle">交通</Text>
-        <IconButton
-          variant="ghost"
-          aria-label="search scene"
-          fontSize="2xl"
-          icon={<FiSearch />}
-        />
-        <Avatar size="sm" />
-      </HStack>
-    </Flex>
+    <Header />
     <Container h="100vh" centerContent>
       <Box
         pos="absolute"
@@ -87,7 +48,7 @@ const HomePage = ({ weathers, scenes, restaurants, hotels }: HomePageProps) => (
           quality={100}
         />
       </Box>
-      <Logo my="12" w="284" h="218" />
+      <Logo color="white" my="12" w="284" h="218" />
     </Container>
     <Flex
       flexDir="column"
