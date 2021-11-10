@@ -7,20 +7,22 @@ import {
   Divider,
   Flex,
   HStack,
-  Icon,
   IconButton,
+  SimpleGrid,
   Text,
   VStack,
 } from '@chakra-ui/react';
 import { GetStaticPropsContext, GetStaticPropsResult } from 'next';
 import Image from 'next/image';
-import { AiFillStar, AiOutlineEye } from 'react-icons/ai';
-import { FiBookmark, FiMapPin, FiSearch } from 'react-icons/fi';
+import { FiSearch } from 'react-icons/fi';
 
 import Banner from '@/components/Banner';
 import Logo from '@/components/icons/Logo';
+import PlaceCard from '@/components/PlaceCard';
+import SceneCard from '@/components/SceneCard';
 import SiteCardGrid from '@/components/SiteCardGrid';
 import WeatherCarousel from '@/components/WeatherCarousel';
+import { getHotels, getRestaurants, getScenes } from '@/services/tdx';
 import { getWeathers } from '@/services/weather';
 import mainBackground from '@/static/background/main.png';
 import mockCard from '@/static/mock/card.png';
@@ -28,9 +30,12 @@ import mockFood from '@/static/mock/food.png';
 
 interface HomePageProps {
   weathers: Weather.City[];
+  scenes: TDX.Scene[];
+  restaurants: TDX.Restaurant[];
+  hotels: TDX.Hotel[];
 }
 
-const HomePage = ({ weathers }: HomePageProps) => (
+const HomePage = ({ weathers, scenes, restaurants, hotels }: HomePageProps) => (
   <>
     <Flex
       pos="fixed"
@@ -102,134 +107,49 @@ const HomePage = ({ weathers }: HomePageProps) => (
     <Flex flexDir="column" bgColor="white">
       <SiteCardGrid />
       <Banner title="熱門景點" mainColor="brand.0" href="/scenes" />
-      <HStack mx="8">
-        <Flex
-          pos="relative"
-          flexDir="column"
-          w="368px"
-          h="420px"
-          overflow="hidden"
-          rounded="2xl"
-        >
-          <Flex m="4" justify="space-between">
-            <HStack
-              zIndex="docked"
-              fontWeight="bold"
-              bg="white"
-              px="4"
-              py="2"
-              rounded="full"
-              shadow="lg"
-            >
-              <Icon as={AiFillStar} color="yellow.300" boxSize="24px" />
-              <Text as="span" color="blackAlpha.400">
-                4.5
-              </Text>
-              <Icon as={AiOutlineEye} color="blackAlpha.500" boxSize="24px" />
-              <Text as="span" color="blackAlpha.400">
-                6 萬
-              </Text>
-            </HStack>
-            <IconButton
-              aria-label="save to favorite"
-              icon={<FiBookmark />}
-              fontSize="xl"
-              rounded="full"
-              colorScheme="gray"
-              zIndex="docked"
-              bgColor="white"
-            />
-          </Flex>
-          <Box flexGrow={1} />
-          <Flex
-            display="flex"
-            bgColor="blackAlpha.700"
-            p="4"
-            color="white"
-            justify="space-between"
-            roundedBottom="3xl"
-            zIndex="docked"
-          >
-            <Text variant="headline-3">台北101</Text>
-            <HStack>
-              <Icon as={FiMapPin} boxSize="24px" />
-              <Text as="span">台北</Text>
-            </HStack>
-          </Flex>
-          <Box pos="absolute" top="0">
-            <Image src={mockCard} width={368} height={420} />
-          </Box>
-        </Flex>
-      </HStack>
+      <SimpleGrid columns={[1, 2, 3]} spacingX={8} spacingY={12} mx="8">
+        {scenes.map((scene) => (
+          <SceneCard
+            key={scene.id}
+            id={scene.id}
+            name={scene.name}
+            city={scene.city}
+            image={scene.image || mockCard}
+          />
+        ))}
+      </SimpleGrid>
       <Banner title="熱門美食" mainColor="brand.2" href="/restaurants" />
 
-      <HStack mx="8">
-        <Flex
-          pos="relative"
-          flexDir="column"
-          rounded="2xl"
-          border="1px"
-          borderColor="blackAlpha.600"
-        >
-          <Flex
-            pos="absolute"
-            top="0"
-            left="0"
-            right="0"
-            m="4"
-            justify="space-between"
-            zIndex="docked"
-          >
-            <HStack
-              fontWeight="bold"
-              bg="white"
-              px="4"
-              py="2"
-              rounded="full"
-              shadow="lg"
-            >
-              <Icon as={AiFillStar} color="yellow.300" boxSize="24px" />
-              <Text as="span" color="blackAlpha.400">
-                4.5
-              </Text>
-              <Icon as={AiOutlineEye} color="blackAlpha.500" boxSize="24px" />
-              <Text as="span" color="blackAlpha.400">
-                6 萬
-              </Text>
-            </HStack>
-            <IconButton
-              aria-label="save to favorite"
-              icon={<FiBookmark />}
-              fontSize="xl"
-              rounded="full"
-              colorScheme="gray"
-              bgColor="white"
-            />
-          </Flex>
-          <Image src={mockFood} width={400} height={300} />
-          <Flex flexDir="column" m="2">
-            <Flex justify="space-between">
-              <Text variant="headline-2" noOfLines={1}>
-                胡切仔麵
-              </Text>
-              <HStack>
-                <Icon as={FiMapPin} boxSize="24px" />
-                <Text as="span">南投縣</Text>
-              </HStack>
-            </Flex>
-            <Text fontWeight="bold" color="text.body">
-              南投縣545埔里鎮新生路10號
-            </Text>
-            <Text variant="body" color="text.body">
-              營業時間：16:00-22:00
-            </Text>
-            <Text variant="body" color="text.body">
-              電話：04-92994225
-            </Text>
-          </Flex>
-        </Flex>
-      </HStack>
+      <SimpleGrid columns={[1, 2, 3]} spacingX={8} spacingY={12} mx="8">
+        {restaurants.map((restaurant) => (
+          <PlaceCard
+            key={restaurant.id}
+            id={restaurant.id}
+            name={restaurant.name}
+            city={restaurant.city}
+            image={restaurant.image || mockFood}
+            address={restaurant.address}
+            contactNumber={restaurant.contactNumber}
+            openingHours={restaurant.openingHours}
+          />
+        ))}
+      </SimpleGrid>
       <Banner title="住宿推薦" mainColor="brand.4" href="/hotels" />
+
+      <SimpleGrid columns={[1, 2, 3]} spacingX={8} spacingY={12} mx="8">
+        {hotels.map((hotel) => (
+          <PlaceCard
+            key={hotel.id}
+            id={hotel.id}
+            name={hotel.name}
+            city={hotel.city}
+            image={hotel.image || mockFood}
+            address={hotel.address}
+            contactNumber={hotel.contactNumber}
+            openingHours={hotel.openingHours}
+          />
+        ))}
+      </SimpleGrid>
     </Flex>
     <Box as="footer">
       <HStack
@@ -262,11 +182,19 @@ const HomePage = ({ weathers }: HomePageProps) => (
 export const getStaticProps = async (
   _context: GetStaticPropsContext,
 ): Promise<GetStaticPropsResult<HomePageProps>> => {
-  const weathers = await getWeathers();
+  const [weathers, scenes, restaurants, hotels] = await Promise.all([
+    getWeathers(),
+    getScenes(),
+    getRestaurants(),
+    getHotels(),
+  ]);
 
   return {
     props: {
       weathers,
+      scenes: scenes.slice(0, 6),
+      restaurants: restaurants.slice(0, 6),
+      hotels: hotels.slice(0, 6),
     },
   };
 };
