@@ -10,20 +10,37 @@ import {
 } from '@chakra-ui/react';
 import Image from 'next/image';
 
-interface SceneCardProps extends LinkBoxProps {
+interface ThemeCardProps extends LinkBoxProps {
   name: string;
   image: string | StaticImageData;
+  imageWidth?: number;
+  imageHeight?: number;
 }
 
-const ThemeCard = ({ name, image }: SceneCardProps) => (
-  <LinkBox pos="relative" overflow="hidden" rounded="2xl">
+const ThemeCard = ({
+  name,
+  image,
+  imageHeight = 420,
+  imageWidth = 386,
+  rounded = '2xl',
+  roundedLeft,
+  roundedRight,
+  ...props
+}: ThemeCardProps) => (
+  <LinkBox
+    pos="relative"
+    overflow="hidden"
+    rounded={rounded}
+    roundedLeft={roundedLeft}
+    roundedRight={roundedRight}
+    {...props}
+  >
     <Image
-      layout="responsive"
       objectFit="cover"
       objectPosition="center"
       src={image}
-      width={368}
-      height={420}
+      width={imageWidth}
+      height={imageHeight}
     />
     <Flex
       pos="absolute"
@@ -32,7 +49,7 @@ const ThemeCard = ({ name, image }: SceneCardProps) => (
       top="0"
       left="0"
       right="0"
-      bottom="0"
+      bottom="1"
     >
       <Box flexGrow={1} />
       <Flex
@@ -42,7 +59,9 @@ const ThemeCard = ({ name, image }: SceneCardProps) => (
         color="white"
         justify="space-between"
         align="center"
-        roundedBottom="3xl"
+        roundedBottom={rounded}
+        roundedBottomLeft={roundedLeft}
+        roundedBottomRight={roundedRight}
       >
         <LinkOverlay href="#" isExternal>
           <Text variant="headline-3">{name}</Text>

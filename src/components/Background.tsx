@@ -25,7 +25,7 @@ const Background = ({
   wordTwoAlt,
   ...props
 }: BackgroundProps) => (
-  <Container h="100vh" centerContent {...props}>
+  <Container maxW="container.lg" h="100vh" centerContent {...props}>
     <Box
       pos="absolute"
       top="0"
@@ -47,7 +47,7 @@ const Background = ({
       />
     </Box>
     <Logo color="white" my="12" w="152" h="117" />
-    <Flex flexDir="column">
+    <Flex flexDir="column" align="center">
       <HStack spacing={8}>
         <Box w={[100, 200, 300]}>
           <Image
