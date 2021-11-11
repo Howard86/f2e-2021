@@ -17,4 +17,11 @@ declare namespace TDX {
   }
 
   type Hotel = Restaurant;
+
+  interface City {
+    id: string;
+    name: string;
+    image: string;
+    description: string;
+  }
 }

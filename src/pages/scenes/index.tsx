@@ -1,11 +1,8 @@
 import React from 'react';
 
 import {
-  Box,
   Button,
-  Container,
   Flex,
-  HStack,
   IconButton,
   Input,
   InputGroup,
@@ -13,13 +10,12 @@ import {
   SimpleGrid,
 } from '@chakra-ui/react';
 import { GetStaticPropsContext, GetStaticPropsResult } from 'next';
-import Image from 'next/image';
 import { BsGrid3X3GapFill } from 'react-icons/bs';
 import { FiSearch } from 'react-icons/fi';
 
+import Background from '@/components/Background';
 import Banner from '@/components/Banner';
 import FanCard from '@/components/FanCard';
-import Logo from '@/components/icons/Logo';
 import Layout from '@/components/layout/Layout';
 import SceneCard from '@/components/SceneCard';
 import ThemeCard from '@/components/ThemeCard';
@@ -40,67 +36,32 @@ const ScenesPage = ({ scenes }: ScenesPageProps): JSX.Element => {
 
   return (
     <>
-      <Container h="100vh" centerContent>
-        <Box
-          pos="absolute"
-          top="0"
-          left="0"
-          right="0"
-          h="100vh"
-          w="100vw"
-          overflow="hidden"
-          zIndex="hide"
-        >
-          <Image
-            alt="scenes-background"
-            src={background}
-            placeholder="blur"
-            layout="fill"
-            objectFit="cover"
-            quality={100}
-          />
-        </Box>
-        <Logo color="white" my="12" w="152" h="117" />
-        <Flex flexDir="column">
-          <HStack spacing={8}>
-            <Box w={[100, 200, 300]}>
-              <Image
-                alt="景"
-                src={wordOne}
-                placeholder="blur"
-                width={300}
-                height={300}
+      <Background
+        name="景點"
+        image={background}
+        wordOneAlt="景"
+        wordOne={wordOne}
+        wordTwoAlt="點"
+        wordTwo={wordTwo}
+      >
+        <Flex align="center" mt="8">
+          <InputGroup size="lg">
+            <Input bg="white" placeholder="請輸入關鍵字" />
+            <InputRightElement>
+              <IconButton
+                variant="ghost"
+                rounded="full"
+                aria-label="search"
+                onClick={onSearch}
+                icon={<FiSearch />}
               />
-            </Box>
-            <Box w={[100, 200, 300]}>
-              <Image
-                alt="點"
-                src={wordTwo}
-                placeholder="blur"
-                width={300}
-                height={300}
-              />
-            </Box>
-          </HStack>
-          <Flex align="center" mt="8">
-            <InputGroup size="lg">
-              <Input bg="white" placeholder="請輸入關鍵字" />
-              <InputRightElement>
-                <IconButton
-                  variant="ghost"
-                  rounded="full"
-                  aria-label="search"
-                  onClick={onSearch}
-                  icon={<FiSearch />}
-                />
-              </InputRightElement>
-            </InputGroup>
-            <Button leftIcon={<BsGrid3X3GapFill />} size="lg" ml="4">
-              進階搜尋
-            </Button>
-          </Flex>
+            </InputRightElement>
+          </InputGroup>
+          <Button leftIcon={<BsGrid3X3GapFill />} size="lg" ml="4">
+            進階搜尋
+          </Button>
         </Flex>
-      </Container>
+      </Background>
       <Flex flexDir="column" bgGradient="linear(to-b, brand.1, white)">
         <Banner title="熱門景點" mainColor="brand.0" href="/scenes" mt="0" />
         <SimpleGrid columns={[1, 2, 3]} spacingX={8} spacingY={12} mx="8">

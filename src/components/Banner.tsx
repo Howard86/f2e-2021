@@ -7,9 +7,17 @@ interface BannerProps extends FlexProps {
   title: string;
   href: string;
   mainColor: FlexProps['color'];
+  hideButton?: boolean;
 }
 
-const Banner = ({ title, href, mainColor, ...props }: BannerProps) => {
+// TODO: refactor usage of hideButton
+const Banner = ({
+  title,
+  href,
+  mainColor,
+  hideButton,
+  ...props
+}: BannerProps) => {
   const router = useRouter();
 
   const onClick = () => {
@@ -29,14 +37,16 @@ const Banner = ({ title, href, mainColor, ...props }: BannerProps) => {
       <Text variant="headline-2" color="white">
         {title}
       </Text>
-      <Button
-        variant="outline"
-        color="white"
-        onClick={onClick}
-        _hover={{ bg: 'white', color: mainColor }}
-      >
-        查看更多
-      </Button>
+      {!hideButton && (
+        <Button
+          variant="outline"
+          color="white"
+          onClick={onClick}
+          _hover={{ bg: 'white', color: mainColor }}
+        >
+          查看更多
+        </Button>
+      )}
     </Flex>
   );
 };
