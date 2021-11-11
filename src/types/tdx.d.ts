@@ -4,6 +4,10 @@ declare namespace TDX {
     name: string;
     city: string;
     image: string;
+    description: string;
+    address: string;
+    contactNumber: string;
+    openingHours: string;
   }
 
   interface Restaurant {

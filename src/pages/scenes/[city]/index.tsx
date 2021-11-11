@@ -1,5 +1,3 @@
-import { ParsedUrlQuery } from 'querystring';
-
 import React, { useState } from 'react';
 
 import {
@@ -26,6 +24,7 @@ import {
 } from 'next';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
+import type { ParsedUrlQuery } from 'querystring';
 import { BiChevronRight } from 'react-icons/bi';
 import { BsGrid3X3GapFill } from 'react-icons/bs';
 import { FiSearch } from 'react-icons/fi';
@@ -44,14 +43,14 @@ import wordTwo from '@/static/background/scenes-2.png';
 import mockCard from '@/static/mock/card.png';
 import mockScene from '@/static/mock/scene.png';
 
-interface ScenesPageProps {
+interface CitiesPageProps {
   city: TDX.City;
   scenes: TDX.Scene[];
 }
 
 const DEFAULT_CARD_NUMBER = 6;
 
-const ScenesPage = ({ city, scenes }: ScenesPageProps): JSX.Element => {
+const CitiesPage = ({ city, scenes }: CitiesPageProps): JSX.Element => {
   const [page, setPage] = useState(0);
   const router = useRouter();
   const onSearch = () => {};
@@ -106,7 +105,7 @@ const ScenesPage = ({ city, scenes }: ScenesPageProps): JSX.Element => {
               北部地區
             </RouteLink>
           </BreadcrumbItem>
-          <BreadcrumbItem isCurrentPage>
+          <BreadcrumbItem fontWeight="bold" isCurrentPage>
             <RouteLink href={`/scenes/${city.id}`} as={BreadcrumbLink}>
               {city.name}
             </RouteLink>
@@ -182,7 +181,7 @@ const ScenesPage = ({ city, scenes }: ScenesPageProps): JSX.Element => {
   );
 };
 
-ScenesPage.Layout = Layout;
+CitiesPage.Layout = Layout;
 
 interface CityPath extends ParsedUrlQuery {
   city: string;
@@ -196,7 +195,7 @@ export const getStaticPaths = (): GetStaticPathsResult<CityPath> => ({
 
 export const getStaticProps = async (
   context: GetStaticPropsContext,
-): Promise<GetStaticPropsResult<ScenesPageProps>> => {
+): Promise<GetStaticPropsResult<CitiesPageProps>> => {
   if (typeof context.params.city !== 'string') {
     return { notFound: true };
   }
@@ -217,4 +216,4 @@ export const getStaticProps = async (
   };
 };
 
-export default ScenesPage;
+export default CitiesPage;
