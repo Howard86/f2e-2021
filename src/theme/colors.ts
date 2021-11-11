@@ -6,6 +6,8 @@ const colors = {
     3: '#E6DDB2',
     4: '#C2BB96',
     5: '#A7D4DA',
+    6: '#AA796C',
+    7: '#E6BEB4',
   },
   text: {
     head: 'var(--chakra-colors-blackAlpha-800)',

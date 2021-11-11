@@ -15,6 +15,7 @@ interface ThemeCardProps extends LinkBoxProps {
   image: string | StaticImageData;
   imageWidth?: number;
   imageHeight?: number;
+  href?: string;
 }
 
 const ThemeCard = ({
@@ -23,6 +24,7 @@ const ThemeCard = ({
   imageHeight = 420,
   imageWidth = 386,
   rounded = '2xl',
+  href = '#',
   roundedLeft,
   roundedRight,
   ...props
@@ -36,6 +38,7 @@ const ThemeCard = ({
     {...props}
   >
     <Image
+      alt={name}
       objectFit="cover"
       objectPosition="center"
       src={image}
@@ -63,7 +66,7 @@ const ThemeCard = ({
         roundedBottomLeft={roundedLeft}
         roundedBottomRight={roundedRight}
       >
-        <LinkOverlay href="#" isExternal>
+        <LinkOverlay href={href} isExternal>
           <Text variant="headline-3">{name}</Text>
         </LinkOverlay>
       </Flex>
