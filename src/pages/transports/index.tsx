@@ -21,7 +21,10 @@ import cardEight from '@/static/card/transports-8.png';
 import cardNine from '@/static/card/transports-9.png';
 import cardTen from '@/static/card/transports-10.png';
 
-const PAGE_PROPS = { mainColor: 'brand.6', gradientColor: 'brand.7' };
+const PAGE_PROPS = {
+  mainColor: 'transports.main',
+  gradientColor: 'transports.light',
+};
 
 const TransportsPage = (): JSX.Element => (
   <>

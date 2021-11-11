@@ -35,7 +35,10 @@ interface RestaurantsPageProps {
   restaurants: TDX.Restaurant[];
 }
 
-const PAGE_PROPS = { mainColor: 'brand.2', gradientColor: 'brand.1' };
+const PAGE_PROPS = {
+  mainColor: 'restaurants.main',
+  gradientColor: 'restaurants.light',
+};
 const DEFAULT_CARD_NUMBER = 6;
 
 const RestaurantsPage = ({

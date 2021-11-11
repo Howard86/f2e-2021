@@ -31,7 +31,7 @@ interface ScenesPageProps {
   scenes: TDX.Scene[];
 }
 
-const PAGE_PROPS = { mainColor: 'brand.0', gradientColor: 'brand.5' };
+const PAGE_PROPS = { mainColor: 'scenes.main', gradientColor: '' };
 
 const ScenesPage = ({ scenes }: ScenesPageProps): JSX.Element => {
   const onSearch = () => {};

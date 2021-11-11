@@ -37,7 +37,11 @@ const Pagination = ({
       <Button disabled={isFirst} onClick={decrement}>
         {isFirst ? '' : page}
       </Button>
-      <Button color="white" bg="brand.2" _hover={{ bg: 'brand.1' }}>
+      <Button
+        color="white"
+        bg="restaurants.main"
+        _hover={{ bg: 'restaurants.light' }}
+      >
         {page + 1}
       </Button>
       <Button disabled={isLast} onClick={increment}>

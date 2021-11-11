@@ -35,7 +35,7 @@ interface ScenePageProps {
   scene: TDX.Scene;
 }
 
-const PAGE_PROPS = { mainColor: 'brand.0', gradientColor: 'brand.5' };
+const PAGE_PROPS = { mainColor: 'scenes.main', gradientColor: 'scenes.light' };
 
 const ScenePage = ({ scene }: ScenePageProps): JSX.Element => {
   const router = useRouter();
@@ -50,7 +50,11 @@ const ScenePage = ({ scene }: ScenePageProps): JSX.Element => {
 
   return (
     <>
-      <Flex flexDir="column" pt="16" bgGradient="linear(to-b, brand.1, white)">
+      <Flex
+        flexDir="column"
+        pt="16"
+        bgGradient="linear(to-b, restaurants.light, white)"
+      >
         <Breadcrumb
           mx="8"
           color="blackAlpha.700"

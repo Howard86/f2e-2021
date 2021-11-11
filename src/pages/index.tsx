@@ -24,7 +24,7 @@ interface HomePageProps {
   hotels: TDX.Hotel[];
 }
 
-const PAGE_PROPS = { mainColor: 'brand.0', gradientColor: 'brand.5' };
+const PAGE_PROPS = { mainColor: 'scenes.main', gradientColor: 'scenes.light' };
 
 const HomePage = ({ weathers, scenes, restaurants, hotels }: HomePageProps) => (
   <>
@@ -83,7 +83,11 @@ const HomePage = ({ weathers, scenes, restaurants, hotels }: HomePageProps) => (
           />
         ))}
       </SimpleGrid>
-      <Banner title="熱門美食" mainColor="brand.2" href="/restaurants" />
+      <Banner
+        title="熱門美食"
+        mainColor="restaurants.main"
+        href="/restaurants"
+      />
 
       <SimpleGrid columns={[1, 2, 3]} spacingX={8} spacingY={12} mx="8">
         {restaurants.map((restaurant) => (
@@ -99,7 +103,7 @@ const HomePage = ({ weathers, scenes, restaurants, hotels }: HomePageProps) => (
           />
         ))}
       </SimpleGrid>
-      <Banner title="住宿推薦" mainColor="brand.4" href="/hotels" />
+      <Banner title="住宿推薦" mainColor="hotels.main" href="/hotels" />
 
       <SimpleGrid columns={[1, 2, 3]} spacingX={8} spacingY={12} mx="8">
         {hotels.map((hotel) => (

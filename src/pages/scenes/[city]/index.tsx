@@ -49,7 +49,7 @@ interface CitiesPageProps {
 }
 
 const DEFAULT_CARD_NUMBER = 6;
-const PAGE_PROPS = { mainColor: 'brand.0', gradientColor: 'brand.5' };
+const PAGE_PROPS = { mainColor: 'scenes.main', gradientColor: 'scenes.light' };
 
 const CitiesPage = ({ city, scenes }: CitiesPageProps): JSX.Element => {
   const [page, setPage] = useState(0);

@@ -36,7 +36,7 @@ interface HotelsPageProps {
   hotels: TDX.Hotel[];
 }
 
-const PAGE_PROPS = { mainColor: 'brand.4', gradientColor: 'brand.3' };
+const PAGE_PROPS = { mainColor: 'hotels.main', gradientColor: 'hotels.light' };
 const DEFAULT_CARD_NUMBER = 6;
 
 const HotelsPage = ({ hotels }: HotelsPageProps): JSX.Element => {
