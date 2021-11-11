@@ -31,6 +31,8 @@ interface ScenesPageProps {
   scenes: TDX.Scene[];
 }
 
+const PAGE_PROPS = { mainColor: 'brand.0', gradientColor: 'brand.5' };
+
 const ScenesPage = ({ scenes }: ScenesPageProps): JSX.Element => {
   const onSearch = () => {};
 
@@ -62,8 +64,16 @@ const ScenesPage = ({ scenes }: ScenesPageProps): JSX.Element => {
           </Button>
         </Flex>
       </Background>
-      <Flex flexDir="column" bgGradient="linear(to-b, brand.1, white)">
-        <Banner title="熱門景點" mainColor="brand.0" href="/scenes" mt="0" />
+      <Flex
+        flexDir="column"
+        bgGradient={`linear(to-b, ${PAGE_PROPS.gradientColor}, white)`}
+      >
+        <Banner
+          title="熱門景點"
+          mainColor={PAGE_PROPS.mainColor}
+          href="/scenes"
+          mt="0"
+        />
         <SimpleGrid columns={[1, 2, 3]} spacingX={8} spacingY={12} mx="8">
           {scenes.map((scene) => (
             <SceneCard
@@ -75,7 +85,11 @@ const ScenesPage = ({ scenes }: ScenesPageProps): JSX.Element => {
             />
           ))}
         </SimpleGrid>
-        <Banner title="網紅攻略" mainColor="brand.0" href="/scenes" />
+        <Banner
+          title="網紅攻略"
+          mainColor={PAGE_PROPS.mainColor}
+          href="/scenes"
+        />
         <SimpleGrid columns={[1, 2, 3]} spacingX={8} spacingY={12} mx="8">
           <FanCard
             name="台北101攻略"
@@ -95,7 +109,11 @@ const ScenesPage = ({ scenes }: ScenesPageProps): JSX.Element => {
             saved
           />
         </SimpleGrid>
-        <Banner title="主題觀點" mainColor="brand.0" href="/scenes" />
+        <Banner
+          title="主題觀點"
+          mainColor={PAGE_PROPS.mainColor}
+          href="/scenes"
+        />
 
         <SimpleGrid columns={[1, 2, 3]} spacingX={8} spacingY={12} mx="8">
           <ThemeCard name="單車之旅" image={mockTheme} />
@@ -108,6 +126,7 @@ const ScenesPage = ({ scenes }: ScenesPageProps): JSX.Element => {
 };
 
 ScenesPage.Layout = Layout;
+ScenesPage.layoutProps = PAGE_PROPS;
 
 export const getStaticProps = async (
   _context: GetStaticPropsContext,

@@ -24,6 +24,8 @@ interface HomePageProps {
   hotels: TDX.Hotel[];
 }
 
+const PAGE_PROPS = { mainColor: 'brand.0', gradientColor: 'brand.5' };
+
 const HomePage = ({ weathers, scenes, restaurants, hotels }: HomePageProps) => (
   <>
     <Container h="100vh" centerContent>
@@ -53,7 +55,7 @@ const HomePage = ({ weathers, scenes, restaurants, hotels }: HomePageProps) => (
       justify="center"
       py="14"
       minH="360"
-      bgGradient="linear(to-b, brand.5, white)"
+      bgGradient={`linear(to-b, ${PAGE_PROPS.gradientColor}, white)`}
     >
       <Container maxW="container.md" textAlign="center">
         <Text variant="subtitle" color="blackAlpha.500">
@@ -65,7 +67,11 @@ const HomePage = ({ weathers, scenes, restaurants, hotels }: HomePageProps) => (
     </Flex>
     <Flex flexDir="column" bgColor="white">
       <SiteCardGrid />
-      <Banner title="熱門景點" mainColor="brand.0" href="/scenes" />
+      <Banner
+        title="熱門景點"
+        mainColor={PAGE_PROPS.mainColor}
+        href="/scenes"
+      />
       <SimpleGrid columns={[1, 2, 3]} spacingX={8} spacingY={12} mx="8">
         {scenes.map((scene) => (
           <SceneCard
@@ -134,5 +140,6 @@ export const getStaticProps = async (
 };
 
 HomePage.Layout = Layout;
+HomePage.layoutProps = PAGE_PROPS;
 
 export default HomePage;

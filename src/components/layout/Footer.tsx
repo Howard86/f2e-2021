@@ -56,9 +56,19 @@ const footerConfig: FooterConfig[] = [
   },
 ];
 
-const Footer = (props: BoxProps) => (
+interface FooterProps extends BoxProps {
+  mainColor: BoxProps['color'];
+  gradientColor: BoxProps['color'];
+}
+
+const Footer = ({ mainColor, gradientColor, ...props }: FooterProps) => (
   <Box as="footer" {...props}>
-    <Box px="8" pt="20" pb="36" bgGradient="linear(to-t, brand.1, white)">
+    <Box
+      px="8"
+      pt="20"
+      pb="36"
+      bgGradient={`linear(to-t, ${gradientColor}, white)`}
+    >
       <SimpleGrid
         mx="auto"
         justify="center"
@@ -82,7 +92,7 @@ const Footer = (props: BoxProps) => (
         ))}
       </SimpleGrid>
     </Box>
-    <Flex py="4" bg="brand.2" align="center">
+    <Flex py="4" bg={mainColor} align="center">
       <Logo color="white" w="48px" h="48px" ml="8" mr="4" />
       <Box>
         <Text>24小時免付費旅遊諮詢熱線：0800-011765</Text>

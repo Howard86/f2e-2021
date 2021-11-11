@@ -1,19 +1,28 @@
 import React, { ReactNode } from 'react';
 
-import { Box } from '@chakra-ui/react';
+import { Box, BoxProps } from '@chakra-ui/react';
 
 import Footer from './Footer';
 import Header from './Header';
 
-interface LayoutProps {
+export interface LayoutProps extends BoxProps {
+  mainColor: BoxProps['color'];
+  gradientColor: BoxProps['color'];
   children: ReactNode;
 }
 
-const Layout = ({ children }: LayoutProps) => (
+const Layout = ({
+  children,
+  mainColor,
+  gradientColor,
+  ...props
+}: LayoutProps) => (
   <>
-    <Header />
-    <Box as="main">{children}</Box>
-    <Footer />
+    <Header mainColor={mainColor} />
+    <Box as="main" {...props}>
+      {children}
+    </Box>
+    <Footer mainColor={mainColor} gradientColor={gradientColor} />
   </>
 );
 

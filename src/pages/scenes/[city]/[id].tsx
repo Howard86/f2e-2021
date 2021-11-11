@@ -35,6 +35,8 @@ interface ScenePageProps {
   scene: TDX.Scene;
 }
 
+const PAGE_PROPS = { mainColor: 'brand.0', gradientColor: 'brand.5' };
+
 const ScenePage = ({ scene }: ScenePageProps): JSX.Element => {
   const router = useRouter();
 
@@ -120,7 +122,7 @@ const ScenePage = ({ scene }: ScenePageProps): JSX.Element => {
         </Flex>
         <Banner
           title="網紅這樣玩"
-          mainColor="brand.0"
+          mainColor={PAGE_PROPS.mainColor}
           href="/scenes"
           hideButton
         />
@@ -149,6 +151,7 @@ const ScenePage = ({ scene }: ScenePageProps): JSX.Element => {
 };
 
 ScenePage.Layout = Layout;
+ScenePage.layoutProps = PAGE_PROPS;
 
 interface CityPath extends ParsedUrlQuery {
   city: string;

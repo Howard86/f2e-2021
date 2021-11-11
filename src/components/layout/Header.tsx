@@ -18,7 +18,11 @@ const THROTTLED_TIME_MS = 500;
 
 const initialState = { onTop: true, isScrollingUp: false };
 
-const Header = (props: FlexProps) => {
+interface HeaderProps extends FlexProps {
+  mainColor: FlexProps['color'];
+}
+
+const Header = ({ mainColor, ...props }: HeaderProps) => {
   const scrollRef = useRef(0);
   const [state, setState] = useState(initialState);
 
@@ -47,7 +51,7 @@ const Header = (props: FlexProps) => {
   return (
     <Flex
       as="header"
-      bg={isSolid ? 'brand.2' : 'transparent'}
+      bg={isSolid ? mainColor : 'transparent'}
       shadow={isSolid ? 'xl' : 'none'}
       borderBottomColor="purple.600"
       left="0"
@@ -93,7 +97,7 @@ const Header = (props: FlexProps) => {
           rounded="full"
           icon={<FiSearch />}
           _hover={{
-            bgColor: isSolid ? 'brand.1' : 'white',
+            bgColor: isSolid ? mainColor : 'white',
           }}
         />
         <Avatar size="sm" />

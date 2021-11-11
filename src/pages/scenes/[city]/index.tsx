@@ -49,6 +49,7 @@ interface CitiesPageProps {
 }
 
 const DEFAULT_CARD_NUMBER = 6;
+const PAGE_PROPS = { mainColor: 'brand.0', gradientColor: 'brand.5' };
 
 const CitiesPage = ({ city, scenes }: CitiesPageProps): JSX.Element => {
   const [page, setPage] = useState(0);
@@ -124,7 +125,7 @@ const CitiesPage = ({ city, scenes }: CitiesPageProps): JSX.Element => {
         </Flex>
         <Banner
           title="熱門景點"
-          mainColor="brand.0"
+          mainColor={PAGE_PROPS.mainColor}
           href="/scenes"
           hideButton
         />
@@ -153,7 +154,7 @@ const CitiesPage = ({ city, scenes }: CitiesPageProps): JSX.Element => {
         </Center>
         <Banner
           title="網紅這樣玩"
-          mainColor="brand.0"
+          mainColor={PAGE_PROPS.mainColor}
           href="/scenes"
           hideButton
         />
@@ -182,6 +183,7 @@ const CitiesPage = ({ city, scenes }: CitiesPageProps): JSX.Element => {
 };
 
 CitiesPage.Layout = Layout;
+CitiesPage.layoutProps = PAGE_PROPS;
 
 interface CityPath extends ParsedUrlQuery {
   city: string;
