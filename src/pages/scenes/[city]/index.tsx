@@ -1,6 +1,6 @@
 import { ParsedUrlQuery } from 'querystring';
 
-import React from 'react';
+import React, { useState } from 'react';
 
 import {
   Box,
@@ -8,6 +8,7 @@ import {
   BreadcrumbItem,
   BreadcrumbLink,
   Button,
+  Center,
   Flex,
   Heading,
   Icon,
@@ -33,6 +34,7 @@ import Background from '@/components/Background';
 import Banner from '@/components/Banner';
 import FanCard from '@/components/FanCard';
 import Layout from '@/components/layout/Layout';
+import Pagination from '@/components/Pagination';
 import RouteLink from '@/components/RouteLink';
 import SceneCard from '@/components/SceneCard';
 import { getCity, getScenes } from '@/services/tdx';
@@ -47,7 +49,10 @@ interface ScenesPageProps {
   scenes: TDX.Scene[];
 }
 
+const DEFAULT_CARD_NUMBER = 6;
+
 const ScenesPage = ({ city, scenes }: ScenesPageProps): JSX.Element => {
+  const [page, setPage] = useState(0);
   const router = useRouter();
   const onSearch = () => {};
 
@@ -125,16 +130,28 @@ const ScenesPage = ({ city, scenes }: ScenesPageProps): JSX.Element => {
           hideButton
         />
         <SimpleGrid columns={[1, 2, 3]} spacingX={8} spacingY={12} mx="8">
-          {scenes.map((scene) => (
-            <SceneCard
-              key={scene.id}
-              id={scene.id}
-              name={scene.name}
-              city={scene.city}
-              image={scene.image || mockCard}
-            />
-          ))}
+          {scenes
+            .slice(
+              page * DEFAULT_CARD_NUMBER,
+              page * DEFAULT_CARD_NUMBER + DEFAULT_CARD_NUMBER,
+            )
+            .map((scene) => (
+              <SceneCard
+                key={scene.id}
+                id={scene.id}
+                name={scene.name}
+                city={scene.city}
+                image={scene.image || mockCard}
+              />
+            ))}
         </SimpleGrid>
+        <Center mt="8">
+          <Pagination
+            page={page}
+            total={Math.ceil(scenes.length / DEFAULT_CARD_NUMBER)}
+            onPageChange={setPage}
+          />
+        </Center>
         <Banner
           title="網紅這樣玩"
           mainColor="brand.0"
@@ -195,7 +212,7 @@ export const getStaticProps = async (
   return {
     props: {
       city,
-      scenes: scenes.slice(0, 6),
+      scenes,
     },
   };
 };
