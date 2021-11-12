@@ -19,7 +19,7 @@ import FanCard from '@/components/FanCard';
 import Layout from '@/components/layout/Layout';
 import SceneCard from '@/components/SceneCard';
 import ThemeCard from '@/components/ThemeCard';
-import { getScenes } from '@/services/tdx';
+import { getScenes } from '@/services/ptx';
 import background from '@/static/background/scenes.png';
 import wordOne from '@/static/background/scenes-1.png';
 import wordTwo from '@/static/background/scenes-2.png';
@@ -28,7 +28,7 @@ import mockScene from '@/static/mock/scene.png';
 import mockTheme from '@/static/mock/theme.png';
 
 interface ScenesPageProps {
-  scenes: TDX.Scene[];
+  scenes: PTX.Scene[];
 }
 
 const PAGE_PROPS = { mainColor: 'scenes.main', gradientColor: 'scenes.light' };

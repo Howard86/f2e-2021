@@ -1,4 +1,4 @@
-declare namespace TDX {
+declare namespace PTX {
   interface Scene {
     id: string;
     name: string;

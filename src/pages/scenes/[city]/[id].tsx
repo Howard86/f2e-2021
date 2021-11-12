@@ -28,11 +28,11 @@ import Banner from '@/components/Banner';
 import FanCard from '@/components/FanCard';
 import Layout from '@/components/layout/Layout';
 import RouteLink from '@/components/RouteLink';
-import { getSceneById } from '@/services/tdx';
+import { getSceneById } from '@/services/ptx';
 import mockScene from '@/static/mock/scene.png';
 
 interface ScenePageProps {
-  scene: TDX.Scene;
+  scene: PTX.Scene;
 }
 
 const PAGE_PROPS = { mainColor: 'scenes.main', gradientColor: 'scenes.light' };

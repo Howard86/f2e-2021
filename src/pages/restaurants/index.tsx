@@ -20,7 +20,7 @@ import Layout from '@/components/layout/Layout';
 import Pagination from '@/components/Pagination';
 import PlaceCard from '@/components/PlaceCard';
 import RestaurantCard from '@/components/ResturantCard';
-import { getRestaurants } from '@/services/tdx';
+import { getRestaurants } from '@/services/ptx';
 import background from '@/static/background/restaurants.png';
 import wordOne from '@/static/background/restaurants-1.png';
 import wordTwo from '@/static/background/restaurants-2.png';
@@ -28,7 +28,7 @@ import mockFood from '@/static/mock/food.png';
 import mockScene from '@/static/mock/scene.png';
 
 interface RestaurantsPageProps {
-  restaurants: TDX.Restaurant[];
+  restaurants: PTX.Restaurant[];
 }
 
 const PAGE_PROPS = {

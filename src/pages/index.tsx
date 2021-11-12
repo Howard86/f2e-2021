@@ -11,7 +11,7 @@ import PlaceCard from '@/components/PlaceCard';
 import SceneCard from '@/components/SceneCard';
 import SiteCardGrid from '@/components/SiteCardGrid';
 import WeatherCarousel from '@/components/WeatherCarousel';
-import { getHotels, getRestaurants, getScenes } from '@/services/tdx';
+import { getHotels, getRestaurants, getScenes } from '@/services/ptx';
 import { getWeathers } from '@/services/weather';
 import mainBackground from '@/static/background/main.png';
 import mockCard from '@/static/mock/card.png';
@@ -19,9 +19,9 @@ import mockFood from '@/static/mock/food.png';
 
 interface HomePageProps {
   weathers: Weather.City[];
-  scenes: TDX.Scene[];
-  restaurants: TDX.Restaurant[];
-  hotels: TDX.Hotel[];
+  scenes: PTX.Scene[];
+  restaurants: PTX.Restaurant[];
+  hotels: PTX.Hotel[];
 }
 
 const PAGE_PROPS = { mainColor: 'scenes.main', gradientColor: 'scenes.light' };

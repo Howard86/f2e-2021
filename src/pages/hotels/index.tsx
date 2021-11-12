@@ -23,14 +23,14 @@ import GridCard from '@/components/GridCard';
 import Layout from '@/components/layout/Layout';
 import Pagination from '@/components/Pagination';
 import PlaceCard from '@/components/PlaceCard';
-import { getHotels } from '@/services/tdx';
+import { getHotels } from '@/services/ptx';
 import background from '@/static/background/hotels.png';
 import wordOne from '@/static/background/hotels-1.png';
 import wordTwo from '@/static/background/hotels-2.png';
 import mockFood from '@/static/mock/food.png';
 
 interface HotelsPageProps {
-  hotels: TDX.Hotel[];
+  hotels: PTX.Hotel[];
 }
 
 const PAGE_PROPS = { mainColor: 'hotels.dark', gradientColor: 'hotels.light' };

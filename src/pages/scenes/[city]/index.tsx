@@ -36,7 +36,7 @@ import Layout from '@/components/layout/Layout';
 import Pagination from '@/components/Pagination';
 import RouteLink from '@/components/RouteLink';
 import SceneCard from '@/components/SceneCard';
-import { getCity, getScenes } from '@/services/tdx';
+import { getCity, getScenes } from '@/services/ptx';
 import background from '@/static/background/scenes.png';
 import wordOne from '@/static/background/scenes-1.png';
 import wordTwo from '@/static/background/scenes-2.png';
@@ -44,8 +44,8 @@ import mockCard from '@/static/mock/card.png';
 import mockScene from '@/static/mock/scene.png';
 
 interface CitiesPageProps {
-  city: TDX.City;
-  scenes: TDX.Scene[];
+  city: PTX.City;
+  scenes: PTX.Scene[];
 }
 
 const DEFAULT_CARD_NUMBER = 6;

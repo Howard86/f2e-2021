@@ -1,5 +1,5 @@
 // TODO: replace mock with api call
-export const getScenes = async (): Promise<TDX.Scene[]> =>
+export const getScenes = async (): Promise<PTX.Scene[]> =>
   new Array(10).fill(0).map((_, index) => ({
     id: `scene${index}`,
     city: '台北',
@@ -11,7 +11,7 @@ export const getScenes = async (): Promise<TDX.Scene[]> =>
     openingHours: '',
   }));
 
-export const getRestaurants = async (): Promise<TDX.Restaurant[]> =>
+export const getRestaurants = async (): Promise<PTX.Restaurant[]> =>
   new Array(10).fill(0).map((_, index) => ({
     id: `food${index}`,
     name: '胡切仔麵',
@@ -22,13 +22,13 @@ export const getRestaurants = async (): Promise<TDX.Restaurant[]> =>
     image: '/static/mock/food.png',
   }));
 
-export const getHotels = async (): Promise<TDX.Hotel[]> => {
+export const getHotels = async (): Promise<PTX.Hotel[]> => {
   const results = await getRestaurants();
 
   return results.map((result, index) => ({ ...result, id: `hotel${index}` }));
 };
 
-export const getCity = async (_slug: string): Promise<TDX.City> => ({
+export const getCity = async (_slug: string): Promise<PTX.City> => ({
   id: '1',
   name: '台北市',
   description:
@@ -38,7 +38,7 @@ export const getCity = async (_slug: string): Promise<TDX.City> => ({
 
 export const getSceneById = async (
   id: string,
-): Promise<TDX.Scene | undefined> => ({
+): Promise<PTX.Scene | undefined> => ({
   id,
   city: '台北',
   name: '台北101',
