@@ -10,6 +10,7 @@ import {
   Grid,
   Input,
   SimpleGrid,
+  Stack,
   Text,
 } from '@chakra-ui/react';
 import { GetStaticPropsContext, GetStaticPropsResult } from 'next';
@@ -26,17 +27,13 @@ import { getHotels } from '@/services/tdx';
 import background from '@/static/background/hotels.png';
 import wordOne from '@/static/background/hotels-1.png';
 import wordTwo from '@/static/background/hotels-2.png';
-import cardOne from '@/static/card/hotels-1.png';
-import cardTwo from '@/static/card/hotels-2.png';
-import cardThree from '@/static/card/hotels-3.png';
-import cardFour from '@/static/card/hotels-4.png';
 import mockFood from '@/static/mock/food.png';
 
 interface HotelsPageProps {
   hotels: TDX.Hotel[];
 }
 
-const PAGE_PROPS = { mainColor: 'hotels.main', gradientColor: 'hotels.light' };
+const PAGE_PROPS = { mainColor: 'hotels.dark', gradientColor: 'hotels.light' };
 const DEFAULT_CARD_NUMBER = 6;
 
 const HotelsPage = ({ hotels }: HotelsPageProps): JSX.Element => {
@@ -53,67 +50,87 @@ const HotelsPage = ({ hotels }: HotelsPageProps): JSX.Element => {
         wordTwo={wordTwo}
         bgColor={PAGE_PROPS.gradientColor}
       >
-        <Flex align="flex-end" my="8" p="8" bg="whiteAlpha.500" rounded="2xl">
+        <Stack
+          direction={['column', 'column', 'row']}
+          align={['start', 'start', 'flex-end']}
+          my={[6, 8]}
+          p={[4, 8]}
+          bg="whiteAlpha.500"
+          rounded="2xl"
+          zIndex="2"
+          sx={{ button: { rounded: '2xl' } }}
+        >
           <FormControl>
-            <FormLabel>目的地</FormLabel>
+            <FormLabel fontWeight="bold">目的地</FormLabel>
             <Input bg="white" placeholder="你要去哪裡？" />
           </FormControl>
-          <Box mx="6">
-            <Text mb="2">入住-退房</Text>
+          <Box>
+            <Text fontWeight="bold" mb="2">
+              入住-退房
+            </Text>
             <Button bg="white" leftIcon={<BsCalendar />}>
               2021/10/6~10/9
             </Button>
           </Box>
-          <Box mr="6">
-            <Text mb="2">房間及人數</Text>
-            <Button bg="white">2位成人，1間房間</Button>
+          <Box w={['full', 'initial']}>
+            <Text fontWeight="bold" mb="2">
+              房間及人數
+            </Text>
+            <Button w="full" bg="white">
+              2位成人，1間房間
+            </Button>
           </Box>
-          <Button flexShrink={0} bg="white" leftIcon={<FiSearch />}>
+          <Button
+            alignSelf={['center', 'initial']}
+            flexShrink={0}
+            bg="white"
+            leftIcon={<FiSearch />}
+          >
             搜尋
           </Button>
-        </Flex>
+        </Stack>
         <Grid
-          h="400px"
+          h={['260px', '380px', '460px']}
           templateRows="repeat(2, 1fr)"
-          templateColumns="repeat(3, 1fr)"
+          templateColumns={[
+            'repeat(2, 1fr)',
+            'repeat(2, 1fr)',
+            'repeat(3, 1fr)',
+          ]}
           gap={6}
         >
           <GridCard
-            rowSpan={2}
+            rowSpan={[1, 1, 2]}
             colSpan={1}
             title="台北"
             subtitle="650間住宿"
-            image={cardOne}
+            image="/static/card/hotels-1.png"
           />
           <GridCard
             rowSpan={1}
             colSpan={1}
             title="花蓮"
             subtitle="650間住宿"
-            image={cardTwo}
-            imageHeight={200}
-            imageWidth={300}
+            image="/static/card/hotels-2.png"
           />
           <GridCard
-            rowSpan={2}
+            rowSpan={[1, 1, 2]}
             colSpan={1}
             title="台東"
             subtitle="650間住宿"
-            image={cardFour}
+            image="/static/card/hotels-4.png"
           />
           <GridCard
             rowSpan={1}
             colSpan={1}
             title="桃園"
             subtitle="650間住宿"
-            image={cardThree}
-            imageHeight={200}
-            imageWidth={300}
+            image="/static/card/hotels-3.png"
           />
         </Grid>
       </Background>
       <Box
-        h="340px"
+        h={['340px', '620px', '520px']}
         bgGradient={`linear(to-b, ${PAGE_PROPS.gradientColor}, white)`}
       />
       <Flex flexDir="column" bg="white">
@@ -144,6 +161,7 @@ const HotelsPage = ({ hotels }: HotelsPageProps): JSX.Element => {
         </SimpleGrid>
         <Center mt="8">
           <Pagination
+            colorTheme="hotels"
             page={page}
             total={Math.ceil(hotels.length / DEFAULT_CARD_NUMBER)}
             onPageChange={setPage}

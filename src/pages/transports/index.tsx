@@ -10,10 +10,6 @@ import ThemeCard from '@/components/ThemeCard';
 import background from '@/static/background/transports.png';
 import wordOne from '@/static/background/transports-1.png';
 import wordTwo from '@/static/background/transports-2.png';
-import cardOne from '@/static/card/transports-1.png';
-import cardTwo from '@/static/card/transports-2.png';
-import cardThree from '@/static/card/transports-3.png';
-import cardFour from '@/static/card/transports-4.png';
 import cardFive from '@/static/card/transports-5.png';
 import cardSix from '@/static/card/transports-6.png';
 import cardSeven from '@/static/card/transports-7.png';
@@ -38,34 +34,40 @@ const TransportsPage = (): JSX.Element => (
       bgColor={PAGE_PROPS.gradientColor}
     >
       <Grid
-        mt="28"
-        h="400px"
+        mt={[20, 24, 28]}
+        h={['300px', '380px']}
         templateRows="repeat(2, 1fr)"
-        templateColumns="repeat(3, 1fr)"
-        gap={6}
+        templateColumns={['repeat(2, 1fr)', 'repeat(2, 1fr)', 'repeat(3, 1fr)']}
+        gap={[4, 6]}
       >
-        <GridCard rowSpan={2} colSpan={1} title="火車" image={cardOne} />
+        <GridCard
+          rowSpan={[1, 1, 2]}
+          colSpan={1}
+          title="火車"
+          image="/static/card/transports-1.png"
+        />
         <GridCard
           rowSpan={1}
           colSpan={1}
           title="高鐵"
-          image={cardTwo}
-          imageHeight={200}
-          imageWidth={300}
+          image="/static/card/transports-2.png"
         />
-        <GridCard rowSpan={2} colSpan={1} title="捷運" image={cardFour} />
+        <GridCard
+          rowSpan={[1, 1, 2]}
+          colSpan={1}
+          title="捷運"
+          image="/static/card/transports-4.png"
+        />
         <GridCard
           rowSpan={1}
           colSpan={1}
           title="公車"
-          image={cardThree}
-          imageHeight={200}
-          imageWidth={300}
+          image="/static/card/transports-3.png"
         />
       </Grid>
     </Background>
     <Box
-      h="160px"
+      h={['90px', '280px', '360px']}
       bgGradient={`linear(to-b, ${PAGE_PROPS.gradientColor}, white)`}
     />
     <Flex flexDir="column" bg="white">

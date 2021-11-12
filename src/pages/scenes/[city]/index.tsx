@@ -148,6 +148,7 @@ const CitiesPage = ({ city, scenes }: CitiesPageProps): JSX.Element => {
         </SimpleGrid>
         <Center mt="8">
           <Pagination
+            colorTheme="scenes"
             page={page}
             total={Math.ceil(scenes.length / DEFAULT_CARD_NUMBER)}
             onPageChange={setPage}

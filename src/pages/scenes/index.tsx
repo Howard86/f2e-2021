@@ -75,7 +75,7 @@ const ScenesPage = ({ scenes }: ScenesPageProps): JSX.Element => {
           href="/scenes"
           mt="0"
         />
-        <SimpleGrid columns={[1, 2, 3]} spacingX={8} spacingY={12} mx="8">
+        <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
           {scenes.map((scene) => (
             <SceneCard
               key={scene.id}
@@ -91,7 +91,7 @@ const ScenesPage = ({ scenes }: ScenesPageProps): JSX.Element => {
           mainColor={PAGE_PROPS.mainColor}
           href="/scenes"
         />
-        <SimpleGrid columns={[1, 2, 3]} spacingX={8} spacingY={12} mx="8">
+        <SimpleGrid columns={[1, 2, 3]} spacing={6} spacingY={12} mx="8" mt="4">
           <FanCard
             name="台北101攻略"
             description="除了台北101台北到底還有那些夜景？讓KKday告訴你台北還有哪些易達又美麗的夜景景點吧!"
@@ -116,7 +116,7 @@ const ScenesPage = ({ scenes }: ScenesPageProps): JSX.Element => {
           href="/scenes"
         />
 
-        <SimpleGrid columns={[1, 2, 3]} spacingX={8} spacingY={12} mx="8">
+        <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
           <ThemeCard name="單車之旅" image={mockTheme} />
           <ThemeCard name="戶外踏青" image={mockTheme} />
           <ThemeCard name="商城街" image={mockTheme} />

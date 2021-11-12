@@ -9,12 +9,14 @@ import {
 import { BiChevronLeft, BiChevronRight } from 'react-icons/bi';
 
 interface PaginationProps extends ButtonGroupProps {
+  colorTheme: string;
   page: number; // page starts with 0
   total: number;
   onPageChange: Dispatch<SetStateAction<number>>;
 }
 
 const Pagination = ({
+  colorTheme,
   page,
   total,
   onPageChange,
@@ -27,7 +29,7 @@ const Pagination = ({
   const decrement = () => onPageChange((current) => current - 1);
 
   return (
-    <ButtonGroup spacing={6} {...props}>
+    <ButtonGroup color={`${colorTheme}.main`} spacing={6} {...props}>
       <IconButton
         aria-label="show previous page"
         icon={<BiChevronLeft />}
@@ -39,8 +41,8 @@ const Pagination = ({
       </Button>
       <Button
         color="white"
-        bg="restaurants.main"
-        _hover={{ bg: 'restaurants.light' }}
+        bg={`${colorTheme}.main`}
+        _hover={{ bg: `${colorTheme}.light` }}
       >
         {page + 1}
       </Button>

@@ -27,7 +27,7 @@ const Banner = ({
   return (
     <Flex
       bg={mainColor}
-      px={[4, 8, 12]}
+      px={[6, 8, 12]}
       py="2"
       my="10"
       justify="space-between"

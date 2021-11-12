@@ -4,7 +4,6 @@ import {
   Box,
   Center,
   Flex,
-  HStack,
   IconButton,
   Input,
   InputGroup,
@@ -20,14 +19,11 @@ import FanCard from '@/components/FanCard';
 import Layout from '@/components/layout/Layout';
 import Pagination from '@/components/Pagination';
 import PlaceCard from '@/components/PlaceCard';
-import ThemeCard from '@/components/ThemeCard';
+import RestaurantCard from '@/components/ResturantCard';
 import { getRestaurants } from '@/services/tdx';
 import background from '@/static/background/restaurants.png';
 import wordOne from '@/static/background/restaurants-1.png';
 import wordTwo from '@/static/background/restaurants-2.png';
-import cardOne from '@/static/card/restaurants-1.png';
-import cardTwo from '@/static/card/restaurants-2.png';
-import cardThree from '@/static/card/restaurants-3.png';
 import mockFood from '@/static/mock/food.png';
 import mockScene from '@/static/mock/scene.png';
 
@@ -59,7 +55,7 @@ const RestaurantsPage = ({
         bgColor={PAGE_PROPS.gradientColor}
       >
         <InputGroup size="lg" my="8" maxW="container.md">
-          <Input bg="white" placeholder="請輸入關鍵字" />
+          <Input rounded="2xl" bg="white" placeholder="請輸入關鍵字" />
           <InputRightElement>
             <IconButton
               variant="ghost"
@@ -70,37 +66,31 @@ const RestaurantsPage = ({
             />
           </InputRightElement>
         </InputGroup>
-        <HStack spacing={0} mt="20">
-          <ThemeCard
+        <SimpleGrid h={['160px', '220px']} columns={3} gap={[2, 0]}>
+          <RestaurantCard
             name="台灣文化"
-            image={cardOne}
-            imageHeight={300}
-            imageWidth={400}
+            image="/static/card/restaurants-1.png"
             roundedRight="none"
-            zIndex="docked"
           />
-          <ThemeCard
+          <RestaurantCard
             name="台灣小吃"
-            image={cardTwo}
+            image="/static/card/restaurants-2.png"
             rounded="none"
-            imageHeight={300}
-            imageWidth={400}
           />
-          <ThemeCard
+          <RestaurantCard
             name="台灣各地特色"
-            image={cardThree}
+            image="/static/card/restaurants-3.png"
             roundedLeft="none"
-            imageHeight={300}
-            imageWidth={400}
           />
-        </HStack>
+        </SimpleGrid>
       </Background>
       <Box
-        h="120px"
+        h={['40px', '120px', '220px']}
         bgGradient={`linear(to-b, ${PAGE_PROPS.gradientColor}, white)`}
       />
       <Flex flexDir="column" bg="white">
         <Banner
+          mt="0"
           title="熱門美食"
           mainColor={PAGE_PROPS.mainColor}
           href="/scenes"
@@ -127,12 +117,14 @@ const RestaurantsPage = ({
         </SimpleGrid>
         <Center mt="8">
           <Pagination
+            colorTheme="restaurants"
             page={page}
             total={Math.ceil(restaurants.length / DEFAULT_CARD_NUMBER)}
             onPageChange={setPage}
           />
         </Center>
         <Banner
+          mb={[10, 10, 20]}
           title="網紅必推美食"
           mainColor={PAGE_PROPS.mainColor}
           href="/scenes"

@@ -3,38 +3,29 @@ import React from 'react';
 import {
   Box,
   Flex,
+  Image,
   LinkBox,
   LinkBoxProps,
   LinkOverlay,
   Text,
 } from '@chakra-ui/react';
-import Image from 'next/image';
 
 interface ThemeCardProps extends LinkBoxProps {
   name: string;
-  image: string | StaticImageData;
+  image: string;
   imageWidth?: number;
   imageHeight?: number;
   href?: string;
 }
 
-const ThemeCard = ({
+const RestaurantCard = ({
   name,
   image,
-  imageHeight = 420,
-  imageWidth = 386,
   href = '#',
   ...props
 }: ThemeCardProps) => (
-  <LinkBox pos="relative" overflow="hidden" rounded="3xl" {...props}>
-    <Image
-      alt={name}
-      objectFit="cover"
-      objectPosition="center"
-      src={image}
-      width={imageWidth}
-      height={imageHeight}
-    />
+  <LinkBox pos="relative" overflow="hidden" rounded="xl" {...props}>
+    <Image alt={name} src={image} fit="cover" h="100%" w="100%" />
     <Flex
       pos="absolute"
       flexDir="column"
@@ -42,19 +33,22 @@ const ThemeCard = ({
       top="0"
       left="0"
       right="0"
-      bottom="1"
+      bottom="0"
+      fontWeight="bold"
+      fontSize="sm"
+      color="white"
     >
       <Box flexGrow={1} />
       <Flex
         display="flex"
-        bgColor="blackAlpha.600"
-        p="4"
+        bgColor="whiteAlpha.400"
+        p="2"
         color="white"
         justify="space-between"
         align="center"
       >
         <LinkOverlay href={href} isExternal>
-          <Text fontWeight="bold" fontSize={['xl', '2xl']}>
+          <Text fontWeight="bold" fontSize={['sm', '2xl']}>
             {name}
           </Text>
         </LinkOverlay>
@@ -63,4 +57,4 @@ const ThemeCard = ({
   </LinkBox>
 );
 
-export default ThemeCard;
+export default RestaurantCard;

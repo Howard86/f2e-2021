@@ -12,7 +12,7 @@ const colors = {
   hotels: {
     light: '#E6DDB2',
     main: '#C2BB96',
-    dark: '#615A38',
+    dark: '#A39D81',
   },
   transports: {
     light: '#E6BEB4',

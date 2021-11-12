@@ -5,42 +5,27 @@ import {
   Flex,
   GridItem,
   GridItemProps,
+  Image,
   LinkBox,
   LinkOverlay,
   Text,
 } from '@chakra-ui/react';
-import Image from 'next/image';
 
 interface GridCardProps extends GridItemProps {
   title: string;
   subtitle?: string;
-  image: string | StaticImageData;
-  imageWidth?: number;
-  imageHeight?: number;
+  image: string;
 }
 
-const GridCard = ({
-  title,
-  subtitle,
-  image,
-  imageHeight = 400,
-  imageWidth = 300,
-  ...props
-}: GridCardProps) => (
-  <LinkBox
-    as={GridItem}
+const GridCard = ({ title, subtitle, image, ...props }: GridCardProps) => (
+  <GridItem
+    as={LinkBox}
     pos="relative"
     overflow="hidden"
     rounded="2xl"
     {...props}
   >
-    <Image
-      objectFit="cover"
-      objectPosition="center"
-      src={image}
-      width={imageWidth}
-      height={imageHeight}
-    />
+    <Image alt={title} src={image} fit="cover" h="100%" w="100%" />
     <Flex
       pos="absolute"
       flexDir="column"
@@ -50,7 +35,7 @@ const GridCard = ({
       right="0"
       bottom="0"
       color="white"
-      p="4"
+      p={[2, 4]}
     >
       <LinkOverlay fontWeight="bold" fontSize="lg" href="#" isExternal>
         {title}
@@ -58,7 +43,7 @@ const GridCard = ({
       <Text>{subtitle}</Text>
       <Box flexGrow={1} />
     </Flex>
-  </LinkBox>
+  </GridItem>
 );
 
 export default GridCard;
