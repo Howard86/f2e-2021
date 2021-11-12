@@ -108,7 +108,7 @@ const Header = ({ mainColor, ...props }: HeaderProps) => {
           }}
         />
       </HStack>
-      <Avatar size="sm" />
+      <Avatar size="sm" ml="4" />
     </Flex>
   );
 };

@@ -133,7 +133,7 @@ const Footer = ({ mainColor, gradientColor, ...props }: FooterProps) => {
         fontWeight="medium"
         align="center"
       >
-        <Logo boxSize={['192px', '252px', '64px']} ml="8" mr="4" />
+        <Logo boxSize={['192px', '252px', '128px']} ml="8" mr="4" />
         <Box>
           <Flex flexDir={['column', 'column', 'row']} my="2">
             <Text>24小時免付費旅遊諮詢熱線：</Text>
@@ -142,18 +142,21 @@ const Footer = ({ mainColor, gradientColor, ...props }: FooterProps) => {
           <Flex flexDir={['column', 'column', 'row']} my="2">
             <Text>免付費國旅券專線：</Text>
             <Text>0800-211734</Text>
-            <Text my={[2, 2, 0]}>（服務時間：週一至週日8:30~18:30）</Text>
+          </Flex>
+          <Flex flexDir={['column', 'column', 'row']} my="2">
+            <Text>服務時間：</Text>
+            <Text>週一至週日8:30~18:30</Text>
           </Flex>
         </Box>
       </Flex>
       <Flex flexDir={['column', 'row']} bg={mainColor} px="12" align="center">
-        <Text as="h3" fontSize="2xl" color="white">
-          Credits
+        <Text as="h3" fontSize="lg" color="white">
+          All credit goes to
         </Text>
         <Stack direction={['column', 'row']} p="4">
           {CREDITS.map((person) => (
             <Tooltip key={person.name} label={person.type} hasArrow>
-              <Tag size="lg" rounded="full" mx="2">
+              <Tag size="lg" borderRadius="full">
                 <Avatar
                   size="sm"
                   src={person.imageUrl}

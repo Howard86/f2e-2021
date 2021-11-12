@@ -32,6 +32,7 @@ const MenuPopover = ({ buttonBgColor, ...props }: MenuPopoverProps) => {
     <Popover placement="right-start" isOpen={isOpen} isLazy {...props}>
       <PopoverTrigger>
         <IconButton
+          display={['inline-block', 'none']}
           p="1"
           fontSize="2xl"
           variant="ghost"
