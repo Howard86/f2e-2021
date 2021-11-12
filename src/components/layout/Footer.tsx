@@ -1,17 +1,27 @@
 import React from 'react';
 
 import {
+  Avatar,
   Box,
   BoxProps,
+  Center,
   Flex,
+  IconButton,
   Link,
   List,
   ListItem,
   SimpleGrid,
+  Stack,
+  Tag,
+  TagLabel,
   Text,
+  Tooltip,
 } from '@chakra-ui/react';
+import { BsChevronUp } from 'react-icons/bs';
 
 import Logo from '../icons/Logo';
+
+import CREDITS from '@/constants/credits';
 
 type FooterConfig = {
   headline: string;
@@ -61,47 +71,106 @@ interface FooterProps extends BoxProps {
   gradientColor: BoxProps['color'];
 }
 
-const Footer = ({ mainColor, gradientColor, ...props }: FooterProps) => (
-  <Box as="footer" {...props}>
-    <Box
-      px="8"
-      pt="20"
-      pb="36"
-      bgGradient={`linear(to-t, ${gradientColor}, white)`}
-    >
-      <SimpleGrid
-        mx="auto"
-        justify="center"
-        align="start"
-        maxW="container.lg"
-        columns={footerConfig.length}
+const Footer = ({ mainColor, gradientColor, ...props }: FooterProps) => {
+  const onClick = () => {
+    window.scrollTo(0, 0);
+  };
+
+  return (
+    <Box as="footer" {...props}>
+      <Box
+        px="8"
+        pt={[12, 20]}
+        pb={[20, 36]}
+        bgGradient={`linear(to-t, ${gradientColor}, white)`}
       >
-        {footerConfig.map((config) => (
-          <Box key={config.headline}>
-            <Text variant="headline-3" fontSize="lg">
-              {config.headline}
-            </Text>
-            <List spacing={1}>
-              {config.links.map((link) => (
-                <ListItem key={link.name}>
-                  <Link href="#">{link.name}</Link>
-                </ListItem>
-              ))}
-            </List>
-          </Box>
-        ))}
-      </SimpleGrid>
-    </Box>
-    <Flex py="4" bg={mainColor} align="center">
-      <Logo color="white" w="48px" h="48px" ml="8" mr="4" />
-      <Box>
-        <Text>24小時免付費旅遊諮詢熱線：0800-011765</Text>
-        <Text>
-          免付費國旅券專線：0800-211734（服務時間：週一至週日8:30~18:30）
-        </Text>
+        <Center display={['flex', 'flex', 'none']} textAlign="center">
+          <IconButton
+            color="white"
+            aria-label="scroll to top"
+            size="lg"
+            bgColor={mainColor}
+            _hover={{
+              bgColor: gradientColor,
+            }}
+            fontSize="2xl"
+            p="3"
+            rounded="full"
+            icon={<BsChevronUp />}
+            onClick={onClick}
+          />
+        </Center>
+        <SimpleGrid
+          mx="auto"
+          display={['none', 'none', 'grid']}
+          justify="center"
+          align="start"
+          maxW="container.md"
+          columns={footerConfig.length}
+        >
+          {footerConfig.map((config) => (
+            <Box key={config.headline}>
+              <Text variant="headline-3" fontSize="lg">
+                {config.headline}
+              </Text>
+              <List spacing={1}>
+                {config.links.map((link) => (
+                  <ListItem key={link.name}>
+                    <Link href="#">{link.name}</Link>
+                  </ListItem>
+                ))}
+              </List>
+            </Box>
+          ))}
+        </SimpleGrid>
       </Box>
-    </Flex>
-  </Box>
-);
+      <Flex
+        flexDir={['column', 'column', 'row']}
+        py="4"
+        px={[12, 12, 4]}
+        bg={mainColor}
+        color="white"
+        fontWeight="medium"
+        align="center"
+      >
+        <Logo boxSize={['192px', '252px', '64px']} ml="8" mr="4" />
+        <Box>
+          <Flex flexDir={['column', 'column', 'row']} my="2">
+            <Text>24小時免付費旅遊諮詢熱線：</Text>
+            <Text>0800-011765</Text>
+          </Flex>
+          <Flex flexDir={['column', 'column', 'row']} my="2">
+            <Text>免付費國旅券專線：</Text>
+            <Text>0800-211734</Text>
+            <Text my={[2, 2, 0]}>（服務時間：週一至週日8:30~18:30）</Text>
+          </Flex>
+        </Box>
+      </Flex>
+      <Flex flexDir={['column', 'row']} bg={mainColor} px="12" align="center">
+        <Text as="h3" fontSize="2xl" color="white">
+          Credits
+        </Text>
+        <Stack direction={['column', 'row']} p="4">
+          {CREDITS.map((person) => (
+            <Tooltip key={person.name} label={person.type} hasArrow>
+              <Tag size="lg" rounded="full" mx="2">
+                <Avatar
+                  size="sm"
+                  src={person.imageUrl}
+                  name={person.name}
+                  mr="2"
+                  my="2"
+                />
+                <Link href={person.url} isExternal>
+                  <TagLabel>{person.name}</TagLabel>
+                </Link>
+              </Tag>
+            </Tooltip>
+          ))}
+        </Stack>
+      </Flex>
+    </Box>
+  );
+};
 
 export default Footer;

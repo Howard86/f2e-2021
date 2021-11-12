@@ -31,7 +31,6 @@ const WeatherCarousel = ({ weathers, ...props }: WeatherCarouselProps) => {
   return (
     <Flex
       pos="relative"
-      centerContent
       maxW="container.md"
       align="center"
       sx={{
