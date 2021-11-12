@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 
 import {
   Avatar,
+  Box,
   Divider,
   Flex,
   FlexProps,
@@ -13,6 +14,10 @@ import { FiSearch } from 'react-icons/fi';
 
 import Logo from '../icons/Logo';
 import RouteLink from '../RouteLink';
+
+import MenuPopover from './MenuPopover';
+
+import ROUTES from '@/constants/routes';
 
 const THROTTLED_TIME_MS = 500;
 
@@ -59,9 +64,8 @@ const Header = ({ mainColor, ...props }: HeaderProps) => {
       pos="fixed"
       zIndex="banner"
       alignItems="center"
-      justify="space-between"
       top={state.onTop || state.isScrollingUp ? 0 : '-200px'}
-      px="8"
+      px={[2, 4, 8]}
       py="2"
       color={isSolid ? 'white' : 'text.body'}
       translateY="50%"
@@ -70,11 +74,14 @@ const Header = ({ mainColor, ...props }: HeaderProps) => {
       transitionTimingFunction="ease-out"
       {...props}
     >
-      <RouteLink href="/">
+      <MenuPopover buttonBgColor={isSolid ? 'whiteAlpha.300' : 'transparent'} />
+      <RouteLink display={['none', 'block']} href="/">
         <Logo width={12} height={12} />
       </RouteLink>
 
+      <Box flexGrow={1} />
       <HStack
+        display={['none', 'flex']}
         h="4"
         fontWeight="bold"
         divider={
@@ -83,25 +90,25 @@ const Header = ({ mainColor, ...props }: HeaderProps) => {
             borderColor={isSolid ? 'white' : 'text.body'}
           />
         }
-        spacing={4}
+        spacing={[2, 2, 4]}
       >
-        <RouteLink href="/">活動新訊</RouteLink>
-        <RouteLink href="/scenes">景點</RouteLink>
-        <RouteLink href="/restaurants">美食</RouteLink>
-        <RouteLink href="/hotels">住宿</RouteLink>
-        <RouteLink href="/transports">交通</RouteLink>
+        {ROUTES.map((route) => (
+          <RouteLink key={route.label} href={route.href}>
+            {route.label}
+          </RouteLink>
+        ))}
         <IconButton
           variant="ghost"
           aria-label="search scene"
-          fontSize="2xl"
+          fontSize={['xl', '2xl']}
           rounded="full"
           icon={<FiSearch />}
           _hover={{
             bgColor: isSolid ? mainColor : 'white',
           }}
         />
-        <Avatar size="sm" />
       </HStack>
+      <Avatar size="sm" />
     </Flex>
   );
 };
