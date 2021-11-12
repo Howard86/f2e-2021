@@ -77,7 +77,7 @@ const TransportsPage = (): JSX.Element => (
         href="/scenes"
         hideButton
       />
-      <SimpleGrid columns={[1, 2, 3]} spacingX={8} spacingY={12} mx="8">
+      <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
         <ThemeCard
           name="省道即時交通資訊"
           image={cardFive}
@@ -101,7 +101,7 @@ const TransportsPage = (): JSX.Element => (
         hideButton
       />
 
-      <SimpleGrid columns={[1, 2, 3]} spacingX={8} spacingY={12} mx="8">
+      <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
         <ThemeCard name="汽車" image={cardEight} />
         <ThemeCard name="摩特車" image={cardNine} />
         <ThemeCard name="自行車" image={cardTen} />

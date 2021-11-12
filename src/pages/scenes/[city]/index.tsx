@@ -130,7 +130,7 @@ const CitiesPage = ({ city, scenes }: CitiesPageProps): JSX.Element => {
           href="/scenes"
           hideButton
         />
-        <SimpleGrid columns={[1, 2, 3]} spacingX={8} spacingY={12} mx="8">
+        <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
           {scenes
             .slice(
               page * DEFAULT_CARD_NUMBER,

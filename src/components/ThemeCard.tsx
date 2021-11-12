@@ -45,20 +45,20 @@ const ThemeCard = ({
       bottom="1"
     >
       <Box flexGrow={1} />
-      <Flex
-        display="flex"
-        bgColor="blackAlpha.600"
-        p="4"
-        color="white"
-        justify="space-between"
-        align="center"
-      >
-        <LinkOverlay href={href} isExternal>
-          <Text fontWeight="bold" fontSize={['xl', '2xl']}>
+      <Box>
+        <Text
+          as="h3"
+          fontWeight="bold"
+          bgColor="blackAlpha.600"
+          p="4"
+          color="white"
+          fontSize={['xl', '2xl']}
+        >
+          <LinkOverlay href={href} isExternal>
             {name}
-          </Text>
-        </LinkOverlay>
-      </Flex>
+          </LinkOverlay>
+        </Text>
+      </Box>
     </Flex>
   </LinkBox>
 );

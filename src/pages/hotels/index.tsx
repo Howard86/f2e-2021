@@ -97,7 +97,7 @@ const HotelsPage = ({ hotels }: HotelsPageProps): JSX.Element => {
             'repeat(2, 1fr)',
             'repeat(3, 1fr)',
           ]}
-          gap={6}
+          gap={[4, 6]}
         >
           <GridCard
             rowSpan={[1, 1, 2]}
@@ -140,7 +140,7 @@ const HotelsPage = ({ hotels }: HotelsPageProps): JSX.Element => {
           href="/scenes"
           hideButton
         />
-        <SimpleGrid columns={[1, 2, 3]} spacingX={8} spacingY={12} mx="8">
+        <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
           {hotels
             .slice(
               DEFAULT_CARD_NUMBER * page,

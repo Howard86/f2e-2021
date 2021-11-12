@@ -29,7 +29,12 @@ const Pagination = ({
   const decrement = () => onPageChange((current) => current - 1);
 
   return (
-    <ButtonGroup color={`${colorTheme}.main`} spacing={6} {...props}>
+    <ButtonGroup
+      variant="rounded"
+      color={`${colorTheme}.main`}
+      spacing={6}
+      {...props}
+    >
       <IconButton
         aria-label="show previous page"
         icon={<BiChevronLeft />}

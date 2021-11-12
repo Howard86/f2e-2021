@@ -39,20 +39,18 @@ const RestaurantCard = ({
       color="white"
     >
       <Box flexGrow={1} />
-      <Flex
-        display="flex"
+      <Box
         bgColor="whiteAlpha.400"
         p="2"
-        color="white"
         justify="space-between"
         align="center"
       >
-        <LinkOverlay href={href} isExternal>
-          <Text fontWeight="bold" fontSize={['sm', '2xl']}>
+        <Text as="h3" fontWeight="bold" color="white" fontSize={['sm', '2xl']}>
+          <LinkOverlay href={href} isExternal>
             {name}
-          </Text>
-        </LinkOverlay>
-      </Flex>
+          </LinkOverlay>
+        </Text>
+      </Box>
     </Flex>
   </LinkBox>
 );
