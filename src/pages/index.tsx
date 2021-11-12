@@ -28,27 +28,35 @@ const PAGE_PROPS = { mainColor: 'scenes.main', gradientColor: 'scenes.light' };
 
 const HomePage = ({ weathers, scenes, restaurants, hotels }: HomePageProps) => (
   <>
-    <Container h="100vh" centerContent>
+    <Container h="100vh" maxH={[400, 700]} centerContent>
       <Box
         pos="absolute"
         top="0"
         left="0"
         right="0"
-        h="100vh"
-        w="100vw"
+        bg="scenes.light"
+        h="inherit"
+        maxH="inherit"
         overflow="hidden"
         zIndex="hide"
       >
         <Image
-          alt="background"
+          alt="首頁背景"
           src={mainBackground}
-          placeholder="blur"
           layout="fill"
           objectFit="cover"
+          objectPosition="50% bottom"
           quality={100}
         />
       </Box>
-      <Logo color="white" my="12" w="284" h="218" />
+      <Logo
+        color="whiteAlpha.700"
+        my={[8, 12]}
+        w="30%"
+        h="auto"
+        maxW="152"
+        maxH="117"
+      />
     </Container>
     <Flex
       flexDir="column"

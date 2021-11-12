@@ -51,6 +51,7 @@ const HotelsPage = ({ hotels }: HotelsPageProps): JSX.Element => {
         wordOne={wordOne}
         wordTwoAlt="宿"
         wordTwo={wordTwo}
+        bgColor={PAGE_PROPS.gradientColor}
       >
         <Flex align="flex-end" my="8" p="8" bg="whiteAlpha.500" rounded="2xl">
           <FormControl>

@@ -35,6 +35,7 @@ const TransportsPage = (): JSX.Element => (
       wordOne={wordOne}
       wordTwoAlt="宿"
       wordTwo={wordTwo}
+      bgColor={PAGE_PROPS.gradientColor}
     >
       <Grid
         mt="28"

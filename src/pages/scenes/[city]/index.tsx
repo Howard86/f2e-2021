@@ -70,6 +70,7 @@ const CitiesPage = ({ city, scenes }: CitiesPageProps): JSX.Element => {
         wordOne={wordOne}
         wordTwoAlt="點"
         wordTwo={wordTwo}
+        bgColor={PAGE_PROPS.gradientColor}
       >
         <Flex align="center" mt="8">
           <InputGroup size="lg">

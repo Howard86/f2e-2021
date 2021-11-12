@@ -31,7 +31,7 @@ interface ScenesPageProps {
   scenes: TDX.Scene[];
 }
 
-const PAGE_PROPS = { mainColor: 'scenes.main', gradientColor: '' };
+const PAGE_PROPS = { mainColor: 'scenes.main', gradientColor: 'scenes.light' };
 
 const ScenesPage = ({ scenes }: ScenesPageProps): JSX.Element => {
   const onSearch = () => {};
@@ -45,6 +45,7 @@ const ScenesPage = ({ scenes }: ScenesPageProps): JSX.Element => {
         wordOne={wordOne}
         wordTwoAlt="點"
         wordTwo={wordTwo}
+        bgColor={PAGE_PROPS.gradientColor}
       >
         <Flex align="center" mt="8">
           <InputGroup size="lg">

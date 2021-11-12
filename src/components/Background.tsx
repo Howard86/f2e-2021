@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 
-import { Box, Container, ContainerProps, Flex, HStack } from '@chakra-ui/react';
+import { Box, Container, ContainerProps, SimpleGrid } from '@chakra-ui/react';
 import Image from 'next/image';
 
 import Logo from './icons/Logo';
@@ -13,6 +13,7 @@ interface BackgroundProps extends ContainerProps {
   wordOne: string | StaticImageData;
   wordTwoAlt: string;
   wordTwo: string | StaticImageData;
+  bgColor: ContainerProps['bgColor'];
 }
 
 const Background = ({
@@ -23,55 +24,50 @@ const Background = ({
   wordOneAlt,
   wordTwo,
   wordTwoAlt,
+  bgColor,
   ...props
 }: BackgroundProps) => (
-  <Container maxW="container.lg" h="100vh" centerContent {...props}>
+  <Container
+    maxW="container.lg"
+    h="100vh"
+    maxH={[589, 700]}
+    centerContent
+    {...props}
+  >
     <Box
       pos="absolute"
       top="0"
       left="0"
       right="0"
-      h="100vh"
-      w="100vw"
+      h="inherit"
+      maxH="inherit"
       overflow="hidden"
       zIndex="hide"
+      bgColor={bgColor}
     >
       <Image
         alt={`${name}背景`}
         src={image}
-        placeholder="blur"
         layout="fill"
         objectFit="cover"
+        objectPosition="20% 100%"
         quality={100}
         priority
       />
     </Box>
-    <Logo color="white" my="12" w="152" h="117" />
-    <Flex flexDir="column" align="center">
-      <HStack spacing={8}>
-        <Box w={[100, 200, 300]}>
-          <Image
-            alt={wordOneAlt}
-            src={wordOne}
-            placeholder="blur"
-            width={300}
-            height={300}
-            priority
-          />
-        </Box>
-        <Box w={[100, 200, 300]}>
-          <Image
-            alt={wordTwoAlt}
-            src={wordTwo}
-            placeholder="blur"
-            width={300}
-            height={300}
-            priority
-          />
-        </Box>
-      </HStack>
-      {children}
-    </Flex>
+    <Logo
+      color="whiteAlpha.700"
+      my={[8, 12]}
+      w="30%"
+      h="auto"
+      maxW="152"
+      maxH="117"
+    />
+    <SimpleGrid mx="10%" spacing={[2, 4, 8]} columns={2}>
+      <Image alt={wordOneAlt} src={wordOne} priority />
+      <Image alt={wordTwoAlt} src={wordTwo} priority />
+    </SimpleGrid>
+    {children}
   </Container>
 );
 

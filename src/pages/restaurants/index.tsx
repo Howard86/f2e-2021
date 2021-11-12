@@ -56,6 +56,7 @@ const RestaurantsPage = ({
         wordOne={wordOne}
         wordTwoAlt="食"
         wordTwo={wordTwo}
+        bgColor={PAGE_PROPS.gradientColor}
       >
         <InputGroup size="lg" my="8" maxW="container.md">
           <Input bg="white" placeholder="請輸入關鍵字" />
