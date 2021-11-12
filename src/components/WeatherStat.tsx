@@ -1,17 +1,19 @@
 import React from 'react';
 
-import { Flex, FlexboxProps, Text } from '@chakra-ui/react';
+import { Flex, FlexProps, Text } from '@chakra-ui/react';
 
 import SunnyIcon from './icons/SunnyIcon';
 
-interface WeatherStatProps extends FlexboxProps {
+interface WeatherStatProps extends FlexProps {
   city: string;
   temperature: number;
 }
 
 const WeatherStat = ({ city, temperature, ...props }: WeatherStatProps) => (
   <Flex flexDir="column" justify="center" align="center" {...props}>
-    <Text>{city}</Text>
+    <Text fontWeight="bold" color="blackAlpha.700">
+      {city}
+    </Text>
     <SunnyIcon boxSize="20" mt="4" mb="6" />
     <Text variant="headline-1" lineHeight="3">
       {temperature}

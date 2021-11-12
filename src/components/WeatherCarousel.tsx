@@ -1,11 +1,11 @@
 import React, { useMemo, useState } from 'react';
 
-import { HStack, IconButton, StackProps } from '@chakra-ui/react';
+import { Box, Flex, IconButton, StackProps } from '@chakra-ui/react';
 import { BiChevronLeft, BiChevronRight } from 'react-icons/bi';
 
 import WeatherStat from './WeatherStat';
 
-const NUMBER_OF_SLIDES = 6;
+const NUMBER_OF_SLIDES = 5;
 
 interface WeatherCarouselProps extends StackProps {
   weathers: Weather.City[];
@@ -29,33 +29,72 @@ const WeatherCarousel = ({ weathers, ...props }: WeatherCarouselProps) => {
   );
 
   return (
-    <HStack
-      color="blackAlpha.500"
-      justify="center"
-      mt="8"
-      spacing={8}
-      {...props}
+    <Flex
+      pos="relative"
+      centerContent
+      maxW="container.md"
+      align="center"
+      sx={{
+        button: {
+          bgColor: ['transparent', 'gray.100'],
+          h: ['full', 10],
+          pos: ['absolute', 'initial'],
+          opacity: [0, 1],
+          rounded: ['none', 'full'],
+          _hover: {
+            bgColor: ['whiteAlpha.800', 'gray.200'],
+          },
+          _first: {
+            bgGradient: [
+              'linear(to-r, whiteAlpha.800, whiteAlpha.100)',
+              'none',
+            ],
+            left: 0,
+          },
+          _last: {
+            bgGradient: [
+              'linear(to-l, whiteAlpha.800, whiteAlpha.100)',
+              'none',
+            ],
+            right: 0,
+          },
+        },
+        _hover: {
+          button: {
+            opacity: 1,
+          },
+        },
+      }}
     >
+      <Box display={['none', 'inline']} flexGrow={1} />
       <IconButton
         aria-label="show previous wether"
-        rounded="full"
         icon={<BiChevronLeft />}
         onClick={decrement}
       />
-      {slides.map((weather) => (
-        <WeatherStat
-          key={weather.id}
-          city={weather.city}
-          temperature={weather.temperature}
-        />
-      ))}
+      <Flex
+        color="blackAlpha.500"
+        justify="center"
+        py="8"
+        overflowY="hidden"
+        {...props}
+      >
+        {slides.map((weather) => (
+          <WeatherStat
+            mx="4"
+            key={weather.id}
+            city={weather.city}
+            temperature={weather.temperature}
+          />
+        ))}
+      </Flex>
       <IconButton
-        rounded="full"
         aria-label="show next wether"
         icon={<BiChevronRight />}
         onClick={increment}
       />
-    </HStack>
+      <Box display={['none', 'inline']} flexGrow={1} />
+    </Flex>
   );
 };
 
