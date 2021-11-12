@@ -19,21 +19,28 @@ import FanCard from '@/components/FanCard';
 import Layout from '@/components/layout/Layout';
 import SceneCard from '@/components/SceneCard';
 import ThemeCard from '@/components/ThemeCard';
-import { getScenes } from '@/services/ptx';
+import {
+  getSceneCards,
+  getScenesWithRemarks,
+  getSceneTheme,
+} from '@/services/ptx';
 import background from '@/static/background/scenes.png';
 import wordOne from '@/static/background/scenes-1.png';
 import wordTwo from '@/static/background/scenes-2.png';
-import mockCard from '@/static/mock/card.png';
-import mockScene from '@/static/mock/scene.png';
-import mockTheme from '@/static/mock/theme.png';
 
 interface ScenesPageProps {
-  scenes: PTX.Scene[];
+  scenes: PTX.SceneCard[];
+  remarks: PTX.SceneRemark[];
+  themes: PTX.SceneTheme[];
 }
 
 const PAGE_PROPS = { mainColor: 'scenes.main', gradientColor: 'scenes.light' };
 
-const ScenesPage = ({ scenes }: ScenesPageProps): JSX.Element => {
+const ScenesPage = ({
+  scenes,
+  remarks,
+  themes,
+}: ScenesPageProps): JSX.Element => {
   const onSearch = () => {};
 
   return (
@@ -78,37 +85,32 @@ const ScenesPage = ({ scenes }: ScenesPageProps): JSX.Element => {
         <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
           {scenes.map((scene) => (
             <SceneCard
-              key={scene.id}
-              id={scene.id}
-              name={scene.name}
-              city={scene.city}
-              image={scene.image || mockCard}
+              key={scene.ID}
+              id={scene.ID}
+              name={scene.Name}
+              city={scene.City}
+              image={scene.Picture.PictureUrl1}
             />
           ))}
         </SimpleGrid>
         <Banner
           title="網紅攻略"
           mainColor={PAGE_PROPS.mainColor}
+          mb={{ lg: 16 }}
+          hideButton
           href="/scenes"
         />
         <SimpleGrid columns={[1, 2, 3]} spacing={6} spacingY={12} mx="8" mt="4">
-          <FanCard
-            name="台北101攻略"
-            description="除了台北101台北到底還有那些夜景？讓KKday告訴你台北還有哪些易達又美麗的夜景景點吧!"
-            image={mockScene}
-          />
-          <FanCard
-            name="台北101攻略"
-            description="除了台北101台北到底還有那些夜景？讓KKday告訴你台北還有哪些易達又美麗的夜景景點吧!"
-            image={mockScene}
-            liked
-          />
-          <FanCard
-            name="台北101攻略"
-            description="除了台北101台北到底還有那些夜景？讓KKday告訴你台北還有哪些易達又美麗的夜景景點吧!"
-            image={mockScene}
-            saved
-          />
+          {remarks.map((remark) => (
+            <FanCard
+              id={remark.ID}
+              key={remark.ID}
+              name={remark.Name}
+              city={remark.City}
+              description={remark.Remarks}
+              image={remark.Picture.PictureUrl1}
+            />
+          ))}
         </SimpleGrid>
         <Banner
           title="主題觀點"
@@ -117,9 +119,14 @@ const ScenesPage = ({ scenes }: ScenesPageProps): JSX.Element => {
         />
 
         <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
-          <ThemeCard name="單車之旅" image={mockTheme} />
-          <ThemeCard name="戶外踏青" image={mockTheme} />
-          <ThemeCard name="商城街" image={mockTheme} />
+          {themes.map((theme) => (
+            <ThemeCard
+              id={theme.ID}
+              key={theme.ID}
+              theme={theme.Class}
+              image={theme.Picture.PictureUrl1}
+            />
+          ))}
         </SimpleGrid>
       </Flex>
     </>
@@ -132,13 +139,23 @@ ScenesPage.layoutProps = PAGE_PROPS;
 export const getStaticProps = async (
   _context: GetStaticPropsContext,
 ): Promise<GetStaticPropsResult<ScenesPageProps>> => {
-  const scenes = await getScenes();
+  try {
+    const [scenes, remarks, themes] = await Promise.all([
+      getSceneCards(6),
+      getScenesWithRemarks(6),
+      getSceneTheme(6),
+    ]);
 
-  return {
-    props: {
-      scenes: scenes.slice(0, 6),
-    },
-  };
+    return {
+      props: { scenes, remarks, themes },
+    };
+  } catch (error) {
+    console.error(error);
+
+    return {
+      notFound: true,
+    };
+  }
 };
 
 export default ScenesPage;

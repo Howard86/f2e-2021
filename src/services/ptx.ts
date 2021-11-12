@@ -41,6 +41,72 @@ const apiGet = async <T>(
   throw new Error(response.statusText);
 };
 
+export const getSceneCards = (count = 30): Promise<PTX.SceneCard[]> =>
+  apiGet('Tourism/ScenicSpot', {
+    $top: count.toString(),
+    $select: 'ID,City,Name,Picture',
+    $filter: 'Picture/PictureUrl1 ne null and City ne null',
+    $orderBy: 'TicketInfo desc',
+  });
+
+export const getScenesWithRemarks = async (
+  count = 30,
+): Promise<PTX.SceneRemark[]> => {
+  const results = await apiGet<PTX.SceneRemark[]>('Tourism/ScenicSpot', {
+    $top: (count * 5).toString(),
+    $select: 'ID,Name,City,Remarks,Picture',
+    $filter: 'Picture/PictureUrl1 ne null and Remarks ne null and City ne null',
+    $orderBy: 'Remarks desc, UpdateTime desc',
+  });
+
+  return results
+    .sort((a, b) => (a.Remarks?.length > b.Remarks.length ? -1 : 1))
+    .slice(0, count);
+};
+
+export const getScenes = async (count = 30): Promise<PTX.Scene[]> =>
+  apiGet('Tourism/ScenicSpot', { $top: count.toString() });
+
+export const getSceneTheme = async (count = 30): Promise<PTX.SceneTheme[]> => {
+  const rawResults = await apiGet<PTX.RawSceneTheme[]>('Tourism/ScenicSpot', {
+    $top: (count * 10).toString(),
+    $select: 'ID,Class1,Class2,Class3,Picture',
+    $filter: 'Picture/PictureUrl1 ne null and Class1 ne null',
+    $orderBy: 'UpdateTime desc',
+  });
+
+  const classSet = new Set<PTX.SceneClass>();
+  const results: PTX.SceneTheme[] = [];
+
+  // eslint-disable-next-line no-restricted-syntax
+  for (const result of rawResults) {
+    if (result.Class1 && !classSet.has(result.Class1)) {
+      classSet.add(result.Class1);
+      results.push({
+        Class: result.Class1,
+        ID: result.ID,
+        Picture: result.Picture,
+      });
+    } else if (result.Class2 && !classSet.has(result.Class2)) {
+      classSet.add(result.Class2);
+      results.push({
+        Class: result.Class2,
+        ID: result.ID,
+        Picture: result.Picture,
+      });
+    } else if (result.Class3 && !classSet.has(result.Class3)) {
+      classSet.add(result.Class3);
+      results.push({
+        Class: result.Class3,
+        ID: result.ID,
+        Picture: result.Picture,
+      });
+    }
+  }
+
+  return results.filter((result) => result.Class !== '其他').slice(0, count);
+};
+
 export const getRestaurants = async (): Promise<PTX.Restaurant[]> =>
   new Array(10).fill(0).map((_, index) => ({
     id: `food${index}`,
