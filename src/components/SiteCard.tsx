@@ -2,13 +2,15 @@ import React from 'react';
 
 import {
   Box,
+  Flex,
   LinkBox,
   LinkBoxProps,
   LinkOverlay,
   Text,
 } from '@chakra-ui/react';
 import Image from 'next/image';
-import NextLink from 'next/link';
+
+import RouteLink from './RouteLink';
 
 interface SiteCardProps extends LinkBoxProps {
   title: string;
@@ -18,34 +20,41 @@ interface SiteCardProps extends LinkBoxProps {
 
 const SiteCard = ({ title, href, image, ...props }: SiteCardProps) => (
   <LinkBox pos="relative" {...props}>
-    <Box
-      right="2"
-      top="-2"
-      textAlign="center"
-      fontWeight="bold"
-      fontSize="3xl"
-      pos="absolute"
+    <Image alt={title} src={image} objectFit="cover" objectPosition="center" />
+    <Flex
+      flexDir="column"
       zIndex="docked"
-      bg="white"
-      shadow="xl"
-      borderColor="blackAlpha.300"
-      rounded="md"
-      borderWidth="1px"
-      py="4"
-      sx={{ writingMode: 'vertical-rl' }}
+      align="flex-end"
+      pos="absolute"
+      top="0"
+      left="0"
+      right="0"
+      bottom="0"
     >
-      <Text as="h2">
-        <NextLink href={href} passHref>
-          <LinkOverlay>{title}</LinkOverlay>
-        </NextLink>
-      </Text>
-    </Box>
-    <Image src={image} layout="responsive" width={285} height={380} />
-    <Text as="span" opacity={0}>
-      <NextLink href={href} passHref>
-        <LinkOverlay>{title}鏈結</LinkOverlay>
-      </NextLink>
-    </Text>
+      <Box
+        flexGrow={0}
+        mt={[-3, -6]}
+        mr={[2, 4]}
+        textAlign="center"
+        fontWeight="bold"
+        fontSize={['lg', '3xl']}
+        bg="white"
+        shadow="dark-lg"
+        py={[2, 4]}
+        sx={{ writingMode: 'vertical-rl' }}
+      >
+        <Text as="h2">
+          <RouteLink
+            _hover={{ textDecor: 'none' }}
+            as={LinkOverlay}
+            href={href}
+          >
+            {title}
+          </RouteLink>
+        </Text>
+      </Box>
+      <Box flexGrow={1} />
+    </Flex>
   </LinkBox>
 );
 

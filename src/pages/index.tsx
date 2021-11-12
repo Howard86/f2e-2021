@@ -65,16 +65,16 @@ const HomePage = ({ weathers, scenes, restaurants, hotels }: HomePageProps) => (
       minH="360"
       bgGradient={`linear(to-b, ${PAGE_PROPS.gradientColor}, white)`}
     >
-      <Container maxW="container.md" textAlign="center">
-        <Text variant="subtitle" color="blackAlpha.500">
+      <Container maxW="container.md" textAlign="center" px="0">
+        <Text mx="8" variant="subtitle" color="blackAlpha.500">
           台灣許多美景媲美國外，值此五倍券、國旅券及觀光業者加碼優惠盡出之際，旅行台灣就是現在！
           到哪裡旅遊還沒有想法的民眾，歡迎到台灣觀光，體驗「台灣之美」!
         </Text>
+        <WeatherCarousel weathers={weathers} />
       </Container>
-      <WeatherCarousel weathers={weathers} />
     </Flex>
     <Flex flexDir="column" bgColor="white">
-      <SiteCardGrid />
+      <SiteCardGrid maxW="container.lg" mx="auto" />
       <Banner
         title="熱門景點"
         mainColor={PAGE_PROPS.mainColor}
