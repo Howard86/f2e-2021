@@ -1,15 +1,45 @@
-// TODO: replace mock with api call
-export const getScenes = async (): Promise<PTX.Scene[]> =>
-  new Array(10).fill(0).map((_, index) => ({
-    id: `scene${index}`,
-    city: '台北',
-    name: `台北${101 + index}`,
-    image: '/static/mock/scene.png',
-    address: '',
-    contactNumber: '',
-    description: '',
-    openingHours: '',
-  }));
+import JsSHA1 from 'jssha/dist/sha1';
+
+const getAuthorizationHeader = () => {
+  const AppID = process.env.PTX_APP_ID;
+  const AppKey = process.env.PTX_APP_KEY;
+
+  const GMTString = new Date().toUTCString();
+  const ShaObj = new JsSHA1('SHA-1', 'TEXT');
+  ShaObj.setHMACKey(AppKey, 'TEXT');
+  ShaObj.update(`x-date: ${GMTString}`);
+  const HMAC = ShaObj.getHMAC('B64');
+
+  return {
+    'Content-Type': 'application/json',
+    Authorization: `hmac username="${AppID}", algorithm="hmac-sha1", headers="x-date", signature="${HMAC}"`,
+    'X-Date': GMTString,
+    'Accept-Encoding': 'gzip, deflate',
+  };
+};
+
+const apiGet = async <T>(
+  url: string,
+  params?: Partial<PTX.ApiParam>,
+): Promise<T> => {
+  const response = await fetch(
+    `${process.env.PTX_BASE_URL}/${url}?${new URLSearchParams({
+      $format: 'JSON',
+      ...params,
+    }).toString()}`,
+    {
+      headers: getAuthorizationHeader(),
+    },
+  );
+
+  if (response.ok && response.status < 400) {
+    return response.json();
+  }
+  console.error(response.url);
+  console.error(response.headers);
+
+  throw new Error(response.statusText);
+};
 
 export const getRestaurants = async (): Promise<PTX.Restaurant[]> =>
   new Array(10).fill(0).map((_, index) => ({
