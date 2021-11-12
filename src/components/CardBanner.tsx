@@ -1,6 +1,14 @@
 import React from 'react';
 
-import { Box, Flex, FlexProps, HStack, Icon, Text } from '@chakra-ui/react';
+import {
+  Circle,
+  Flex,
+  FlexProps,
+  HStack,
+  Icon,
+  Text,
+  useToken,
+} from '@chakra-ui/react';
 import { AiFillStar, AiOutlineEye } from 'react-icons/ai';
 import { BsBookmarkPlus, BsBookmarkPlusFill } from 'react-icons/bs';
 
@@ -10,30 +18,43 @@ interface CardBannerProps extends FlexProps {
   saved?: boolean;
 }
 
-const CardBanner = ({ rate, view, saved, ...props }: CardBannerProps) => (
-  <Flex m="4" justify="space-between" color="blackAlpha.400" {...props}>
-    <HStack
-      fontWeight="bold"
-      bg="white"
-      px="4"
-      py="2"
-      rounded="full"
-      shadow="lg"
+const CardBanner = ({ rate, view, saved, ...props }: CardBannerProps) => {
+  const size = useToken('boxSize', ['16px', '16px', '24px']);
+
+  return (
+    <Flex
+      m={[3, 3, 4]}
+      justify="space-between"
+      color="blackAlpha.400"
+      {...props}
     >
-      <Icon as={AiFillStar} color="yellow.300" boxSize="24px" />
-      <Text as="span">{rate}</Text>
-      <Icon as={AiOutlineEye} color="blackAlpha.500" boxSize="24px" />
-      <Text as="span">{view}</Text>
-    </HStack>
-    <Box as="span" rounded="full" p="2" bgColor="white">
-      <Icon
-        w="24px"
-        h="24px"
-        as={saved ? BsBookmarkPlusFill : BsBookmarkPlus}
-        color={saved ? 'red.600' : 'blackAlpha.600'}
-      />
-    </Box>
-  </Flex>
-);
+      <HStack
+        fontWeight="bold"
+        bg="white"
+        px={[2, 2, 4]}
+        py={[1, 1, 2]}
+        spacing={[1, 1, 2]}
+        rounded="full"
+        shadow="dark-lg"
+      >
+        <Icon as={AiFillStar} color="yellow.300" boxSize={size} />
+        <Text as="span" color="blackAlpha.600">
+          {rate}
+        </Text>
+        <Icon as={AiOutlineEye} color="blackAlpha.500" boxSize={size} />
+        <Text as="span" color="blackAlpha.600">
+          {view}
+        </Text>
+      </HStack>
+      <Circle as="span" rounded="full" size={[8, 8, 12]} bgColor="white">
+        <Icon
+          boxSize={size}
+          as={saved ? BsBookmarkPlusFill : BsBookmarkPlus}
+          color={saved ? 'red.600' : 'blackAlpha.600'}
+        />
+      </Circle>
+    </Flex>
+  );
+};
 
 export default CardBanner;

@@ -10,10 +10,10 @@ import {
   Text,
 } from '@chakra-ui/react';
 import Image from 'next/image';
-import NextLink from 'next/link';
 import { FiMapPin } from 'react-icons/fi';
 
 import CardBanner from './CardBanner';
+import RouteLink from './RouteLink';
 
 interface SceneCardProps extends LinkBoxProps {
   id: string;
@@ -46,7 +46,7 @@ const SceneCard = ({ id, name, city, image }: SceneCardProps) => (
       <Box flexGrow={1} />
       <Flex
         display="flex"
-        bgColor="blackAlpha.700"
+        bgColor="blackAlpha.500"
         p="4"
         color="white"
         justify="space-between"
@@ -54,11 +54,11 @@ const SceneCard = ({ id, name, city, image }: SceneCardProps) => (
         roundedBottom="3xl"
         zIndex="docked"
       >
-        <NextLink href={`/scenes/${id}`} passHref>
-          <LinkOverlay>
-            <Text variant="headline-3">{name}</Text>
-          </LinkOverlay>
-        </NextLink>
+        <Text variant="headline-3">
+          <RouteLink as={LinkOverlay} href={`/scenes/${city}/${id}`}>
+            {name}
+          </RouteLink>
+        </Text>
         <Flex align="center">
           <Icon as={FiMapPin} boxSize="24px" mr="1" />
           <Text as="span">{city}</Text>

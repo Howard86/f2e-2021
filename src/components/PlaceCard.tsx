@@ -29,6 +29,7 @@ const PlaceCard = ({
     rounded="2xl"
     border="1px"
     borderColor="blackAlpha.600"
+    overflow="hidden"
   >
     {/* TODO: add rate & view */}
     <CardBanner
@@ -41,26 +42,30 @@ const PlaceCard = ({
       right="0"
       zIndex="docked"
     />
-    <Image src={image} width={400} height={300} />
-    <Flex flexDir="column" m="2">
-      <Flex justify="space-between">
-        <Text variant="headline-2" noOfLines={1}>
+    <Image
+      src={image}
+      objectFit="cover"
+      objectPosition="cover"
+      width={400}
+      height={300}
+    />
+    <Flex flexDir="column" m="4" lineHeight="6">
+      <Flex
+        flexDir={['row', 'column', 'row']}
+        justify="space-between"
+        fontWeight="bold"
+      >
+        <Text as="h3" fontSize="2xl" color="blackAlpha.800" noOfLines={1}>
           {name}
         </Text>
-        <Flex alignItems="center">
-          <Icon as={FiMapPin} boxSize="24px" mr="1" />
+        <Flex align="center" pt="2" pb="4">
+          <Icon as={FiMapPin} boxSize={6} mr="1" />
           <Text as="span">{city}</Text>
         </Flex>
       </Flex>
-      <Text fontWeight="bold" color="text.body">
-        {address}
-      </Text>
-      <Text variant="body" color="text.body">
-        營業時間：{openingHours}
-      </Text>
-      <Text variant="body" color="text.body">
-        電話：{contactNumber}
-      </Text>
+      <Text fontWeight="bold">{address}</Text>
+      <Text variant="body">營業時間：{openingHours}</Text>
+      <Text variant="body">電話：{contactNumber}</Text>
     </Flex>
   </Flex>
 );

@@ -27,20 +27,22 @@ const Banner = ({
   return (
     <Flex
       bg={mainColor}
-      px="12"
+      px={[4, 8, 12]}
       py="2"
       my="10"
       justify="space-between"
       align="center"
       {...props}
     >
-      <Text variant="headline-2" color="white">
+      <Text as="h2" variant="headline-2" color="white">
         {title}
       </Text>
       {!hideButton && (
         <Button
           variant="outline"
           color="white"
+          borderWidth="3px"
+          rounded="xl"
           onClick={onClick}
           _hover={{ bg: 'white', color: mainColor }}
         >

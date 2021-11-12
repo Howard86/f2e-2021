@@ -80,7 +80,7 @@ const HomePage = ({ weathers, scenes, restaurants, hotels }: HomePageProps) => (
         mainColor={PAGE_PROPS.mainColor}
         href="/scenes"
       />
-      <SimpleGrid columns={[1, 2, 3]} spacingX={8} spacingY={12} mx="8">
+      <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
         {scenes.map((scene) => (
           <SceneCard
             key={scene.id}
@@ -97,7 +97,7 @@ const HomePage = ({ weathers, scenes, restaurants, hotels }: HomePageProps) => (
         href="/restaurants"
       />
 
-      <SimpleGrid columns={[1, 2, 3]} spacingX={8} spacingY={12} mx="8">
+      <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
         {restaurants.map((restaurant) => (
           <PlaceCard
             key={restaurant.id}
@@ -113,7 +113,7 @@ const HomePage = ({ weathers, scenes, restaurants, hotels }: HomePageProps) => (
       </SimpleGrid>
       <Banner title="住宿推薦" mainColor="hotels.main" href="/hotels" />
 
-      <SimpleGrid columns={[1, 2, 3]} spacingX={8} spacingY={12} mx="8">
+      <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
         {hotels.map((hotel) => (
           <PlaceCard
             key={hotel.id}
