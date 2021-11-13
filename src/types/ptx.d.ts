@@ -271,6 +271,15 @@ declare namespace PTX {
     EndTime: string;
   }
 
+  interface ActivityRemark {
+    ID: string;
+    Name: string;
+    Description: string;
+    City: string;
+    Address: string;
+    Picture: Picture;
+  }
+
   interface Picture {
     PictureUrl1?: string;
     PictureDescription1?: string;
