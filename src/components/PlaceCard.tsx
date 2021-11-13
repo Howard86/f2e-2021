@@ -45,9 +45,10 @@ const PlaceCard = ({
     />
     <Image
       src={image}
+      fallbackSrc="/static/fallback.jpg"
       objectFit="cover"
       objectPosition="cover"
-      width={400}
+      w="full"
       height={300}
     />
     <Flex flexDir="column" m="4" lineHeight="6">

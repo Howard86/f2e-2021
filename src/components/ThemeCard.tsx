@@ -31,7 +31,7 @@ const ThemeCard = ({ id, theme, image, href, ...props }: ThemeCardProps) => (
       alt={theme}
       objectFit="cover"
       objectPosition="center"
-      fallbackSrc="/static/mock/theme.png"
+      fallbackSrc="/static/fallback.jpg"
       src={image}
       w="full"
       h="full"

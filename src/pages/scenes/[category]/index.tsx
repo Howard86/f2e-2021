@@ -162,7 +162,7 @@ const CategoryPage = ({
                 src={scenes[0].Picture.PictureUrl1}
                 align="center"
                 fit="cover"
-                fallbackSrc="/static/mock/scene.png"
+                fallbackSrc="/static/fallback.jpg"
                 width={[600, 900]}
                 height={[400, 600]}
               />

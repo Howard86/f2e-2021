@@ -20,7 +20,13 @@ interface SiteCardProps extends LinkBoxProps {
 
 const SiteCard = ({ title, href, image, ...props }: SiteCardProps) => (
   <LinkBox pos="relative" {...props}>
-    <Image alt={title} src={image} objectFit="cover" objectPosition="center" />
+    <Image
+      alt={title}
+      src={image}
+      placeholder="blur"
+      objectFit="cover"
+      objectPosition="center"
+    />
     <Flex
       flexDir="column"
       zIndex="docked"

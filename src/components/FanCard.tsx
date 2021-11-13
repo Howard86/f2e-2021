@@ -85,7 +85,7 @@ const FanCard = ({
           src={image}
           w="full"
           h={[300, 200]}
-          fallbackSrc="/static/mock/scene.png"
+          fallbackSrc="/static/fallback.jpg"
           objectFit="cover"
           objectPosition="center"
         />

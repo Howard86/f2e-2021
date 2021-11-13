@@ -34,7 +34,7 @@ const SceneCard = ({ id, name, city, image }: SceneCardProps) => (
     <Image
       objectFit="cover"
       objectPosition="center"
-      fallbackSrc="/static/mock/scene.png"
+      fallbackSrc="/static/fallback.jpg"
       src={image}
       w="full"
       h="full"
