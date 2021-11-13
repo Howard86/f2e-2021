@@ -11,18 +11,17 @@ import {
   Heading,
   Icon,
   IconButton,
+  Image,
   Input,
   InputGroup,
   InputRightElement,
   SimpleGrid,
-  Text,
 } from '@chakra-ui/react';
 import {
   GetStaticPathsResult,
   GetStaticPropsContext,
   GetStaticPropsResult,
 } from 'next';
-import Image from 'next/image';
 import { useRouter } from 'next/router';
 import type { ParsedUrlQuery } from 'querystring';
 import { BiChevronRight } from 'react-icons/bi';
@@ -36,22 +35,31 @@ import Layout from '@/components/layout/Layout';
 import Pagination from '@/components/Pagination';
 import RouteLink from '@/components/RouteLink';
 import SceneCard from '@/components/SceneCard';
-import { getCity, getScenes } from '@/services/ptx';
+import { CITIES, THEMES } from '@/constants/category';
+import {
+  getSceneCardsByCity,
+  getSceneCardsByThemeClass,
+  getScenesWithRemarksByCity,
+  getScenesWithRemarksByThemeClass,
+} from '@/services/ptx';
 import background from '@/static/background/scenes.png';
 import wordOne from '@/static/background/scenes-1.png';
 import wordTwo from '@/static/background/scenes-2.png';
-import mockCard from '@/static/mock/card.png';
-import mockScene from '@/static/mock/scene.png';
 
-interface CitiesPageProps {
-  city: PTX.City;
-  scenes: PTX.Scene[];
+interface CategoryPageProps {
+  category: PTX.SceneCity | PTX.SceneClass;
+  scenes: PTX.SceneCard[];
+  remarks: PTX.SceneRemark[];
 }
 
 const DEFAULT_CARD_NUMBER = 6;
 const PAGE_PROPS = { mainColor: 'scenes.main', gradientColor: 'scenes.light' };
 
-const CitiesPage = ({ city, scenes }: CitiesPageProps): JSX.Element => {
+const CategoryPage = ({
+  category,
+  scenes,
+  remarks,
+}: CategoryPageProps): JSX.Element => {
   const [page, setPage] = useState(0);
   const router = useRouter();
   const onSearch = () => {};
@@ -102,26 +110,34 @@ const CitiesPage = ({ city, scenes }: CitiesPageProps): JSX.Element => {
               景點
             </RouteLink>
           </BreadcrumbItem>
-          <BreadcrumbItem>
+          {/* TODO: add custom utils */}
+          {/* <BreadcrumbItem>
             <RouteLink href="#" as={BreadcrumbLink}>
               北部地區
             </RouteLink>
-          </BreadcrumbItem>
+          </BreadcrumbItem> */}
           <BreadcrumbItem fontWeight="bold" isCurrentPage>
-            <RouteLink href={`/scenes/${city.id}`} as={BreadcrumbLink}>
-              {city.name}
+            <RouteLink href={`/scenes/${category}`} as={BreadcrumbLink}>
+              {category}
             </RouteLink>
           </BreadcrumbItem>
         </Breadcrumb>
         <Flex flexDir={{ base: 'column', lg: 'row' }} mx="8">
           <Box flexGrow={3} flexShrink={1}>
-            <Image alt={city.name} src={city.image} width={900} height={600} />
+            <Image
+              alt={category}
+              src={scenes[0].Picture.PictureUrl1}
+              fallbackSrc="/static/mock/scene.png"
+              width={900}
+              height={600}
+            />
           </Box>
           <Box m="8" flexGrow={1} flexShrink={5}>
             <Heading textAlign="center" mb="4">
-              {city.name}
+              {category}
             </Heading>
-            <Text>{city.description}</Text>
+            {/* TODO: add custom utils */}
+            {/* <Text>{category.description}</Text> */}
           </Box>
         </Flex>
         <Banner
@@ -138,11 +154,11 @@ const CitiesPage = ({ city, scenes }: CitiesPageProps): JSX.Element => {
             )
             .map((scene) => (
               <SceneCard
-                key={scene.id}
-                id={scene.id}
-                name={scene.name}
-                city={scene.city}
-                image={scene.image || mockCard}
+                key={scene.ID}
+                id={scene.ID}
+                name={scene.Name}
+                city={scene.City}
+                image={scene.Picture.PictureUrl1}
               />
             ))}
         </SimpleGrid>
@@ -161,31 +177,24 @@ const CitiesPage = ({ city, scenes }: CitiesPageProps): JSX.Element => {
           hideButton
         />
         <SimpleGrid columns={[1, 2, 3]} spacingX={8} spacingY={12} mx="8">
-          <FanCard
-            name="台北101攻略"
-            description="除了台北101台北到底還有那些夜景？讓KKday告訴你台北還有哪些易達又美麗的夜景景點吧!"
-            image={mockScene}
-          />
-          <FanCard
-            name="台北101攻略"
-            description="除了台北101台北到底還有那些夜景？讓KKday告訴你台北還有哪些易達又美麗的夜景景點吧!"
-            image={mockScene}
-            liked
-          />
-          <FanCard
-            name="台北101攻略"
-            description="除了台北101台北到底還有那些夜景？讓KKday告訴你台北還有哪些易達又美麗的夜景景點吧!"
-            image={mockScene}
-            saved
-          />
+          {remarks.map((remark) => (
+            <FanCard
+              id={remark.ID}
+              key={remark.ID}
+              name={remark.Name}
+              city={remark.City}
+              description={remark.Remarks}
+              image={remark.Picture.PictureUrl1}
+            />
+          ))}
         </SimpleGrid>
       </Flex>
     </>
   );
 };
 
-CitiesPage.Layout = Layout;
-CitiesPage.layoutProps = PAGE_PROPS;
+CategoryPage.Layout = Layout;
+CategoryPage.layoutProps = PAGE_PROPS;
 
 interface CityPath extends ParsedUrlQuery {
   city: string;
@@ -193,31 +202,47 @@ interface CityPath extends ParsedUrlQuery {
 
 export const getStaticPaths = (): GetStaticPathsResult<CityPath> => ({
   fallback: true,
-  // TODO: add list of cities
   paths: [],
 });
 
 export const getStaticProps = async (
   context: GetStaticPropsContext,
-): Promise<GetStaticPropsResult<CitiesPageProps>> => {
-  if (typeof context.params.city !== 'string') {
+): Promise<GetStaticPropsResult<CategoryPageProps>> => {
+  if (typeof context.params.category !== 'string') {
     return { notFound: true };
   }
 
-  const city = await getCity(context.params.city);
+  try {
+    if (CITIES.includes(context.params.category as PTX.SceneCity)) {
+      const category = context.params.category as PTX.SceneCity;
+      const scenes = await getSceneCardsByCity(category, 30);
+      const remarks = await getScenesWithRemarksByCity(category, 6);
 
-  if (!city) {
-    return { notFound: true };
+      return {
+        props: { scenes, category, remarks },
+      };
+    }
+
+    if (THEMES.includes(context.params.category as PTX.SceneClass)) {
+      const category = context.params.category as PTX.SceneClass;
+      const scenes = await getSceneCardsByThemeClass(category, 30);
+      const remarks = await getScenesWithRemarksByThemeClass(category, 6);
+
+      return {
+        props: { scenes, category, remarks },
+      };
+    }
+
+    console.error('Incoming unmatched param', context.params.category);
+    return {
+      notFound: true,
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      notFound: true,
+    };
   }
-
-  const scenes = await getScenes();
-
-  return {
-    props: {
-      city,
-      scenes,
-    },
-  };
 };
 
-export default CitiesPage;
+export default CategoryPage;

@@ -29,6 +29,7 @@ declare namespace PTX {
 
   interface SceneTheme {
     ID: string;
+    City: string;
     Class: SceneClass;
     Picture: {
       PictureUrl1: string;
@@ -37,6 +38,7 @@ declare namespace PTX {
 
   interface RawSceneTheme {
     ID: string;
+    City: string;
     Class1?: SceneClass;
     Class2?: SceneClass;
     Class3?: SceneClass;
@@ -48,6 +50,7 @@ declare namespace PTX {
   interface Scene {
     ID: string;
     Name: string;
+    City?: string;
     DescriptionDetail: string;
     Description?: string;
     Phone: string;
@@ -92,6 +95,30 @@ declare namespace PTX {
     | '遊憩類'
     | '都會公園類'
     | '體育健身類';
+
+  type SceneCity =
+    | '臺北市'
+    | '新北市'
+    | '桃園市'
+    | '臺中市'
+    | '臺南市'
+    | '高雄市'
+    | '基隆市'
+    | '新竹市'
+    | '新竹縣'
+    | '苗栗縣'
+    | '彰化縣'
+    | '南投縣'
+    | '雲林縣'
+    | '嘉義縣'
+    | '嘉義市'
+    | '屏東縣'
+    | '宜蘭縣'
+    | '花蓮縣'
+    | '臺東縣'
+    | '金門縣'
+    | '澎湖縣'
+    | '連江縣';
 
   interface Picture {
     PictureUrl1?: string;

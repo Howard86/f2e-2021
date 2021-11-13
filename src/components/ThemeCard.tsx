@@ -54,7 +54,7 @@ const ThemeCard = ({ id, theme, image, ...props }: ThemeCardProps) => (
           color="white"
           fontSize={['xl', '2xl']}
         >
-          <RouteLink as={LinkOverlay} href={`/scenes/${theme}/${id}`}>
+          <RouteLink as={LinkOverlay} href={`/scenes/${theme}`}>
             {theme}
           </RouteLink>
         </Text>

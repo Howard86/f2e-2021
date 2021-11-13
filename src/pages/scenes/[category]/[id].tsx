@@ -9,6 +9,7 @@ import {
   Heading,
   Icon,
   IconButton,
+  Image,
   SimpleGrid,
   Tag,
   Text,
@@ -18,7 +19,6 @@ import {
   GetStaticPropsContext,
   GetStaticPropsResult,
 } from 'next';
-import Image from 'next/image';
 import { useRouter } from 'next/router';
 import type { ParsedUrlQuery } from 'querystring';
 import { BiChevronRight } from 'react-icons/bi';
@@ -28,16 +28,17 @@ import Banner from '@/components/Banner';
 import FanCard from '@/components/FanCard';
 import Layout from '@/components/layout/Layout';
 import RouteLink from '@/components/RouteLink';
-import { getSceneById } from '@/services/ptx';
-import mockScene from '@/static/mock/scene.png';
+import { CITIES } from '@/constants/category';
+import { getSceneById, getScenesWithRemarksByCity } from '@/services/ptx';
 
 interface ScenePageProps {
   scene: PTX.Scene;
+  remarks: PTX.SceneRemark[];
 }
 
 const PAGE_PROPS = { mainColor: 'scenes.main', gradientColor: 'scenes.light' };
 
-const ScenePage = ({ scene }: ScenePageProps): JSX.Element => {
+const ScenePage = ({ scene, remarks }: ScenePageProps): JSX.Element => {
   const router = useRouter();
 
   // TODO: add saved info
@@ -71,16 +72,16 @@ const ScenePage = ({ scene }: ScenePageProps): JSX.Element => {
             </RouteLink>
           </BreadcrumbItem>
           <BreadcrumbItem>
-            <RouteLink href={`/scenes/${scene.city}`} as={BreadcrumbLink}>
-              {scene.city}
+            <RouteLink href={`/scenes/${scene.City}`} as={BreadcrumbLink}>
+              {scene.City}
             </RouteLink>
           </BreadcrumbItem>
           <BreadcrumbItem fontWeight="bold" isCurrentPage>
             <RouteLink
-              href={`/scenes/${scene.city}/${scene.id}`}
+              href={`/scenes/${scene.City}/${scene.ID}`}
               as={BreadcrumbLink}
             >
-              {scene.name}
+              {scene.Name}
             </RouteLink>
           </BreadcrumbItem>
         </Breadcrumb>
@@ -94,18 +95,33 @@ const ScenePage = ({ scene }: ScenePageProps): JSX.Element => {
               icon={saved ? <BsBookmarkPlusFill /> : <BsBookmarkPlus />}
               color={saved ? 'red.600' : 'blackAlpha.600'}
             />
+            {/* TODO: add fallback */}
             <Image
-              alt={scene.name}
-              src={scene.image}
+              alt={scene.Picture?.PictureDescription1 || scene.Name}
+              src={scene.Picture?.PictureUrl1}
+              fallbackSrc="/static/mock/scene.png"
               width={900}
               height={600}
             />
           </Box>
-          <Box m="8" flexGrow={1} flexShrink={5}>
+          <Box
+            m="8"
+            flexGrow={1}
+            flexShrink={5}
+            lineHeight="7"
+            sx={{ p: { my: 2 } }}
+          >
             <Heading textAlign="center" mb="4">
-              {scene.name}
+              {scene.Name}
             </Heading>
-            <Text>{scene.description}</Text>
+            {scene.Description && <Text>{scene.Description}</Text>}
+            {scene.DescriptionDetail &&
+              scene.Description !== scene.DescriptionDetail && (
+                <Text>{scene.DescriptionDetail}</Text>
+              )}
+            {scene.TravelInfo && <Text>{scene.TravelInfo}</Text>}
+            {scene.TicketInfo && <Text>{scene.TicketInfo}</Text>}
+            {scene.Remarks && <Text>{scene.Remarks}</Text>}
           </Box>
         </Flex>
       </Flex>
@@ -114,13 +130,13 @@ const ScenePage = ({ scene }: ScenePageProps): JSX.Element => {
           <Box textAlign="start">
             <Heading>景點資訊</Heading>
             <Text my="4">
-              <Tag>地址</Tag> {scene.address}
+              <Tag>地址</Tag> {scene.Address}
             </Text>
             <Text my="4">
-              <Tag>電話</Tag> {scene.contactNumber}
+              <Tag>電話</Tag> {scene.Phone}
             </Text>
             <Text my="4">
-              <Tag>開放時間</Tag> {scene.openingHours}
+              <Tag>開放時間</Tag> {scene.OpenTime}
             </Text>
           </Box>
         </Flex>
@@ -131,23 +147,16 @@ const ScenePage = ({ scene }: ScenePageProps): JSX.Element => {
           hideButton
         />
         <SimpleGrid columns={[1, 2, 3]} spacingX={8} spacingY={12} mx="8">
-          <FanCard
-            name="台北101攻略"
-            description="除了台北101台北到底還有那些夜景？讓KKday告訴你台北還有哪些易達又美麗的夜景景點吧!"
-            image={mockScene}
-          />
-          <FanCard
-            name="台北101攻略"
-            description="除了台北101台北到底還有那些夜景？讓KKday告訴你台北還有哪些易達又美麗的夜景景點吧!"
-            image={mockScene}
-            liked
-          />
-          <FanCard
-            name="台北101攻略"
-            description="除了台北101台北到底還有那些夜景？讓KKday告訴你台北還有哪些易達又美麗的夜景景點吧!"
-            image={mockScene}
-            saved
-          />
+          {remarks.map((remark) => (
+            <FanCard
+              id={remark.ID}
+              key={remark.ID}
+              name={remark.Name}
+              city={remark.City}
+              description={remark.Remarks}
+              image={remark.Picture.PictureUrl1}
+            />
+          ))}
         </SimpleGrid>
       </Flex>
     </>
@@ -169,21 +178,36 @@ export const getStaticPaths = (): GetStaticPathsResult<CityPath> => ({
 export const getStaticProps = async (
   context: GetStaticPropsContext,
 ): Promise<GetStaticPropsResult<ScenePageProps>> => {
-  if (typeof context.params.id !== 'string') {
+  if (
+    typeof context.params.id !== 'string' ||
+    typeof context.params.category !== 'string'
+  ) {
     return { notFound: true };
   }
 
-  const scene = await getSceneById(context.params.id);
-
-  if (!(scene?.city === context.params.city)) {
+  if (!CITIES.includes(context.params.category as PTX.SceneCity)) {
     return { notFound: true };
   }
 
-  return {
-    props: {
-      scene,
-    },
-  };
+  try {
+    const scene = await getSceneById(context.params.id);
+
+    if (!scene) {
+      return { notFound: true };
+    }
+
+    const city = context.params.category as PTX.SceneCity;
+
+    const remarks = await getScenesWithRemarksByCity(city, 6);
+
+    return {
+      props: { scene, remarks },
+    };
+  } catch (error) {
+    console.error(error);
+
+    return { notFound: true };
+  }
 };
 
 export default ScenePage;
