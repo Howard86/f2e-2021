@@ -11,6 +11,7 @@ import PlaceCard from '@/components/PlaceCard';
 import SceneCard from '@/components/SceneCard';
 import SiteCardGrid from '@/components/SiteCardGrid';
 import WeatherCarousel from '@/components/WeatherCarousel';
+import { CityMap } from '@/constants/category';
 import {
   getHotelCards,
   getRestaurantCards,
@@ -110,6 +111,9 @@ const HomePage = ({ weathers, scenes, restaurants, hotels }: HomePageProps) => (
             address={restaurant.Address}
             contactNumber={restaurant.Phone}
             openingHours={restaurant.OpenTime}
+            href={`/cities/${CityMap[restaurant.City]}/restaurant/${
+              restaurant.ID
+            }`}
           />
         ))}
       </SimpleGrid>
@@ -126,6 +130,7 @@ const HomePage = ({ weathers, scenes, restaurants, hotels }: HomePageProps) => (
             address={hotel.Address}
             contactNumber={hotel.Phone}
             serviceInfo={hotel.ServiceInfo}
+            href={`/cities/${CityMap[hotel.City]}/hotel/${hotel.ID}`}
           />
         ))}
       </SimpleGrid>

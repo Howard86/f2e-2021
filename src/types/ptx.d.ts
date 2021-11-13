@@ -176,7 +176,7 @@ declare namespace PTX {
   interface RestaurantCard {
     ID: string;
     Name: string;
-    City?: string;
+    City: string;
     Address: string;
     OpenTime?: string;
     Phone?: string;
@@ -218,7 +218,7 @@ declare namespace PTX {
   interface HotelCard {
     ID: string;
     Name: string;
-    City?: string;
+    City: string;
     Address: string;
     ServiceInfo?: string;
     Phone?: string;

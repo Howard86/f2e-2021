@@ -26,6 +26,7 @@ import Layout from '@/components/layout/Layout';
 import LoadingScreen from '@/components/LoadingScreen';
 import Pagination from '@/components/Pagination';
 import PlaceCard from '@/components/PlaceCard';
+import { CityMap } from '@/constants/category';
 import useAppToast from '@/hooks/use-app-toast';
 import { useLazyGetHotelCardsQuery } from '@/services/local';
 import { getHotelCards } from '@/services/ptx';
@@ -196,16 +197,17 @@ const HotelsPage = ({ hotels }: HotelsPageProps): JSX.Element => {
             {isLoading && <LoadingScreen mainColor={PAGE_PROPS.mainColor} />}
             {data?.success && (
               <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
-                {data.data.map((restaurant) => (
+                {data.data.map((hotel) => (
                   <PlaceCard
-                    key={restaurant.ID}
-                    id={restaurant.ID}
-                    name={restaurant.Name}
-                    city={restaurant.City}
-                    image={restaurant.Picture.PictureUrl1}
-                    address={restaurant.Address}
-                    contactNumber={restaurant.Phone}
-                    serviceInfo={restaurant.ServiceInfo}
+                    key={hotel.ID}
+                    id={hotel.ID}
+                    name={hotel.Name}
+                    city={hotel.City}
+                    image={hotel.Picture.PictureUrl1}
+                    address={hotel.Address}
+                    contactNumber={hotel.Phone}
+                    serviceInfo={hotel.ServiceInfo}
+                    href={`/cities/${CityMap[hotel.City]}/hotel/${hotel.ID}`}
                   />
                 ))}
               </SimpleGrid>
@@ -234,6 +236,7 @@ const HotelsPage = ({ hotels }: HotelsPageProps): JSX.Element => {
                 address={hotel.Address}
                 contactNumber={hotel.Phone}
                 serviceInfo={hotel.ServiceInfo}
+                href={`/cities/${CityMap[hotel.City]}/hotel/${hotel.ID}`}
               />
             ))}
         </SimpleGrid>

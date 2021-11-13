@@ -15,13 +15,14 @@ import { GetStaticPropsContext, GetStaticPropsResult } from 'next';
 import { FiSearch } from 'react-icons/fi';
 
 import Background from '@/components/Background';
+import BackgroundCard from '@/components/BackgroundCard';
 import Banner from '@/components/Banner';
 import FanCard from '@/components/FanCard';
 import Layout from '@/components/layout/Layout';
 import LoadingScreen from '@/components/LoadingScreen';
 import Pagination from '@/components/Pagination';
 import PlaceCard from '@/components/PlaceCard';
-import BackgroundCard from '@/components/ResturantCard';
+import { CityMap } from '@/constants/category';
 import useAppToast from '@/hooks/use-app-toast';
 import { useLazyGetRestaurantCardsQuery } from '@/services/local';
 import { getRestaurantCards, getRestaurantWithRemarks } from '@/services/ptx';
@@ -145,6 +146,9 @@ const RestaurantsPage = ({
                     address={restaurant.Address}
                     contactNumber={restaurant.Phone}
                     openingHours={restaurant.OpenTime}
+                    href={`/cities/${CityMap[restaurant.City]}/restaurant/${
+                      restaurant.ID
+                    }`}
                   />
                 ))}
               </SimpleGrid>
@@ -173,6 +177,7 @@ const RestaurantsPage = ({
                 address={restaurant.Address}
                 contactNumber={restaurant.Phone}
                 openingHours={restaurant.OpenTime}
+                href={`/cities/${restaurant.City}/restaurant/${restaurant.ID}`}
               />
             ))}
         </SimpleGrid>
@@ -194,13 +199,13 @@ const RestaurantsPage = ({
         <SimpleGrid columns={[1, 2, 3]} spacingX={8} spacingY={12} mx="8">
           {remarks.map((remark) => (
             <FanCard
-              hideLink
               id={remark.ID}
               key={remark.ID}
               name={remark.Name}
               city={remark.City}
               description={remark.Description}
               image={remark.Picture.PictureUrl1}
+              href={`/cities/${CityMap[remark.City]}/restaurant/${remark.ID}`}
             />
           ))}
         </SimpleGrid>

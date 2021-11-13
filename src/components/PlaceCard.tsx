@@ -1,28 +1,39 @@
 import React from 'react';
 
-import { Flex, FlexProps, Icon, Image, Text } from '@chakra-ui/react';
+import {
+  Flex,
+  FlexProps,
+  Icon,
+  Image,
+  LinkBox,
+  LinkOverlay,
+  Text,
+} from '@chakra-ui/react';
 import { FiMapPin } from 'react-icons/fi';
 
 import CardBanner from './CardBanner';
+import RouteLink from './RouteLink';
 
 interface PlaceCardProps extends FlexProps {
   name: string;
-  city?: string;
+  city: string;
   address: string;
   openingHours?: string;
   contactNumber?: string;
   serviceInfo?: string;
   image: string;
+  href: string;
 }
 
 const PlaceCard = ({
   name,
-  city = '-',
+  city,
   address,
   openingHours,
   contactNumber,
   serviceInfo,
   image,
+  href,
 }: PlaceCardProps) => (
   <Flex
     pos="relative"
@@ -36,8 +47,8 @@ const PlaceCard = ({
     <CardBanner
       pos="absolute"
       top="0"
-      rate={4}
-      view={39}
+      rate={(name.length % 3) + 2}
+      view={address.length}
       saved
       left="0"
       right="0"
@@ -51,10 +62,12 @@ const PlaceCard = ({
       w="full"
       height={300}
     />
-    <Flex flexDir="column" m="4" lineHeight="6">
+    <LinkBox flexDir="column" m="4" lineHeight="6">
       <Flex justify="space-between" fontWeight="bold">
         <Text as="h3" fontSize={['lg', 'xl']} color="blackAlpha.800" my="2">
-          {name}
+          <RouteLink href={href} as={LinkOverlay}>
+            {name}
+          </RouteLink>
         </Text>
         <Flex flexShrink={0} align="center" pt="2" pb="4">
           <Icon as={FiMapPin} boxSize={6} mr="1" />
@@ -65,7 +78,7 @@ const PlaceCard = ({
       {contactNumber && <Text variant="body">電話：{contactNumber}</Text>}
       {openingHours && <Text variant="body">營業時間：{openingHours}</Text>}
       {serviceInfo && <Text variant="body">服務：{serviceInfo}</Text>}
-    </Flex>
+    </LinkBox>
   </Flex>
 );
 

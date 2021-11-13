@@ -159,6 +159,9 @@ const CategoryPage = ({
                 image={activity.Picture.PictureUrl1}
                 address={activity.Address}
                 contactNumber={activity.Phone}
+                href={`/cities/${CityMap[activity.City]}/activity/${
+                  activity.ID
+                }`}
                 openingHours={
                   activity.StartTime &&
                   activity.EndTime &&
@@ -201,6 +204,9 @@ const CategoryPage = ({
                 address={restaurant.Address}
                 contactNumber={restaurant.Phone}
                 openingHours={restaurant.OpenTime}
+                href={`/cities/${CityMap[restaurant.City]}/restaurant/${
+                  restaurant.ID
+                }`}
               />
             ))}
         </SimpleGrid>
@@ -234,6 +240,7 @@ const CategoryPage = ({
                 address={hotel.Address}
                 contactNumber={hotel.Phone}
                 serviceInfo={hotel.ServiceInfo}
+                href={`/cities/${CityMap[hotel.City]}/hotel/${hotel.ID}`}
               />
             ))}
         </SimpleGrid>

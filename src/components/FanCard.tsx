@@ -24,9 +24,7 @@ import {
 
 import RouteLink from './RouteLink';
 
-import { CityMap } from '@/constants/category';
-
-interface PlaceCardProps extends BoxProps {
+interface FanCardProps extends BoxProps {
   id: string;
   city: string;
   name: string;
@@ -34,7 +32,7 @@ interface PlaceCardProps extends BoxProps {
   image: string;
   liked?: boolean;
   saved?: boolean;
-  hideLink?: boolean;
+  href: string;
 }
 
 // TODO: this design is a bit against the structure, consider refactor all cards
@@ -46,9 +44,9 @@ const FanCard = ({
   image,
   liked,
   saved,
-  hideLink,
+  href,
   ...props
-}: PlaceCardProps) => {
+}: FanCardProps) => {
   const size = useToken('w', ['64px', '64px', '128px']);
 
   return (
@@ -97,29 +95,22 @@ const FanCard = ({
             fontWeight="bold"
             noOfLines={1}
           >
-            {hideLink ? (
-              name
-            ) : (
-              <RouteLink
-                as={LinkOverlay}
-                href={`/cities/${CityMap[city]}/scene/${id}`}
-              >
-                {name}
-              </RouteLink>
-            )}
+            <RouteLink as={LinkOverlay} href={href}>
+              {name}
+            </RouteLink>
           </Text>
           <Text noOfLines={[4, 3]}>{description}</Text>
           <Box flexGrow={1} />
           <Flex justify="flex-end" mt="8">
             <HStack color="blackAlpha.600">
               <Icon as={AiOutlineEye} boxSize="24px" />
-              <Text as="span">3萬</Text>
+              <Text as="span">{id.charAt(id.length - 1)}萬</Text>
               <Icon
                 as={liked ? BsHeartFill : BsHeart}
                 color={liked ? 'red.600' : 'inherit'}
                 boxSize="24px"
               />
-              <Text as="span">3千</Text>
+              <Text as="span">{id.charAt(id.length - 2)}千</Text>
             </HStack>
           </Flex>
         </LinkBox>

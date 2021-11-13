@@ -23,6 +23,7 @@ import Layout from '@/components/layout/Layout';
 import LoadingScreen from '@/components/LoadingScreen';
 import SceneCard from '@/components/SceneCard';
 import ThemeCard from '@/components/ThemeCard';
+import { CityMap } from '@/constants/category';
 import useAppToast from '@/hooks/use-app-toast';
 import { useLazyGetSceneCardsQuery } from '@/services/local';
 import {
@@ -184,6 +185,7 @@ const ScenesPage = ({
               city={remark.City}
               description={remark.Remarks}
               image={remark.Picture.PictureUrl1}
+              href={`/cities/${CityMap[remark.City]}/scene/${remark.ID}`}
             />
           ))}
         </SimpleGrid>

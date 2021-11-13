@@ -49,7 +49,7 @@ const SceneCard = ({ id, name, city, image }: SceneCardProps) => (
       bottom="0"
     >
       {/* TODO: add rate & view */}
-      <CardBanner rate={4.5} view={67} saved />
+      <CardBanner rate={(name.length % 3) + 2} view={name.length} saved />
       <Box flexGrow={1} />
       <Flex
         display="flex"
