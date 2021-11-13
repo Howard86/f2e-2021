@@ -13,35 +13,43 @@ import {
 } from '@/services/ptx';
 
 const router = new RouterBuilder();
-
-type Query = {
-  keyword: string;
-  city: PTX.SceneCity;
-  theme: PTX.SceneClass;
-};
-
-router.get((req: NextApiRequestWithQuery<Partial<Query>>) => {
-  if (!req.query.keyword) {
-    throw new BadRequestException('keyword not found');
-  }
-
-  if (req.query.city) {
-    if (!CITIES.includes(req.query.city)) {
-      throw new NotFoundException('city not found');
+router.get(
+  async (req: NextApiRequestWithQuery<Partial<Local.SearchScenesQuery>>) => {
+    if (!req.query.keyword) {
+      throw new BadRequestException('keyword not found');
     }
 
-    return searchScenesByKeywordAndCity(req.query.keyword, req.query.city);
-  }
+    let results: PTX.SceneCard[];
 
-  if (req.query.theme) {
-    if (!THEMES.includes(req.query.theme)) {
-      throw new NotFoundException('theme not found');
+    // TODO: refactor logic
+    if (req.query.city) {
+      if (!CITIES.includes(req.query.city)) {
+        throw new NotFoundException('city not found');
+      }
+
+      results = await searchScenesByKeywordAndCity(
+        req.query.keyword,
+        req.query.city,
+      );
+    } else if (req.query.theme) {
+      if (!THEMES.includes(req.query.theme)) {
+        throw new NotFoundException('theme not found');
+      }
+
+      results = await searchScenesByKeywordAndTheme(
+        req.query.keyword,
+        req.query.theme,
+      );
+    } else {
+      results = await searchScenesByKeyword(req.query.keyword);
     }
 
-    return searchScenesByKeywordAndTheme(req.query.keyword, req.query.theme);
-  }
+    if (results.length === 0) {
+      throw new NotFoundException('not results are found');
+    }
 
-  return searchScenesByKeyword(req.query.keyword);
-});
+    return results;
+  },
+);
 
 export default router.build();

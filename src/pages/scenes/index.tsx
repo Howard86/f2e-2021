@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 
 import {
   Button,
@@ -22,6 +22,8 @@ import FanCard from '@/components/FanCard';
 import Layout from '@/components/layout/Layout';
 import SceneCard from '@/components/SceneCard';
 import ThemeCard from '@/components/ThemeCard';
+import useAppToast from '@/hooks/use-app-toast';
+import { useLazyGetSceneCardsQuery } from '@/services/local';
 import {
   getSceneCards,
   getScenesWithRemarks,
@@ -46,10 +48,33 @@ const ScenesPage = ({
   remarks,
   themes,
 }: ScenesPageProps): JSX.Element => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const isCentered = useBreakpointValue({ base: false, md: true });
+  const toast = useAppToast();
+  const [fetch, { data, isUninitialized, isLoading, isError, isSuccess }] =
+    useLazyGetSceneCardsQuery();
 
-  const onSearch = () => {};
+  const isModalCentered = useBreakpointValue({ base: false, md: true });
+  const modal = useDisclosure();
+  const messageSentStatus = useDisclosure();
+  const [keyword, setKeyword] = useState('');
+
+  const onSearch = () => {
+    fetch({ keyword: keyword.trim() });
+    messageSentStatus.onOpen();
+  };
+
+  const handleOnType = (event: ChangeEvent<HTMLInputElement>) => {
+    setKeyword(event.target.value);
+  };
+
+  useEffect(() => {
+    if (isError && messageSentStatus.isOpen) {
+      toast({
+        description: `查無"${keyword.trim()}"的結果`,
+        status: 'warning',
+      });
+      messageSentStatus.onClose();
+    }
+  }, [isError, keyword, messageSentStatus, messageSentStatus.isOpen, toast]);
 
   return (
     <>
@@ -64,7 +89,12 @@ const ScenesPage = ({
       >
         <Flex flexDir={['column', 'row']} align="center" mt="4">
           <InputGroup size="lg">
-            <Input bg="white" placeholder="請輸入關鍵字" />
+            <Input
+              bg="white"
+              placeholder="請輸入關鍵字"
+              value={keyword}
+              onChange={handleOnType}
+            />
             <InputRightElement>
               <IconButton
                 variant="ghost"
@@ -77,7 +107,7 @@ const ScenesPage = ({
           </InputGroup>
           <Button
             variant="scenes"
-            onClick={onOpen}
+            onClick={modal.onOpen}
             flexShrink={0}
             leftIcon={<BsGrid3X3GapFill />}
             size="lg"
@@ -92,11 +122,37 @@ const ScenesPage = ({
         flexDir="column"
         bgGradient={`linear(to-b, ${PAGE_PROPS.gradientColor}, white)`}
       >
+        {!isUninitialized && !isError && (
+          <>
+            <Banner
+              title={`搜尋"${keyword}"的結果...`}
+              mainColor={PAGE_PROPS.mainColor}
+              href="/scenes"
+              mt="0"
+              hideButton
+            />
+            {isLoading && 'Loading...'}
+            {data?.success && (
+              <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
+                {data.data.map((scene) => (
+                  <SceneCard
+                    key={scene.ID}
+                    id={scene.ID}
+                    name={scene.Name}
+                    city={scene.City}
+                    image={scene.Picture.PictureUrl1}
+                  />
+                ))}
+              </SimpleGrid>
+            )}
+          </>
+        )}
         <Banner
           title="熱門景點"
           mainColor={PAGE_PROPS.mainColor}
           href="/scenes"
-          mt="0"
+          // TODO: fix with CSS selector
+          mt={isSuccess ? undefined : 0}
         />
         <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
           {scenes.map((scene) => (
@@ -146,9 +202,9 @@ const ScenesPage = ({
         </SimpleGrid>
       </Flex>
       <DynamicSceneModal
-        isOpen={isOpen}
-        onClose={onClose}
-        isCentered={isCentered}
+        isOpen={modal.isOpen}
+        onClose={modal.onClose}
+        isCentered={isModalCentered}
       />
     </>
   );
