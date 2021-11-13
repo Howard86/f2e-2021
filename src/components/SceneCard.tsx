@@ -61,7 +61,10 @@ const SceneCard = ({ id, name, city, image }: SceneCardProps) => (
         zIndex="docked"
       >
         <Text variant="headline-3">
-          <RouteLink as={LinkOverlay} href={`/scenes/${CityMap[city]}/${id}`}>
+          <RouteLink
+            as={LinkOverlay}
+            href={`/cities/${CityMap[city]}/scene/${id}`}
+          >
             {name}
           </RouteLink>
         </Text>

@@ -47,7 +47,7 @@ import Layout from '@/components/layout/Layout';
 import LoadingScreen from '@/components/LoadingScreen';
 import RouteLink from '@/components/RouteLink';
 import SceneDetailBox from '@/components/SceneDetailText';
-import { CITIES } from '@/constants/category';
+import { CITIES, CityMap, CitySlugMap } from '@/constants/category';
 import { getSceneById, getScenesWithRemarksByCity } from '@/services/ptx';
 
 interface ScenePageProps {
@@ -88,20 +88,17 @@ const ScenePage = ({ scene, remarks }: ScenePageProps): JSX.Element => {
               景點
             </RouteLink>
           </BreadcrumbItem>
-          {/* TODO: add custom utils */}
-          {/* <BreadcrumbItem>
-            <RouteLink href="#" as={BreadcrumbLink}>
-              北部地區
-            </RouteLink>
-          </BreadcrumbItem> */}
           <BreadcrumbItem>
-            <RouteLink href={`/scenes/${scene.City}`} as={BreadcrumbLink}>
+            <RouteLink
+              href={`/cities/${CityMap[scene.City]}`}
+              as={BreadcrumbLink}
+            >
               {scene.City}
             </RouteLink>
           </BreadcrumbItem>
           <BreadcrumbItem fontWeight="bold" isCurrentPage>
             <RouteLink
-              href={`/scenes/${scene.City}/${scene.ID}`}
+              href={`/cities/${CityMap[scene.City]}/scene/${scene.ID}`}
               as={BreadcrumbLink}
             >
               {scene.Name}
@@ -121,7 +118,6 @@ const ScenePage = ({ scene, remarks }: ScenePageProps): JSX.Element => {
               icon={saved ? <BsBookmarkPlusFill /> : <BsBookmarkPlus />}
               color={saved ? 'red.600' : 'blackAlpha.600'}
             />
-            {/* TODO: add fallback */}
             <Image
               alt={scene.Picture?.PictureDescription1 || scene.Name}
               src={scene.Picture?.PictureUrl1}
@@ -229,7 +225,6 @@ const ScenePage = ({ scene, remarks }: ScenePageProps): JSX.Element => {
           title="網紅這樣玩"
           mainColor={PAGE_PROPS.mainColor}
           href="/scenes"
-          hideButton
         />
         <SimpleGrid columns={[1, 2, 3]} spacingX={8} spacingY={12} mx="8">
           {remarks.map((remark) => (
@@ -265,12 +260,26 @@ export const getStaticProps = async (
 ): Promise<GetStaticPropsResult<ScenePageProps>> => {
   if (
     typeof context.params.id !== 'string' ||
-    typeof context.params.category !== 'string'
+    typeof context.params.city !== 'string'
   ) {
     return { notFound: true };
   }
 
-  if (!CITIES.includes(context.params.category as PTX.City)) {
+  const citySlug = context.params.city as PTX.CitySlug;
+  if (citySlug !== citySlug.toLowerCase()) {
+    return {
+      redirect: {
+        destination: `/cities/${citySlug.toLowerCase()}/scene/${
+          context.params.id
+        }`,
+        permanent: true,
+      },
+    };
+  }
+
+  const city = CitySlugMap[citySlug];
+
+  if (!CITIES.includes(city)) {
     return { notFound: true };
   }
 
@@ -280,8 +289,6 @@ export const getStaticProps = async (
     if (!scene) {
       return { notFound: true };
     }
-
-    const city = context.params.category as PTX.City;
 
     const remarks = await getScenesWithRemarksByCity(city, 6);
 

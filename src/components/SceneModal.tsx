@@ -24,7 +24,7 @@ import {
 import { useRouter } from 'next/router';
 import { FiSearch } from 'react-icons/fi';
 
-import { COUNTIES, MAJOR_CITIES, THEMES } from '@/constants/category';
+import { CityMap, COUNTIES, MAJOR_CITIES, THEMES } from '@/constants/category';
 import useAppToast from '@/hooks/use-app-toast';
 
 const DEFAULT_MENU_VALUE = '選擇縣市' as const;
@@ -80,7 +80,7 @@ const SceneModal = ({ onClose, ...props }: Omit<ModalProps, 'children'>) => {
   const onAdvanceSearch = () => {
     if (cityName !== DEFAULT_MENU_VALUE) {
       onClose();
-      router.push(`/scenes/${cityName}`);
+      router.push(`/cities/${CityMap[cityName]}`);
     }
 
     if (themeName) {

@@ -102,7 +102,7 @@ const FanCard = ({
             ) : (
               <RouteLink
                 as={LinkOverlay}
-                href={`/scenes/${CityMap[city]}/${id}`}
+                href={`/cities/${CityMap[city]}/scene/${id}`}
               >
                 {name}
               </RouteLink>
