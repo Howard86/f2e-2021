@@ -125,7 +125,7 @@ const ScenesPage = ({
         {!isUninitialized && !isError && (
           <>
             <Banner
-              title={`搜尋"${keyword}"的結果...`}
+              title={`搜尋『${keyword}』的結果...`}
               mainColor={PAGE_PROPS.mainColor}
               href="/scenes"
               mt="0"

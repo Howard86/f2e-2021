@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 
 import {
   Box,
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
-  Button,
   Center,
   Flex,
   Heading,
@@ -16,6 +15,7 @@ import {
   InputGroup,
   InputRightElement,
   SimpleGrid,
+  useDisclosure,
 } from '@chakra-ui/react';
 import {
   GetStaticPathsResult,
@@ -25,17 +25,19 @@ import {
 import { useRouter } from 'next/router';
 import type { ParsedUrlQuery } from 'querystring';
 import { BiChevronRight } from 'react-icons/bi';
-import { BsGrid3X3GapFill } from 'react-icons/bs';
 import { FiSearch } from 'react-icons/fi';
 
 import Background from '@/components/Background';
 import Banner from '@/components/Banner';
 import FanCard from '@/components/FanCard';
 import Layout from '@/components/layout/Layout';
+import LoadingScreen from '@/components/LoadingScreen';
 import Pagination from '@/components/Pagination';
 import RouteLink from '@/components/RouteLink';
 import SceneCard from '@/components/SceneCard';
 import { CITIES, THEMES } from '@/constants/category';
+import useAppToast from '@/hooks/use-app-toast';
+import { useLazyGetSceneCardsQuery } from '@/services/local';
 import {
   getSceneCardsByCity,
   getSceneCardsByThemeClass,
@@ -47,7 +49,8 @@ import wordOne from '@/static/background/scenes-1.png';
 import wordTwo from '@/static/background/scenes-2.png';
 
 interface CategoryPageProps {
-  category: PTX.SceneCity | PTX.SceneClass;
+  city?: PTX.SceneCity;
+  theme?: PTX.SceneClass;
   scenes: PTX.SceneCard[];
   remarks: PTX.SceneRemark[];
 }
@@ -56,17 +59,51 @@ const DEFAULT_CARD_NUMBER = 6;
 const PAGE_PROPS = { mainColor: 'scenes.main', gradientColor: 'scenes.light' };
 
 const CategoryPage = ({
-  category,
+  city,
+  theme,
   scenes,
   remarks,
 }: CategoryPageProps): JSX.Element => {
-  const [page, setPage] = useState(0);
   const router = useRouter();
-  const onSearch = () => {};
+  const category = theme || city;
+
+  const [page, setPage] = useState(0);
+
+  const toast = useAppToast();
+  const [fetch, { data, isUninitialized, isLoading, isError }] =
+    useLazyGetSceneCardsQuery();
+
+  const messageSentStatus = useDisclosure();
+  const [keyword, setKeyword] = useState('');
+
+  const onSearch = () => {
+    fetch({ keyword: keyword.trim(), city, theme });
+    messageSentStatus.onOpen();
+  };
+
+  const handleOnType = (event: ChangeEvent<HTMLInputElement>) => {
+    setKeyword(event.target.value);
+  };
+
+  useEffect(() => {
+    if (isError && messageSentStatus.isOpen) {
+      toast({
+        description: `查無"${keyword.trim()}"的結果`,
+        status: 'warning',
+      });
+      messageSentStatus.onClose();
+    }
+  }, [isError, keyword, messageSentStatus, messageSentStatus.isOpen, toast]);
 
   if (router.isFallback) {
-    //  TODO: add Loading screen
-    return null;
+    return (
+      <LoadingScreen
+        mainColor={PAGE_PROPS.mainColor}
+        w="full"
+        h="full"
+        minH="400px"
+      />
+    );
   }
 
   return (
@@ -82,7 +119,12 @@ const CategoryPage = ({
       >
         <Flex align="center" mt="8">
           <InputGroup size="lg">
-            <Input bg="white" placeholder="請輸入關鍵字" />
+            <Input
+              bg="white"
+              placeholder="請輸入關鍵字"
+              value={keyword}
+              onChange={handleOnType}
+            />
             <InputRightElement>
               <IconButton
                 variant="ghost"
@@ -93,9 +135,6 @@ const CategoryPage = ({
               />
             </InputRightElement>
           </InputGroup>
-          <Button leftIcon={<BsGrid3X3GapFill />} size="lg" ml="4">
-            進階搜尋
-          </Button>
         </Flex>
       </Background>
 
@@ -123,15 +162,19 @@ const CategoryPage = ({
           </BreadcrumbItem>
         </Breadcrumb>
         <Flex flexDir={{ base: 'column', lg: 'row' }} mx="8">
-          <Box flexGrow={3} flexShrink={1}>
-            <Image
-              alt={category}
-              src={scenes[0].Picture.PictureUrl1}
-              fallbackSrc="/static/mock/scene.png"
-              width={900}
-              height={600}
-            />
-          </Box>
+          {scenes[0] && (
+            <Box flexGrow={3} flexShrink={1}>
+              <Image
+                alt={category}
+                src={scenes[0].Picture.PictureUrl1}
+                align="center"
+                fit="cover"
+                fallbackSrc="/static/mock/scene.png"
+                width={[600, 900]}
+                height={[400, 600]}
+              />
+            </Box>
+          )}
           <Box m="8" flexGrow={1} flexShrink={5}>
             <Heading textAlign="center" mb="4">
               {category}
@@ -140,6 +183,30 @@ const CategoryPage = ({
             {/* <Text>{category.description}</Text> */}
           </Box>
         </Flex>
+        {!isUninitialized && !isError && (
+          <>
+            <Banner
+              title={`搜尋『${keyword}』的結果...`}
+              mainColor={PAGE_PROPS.mainColor}
+              href="/scenes"
+              hideButton
+            />
+            {isLoading && <LoadingScreen mainColor={PAGE_PROPS.mainColor} />}
+            {data?.success && (
+              <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
+                {data.data.map((scene) => (
+                  <SceneCard
+                    key={scene.ID}
+                    id={scene.ID}
+                    name={scene.Name}
+                    city={scene.City}
+                    image={scene.Picture.PictureUrl1}
+                  />
+                ))}
+              </SimpleGrid>
+            )}
+          </>
+        )}
         <Banner
           title="熱門景點"
           mainColor={PAGE_PROPS.mainColor}
@@ -219,7 +286,7 @@ export const getStaticProps = async (
       const remarks = await getScenesWithRemarksByCity(category, 6);
 
       return {
-        props: { scenes, category, remarks },
+        props: { scenes, city: category, remarks },
       };
     }
 
@@ -229,7 +296,7 @@ export const getStaticProps = async (
       const remarks = await getScenesWithRemarksByThemeClass(category, 6);
 
       return {
-        props: { scenes, category, remarks },
+        props: { scenes, theme: category, remarks },
       };
     }
 
