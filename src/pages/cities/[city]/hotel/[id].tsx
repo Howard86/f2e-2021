@@ -30,6 +30,7 @@ import { MdPhotoAlbum } from 'react-icons/md';
 
 import Banner from '@/components/Banner';
 import FanCard from '@/components/FanCard';
+import GoogleMap from '@/components/GoogleMap';
 import Layout from '@/components/layout/Layout';
 import LoadingScreen from '@/components/LoadingScreen';
 import RouteLink from '@/components/RouteLink';
@@ -136,7 +137,7 @@ const HotelPage = ({ hotel, remarks }: HotelPageProps): JSX.Element => {
         </Flex>
       </Flex>
       <Flex bg="white" flexDir="column">
-        <Flex flexDir={{ base: 'column', lg: 'row' }} m="8">
+        <SimpleGrid columns={[1, 1, 2]} gap={[4, 8]} mx="8">
           <Box>
             <Heading>住宿資訊</Heading>
             <VStack align="flex-start" textAlign="start" mt="8" spacing={4}>
@@ -187,7 +188,14 @@ const HotelPage = ({ hotel, remarks }: HotelPageProps): JSX.Element => {
               />
             </VStack>
           </Box>
-        </Flex>
+          {hotel.Position?.PositionLat && hotel.Position?.PositionLon && (
+            <GoogleMap
+              query={hotel.Address}
+              lat={hotel.Position.PositionLat}
+              lng={hotel.Position.PositionLon}
+            />
+          )}
+        </SimpleGrid>
         <Banner
           title="網紅這樣玩"
           mainColor={PAGE_PROPS.mainColor}

@@ -43,6 +43,7 @@ import { MdPhotoAlbum } from 'react-icons/md';
 
 import Banner from '@/components/Banner';
 import FanCard from '@/components/FanCard';
+import GoogleMap from '@/components/GoogleMap';
 import Layout from '@/components/layout/Layout';
 import LoadingScreen from '@/components/LoadingScreen';
 import RouteLink from '@/components/RouteLink';
@@ -144,7 +145,7 @@ const ScenePage = ({ scene, remarks }: ScenePageProps): JSX.Element => {
         </Flex>
       </Flex>
       <Flex bg="white" flexDir="column">
-        <Flex flexDir={{ base: 'column', lg: 'row' }} m="8">
+        <SimpleGrid columns={[1, 1, 2]} gap={[4, 8]} mx="8">
           <Box>
             <Heading>景點資訊</Heading>
             <VStack align="flex-start" textAlign="start" mt="8" spacing={4}>
@@ -220,7 +221,14 @@ const ScenePage = ({ scene, remarks }: ScenePageProps): JSX.Element => {
               />
             </VStack>
           </Box>
-        </Flex>
+          {scene.Position?.PositionLat && scene.Position?.PositionLon && (
+            <GoogleMap
+              query={scene.Address}
+              lat={scene.Position.PositionLat}
+              lng={scene.Position.PositionLon}
+            />
+          )}
+        </SimpleGrid>
         <Banner
           title="網紅這樣玩"
           mainColor={PAGE_PROPS.mainColor}
