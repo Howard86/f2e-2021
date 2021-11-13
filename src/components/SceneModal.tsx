@@ -81,11 +81,13 @@ const SceneModal = ({ onClose, ...props }: Omit<ModalProps, 'children'>) => {
     if (cityName !== DEFAULT_MENU_VALUE) {
       onClose();
       router.push(`/cities/${CityMap[cityName]}`);
+      return;
     }
 
     if (themeName) {
       onClose();
       router.push(`/scenes/${themeName}`);
+      return;
     }
 
     toast({ title: '請選擇主題或縣市', status: 'info' });

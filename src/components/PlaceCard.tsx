@@ -58,7 +58,7 @@ const PlaceCard = ({
       src={image}
       fallbackSrc="/static/fallback.jpg"
       objectFit="cover"
-      objectPosition="cover"
+      align="center"
       w="full"
       height={300}
     />

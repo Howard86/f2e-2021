@@ -176,7 +176,7 @@ const CategoryPage = ({
         </SimpleGrid>
         <Center mt="8">
           <Pagination
-            colorTheme="hotels"
+            colorTheme="activities"
             page={activityPage}
             total={Math.ceil(activities.length / DEFAULT_CARD_NUMBER)}
             onPageChange={setActivityPage}
@@ -184,7 +184,7 @@ const CategoryPage = ({
         </Center>
         <Banner
           title="熱門美食"
-          mainColor="activities.main"
+          mainColor="restaurants.main"
           href="/scenes"
           hideButton
         />

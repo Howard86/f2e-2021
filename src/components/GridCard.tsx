@@ -25,7 +25,15 @@ const GridCard = ({ title, subtitle, image, ...props }: GridCardProps) => (
     rounded="2xl"
     {...props}
   >
-    <Image alt={title} src={image} fit="cover" h="100%" w="100%" />
+    <Image
+      alt={title}
+      src={image}
+      fallbackSrc="/static/fallback.jpg"
+      fit="cover"
+      align="center"
+      h="full"
+      w="full"
+    />
     <Flex
       pos="absolute"
       flexDir="column"

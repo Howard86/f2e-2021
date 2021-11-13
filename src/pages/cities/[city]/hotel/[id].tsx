@@ -114,6 +114,7 @@ const HotelPage = ({ hotel, remarks }: HotelPageProps): JSX.Element => {
               src={hotel.Picture?.PictureUrl1}
               align="center"
               fit="cover"
+              loading="lazy"
               fallbackSrc="/static/fallback.jpg"
               width={[600, 900]}
               height={[400, 600]}

@@ -124,6 +124,7 @@ const ScenePage = ({ scene, remarks }: ScenePageProps): JSX.Element => {
               src={scene.Picture?.PictureUrl1}
               align="center"
               fit="cover"
+              loading="lazy"
               fallbackSrc="/static/fallback.jpg"
               width={[600, 900]}
               height={[400, 600]}

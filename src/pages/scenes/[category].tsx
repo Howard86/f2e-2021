@@ -125,6 +125,7 @@ const CategoryPage = ({
             <Box flexGrow={3} flexShrink={1}>
               <Image
                 alt={theme}
+                loading="lazy"
                 src={scenes[0].Picture.PictureUrl1}
                 align="center"
                 fit="cover"
