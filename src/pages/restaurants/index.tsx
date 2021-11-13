@@ -21,7 +21,7 @@ import Layout from '@/components/layout/Layout';
 import LoadingScreen from '@/components/LoadingScreen';
 import Pagination from '@/components/Pagination';
 import PlaceCard from '@/components/PlaceCard';
-import RestaurantCard from '@/components/ResturantCard';
+import BackgroundCard from '@/components/ResturantCard';
 import useAppToast from '@/hooks/use-app-toast';
 import { useLazyGetRestaurantCardsQuery } from '@/services/local';
 import { getRestaurantCards, getRestaurantWithRemarks } from '@/services/ptx';
@@ -101,17 +101,17 @@ const RestaurantsPage = ({
           </InputRightElement>
         </InputGroup>
         <SimpleGrid h={['160px', '220px']} columns={3} gap={[2, 0]}>
-          <RestaurantCard
+          <BackgroundCard
             name="台灣文化"
             image="/static/card/restaurants-1.png"
             roundedRight="none"
           />
-          <RestaurantCard
+          <BackgroundCard
             name="台灣小吃"
             image="/static/card/restaurants-2.png"
             rounded="none"
           />
-          <RestaurantCard
+          <BackgroundCard
             name="台灣各地特色"
             image="/static/card/restaurants-3.png"
             roundedLeft="none"

@@ -10,7 +10,7 @@ import {
   Text,
 } from '@chakra-ui/react';
 
-interface ThemeCardProps extends LinkBoxProps {
+interface BackgroundCardProps extends LinkBoxProps {
   name: string;
   image: string;
   imageWidth?: number;
@@ -18,12 +18,12 @@ interface ThemeCardProps extends LinkBoxProps {
   href?: string;
 }
 
-const RestaurantCard = ({
+const BackgroundCard = ({
   name,
   image,
   href = '#',
   ...props
-}: ThemeCardProps) => (
+}: BackgroundCardProps) => (
   <LinkBox pos="relative" overflow="hidden" rounded="xl" {...props}>
     <Image alt={name} src={image} fit="cover" h="100%" w="100%" />
     <Flex
@@ -55,4 +55,4 @@ const RestaurantCard = ({
   </LinkBox>
 );
 
-export default RestaurantCard;
+export default BackgroundCard;
