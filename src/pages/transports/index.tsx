@@ -10,12 +10,6 @@ import ThemeCard from '@/components/ThemeCard';
 import background from '@/static/background/transports.png';
 import wordOne from '@/static/background/transports-1.png';
 import wordTwo from '@/static/background/transports-2.png';
-import cardFive from '@/static/card/transports-5.png';
-import cardSix from '@/static/card/transports-6.png';
-import cardSeven from '@/static/card/transports-7.png';
-import cardEight from '@/static/card/transports-8.png';
-import cardNine from '@/static/card/transports-9.png';
-import cardTen from '@/static/card/transports-10.png';
 
 const PAGE_PROPS = {
   mainColor: 'transports.main',
@@ -79,18 +73,21 @@ const TransportsPage = (): JSX.Element => (
       />
       <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
         <ThemeCard
-          name="省道即時交通資訊"
-          image={cardFive}
+          id="省道"
+          theme="省道即時交通資訊"
+          image="/static/card/transports-5.png"
           href="https://168.thb.gov.tw/"
         />
         <ThemeCard
-          name="即時路況資訊"
-          image={cardSix}
+          id="路況"
+          theme="即時路況資訊"
+          image="/static/card/transports-6.png"
           href="https://1968.freeway.gov.tw/"
         />
         <ThemeCard
-          name="公路客運乘車資訊"
-          image={cardSeven}
+          id="公路"
+          theme="公路客運乘車資訊"
+          image="/static/card/transports-7.png"
           href="https://www.taiwanbus.tw/"
         />
       </SimpleGrid>
@@ -102,9 +99,24 @@ const TransportsPage = (): JSX.Element => (
       />
 
       <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
-        <ThemeCard name="汽車" image={cardEight} />
-        <ThemeCard name="摩特車" image={cardNine} />
-        <ThemeCard name="自行車" image={cardTen} />
+        <ThemeCard
+          id="汽車"
+          theme="汽車"
+          image="/static/card/transports-8.png"
+          href="https://gogoout.com/blog/irent-zipcar-gogoout/"
+        />
+        <ThemeCard
+          id="摩托車"
+          theme="摩特車"
+          image="/static/card/transports-9.png"
+          href="https://technews.tw/2019/12/21/three-shared-locomotive-services-comparability/"
+        />
+        <ThemeCard
+          id="自行車"
+          theme="自行車"
+          image="/static/card/transports-10.png"
+          href="https://www.dot.gov.taipei/News.aspx?n=76E4ACA9285DDACA&sms=022299092584F3D9"
+        />
       </SimpleGrid>
     </Flex>
   </>

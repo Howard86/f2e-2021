@@ -16,9 +16,10 @@ interface ThemeCardProps extends LinkBoxProps {
   id: string;
   theme: string;
   image: string;
+  href?: string;
 }
 
-const ThemeCard = ({ id, theme, image, ...props }: ThemeCardProps) => (
+const ThemeCard = ({ id, theme, image, href, ...props }: ThemeCardProps) => (
   <LinkBox
     pos="relative"
     overflow="hidden"
@@ -54,9 +55,15 @@ const ThemeCard = ({ id, theme, image, ...props }: ThemeCardProps) => (
           color="white"
           fontSize={['xl', '2xl']}
         >
-          <RouteLink as={LinkOverlay} href={`/scenes/${theme}`}>
-            {theme}
-          </RouteLink>
+          {href ? (
+            <LinkOverlay href={href} isExternal>
+              {theme}
+            </LinkOverlay>
+          ) : (
+            <RouteLink as={LinkOverlay} href={`/scenes/${theme}`}>
+              {theme}
+            </RouteLink>
+          )}
         </Text>
       </Box>
     </Flex>
