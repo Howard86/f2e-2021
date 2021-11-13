@@ -7,7 +7,7 @@ interface LoadingScreenProps extends CenterProps {
 }
 
 const LoadingScreen = ({ mainColor, ...props }: LoadingScreenProps) => (
-  <Center {...props}>
+  <Center h="full" w="full" {...props}>
     <Spinner
       speed="0.66s"
       emptyColor="gray.200"

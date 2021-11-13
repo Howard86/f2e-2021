@@ -68,7 +68,7 @@ const ScenePage = ({ scene, remarks }: ScenePageProps): JSX.Element => {
   const saved = true;
 
   if (router.isFallback) {
-    return <LoadingScreen mainColor={PAGE_PROPS.mainColor} />;
+    return <LoadingScreen minH="400px" mainColor={PAGE_PROPS.mainColor} />;
   }
 
   return (
@@ -196,7 +196,7 @@ const ScenePage = ({ scene, remarks }: ScenePageProps): JSX.Element => {
                 info={[scene.Class1, scene.Class2, scene.Class3]
                   .filter(Boolean)
                   .join(', ')}
-                href={`/scenes/${scene.Class1}`}
+                href={`/scenes/${scene.Class1 || scene.Class2 || scene.Class3}`}
                 icon={MdPhotoAlbum}
               />
               <SceneDetailBox

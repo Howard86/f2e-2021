@@ -96,14 +96,7 @@ const CategoryPage = ({
   }, [isError, keyword, messageSentStatus, messageSentStatus.isOpen, toast]);
 
   if (router.isFallback) {
-    return (
-      <LoadingScreen
-        mainColor={PAGE_PROPS.mainColor}
-        w="full"
-        h="full"
-        minH="400px"
-      />
-    );
+    return <LoadingScreen mainColor={PAGE_PROPS.mainColor} minH="400px" />;
   }
 
   return (
