@@ -32,8 +32,10 @@ interface PlaceCardProps extends BoxProps {
   image: string;
   liked?: boolean;
   saved?: boolean;
+  hideLink?: boolean;
 }
 
+// TODO: this design is a bit against the structure, consider refactor all cards
 const FanCard = ({
   id,
   name,
@@ -42,6 +44,7 @@ const FanCard = ({
   image,
   liked,
   saved,
+  hideLink,
   ...props
 }: PlaceCardProps) => {
   const size = useToken('w', ['64px', '64px', '128px']);
@@ -92,9 +95,13 @@ const FanCard = ({
             fontWeight="bold"
             noOfLines={1}
           >
-            <RouteLink as={LinkOverlay} href={`/scenes/${city}/${id}`}>
-              {name}
-            </RouteLink>
+            {hideLink ? (
+              name
+            ) : (
+              <RouteLink as={LinkOverlay} href={`/scenes/${city}/${id}`}>
+                {name}
+              </RouteLink>
+            )}
           </Text>
           <Text noOfLines={[4, 3]}>{description}</Text>
           <Box flexGrow={1} />

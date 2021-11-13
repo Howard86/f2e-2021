@@ -1,26 +1,25 @@
 import React from 'react';
 
-import { Flex, FlexProps, Icon, Text } from '@chakra-ui/react';
-import Image from 'next/image';
+import { Flex, FlexProps, Icon, Image, Text } from '@chakra-ui/react';
 import { FiMapPin } from 'react-icons/fi';
 
 import CardBanner from './CardBanner';
 
 interface PlaceCardProps extends FlexProps {
   name: string;
-  city: string;
+  city?: string;
   address: string;
-  openingHours: string;
-  contactNumber: string;
-  image: string | StaticImageData;
+  openingHours?: string;
+  contactNumber?: string;
+  image: string;
 }
 
 const PlaceCard = ({
   name,
-  city,
+  city = '-',
   address,
-  openingHours,
-  contactNumber,
+  openingHours = '-',
+  contactNumber = '-',
   image,
 }: PlaceCardProps) => (
   <Flex
@@ -50,15 +49,11 @@ const PlaceCard = ({
       height={300}
     />
     <Flex flexDir="column" m="4" lineHeight="6">
-      <Flex
-        flexDir={['row', 'column', 'row']}
-        justify="space-between"
-        fontWeight="bold"
-      >
-        <Text as="h3" fontSize="2xl" color="blackAlpha.800" noOfLines={1}>
+      <Flex justify="space-between" fontWeight="bold">
+        <Text as="h3" fontSize={['lg', 'xl']} color="blackAlpha.800" my="2">
           {name}
         </Text>
-        <Flex align="center" pt="2" pb="4">
+        <Flex flexShrink={0} align="center" pt="2" pb="4">
           <Icon as={FiMapPin} boxSize={6} mr="1" />
           <Text as="span">{city}</Text>
         </Flex>

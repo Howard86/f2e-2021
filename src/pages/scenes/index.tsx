@@ -49,8 +49,10 @@ const ScenesPage = ({
   themes,
 }: ScenesPageProps): JSX.Element => {
   const toast = useAppToast();
-  const [fetch, { data, isUninitialized, isLoading, isError, isSuccess }] =
-    useLazyGetSceneCardsQuery();
+  const [
+    fetch,
+    { data, isUninitialized, isLoading, isError, isSuccess, originalArgs },
+  ] = useLazyGetSceneCardsQuery();
 
   const isModalCentered = useBreakpointValue({ base: false, md: true });
   const modal = useDisclosure();
@@ -125,7 +127,7 @@ const ScenesPage = ({
         {!isUninitialized && !isError && (
           <>
             <Banner
-              title={`搜尋『${keyword}』的結果...`}
+              title={`搜尋『${originalArgs?.keyword}』的結果...`}
               mainColor={PAGE_PROPS.mainColor}
               href="/scenes"
               mt="0"

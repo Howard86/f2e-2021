@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 
 import {
   Box,
@@ -9,6 +9,7 @@ import {
   InputGroup,
   InputRightElement,
   SimpleGrid,
+  useDisclosure,
 } from '@chakra-ui/react';
 import { GetStaticPropsContext, GetStaticPropsResult } from 'next';
 import { FiSearch } from 'react-icons/fi';
@@ -20,15 +21,16 @@ import Layout from '@/components/layout/Layout';
 import Pagination from '@/components/Pagination';
 import PlaceCard from '@/components/PlaceCard';
 import RestaurantCard from '@/components/ResturantCard';
-import { getRestaurants } from '@/services/ptx';
+import useAppToast from '@/hooks/use-app-toast';
+import { useLazyGetRestaurantCardsQuery } from '@/services/local';
+import { getRestaurantCards, getRestaurantWithRemarks } from '@/services/ptx';
 import background from '@/static/background/restaurants.png';
 import wordOne from '@/static/background/restaurants-1.png';
 import wordTwo from '@/static/background/restaurants-2.png';
-import mockFood from '@/static/mock/food.png';
-import mockScene from '@/static/mock/scene.png';
 
 interface RestaurantsPageProps {
-  restaurants: PTX.Restaurant[];
+  restaurants: PTX.RestaurantCard[];
+  remarks: PTX.RestaurantRemark[];
 }
 
 const PAGE_PROPS = {
@@ -39,9 +41,34 @@ const DEFAULT_CARD_NUMBER = 6;
 
 const RestaurantsPage = ({
   restaurants,
+  remarks,
 }: RestaurantsPageProps): JSX.Element => {
+  const toast = useAppToast();
+  const [fetch, { data, isUninitialized, isLoading, isError, originalArgs }] =
+    useLazyGetRestaurantCardsQuery();
+
+  const messageSentStatus = useDisclosure();
+  const [keyword, setKeyword] = useState('');
   const [page, setPage] = useState(0);
-  const onSearch = () => {};
+
+  const onSearch = () => {
+    fetch({ keyword: keyword.trim() });
+    messageSentStatus.onOpen();
+  };
+
+  const handleOnType = (event: ChangeEvent<HTMLInputElement>) => {
+    setKeyword(event.target.value);
+  };
+
+  useEffect(() => {
+    if (isError && messageSentStatus.isOpen) {
+      toast({
+        description: `查無"${keyword.trim()}"的結果`,
+        status: 'warning',
+      });
+      messageSentStatus.onClose();
+    }
+  }, [isError, keyword, messageSentStatus, messageSentStatus.isOpen, toast]);
 
   return (
     <>
@@ -55,7 +82,13 @@ const RestaurantsPage = ({
         bgColor={PAGE_PROPS.gradientColor}
       >
         <InputGroup size="lg" my="8" maxW="container.md">
-          <Input rounded="2xl" bg="white" placeholder="請輸入關鍵字" />
+          <Input
+            rounded="2xl"
+            value={keyword}
+            onChange={handleOnType}
+            bg="white"
+            placeholder="請輸入關鍵字"
+          />
           <InputRightElement>
             <IconButton
               variant="ghost"
@@ -89,8 +122,35 @@ const RestaurantsPage = ({
         bgGradient={`linear(to-b, ${PAGE_PROPS.gradientColor}, white)`}
       />
       <Flex flexDir="column" bg="white">
+        {!isUninitialized && !isError && (
+          <>
+            <Banner
+              title={`搜尋『${originalArgs?.keyword}』的結果...`}
+              mainColor={PAGE_PROPS.mainColor}
+              href="/scenes"
+              mt="0"
+              hideButton
+            />
+            {isLoading && 'Loading...'}
+            {data?.success && (
+              <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
+                {data.data.map((restaurant) => (
+                  <PlaceCard
+                    key={restaurant.ID}
+                    id={restaurant.ID}
+                    name={restaurant.Name}
+                    city={restaurant.City}
+                    image={restaurant.Picture.PictureUrl1}
+                    address={restaurant.Address}
+                    contactNumber={restaurant.Phone}
+                    openingHours={restaurant.OpenTime}
+                  />
+                ))}
+              </SimpleGrid>
+            )}
+          </>
+        )}
         <Banner
-          mt="0"
           title="熱門美食"
           mainColor={PAGE_PROPS.mainColor}
           href="/scenes"
@@ -104,14 +164,14 @@ const RestaurantsPage = ({
             )
             .map((restaurant) => (
               <PlaceCard
-                key={restaurant.id}
-                id={restaurant.id}
-                name={restaurant.name}
-                city={restaurant.city}
-                image={restaurant.image || mockFood}
-                address={restaurant.address}
-                contactNumber={restaurant.contactNumber}
-                openingHours={restaurant.openingHours}
+                key={restaurant.ID}
+                id={restaurant.ID}
+                name={restaurant.Name}
+                city={restaurant.City}
+                image={restaurant.Picture.PictureUrl1}
+                address={restaurant.Address}
+                contactNumber={restaurant.Phone}
+                openingHours={restaurant.OpenTime}
               />
             ))}
         </SimpleGrid>
@@ -131,23 +191,17 @@ const RestaurantsPage = ({
           hideButton
         />
         <SimpleGrid columns={[1, 2, 3]} spacingX={8} spacingY={12} mx="8">
-          <FanCard
-            name="台北101攻略"
-            description="除了台北101台北到底還有那些夜景？讓KKday告訴你台北還有哪些易達又美麗的夜景景點吧!"
-            image={mockScene}
-          />
-          <FanCard
-            name="台北101攻略"
-            description="除了台北101台北到底還有那些夜景？讓KKday告訴你台北還有哪些易達又美麗的夜景景點吧!"
-            image={mockScene}
-            liked
-          />
-          <FanCard
-            name="台北101攻略"
-            description="除了台北101台北到底還有那些夜景？讓KKday告訴你台北還有哪些易達又美麗的夜景景點吧!"
-            image={mockScene}
-            saved
-          />
+          {remarks.map((remark) => (
+            <FanCard
+              hideLink
+              id={remark.ID}
+              key={remark.ID}
+              name={remark.Name}
+              city={remark.City}
+              description={remark.Description}
+              image={remark.Picture.PictureUrl1}
+            />
+          ))}
         </SimpleGrid>
       </Flex>
     </>
@@ -160,13 +214,12 @@ RestaurantsPage.layoutProps = PAGE_PROPS;
 export const getStaticProps = async (
   _context: GetStaticPropsContext,
 ): Promise<GetStaticPropsResult<RestaurantsPageProps>> => {
-  const restaurants = await getRestaurants();
+  const [restaurants, remarks] = await Promise.all([
+    getRestaurantCards(30),
+    getRestaurantWithRemarks(6),
+  ]);
 
-  return {
-    props: {
-      restaurants,
-    },
-  };
+  return { props: { restaurants, remarks } };
 };
 
 export default RestaurantsPage;
