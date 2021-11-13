@@ -1,5 +1,7 @@
 import JsSHA1 from 'jssha/dist/sha1';
 
+import { constructODataSearch } from './utils';
+
 import { CityMap } from '@/constants/category';
 
 const getAuthorizationHeader = () => {
@@ -37,6 +39,8 @@ const apiGet = async <T>(
   if (response.ok && response.status < 400) {
     return response.json();
   }
+  const text = await response.text();
+  console.error(text);
   console.error(response.url);
   console.error(response.headers);
 
@@ -185,6 +189,44 @@ export const getSceneById = async (
 
   return result[0];
 };
+
+export const searchScenesByKeyword = async (
+  keyword: string,
+  count = 30,
+): Promise<PTX.SceneCard[]> =>
+  apiGet('Tourism/ScenicSpot', {
+    $top: count.toString(),
+    $select: 'ID,City,Name,Picture',
+    $filter: `Picture/PictureUrl1 ne null and City ne null and (${constructODataSearch(
+      keyword,
+    )})`,
+  });
+
+export const searchScenesByKeywordAndCity = async (
+  keyword: string,
+  city: PTX.SceneCity,
+  count = 30,
+): Promise<PTX.SceneCard[]> =>
+  apiGet('Tourism/ScenicSpot', {
+    $top: count.toString(),
+    $select: 'ID,City,Name,Picture',
+    $filter: `Picture/PictureUrl1 ne null and City eq '${city}' and (${constructODataSearch(
+      keyword,
+    )})`,
+  });
+
+export const searchScenesByKeywordAndTheme = async (
+  keyword: string,
+  theme: PTX.SceneClass,
+  count = 30,
+): Promise<PTX.SceneCard[]> =>
+  apiGet('Tourism/ScenicSpot', {
+    $top: count.toString(),
+    $select: 'ID,City,Name,Picture',
+    $filter: `Picture/PictureUrl1 ne null and City ne null and (Class1 eq '${theme}' or Class2 eq '${theme}' or Class3 eq '${theme}') and (${constructODataSearch(
+      keyword,
+    )})`,
+  });
 
 export const getRestaurants = async (): Promise<PTX.Restaurant[]> =>
   new Array(10).fill(0).map((_, index) => ({
