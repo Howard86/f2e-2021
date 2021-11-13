@@ -2,13 +2,9 @@ import React, { ChangeEvent, useEffect, useState } from 'react';
 
 import {
   Box,
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
   Center,
   Flex,
   Heading,
-  Icon,
   IconButton,
   Image,
   Input,
@@ -24,7 +20,6 @@ import {
 } from 'next';
 import { useRouter } from 'next/router';
 import type { ParsedUrlQuery } from 'querystring';
-import { BiChevronRight } from 'react-icons/bi';
 import { FiSearch } from 'react-icons/fi';
 
 import Background from '@/components/Background';
@@ -33,15 +28,12 @@ import FanCard from '@/components/FanCard';
 import Layout from '@/components/layout/Layout';
 import LoadingScreen from '@/components/LoadingScreen';
 import Pagination from '@/components/Pagination';
-import RouteLink from '@/components/RouteLink';
 import SceneCard from '@/components/SceneCard';
-import { CITIES, THEMES } from '@/constants/category';
+import { THEMES } from '@/constants/category';
 import useAppToast from '@/hooks/use-app-toast';
 import { useLazyGetSceneCardsQuery } from '@/services/local';
 import {
-  getSceneCardsByCity,
   getSceneCardsByThemeClass,
-  getScenesWithRemarksByCity,
   getScenesWithRemarksByThemeClass,
 } from '@/services/ptx';
 import background from '@/static/background/scenes.png';
@@ -49,8 +41,7 @@ import wordOne from '@/static/background/scenes-1.png';
 import wordTwo from '@/static/background/scenes-2.png';
 
 interface CategoryPageProps {
-  city?: PTX.City;
-  theme?: PTX.SceneClass;
+  theme: PTX.SceneClass;
   scenes: PTX.SceneCard[];
   remarks: PTX.SceneRemark[];
 }
@@ -59,14 +50,11 @@ const DEFAULT_CARD_NUMBER = 6;
 const PAGE_PROPS = { mainColor: 'scenes.main', gradientColor: 'scenes.light' };
 
 const CategoryPage = ({
-  city,
   theme,
   scenes,
   remarks,
 }: CategoryPageProps): JSX.Element => {
   const router = useRouter();
-  const category = theme || city;
-
   const [page, setPage] = useState(0);
 
   const toast = useAppToast();
@@ -77,7 +65,7 @@ const CategoryPage = ({
   const [keyword, setKeyword] = useState('');
 
   const onSearch = () => {
-    fetch({ keyword: keyword.trim(), city, theme });
+    fetch({ keyword: keyword.trim(), theme });
     messageSentStatus.onOpen();
   };
 
@@ -132,33 +120,11 @@ const CategoryPage = ({
       </Background>
 
       <Flex flexDir="column" bg="white">
-        <Breadcrumb
-          m="4"
-          color="blackAlpha.700"
-          separator={<Icon as={BiChevronRight} />}
-        >
-          <BreadcrumbItem>
-            <RouteLink href="/scenes" as={BreadcrumbLink}>
-              景點
-            </RouteLink>
-          </BreadcrumbItem>
-          {/* TODO: add custom utils */}
-          {/* <BreadcrumbItem>
-            <RouteLink href="#" as={BreadcrumbLink}>
-              北部地區
-            </RouteLink>
-          </BreadcrumbItem> */}
-          <BreadcrumbItem fontWeight="bold" isCurrentPage>
-            <RouteLink href={`/scenes/${category}`} as={BreadcrumbLink}>
-              {category}
-            </RouteLink>
-          </BreadcrumbItem>
-        </Breadcrumb>
         <Flex flexDir={{ base: 'column', lg: 'row' }} mx="8">
           {scenes[0] && (
             <Box flexGrow={3} flexShrink={1}>
               <Image
-                alt={category}
+                alt={theme}
                 src={scenes[0].Picture.PictureUrl1}
                 align="center"
                 fit="cover"
@@ -170,10 +136,8 @@ const CategoryPage = ({
           )}
           <Box m="8" flexGrow={1} flexShrink={5}>
             <Heading textAlign="center" mb="4">
-              {category}
+              {theme}
             </Heading>
-            {/* TODO: add custom utils */}
-            {/* <Text>{category.description}</Text> */}
           </Box>
         </Flex>
         {!isUninitialized && !isError && (
@@ -272,30 +236,25 @@ export const getStaticProps = async (
     return { notFound: true };
   }
 
-  try {
-    if (CITIES.includes(context.params.category as PTX.City)) {
-      const category = context.params.category as PTX.City;
-      const scenes = await getSceneCardsByCity(category, 30);
-      const remarks = await getScenesWithRemarksByCity(category, 6);
+  const theme = context.params.category as PTX.SceneClass;
 
-      return {
-        props: { scenes, city: category, remarks },
-      };
-    }
-
-    if (THEMES.includes(context.params.category as PTX.SceneClass)) {
-      const category = context.params.category as PTX.SceneClass;
-      const scenes = await getSceneCardsByThemeClass(category, 30);
-      const remarks = await getScenesWithRemarksByThemeClass(category, 6);
-
-      return {
-        props: { scenes, theme: category, remarks },
-      };
-    }
-
-    console.error('Incoming unmatched param', context.params.category);
+  if (!THEMES.includes(theme)) {
     return {
-      notFound: true,
+      redirect: {
+        destination: '/scenes',
+        permanent: false,
+      },
+    };
+  }
+
+  try {
+    const [scenes, remarks] = await Promise.all([
+      getSceneCardsByThemeClass(theme, 30),
+      getScenesWithRemarksByThemeClass(theme, 6),
+    ]);
+
+    return {
+      props: { scenes, theme, remarks },
     };
   } catch (error) {
     console.error(error);
