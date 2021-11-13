@@ -1,6 +1,10 @@
 import JsSHA1 from 'jssha/dist/sha1';
 
-import { constructRestaurantsSearch, constructScenesSearch } from './utils';
+import {
+  constructHotelsSearch,
+  constructRestaurantsSearch,
+  constructScenesSearch,
+} from './utils';
 
 import { CityMap } from '@/constants/category';
 
@@ -253,6 +257,26 @@ export const searchRestaurantsByKeyword = async (
     $top: count.toString(),
     $select: 'ID,Name,City,Address,OpenTime,Phone,Picture',
     $filter: `Picture/PictureUrl1 ne null and City ne null and (${constructRestaurantsSearch(
+      keyword,
+    )})`,
+  });
+
+export const getHotelCards = async (count = 30): Promise<PTX.HotelCard[]> =>
+  apiGet('Tourism/Hotel', {
+    $top: count.toString(),
+    $select: 'ID,Name,City,Address,ServiceInfo,Phone,Picture',
+    $filter: 'Picture/PictureUrl1 ne null and Address ne null',
+    $orderBy: 'ServiceInfo desc',
+  });
+
+export const searchHotelsByKeyword = async (
+  keyword: string,
+  count = 30,
+): Promise<PTX.HotelCard[]> =>
+  apiGet('Tourism/Hotel', {
+    $top: count.toString(),
+    $select: 'ID,Name,City,Address,ServiceInfo,Phone,Picture',
+    $filter: `Picture/PictureUrl1 ne null and City ne null and (${constructHotelsSearch(
       keyword,
     )})`,
   });

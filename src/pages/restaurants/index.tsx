@@ -18,6 +18,7 @@ import Background from '@/components/Background';
 import Banner from '@/components/Banner';
 import FanCard from '@/components/FanCard';
 import Layout from '@/components/layout/Layout';
+import LoadingScreen from '@/components/LoadingScreen';
 import Pagination from '@/components/Pagination';
 import PlaceCard from '@/components/PlaceCard';
 import RestaurantCard from '@/components/ResturantCard';
@@ -131,7 +132,7 @@ const RestaurantsPage = ({
               mt="0"
               hideButton
             />
-            {isLoading && 'Loading...'}
+            {isLoading && <LoadingScreen mainColor={PAGE_PROPS.mainColor} />}
             {data?.success && (
               <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
                 {data.data.map((restaurant) => (

@@ -168,6 +168,39 @@ declare namespace PTX {
     Picture: Picture;
   }
 
+  interface Hotel {
+    ID: string;
+    Name: string;
+    Description?: string;
+    Address: string;
+    ZipCode?: string;
+    Phone: string;
+    Fax: string;
+    Picture: Picture;
+    Position: Position;
+    Class: HotelClass;
+    ParkingInfo: string;
+    SrcUpdateTime: string;
+    UpdateTime: string;
+    Grade?: string;
+    ServiceInfo?: string;
+    WebsiteUrl?: string;
+    Spec?: string;
+    City?: string;
+  }
+
+  type HotelClass = '一般旅館' | '一般觀光旅館' | '國際觀光旅館' | '民宿';
+
+  interface HotelCard {
+    ID: string;
+    Name: string;
+    City?: string;
+    Address: string;
+    ServiceInfo?: string;
+    Phone?: string;
+    Picture: Picture;
+  }
+
   interface Picture {
     PictureUrl1?: string;
     PictureDescription1?: string;

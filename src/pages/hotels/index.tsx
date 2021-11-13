@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 
 import {
   Box,
@@ -12,6 +12,8 @@ import {
   SimpleGrid,
   Stack,
   Text,
+  Tooltip,
+  useDisclosure,
 } from '@chakra-ui/react';
 import { GetStaticPropsContext, GetStaticPropsResult } from 'next';
 import { BsCalendar } from 'react-icons/bs';
@@ -21,23 +23,54 @@ import Background from '@/components/Background';
 import Banner from '@/components/Banner';
 import GridCard from '@/components/GridCard';
 import Layout from '@/components/layout/Layout';
+import LoadingScreen from '@/components/LoadingScreen';
 import Pagination from '@/components/Pagination';
 import PlaceCard from '@/components/PlaceCard';
-import { getHotels } from '@/services/ptx';
+import useAppToast from '@/hooks/use-app-toast';
+import { useLazyGetHotelCardsQuery } from '@/services/local';
+import { getHotelCards } from '@/services/ptx';
 import background from '@/static/background/hotels.png';
 import wordOne from '@/static/background/hotels-1.png';
 import wordTwo from '@/static/background/hotels-2.png';
-import mockFood from '@/static/mock/food.png';
 
 interface HotelsPageProps {
-  hotels: PTX.Hotel[];
+  hotels: PTX.HotelCard[];
 }
 
 const PAGE_PROPS = { mainColor: 'hotels.dark', gradientColor: 'hotels.light' };
 const DEFAULT_CARD_NUMBER = 6;
 
 const HotelsPage = ({ hotels }: HotelsPageProps): JSX.Element => {
+  const toast = useAppToast();
+  const [fetch, { data, isUninitialized, isLoading, isError, originalArgs }] =
+    useLazyGetHotelCardsQuery();
+
+  const messageSentStatus = useDisclosure();
+  const [keyword, setKeyword] = useState('');
   const [page, setPage] = useState(0);
+
+  const onSearch = () => {
+    fetch({ keyword: keyword.trim() });
+    messageSentStatus.onOpen();
+  };
+
+  const handleOnType = (event: ChangeEvent<HTMLInputElement>) => {
+    setKeyword(event.target.value);
+  };
+
+  const handleShowMaintainingMessage = () => {
+    toast({ description: 'Sorry, 尚未實作此功能！', status: 'error' });
+  };
+
+  useEffect(() => {
+    if (isError && messageSentStatus.isOpen) {
+      toast({
+        description: `查無"${keyword.trim()}"的結果`,
+        status: 'warning',
+      });
+      messageSentStatus.onClose();
+    }
+  }, [isError, keyword, messageSentStatus, messageSentStatus.isOpen, toast]);
 
   return (
     <>
@@ -62,29 +95,47 @@ const HotelsPage = ({ hotels }: HotelsPageProps): JSX.Element => {
         >
           <FormControl>
             <FormLabel fontWeight="bold">目的地</FormLabel>
-            <Input bg="white" placeholder="你要去哪裡？" />
+            <Input
+              bg="white"
+              value={keyword}
+              onChange={handleOnType}
+              placeholder="你要去哪裡？"
+            />
           </FormControl>
-          <Box>
-            <Text fontWeight="bold" mb="2">
-              入住-退房
-            </Text>
-            <Button bg="white" leftIcon={<BsCalendar />}>
-              2021/10/6~10/9
-            </Button>
-          </Box>
-          <Box w={['full', 'initial']}>
-            <Text fontWeight="bold" mb="2">
-              房間及人數
-            </Text>
-            <Button w="full" bg="white">
-              2位成人，1間房間
-            </Button>
-          </Box>
+          <Tooltip label="功能尚未上線">
+            <Box>
+              <Text fontWeight="bold" mb="2">
+                入住-退房
+              </Text>
+              <Button
+                bg="white"
+                onClick={handleShowMaintainingMessage}
+                leftIcon={<BsCalendar />}
+              >
+                2021/10/6~10/9
+              </Button>
+            </Box>
+          </Tooltip>
+          <Tooltip label="功能尚未上線">
+            <Box w={['full', 'initial']}>
+              <Text fontWeight="bold" mb="2">
+                房間及人數
+              </Text>
+              <Button
+                w="full"
+                bg="white"
+                onClick={handleShowMaintainingMessage}
+              >
+                2位成人，1間房間
+              </Button>
+            </Box>
+          </Tooltip>
           <Button
-            alignSelf={['center', 'initial']}
+            alignSelf={['center', 'center', 'initial']}
             flexShrink={0}
             bg="white"
             leftIcon={<FiSearch />}
+            onClick={onSearch}
           >
             搜尋
           </Button>
@@ -134,6 +185,33 @@ const HotelsPage = ({ hotels }: HotelsPageProps): JSX.Element => {
         bgGradient={`linear(to-b, ${PAGE_PROPS.gradientColor}, white)`}
       />
       <Flex flexDir="column" bg="white">
+        {!isUninitialized && !isError && (
+          <>
+            <Banner
+              title={`搜尋『${originalArgs?.keyword}』的結果...`}
+              mainColor={PAGE_PROPS.mainColor}
+              href="/scenes"
+              hideButton
+            />
+            {isLoading && <LoadingScreen mainColor={PAGE_PROPS.mainColor} />}
+            {data?.success && (
+              <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
+                {data.data.map((restaurant) => (
+                  <PlaceCard
+                    key={restaurant.ID}
+                    id={restaurant.ID}
+                    name={restaurant.Name}
+                    city={restaurant.City}
+                    image={restaurant.Picture.PictureUrl1}
+                    address={restaurant.Address}
+                    contactNumber={restaurant.Phone}
+                    serviceInfo={restaurant.ServiceInfo}
+                  />
+                ))}
+              </SimpleGrid>
+            )}
+          </>
+        )}
         <Banner
           title="住宿推薦"
           mainColor={PAGE_PROPS.mainColor}
@@ -148,14 +226,14 @@ const HotelsPage = ({ hotels }: HotelsPageProps): JSX.Element => {
             )
             .map((hotel) => (
               <PlaceCard
-                key={hotel.id}
-                id={hotel.id}
-                name={hotel.name}
-                city={hotel.city}
-                image={hotel.image || mockFood}
-                address={hotel.address}
-                contactNumber={hotel.contactNumber}
-                openingHours={hotel.openingHours}
+                key={hotel.ID}
+                id={hotel.ID}
+                name={hotel.Name}
+                city={hotel.City}
+                image={hotel.Picture.PictureUrl1}
+                address={hotel.Address}
+                contactNumber={hotel.Phone}
+                serviceInfo={hotel.ServiceInfo}
               />
             ))}
         </SimpleGrid>
@@ -178,7 +256,7 @@ HotelsPage.layoutProps = PAGE_PROPS;
 export const getStaticProps = async (
   _context: GetStaticPropsContext,
 ): Promise<GetStaticPropsResult<HotelsPageProps>> => {
-  const hotels = await getHotels();
+  const hotels = await getHotelCards(30);
 
   return {
     props: {

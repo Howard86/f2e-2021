@@ -11,6 +11,7 @@ interface PlaceCardProps extends FlexProps {
   address: string;
   openingHours?: string;
   contactNumber?: string;
+  serviceInfo?: string;
   image: string;
 }
 
@@ -18,8 +19,9 @@ const PlaceCard = ({
   name,
   city = '-',
   address,
-  openingHours = '-',
+  openingHours,
   contactNumber = '-',
+  serviceInfo,
   image,
 }: PlaceCardProps) => (
   <Flex
@@ -59,8 +61,9 @@ const PlaceCard = ({
         </Flex>
       </Flex>
       <Text fontWeight="bold">{address}</Text>
-      <Text variant="body">營業時間：{openingHours}</Text>
       <Text variant="body">電話：{contactNumber}</Text>
+      {openingHours && <Text variant="body">營業時間：{openingHours}</Text>}
+      {serviceInfo && <Text variant="body">服務：{serviceInfo}</Text>}
     </Flex>
   </Flex>
 );

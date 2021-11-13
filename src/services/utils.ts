@@ -22,6 +22,18 @@ const RESTAURANT_KEYWORDS: (keyof PTX.Restaurant)[] = [
   'ParkingInfo',
 ];
 
+const HOTEL_KEYWORDS: (keyof PTX.Hotel)[] = [
+  'Address',
+  'City',
+  'Class',
+  'Description',
+  'Grade',
+  'Name',
+  'ParkingInfo',
+  'ServiceInfo',
+  'Spec',
+];
+
 const getODataSearchCriteria = (keyword: string, value: string) =>
   `indexof(${keyword}, '${value}') gt -1`;
 
@@ -34,3 +46,8 @@ export const constructRestaurantsSearch = (value: string): string =>
   RESTAURANT_KEYWORDS.map((keyword) =>
     getODataSearchCriteria(keyword, value),
   ).join(' or ');
+
+export const constructHotelsSearch = (value: string): string =>
+  HOTEL_KEYWORDS.map((keyword) => getODataSearchCriteria(keyword, value)).join(
+    ' or ',
+  );

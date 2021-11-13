@@ -22,8 +22,17 @@ export const localApi = createApi({
     >({
       query: (params) => ({ url: 'restaurants', params }),
     }),
+    getHotelCards: builder.query<
+      ApiResponse<PTX.HotelCard[]>,
+      { keyword: string }
+    >({
+      query: (params) => ({ url: 'hotels', params }),
+    }),
   }),
 });
 
-export const { useLazyGetSceneCardsQuery, useLazyGetRestaurantCardsQuery } =
-  localApi;
+export const {
+  useLazyGetSceneCardsQuery,
+  useLazyGetRestaurantCardsQuery,
+  useLazyGetHotelCardsQuery,
+} = localApi;
