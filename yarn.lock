@@ -4403,6 +4403,11 @@ natural-compare@^1.4.0:
   resolved "https://registry.yarnpkg.com/natural-compare/-/natural-compare-1.4.0.tgz#4abebfeed7541f2c27acfb29bdbbd15c8d5ba4f7"
   integrity sha1-Sr6/7tdUHywnrPspvbvRXI1bpPc=
 
+next-api-handler@^0.0.7:
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/next-api-handler/-/next-api-handler-0.0.7.tgz#52b6828ab9e26dd8c5c380cacd7ba946cfcc1e5e"
+  integrity sha512-44rexxutC9QbcUYqnKjchAx8qnxOvQXHSg46miFm9DJ/u1/k0Jsdjhk5lBNwAz7oWrxrCmyKkcLc1BFE28rP+g==
+
 next@^12.0.3:
   version "12.0.3"
   resolved "https://registry.yarnpkg.com/next/-/next-12.0.3.tgz#325732ceb4193306a9a31912815fc570d1a66641"
