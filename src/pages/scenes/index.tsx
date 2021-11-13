@@ -8,8 +8,11 @@ import {
   InputGroup,
   InputRightElement,
   SimpleGrid,
+  useBreakpointValue,
+  useDisclosure,
 } from '@chakra-ui/react';
 import { GetStaticPropsContext, GetStaticPropsResult } from 'next';
+import dynamic from 'next/dynamic';
 import { BsGrid3X3GapFill } from 'react-icons/bs';
 import { FiSearch } from 'react-icons/fi';
 
@@ -28,6 +31,8 @@ import background from '@/static/background/scenes.png';
 import wordOne from '@/static/background/scenes-1.png';
 import wordTwo from '@/static/background/scenes-2.png';
 
+const DynamicSceneModal = dynamic(() => import('@/components/SceneModal'));
+
 interface ScenesPageProps {
   scenes: PTX.SceneCard[];
   remarks: PTX.SceneRemark[];
@@ -41,6 +46,9 @@ const ScenesPage = ({
   remarks,
   themes,
 }: ScenesPageProps): JSX.Element => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const isCentered = useBreakpointValue({ base: false, md: true });
+
   const onSearch = () => {};
 
   return (
@@ -54,7 +62,7 @@ const ScenesPage = ({
         wordTwo={wordTwo}
         bgColor={PAGE_PROPS.gradientColor}
       >
-        <Flex align="center" mt="8">
+        <Flex flexDir={['column', 'row']} align="center" mt="4">
           <InputGroup size="lg">
             <Input bg="white" placeholder="請輸入關鍵字" />
             <InputRightElement>
@@ -67,11 +75,19 @@ const ScenesPage = ({
               />
             </InputRightElement>
           </InputGroup>
-          <Button leftIcon={<BsGrid3X3GapFill />} size="lg" ml="4">
+          <Button
+            variant="scenes"
+            onClick={onOpen}
+            flexShrink={0}
+            leftIcon={<BsGrid3X3GapFill />}
+            size="lg"
+            m="4"
+          >
             進階搜尋
           </Button>
         </Flex>
       </Background>
+
       <Flex
         flexDir="column"
         bgGradient={`linear(to-b, ${PAGE_PROPS.gradientColor}, white)`}
@@ -129,6 +145,11 @@ const ScenesPage = ({
           ))}
         </SimpleGrid>
       </Flex>
+      <DynamicSceneModal
+        isOpen={isOpen}
+        onClose={onClose}
+        isCentered={isCentered}
+      />
     </>
   );
 };
