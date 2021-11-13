@@ -11,8 +11,8 @@ import {
   IconButton,
   Image,
   SimpleGrid,
-  Tag,
   Text,
+  VStack,
 } from '@chakra-ui/react';
 import {
   GetStaticPathsResult,
@@ -21,13 +21,32 @@ import {
 } from 'next';
 import { useRouter } from 'next/router';
 import type { ParsedUrlQuery } from 'querystring';
-import { BiChevronRight } from 'react-icons/bi';
-import { BsBookmarkPlus, BsBookmarkPlusFill } from 'react-icons/bs';
+import {
+  BiChevronRight,
+  BiLinkExternal,
+  BiMoney,
+  BiSync,
+} from 'react-icons/bi';
+import {
+  BsBookmarkPlus,
+  BsBookmarkPlusFill,
+  BsLightbulb,
+} from 'react-icons/bs';
+import {
+  FiClock,
+  FiMapPin,
+  FiPhoneIncoming,
+  FiSearch,
+  FiStopCircle,
+} from 'react-icons/fi';
+import { MdPhotoAlbum } from 'react-icons/md';
 
 import Banner from '@/components/Banner';
 import FanCard from '@/components/FanCard';
 import Layout from '@/components/layout/Layout';
+import LoadingScreen from '@/components/LoadingScreen';
 import RouteLink from '@/components/RouteLink';
+import SceneDetailBox from '@/components/SceneDetailText';
 import { CITIES } from '@/constants/category';
 import { getSceneById, getScenesWithRemarksByCity } from '@/services/ptx';
 
@@ -36,6 +55,10 @@ interface ScenePageProps {
   remarks: PTX.SceneRemark[];
 }
 
+const getGoogleMapURL = (lat?: number, lng?: number) =>
+  lat && lng
+    ? `https://www.google.com/maps/search/?api=1&query=${lat}%2C${lng}`
+    : undefined;
 const PAGE_PROPS = { mainColor: 'scenes.main', gradientColor: 'scenes.light' };
 
 const ScenePage = ({ scene, remarks }: ScenePageProps): JSX.Element => {
@@ -45,8 +68,7 @@ const ScenePage = ({ scene, remarks }: ScenePageProps): JSX.Element => {
   const saved = true;
 
   if (router.isFallback) {
-    //  TODO: add Loading screen
-    return null;
+    return <LoadingScreen mainColor={PAGE_PROPS.mainColor} />;
   }
 
   return (
@@ -66,11 +88,12 @@ const ScenePage = ({ scene, remarks }: ScenePageProps): JSX.Element => {
               景點
             </RouteLink>
           </BreadcrumbItem>
-          <BreadcrumbItem>
+          {/* TODO: add custom utils */}
+          {/* <BreadcrumbItem>
             <RouteLink href="#" as={BreadcrumbLink}>
               北部地區
             </RouteLink>
-          </BreadcrumbItem>
+          </BreadcrumbItem> */}
           <BreadcrumbItem>
             <RouteLink href={`/scenes/${scene.City}`} as={BreadcrumbLink}>
               {scene.City}
@@ -85,13 +108,16 @@ const ScenePage = ({ scene, remarks }: ScenePageProps): JSX.Element => {
             </RouteLink>
           </BreadcrumbItem>
         </Breadcrumb>
-        <Flex flexDir={{ base: 'column', lg: 'row' }} m="8">
-          <Box pos="relative" flexGrow={3} flexShrink={1}>
+        <Flex flexDir={{ base: 'column', lg: 'row' }} m={[4, 8]}>
+          <Box pos="relative" flexGrow={1} flexShrink={1} m="2">
             <IconButton
+              top="0"
+              right="0"
+              m="4"
               aria-label="save to favorite"
               pos="absolute"
-              w="24px"
-              h="24px"
+              size="lg"
+              rounded="full"
               icon={saved ? <BsBookmarkPlusFill /> : <BsBookmarkPlus />}
               color={saved ? 'red.600' : 'blackAlpha.600'}
             />
@@ -99,45 +125,104 @@ const ScenePage = ({ scene, remarks }: ScenePageProps): JSX.Element => {
             <Image
               alt={scene.Picture?.PictureDescription1 || scene.Name}
               src={scene.Picture?.PictureUrl1}
+              align="center"
+              fit="cover"
               fallbackSrc="/static/mock/scene.png"
-              width={900}
-              height={600}
+              width={[600, 900]}
+              height={[400, 600]}
             />
           </Box>
-          <Box
-            m="8"
-            flexGrow={1}
-            flexShrink={5}
-            lineHeight="7"
-            sx={{ p: { my: 2 } }}
-          >
+          <Box flexGrow={1} flexShrink={3} lineHeight="7" sx={{ p: { my: 2 } }}>
             <Heading textAlign="center" mb="4">
               {scene.Name}
             </Heading>
-            {scene.Description && <Text>{scene.Description}</Text>}
+            {scene.Description && (
+              <Text noOfLines={10}>{scene.Description}</Text>
+            )}
             {scene.DescriptionDetail &&
               scene.Description !== scene.DescriptionDetail && (
-                <Text>{scene.DescriptionDetail}</Text>
+                <Text noOfLines={10}>{scene.DescriptionDetail}</Text>
               )}
-            {scene.TravelInfo && <Text>{scene.TravelInfo}</Text>}
-            {scene.TicketInfo && <Text>{scene.TicketInfo}</Text>}
-            {scene.Remarks && <Text>{scene.Remarks}</Text>}
+            {scene.TravelInfo && <Text noOfLines={10}>{scene.TravelInfo}</Text>}
           </Box>
         </Flex>
       </Flex>
       <Flex bg="white" flexDir="column">
         <Flex flexDir={{ base: 'column', lg: 'row' }} m="8">
-          <Box textAlign="start">
+          <Box>
             <Heading>景點資訊</Heading>
-            <Text my="4">
-              <Tag>地址</Tag> {scene.Address}
-            </Text>
-            <Text my="4">
-              <Tag>電話</Tag> {scene.Phone}
-            </Text>
-            <Text my="4">
-              <Tag>開放時間</Tag> {scene.OpenTime}
-            </Text>
+            <VStack align="flex-start" textAlign="start" mt="8" spacing={4}>
+              <SceneDetailBox
+                label="地址"
+                info={
+                  scene.Address ||
+                  (scene.Position?.PositionLat &&
+                    scene.Position?.PositionLon &&
+                    '查看地圖')
+                }
+                href={
+                  scene.MapUrl ||
+                  getGoogleMapURL(
+                    scene.Position?.PositionLat,
+                    scene.Position?.PositionLon,
+                  )
+                }
+                icon={FiMapPin}
+              />
+              <SceneDetailBox
+                label="電話"
+                info={scene.Phone}
+                icon={FiPhoneIncoming}
+                href={`tel:${scene.Phone}`}
+              />
+              <SceneDetailBox
+                label="開放時間"
+                info={scene.OpenTime}
+                icon={FiClock}
+              />
+              <SceneDetailBox
+                label="相關鏈結"
+                info={scene.WebsiteUrl && '官網'}
+                href={scene.WebsiteUrl}
+                icon={BiLinkExternal}
+              />
+              <SceneDetailBox
+                label="票價資訊"
+                info={scene.TicketInfo}
+                icon={BiMoney}
+              />
+              <SceneDetailBox
+                label="主題"
+                info={[scene.Class1, scene.Class2, scene.Class3]
+                  .filter(Boolean)
+                  .join(', ')}
+                href={`/scenes/${scene.Class1}`}
+                icon={MdPhotoAlbum}
+              />
+              <SceneDetailBox
+                label="關鍵字"
+                info={scene.Keyword}
+                icon={FiSearch}
+              />
+              <SceneDetailBox
+                label="古蹟分級"
+                info={scene.Level}
+                icon={FiStopCircle}
+              />
+              <SceneDetailBox
+                label="相關備註"
+                info={scene.Remarks}
+                icon={BsLightbulb}
+              />
+              <SceneDetailBox
+                label="更新時間"
+                info={
+                  scene.UpdateTime &&
+                  new Date(scene.UpdateTime).toLocaleDateString()
+                }
+                icon={BiSync}
+              />
+            </VStack>
           </Box>
         </Flex>
         <Banner
