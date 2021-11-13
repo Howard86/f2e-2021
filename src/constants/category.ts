@@ -19,7 +19,7 @@ export const THEMES: PTX.SceneClass[] = [
   '體育健身類',
 ];
 
-export const CITIES: (PTX.SceneCity & keyof typeof CityMap)[] = [
+export const CITIES: (PTX.City & keyof typeof CityMap)[] = [
   '臺北市',
   '新北市',
   '桃園市',
@@ -44,7 +44,7 @@ export const CITIES: (PTX.SceneCity & keyof typeof CityMap)[] = [
   '連江縣',
 ];
 
-export const MAJOR_CITIES: PTX.SceneCity[] = [
+export const MAJOR_CITIES: PTX.City[] = [
   '臺北市',
   '新北市',
   '桃園市',
@@ -53,7 +53,7 @@ export const MAJOR_CITIES: PTX.SceneCity[] = [
   '高雄市',
 ];
 
-export const COUNTIES: PTX.SceneCity[] = [
+export const COUNTIES: PTX.City[] = [
   '基隆市',
   '新竹市',
   '新竹縣',
@@ -73,6 +73,31 @@ export const COUNTIES: PTX.SceneCity[] = [
 ];
 
 export enum CityMap {
+  '臺北市' = 'taipei',
+  '新北市' = 'newtaipei',
+  '桃園市' = 'taoyuan',
+  '臺中市' = 'taichung',
+  '臺南市' = 'tainan',
+  '高雄市' = 'kaohsiung',
+  '基隆市' = 'keelung',
+  '新竹市' = 'hsinchu',
+  '新竹縣' = 'hsinchucounty',
+  '苗栗縣' = 'miaolicounty',
+  '彰化縣' = 'changhuacounty',
+  '南投縣' = 'nantoucounty',
+  '雲林縣' = 'yunlincounty',
+  '嘉義縣' = 'chiayicounty',
+  '嘉義市' = 'chiayi',
+  '屏東縣' = 'pingtungcounty',
+  '宜蘭縣' = 'yilancounty',
+  '花蓮縣' = 'hualiencounty',
+  '臺東縣' = 'taitungcounty',
+  '金門縣' = 'kinmencounty',
+  '澎湖縣' = 'penghucounty',
+  '連江縣' = 'lienchiangcounty',
+}
+
+export enum PTXCityMap {
   '臺北市' = 'Taipei',
   '新北市' = 'NewTaipei',
   '桃園市' = 'Taoyuan',
@@ -95,4 +120,29 @@ export enum CityMap {
   '金門縣' = 'KinmenCounty',
   '澎湖縣' = 'PenghuCounty',
   '連江縣' = 'LienchiangCounty',
+}
+
+export enum CitySlugMap {
+  'taipei' = '臺北市',
+  'newtaipei' = '新北市',
+  'taoyuan' = '桃園市',
+  'taichung' = '臺中市',
+  'tainan' = '臺南市',
+  'kaohsiung' = '高雄市',
+  'keelung' = '基隆市',
+  'hsinchu' = '新竹市',
+  'hsinchucounty' = '新竹縣',
+  'miaolicounty' = '苗栗縣',
+  'changhuacounty' = '彰化縣',
+  'nantoucounty' = '南投縣',
+  'yunlincounty' = '雲林縣',
+  'chiayicounty' = '嘉義縣',
+  'chiayi' = '嘉義市',
+  'pingtungcounty' = '屏東縣',
+  'yilancounty' = '宜蘭縣',
+  'hualiencounty' = '花蓮縣',
+  'taitungcounty' = '臺東縣',
+  'kinmencounty' = '金門縣',
+  'penghucounty' = '澎湖縣',
+  'lienchiangcounty' = '連江縣',
 }

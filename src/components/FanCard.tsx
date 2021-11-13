@@ -24,6 +24,8 @@ import {
 
 import RouteLink from './RouteLink';
 
+import { CityMap } from '@/constants/category';
+
 interface PlaceCardProps extends BoxProps {
   id: string;
   city: string;
@@ -98,7 +100,10 @@ const FanCard = ({
             {hideLink ? (
               name
             ) : (
-              <RouteLink as={LinkOverlay} href={`/scenes/${city}/${id}`}>
+              <RouteLink
+                as={LinkOverlay}
+                href={`/scenes/${CityMap[city]}/${id}`}
+              >
                 {name}
               </RouteLink>
             )}

@@ -96,7 +96,7 @@ declare namespace PTX {
     | '都會公園類'
     | '體育健身類';
 
-  type SceneCity =
+  type City =
     | '臺北市'
     | '新北市'
     | '桃園市'
@@ -119,6 +119,30 @@ declare namespace PTX {
     | '金門縣'
     | '澎湖縣'
     | '連江縣';
+
+  type CitySlug =
+    | 'taipei'
+    | 'newtaipei'
+    | 'taoyuan'
+    | 'taichung'
+    | 'tainan'
+    | 'kaohsiung'
+    | 'keelung'
+    | 'hsinchu'
+    | 'hsinchucounty'
+    | 'miaolicounty'
+    | 'changhuacounty'
+    | 'nantoucounty'
+    | 'yunlincounty'
+    | 'chiayicounty'
+    | 'chiayi'
+    | 'pingtungcounty'
+    | 'yilancounty'
+    | 'hualiencounty'
+    | 'taitungcounty'
+    | 'kinmencounty'
+    | 'penghucounty'
+    | 'lienchiangcounty';
 
   interface Restaurant {
     ID: string;
@@ -214,14 +238,5 @@ declare namespace PTX {
     PositionLon: number;
     PositionLat: number;
     GeoHash: string;
-  }
-
-  type Hotel = Restaurant;
-
-  interface City {
-    id: string;
-    name: string;
-    image: string;
-    description: string;
   }
 }

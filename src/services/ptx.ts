@@ -6,7 +6,7 @@ import {
   constructScenesSearch,
 } from './utils';
 
-import { CityMap } from '@/constants/category';
+import { PTXCityMap } from '@/constants/category';
 
 const getAuthorizationHeader = () => {
   const AppID = process.env.PTX_APP_ID;
@@ -118,11 +118,11 @@ export const getSceneTheme = async (count = 30): Promise<PTX.SceneTheme[]> => {
 };
 
 export const getSceneCardsByCity = async (
-  city: PTX.SceneCity,
-  count: number,
+  city: PTX.City,
+  count = 30,
 ): Promise<PTX.SceneCard[]> => {
   const results = await apiGet<Omit<PTX.SceneCard, 'City'>[]>(
-    `Tourism/ScenicSpot/${CityMap[city]}`,
+    `Tourism/ScenicSpot/${PTXCityMap[city]}`,
     {
       $top: count.toString(),
       $select: 'ID,Name,Picture',
@@ -146,11 +146,11 @@ export const getSceneCardsByThemeClass = async (
   });
 
 export const getScenesWithRemarksByCity = async (
-  city: PTX.SceneCity,
+  city: PTX.City,
   count = 30,
 ): Promise<PTX.SceneRemark[]> => {
   const results = await apiGet<PTX.SceneRemark[]>(
-    `Tourism/ScenicSpot/${CityMap[city]}`,
+    `Tourism/ScenicSpot/${PTXCityMap[city]}`,
     {
       $top: (count * 5).toString(),
       $select: 'ID,Name,City,Remarks,Picture',
@@ -205,13 +205,13 @@ export const searchScenesByKeyword = async (
 
 export const searchScenesByKeywordAndCity = async (
   keyword: string,
-  city: PTX.SceneCity,
+  city: PTX.City,
   count = 30,
 ): Promise<PTX.SceneCard[]> =>
-  apiGet('Tourism/ScenicSpot', {
+  apiGet(`Tourism/ScenicSpot/${PTXCityMap[city]}`, {
     $top: count.toString(),
     $select: 'ID,City,Name,Picture',
-    $filter: `Picture/PictureUrl1 ne null and City eq '${city}' and (${constructScenesSearch(
+    $filter: `Picture/PictureUrl1 ne null and (${constructScenesSearch(
       keyword,
     )})`,
   });
@@ -233,6 +233,17 @@ export const getRestaurantCards = async (
   count = 30,
 ): Promise<PTX.RestaurantCard[]> =>
   apiGet('Tourism/Restaurant', {
+    $top: count.toString(),
+    $select: 'ID,Name,City,Address,OpenTime,Phone,Picture',
+    $filter: 'Picture/PictureUrl1 ne null and Address ne null',
+    $orderBy: 'UpdateTime desc',
+  });
+
+export const getRestaurantCardsByCity = async (
+  city: PTX.City,
+  count = 30,
+): Promise<PTX.RestaurantCard[]> =>
+  apiGet(`Tourism/Restaurant/${PTXCityMap[city]}`, {
     $top: count.toString(),
     $select: 'ID,Name,City,Address,OpenTime,Phone,Picture',
     $filter: 'Picture/PictureUrl1 ne null and Address ne null',
@@ -263,6 +274,17 @@ export const searchRestaurantsByKeyword = async (
 
 export const getHotelCards = async (count = 30): Promise<PTX.HotelCard[]> =>
   apiGet('Tourism/Hotel', {
+    $top: count.toString(),
+    $select: 'ID,Name,City,Address,ServiceInfo,Phone,Picture',
+    $filter: 'Picture/PictureUrl1 ne null and Address ne null',
+    $orderBy: 'ServiceInfo desc',
+  });
+
+export const getHotelCardsByCity = async (
+  city: PTX.City,
+  count = 30,
+): Promise<PTX.HotelCard[]> =>
+  apiGet(`Tourism/Hotel/${PTXCityMap[city]}`, {
     $top: count.toString(),
     $select: 'ID,Name,City,Address,ServiceInfo,Phone,Picture',
     $filter: 'Picture/PictureUrl1 ne null and Address ne null',

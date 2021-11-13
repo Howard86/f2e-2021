@@ -34,7 +34,7 @@ const SceneModal = ({ onClose, ...props }: Omit<ModalProps, 'children'>) => {
   const toast = useAppToast();
   const [themeName, setThemeName] = useState<PTX.SceneClass>(undefined);
   const [cityName, setCityName] = useState<
-    PTX.SceneCity | typeof DEFAULT_MENU_VALUE
+    PTX.City | typeof DEFAULT_MENU_VALUE
   >(DEFAULT_MENU_VALUE);
 
   const MajorCityButtons = useMemo(

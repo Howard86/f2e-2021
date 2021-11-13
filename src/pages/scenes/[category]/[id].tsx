@@ -270,7 +270,7 @@ export const getStaticProps = async (
     return { notFound: true };
   }
 
-  if (!CITIES.includes(context.params.category as PTX.SceneCity)) {
+  if (!CITIES.includes(context.params.category as PTX.City)) {
     return { notFound: true };
   }
 
@@ -281,7 +281,7 @@ export const getStaticProps = async (
       return { notFound: true };
     }
 
-    const city = context.params.category as PTX.SceneCity;
+    const city = context.params.category as PTX.City;
 
     const remarks = await getScenesWithRemarksByCity(city, 6);
 

@@ -49,7 +49,7 @@ import wordOne from '@/static/background/scenes-1.png';
 import wordTwo from '@/static/background/scenes-2.png';
 
 interface CategoryPageProps {
-  city?: PTX.SceneCity;
+  city?: PTX.City;
   theme?: PTX.SceneClass;
   scenes: PTX.SceneCard[];
   remarks: PTX.SceneRemark[];
@@ -273,8 +273,8 @@ export const getStaticProps = async (
   }
 
   try {
-    if (CITIES.includes(context.params.category as PTX.SceneCity)) {
-      const category = context.params.category as PTX.SceneCity;
+    if (CITIES.includes(context.params.category as PTX.City)) {
+      const category = context.params.category as PTX.City;
       const scenes = await getSceneCardsByCity(category, 30);
       const remarks = await getScenesWithRemarksByCity(category, 6);
 

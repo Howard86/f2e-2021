@@ -15,6 +15,8 @@ import { FiMapPin } from 'react-icons/fi';
 import CardBanner from './CardBanner';
 import RouteLink from './RouteLink';
 
+import { CityMap } from '@/constants/category';
+
 interface SceneCardProps extends LinkBoxProps {
   id: string;
   name: string;
@@ -59,7 +61,7 @@ const SceneCard = ({ id, name, city, image }: SceneCardProps) => (
         zIndex="docked"
       >
         <Text variant="headline-3">
-          <RouteLink as={LinkOverlay} href={`/scenes/${city}/${id}`}>
+          <RouteLink as={LinkOverlay} href={`/scenes/${CityMap[city]}/${id}`}>
             {name}
           </RouteLink>
         </Text>
