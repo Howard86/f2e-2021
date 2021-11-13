@@ -27,6 +27,7 @@ import LoadingScreen from '@/components/LoadingScreen';
 import Pagination from '@/components/Pagination';
 import PlaceCard from '@/components/PlaceCard';
 import { CityMap } from '@/constants/category';
+import { SIX_HOURS_IN_SECONDS } from '@/constants/time';
 import useAppToast from '@/hooks/use-app-toast';
 import { useLazyGetHotelCardsQuery } from '@/services/local';
 import { getHotelCards } from '@/services/ptx';
@@ -265,6 +266,7 @@ export const getStaticProps = async (
     props: {
       hotels,
     },
+    revalidate: SIX_HOURS_IN_SECONDS,
   };
 };
 

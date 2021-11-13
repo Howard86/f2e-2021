@@ -24,6 +24,7 @@ import LoadingScreen from '@/components/LoadingScreen';
 import SceneCard from '@/components/SceneCard';
 import ThemeCard from '@/components/ThemeCard';
 import { CityMap } from '@/constants/category';
+import { SIX_HOURS_IN_SECONDS } from '@/constants/time';
 import useAppToast from '@/hooks/use-app-toast';
 import { useLazyGetSceneCardsQuery } from '@/services/local';
 import {
@@ -230,6 +231,7 @@ export const getStaticProps = async (
 
     return {
       props: { scenes, remarks, themes },
+      revalidate: SIX_HOURS_IN_SECONDS,
     };
   } catch (error) {
     console.error(error);

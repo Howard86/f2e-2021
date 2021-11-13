@@ -28,6 +28,7 @@ import PlaceCard from '@/components/PlaceCard';
 import RouteLink from '@/components/RouteLink';
 import SceneCard from '@/components/SceneCard';
 import { CITIES, CityMap, CitySlugMap } from '@/constants/category';
+import { SIX_HOURS_IN_SECONDS } from '@/constants/time';
 import {
   getActivityCardsByCity,
   getHotelCardsByCity,
@@ -304,6 +305,7 @@ export const getStaticProps = async (
 
     return {
       props: { city, scenes, restaurants, hotels, activities },
+      revalidate: SIX_HOURS_IN_SECONDS,
     };
   } catch (error) {
     console.error(error);

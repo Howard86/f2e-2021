@@ -23,6 +23,7 @@ import LoadingScreen from '@/components/LoadingScreen';
 import Pagination from '@/components/Pagination';
 import PlaceCard from '@/components/PlaceCard';
 import { CityMap } from '@/constants/category';
+import { SIX_HOURS_IN_SECONDS } from '@/constants/time';
 import useAppToast from '@/hooks/use-app-toast';
 import { useLazyGetRestaurantCardsQuery } from '@/services/local';
 import { getRestaurantCards, getRestaurantWithRemarks } from '@/services/ptx';
@@ -227,7 +228,7 @@ export const getStaticProps = async (
     getRestaurantWithRemarks(6),
   ]);
 
-  return { props: { restaurants, remarks } };
+  return { props: { restaurants, remarks }, revalidate: SIX_HOURS_IN_SECONDS };
 };
 
 export default RestaurantsPage;

@@ -43,6 +43,7 @@ import LoadingScreen from '@/components/LoadingScreen';
 import RouteLink from '@/components/RouteLink';
 import SceneDetailBox from '@/components/SceneDetailText';
 import { CITIES, CityMap, CitySlugMap } from '@/constants/category';
+import { ONE_DAY_IN_SECONDS } from '@/constants/time';
 import { getActivityById, getActivityWithRemarksByCity } from '@/services/ptx';
 
 interface ActivityPageProps {
@@ -308,6 +309,7 @@ export const getStaticProps = async (
 
     return {
       props: { activity, remarks },
+      revalidate: ONE_DAY_IN_SECONDS,
     };
   } catch (error) {
     console.error(error);

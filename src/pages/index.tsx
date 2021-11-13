@@ -12,6 +12,7 @@ import SceneCard from '@/components/SceneCard';
 import SiteCardGrid from '@/components/SiteCardGrid';
 import WeatherCarousel from '@/components/WeatherCarousel';
 import { CityMap } from '@/constants/category';
+import { SIX_HOURS_IN_SECONDS } from '@/constants/time';
 import {
   getHotelCards,
   getRestaurantCards,
@@ -155,6 +156,7 @@ export const getStaticProps = async (
       restaurants,
       hotels,
     },
+    revalidate: SIX_HOURS_IN_SECONDS,
   };
 };
 
