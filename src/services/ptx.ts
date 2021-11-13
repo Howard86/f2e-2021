@@ -1,6 +1,6 @@
 import JsSHA1 from 'jssha/dist/sha1';
 
-import { constructODataSearch } from './utils';
+import { constructRestaurantsSearch, constructScenesSearch } from './utils';
 
 import { CityMap } from '@/constants/category';
 
@@ -69,9 +69,6 @@ export const getScenesWithRemarks = async (
     .sort((a, b) => (a.Remarks?.length > b.Remarks.length ? -1 : 1))
     .slice(0, count);
 };
-
-export const getScenes = async (count = 30): Promise<PTX.Scene[]> =>
-  apiGet('Tourism/ScenicSpot', { $top: count.toString() });
 
 export const getSceneTheme = async (count = 30): Promise<PTX.SceneTheme[]> => {
   const rawResults = await apiGet<PTX.RawSceneTheme[]>('Tourism/ScenicSpot', {
@@ -197,7 +194,7 @@ export const searchScenesByKeyword = async (
   apiGet('Tourism/ScenicSpot', {
     $top: count.toString(),
     $select: 'ID,City,Name,Picture',
-    $filter: `Picture/PictureUrl1 ne null and City ne null and (${constructODataSearch(
+    $filter: `Picture/PictureUrl1 ne null and City ne null and (${constructScenesSearch(
       keyword,
     )})`,
   });
@@ -210,7 +207,7 @@ export const searchScenesByKeywordAndCity = async (
   apiGet('Tourism/ScenicSpot', {
     $top: count.toString(),
     $select: 'ID,City,Name,Picture',
-    $filter: `Picture/PictureUrl1 ne null and City eq '${city}' and (${constructODataSearch(
+    $filter: `Picture/PictureUrl1 ne null and City eq '${city}' and (${constructScenesSearch(
       keyword,
     )})`,
   });
@@ -223,32 +220,64 @@ export const searchScenesByKeywordAndTheme = async (
   apiGet('Tourism/ScenicSpot', {
     $top: count.toString(),
     $select: 'ID,City,Name,Picture',
-    $filter: `Picture/PictureUrl1 ne null and City ne null and (Class1 eq '${theme}' or Class2 eq '${theme}' or Class3 eq '${theme}') and (${constructODataSearch(
+    $filter: `Picture/PictureUrl1 ne null and City ne null and (Class1 eq '${theme}' or Class2 eq '${theme}' or Class3 eq '${theme}') and (${constructScenesSearch(
       keyword,
     )})`,
   });
 
-export const getRestaurants = async (): Promise<PTX.Restaurant[]> =>
-  new Array(10).fill(0).map((_, index) => ({
-    id: `food${index}`,
-    name: '胡切仔麵',
-    city: `南投縣${index}`,
-    address: '南投縣545埔里鎮新生路10號',
-    openingHours: '16:00-22:00',
-    contactNumber: '04-92994225',
-    image: '/static/mock/food.png',
-  }));
+export const getRestaurantCards = async (
+  count = 30,
+): Promise<PTX.RestaurantCard[]> =>
+  apiGet('Tourism/Restaurant', {
+    $top: count.toString(),
+    $select: 'ID,Name,City,Address,OpenTime,Phone,Picture',
+    $filter: 'Picture/PictureUrl1 ne null and Address ne null',
+    $orderBy: 'UpdateTime desc',
+  });
 
-export const getHotels = async (): Promise<PTX.Hotel[]> => {
-  const results = await getRestaurants();
+export const getRestaurantWithRemarks = async (
+  count = 30,
+): Promise<PTX.RestaurantRemark[]> =>
+  apiGet('Tourism/Restaurant', {
+    $top: count.toString(),
+    $select: 'ID,Name,Description,City,Address,Picture',
+    $filter: 'Picture/PictureUrl1 ne null and Address ne null and City ne null',
+    $orderBy: 'Description desc, UpdateTime desc',
+  });
 
-  return results.map((result, index) => ({ ...result, id: `hotel${index}` }));
-};
+export const searchRestaurantsByKeyword = async (
+  keyword: string,
+  count = 30,
+): Promise<PTX.RestaurantCard[]> =>
+  apiGet('Tourism/Restaurant', {
+    $top: count.toString(),
+    $select: 'ID,Name,City,Address,OpenTime,Phone,Picture',
+    $filter: `Picture/PictureUrl1 ne null and City ne null and (${constructRestaurantsSearch(
+      keyword,
+    )})`,
+  });
 
-export const getCity = async (_slug: string): Promise<PTX.City> => ({
-  id: '1',
-  name: '台北市',
-  description:
-    '在臺北，您每個所到之處，多樣的文化特質都充沛鼓動著。雕龍畫棟的廟宇與現代的街道完美吻合，還有許多世界級餐廳隨時提供您最正統的各式中華料理。別忘了，美味的夜市小吃不僅僅帶給您口腹的滿足，更是引領您體驗臺灣生活的理想去處。',
-  image: '/static/mock/scene.png',
-});
+// export const getRestaurants = async (): Promise<PTX.Restaurant[]> =>
+//   new Array(10).fill(0).map((_, index) => ({
+//     id: `food${index}`,
+//     name: '胡切仔麵',
+//     city: `南投縣${index}`,
+//     address: '南投縣545埔里鎮新生路10號',
+//     openingHours: '16:00-22:00',
+//     contactNumber: '04-92994225',
+//     image: '/static/mock/food.png',
+//   }));
+
+// export const getHotels = async (): Promise<PTX.Hotel[]> => {
+//   const results = await getRestaurants();
+
+//   return results.map((result, index) => ({ ...result, id: `hotel${index}` }));
+// };
+
+// export const getCity = async (_slug: string): Promise<PTX.City> => ({
+//   id: '1',
+//   name: '台北市',
+//   description:
+//     '在臺北，您每個所到之處，多樣的文化特質都充沛鼓動著。雕龍畫棟的廟宇與現代的街道完美吻合，還有許多世界級餐廳隨時提供您最正統的各式中華料理。別忘了，美味的夜市小吃不僅僅帶給您口腹的滿足，更是引領您體驗臺灣生活的理想去處。',
+//   image: '/static/mock/scene.png',
+// });

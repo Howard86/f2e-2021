@@ -1,4 +1,4 @@
-export const SCENE_KEYWORDS: (keyof PTX.Scene)[] = [
+const SCENE_KEYWORDS: (keyof PTX.Scene)[] = [
   'Description',
   'Name',
   'DescriptionDetail',
@@ -12,7 +12,25 @@ export const SCENE_KEYWORDS: (keyof PTX.Scene)[] = [
   'Class3',
 ];
 
-export const constructODataSearch = (value: string): string =>
-  SCENE_KEYWORDS.map((keyword) => `indexof(${keyword}, '${value}') gt -1`).join(
+const RESTAURANT_KEYWORDS: (keyof PTX.Restaurant)[] = [
+  'Name',
+  'Description',
+  'Address',
+  'OpenTime',
+  'Class',
+  'City',
+  'ParkingInfo',
+];
+
+const getODataSearchCriteria = (keyword: string, value: string) =>
+  `indexof(${keyword}, '${value}') gt -1`;
+
+export const constructScenesSearch = (value: string): string =>
+  SCENE_KEYWORDS.map((keyword) => getODataSearchCriteria(keyword, value)).join(
     ' or ',
   );
+
+export const constructRestaurantsSearch = (value: string): string =>
+  RESTAURANT_KEYWORDS.map((keyword) =>
+    getODataSearchCriteria(keyword, value),
+  ).join(' or ');

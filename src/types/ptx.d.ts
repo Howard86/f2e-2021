@@ -120,6 +120,54 @@ declare namespace PTX {
     | '澎湖縣'
     | '連江縣';
 
+  interface Restaurant {
+    ID: string;
+    Name: string;
+    Description: string;
+    Address: string;
+    ZipCode?: string;
+    Phone: string;
+    OpenTime?: string;
+    WebsiteUrl?: string;
+    Picture: Picture;
+    Position: Position;
+    Class?: RestaurantClass;
+    SrcUpdateTime: string;
+    UpdateTime: string;
+    City?: string;
+    ParkingInfo?: string;
+    MapUrl?: string;
+  }
+
+  type RestaurantClass =
+    | '中式美食'
+    | '伴手禮'
+    | '其他'
+    | '地方特產'
+    | '夜市小吃'
+    | '甜點冰品'
+    | '異國料理'
+    | '素食';
+
+  interface RestaurantCard {
+    ID: string;
+    Name: string;
+    City?: string;
+    Address: string;
+    OpenTime?: string;
+    Phone?: string;
+    Picture: Picture;
+  }
+
+  interface RestaurantRemark {
+    ID: string;
+    Name: string;
+    Description: string;
+    City: string;
+    Address: string;
+    Picture: Picture;
+  }
+
   interface Picture {
     PictureUrl1?: string;
     PictureDescription1?: string;
@@ -131,16 +179,6 @@ declare namespace PTX {
     PositionLon: number;
     PositionLat: number;
     GeoHash: string;
-  }
-
-  interface Restaurant {
-    id: string;
-    name: string;
-    city: string;
-    address: string;
-    openingHours: string;
-    contactNumber: string;
-    image: string;
   }
 
   type Hotel = Restaurant;
