@@ -225,6 +225,43 @@ declare namespace PTX {
     Picture: Picture;
   }
 
+  interface Activity {
+    ID: string;
+    Name: string;
+    Description: string;
+    Particpation?: string;
+    Location?: string;
+    Address?: string;
+    Phone?: string;
+    Organizer: string;
+    StartTime: string;
+    EndTime: string;
+    Picture: Picture;
+    Position: Position;
+    Class1?: string;
+    SrcUpdateTime: string;
+    UpdateTime: string;
+    Class2?: string;
+    Cycle?: string;
+    WebsiteUrl?: string;
+    City?: string;
+    ParkingInfo?: string;
+    Charge?: string;
+    MapUrl?: string;
+    TravelInfo?: string;
+  }
+
+  interface ActivityCard {
+    ID: string;
+    Name: string;
+    City: string;
+    Address: string;
+    Phone: string;
+    Picture: Picture;
+    StartTime: string;
+    EndTime: string;
+  }
+
   interface Picture {
     PictureUrl1?: string;
     PictureDescription1?: string;

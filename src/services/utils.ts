@@ -34,6 +34,22 @@ const HOTEL_KEYWORDS: (keyof PTX.Hotel)[] = [
   'Spec',
 ];
 
+const ACTIVITY_KEYWORDS: (keyof PTX.Activity)[] = [
+  'Name',
+  'Description',
+  'Particpation',
+  'Address',
+  'Organizer',
+  'StartTime',
+  'EndTime',
+  'Class1',
+  'Class2',
+  'City',
+  'ParkingInfo',
+  'Charge',
+  'TravelInfo',
+];
+
 const getODataSearchCriteria = (keyword: string, value: string) =>
   `indexof(${keyword}, '${value}') gt -1`;
 
@@ -51,3 +67,8 @@ export const constructHotelsSearch = (value: string): string =>
   HOTEL_KEYWORDS.map((keyword) => getODataSearchCriteria(keyword, value)).join(
     ' or ',
   );
+
+export const constructActivitiesSearch = (value: string): string =>
+  ACTIVITY_KEYWORDS.map((keyword) =>
+    getODataSearchCriteria(keyword, value),
+  ).join(' or ');

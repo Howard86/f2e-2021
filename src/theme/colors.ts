@@ -19,6 +19,11 @@ const colors = {
     main: '#AA796C',
     dark: '#81564B',
   },
+  activities: {
+    light: 'var(--chakra-colors-blue-200)',
+    main: 'var(--chakra-colors-blue-400)',
+    dark: 'var(--chakra-colors-blue-700)',
+  },
   text: {
     head: 'var(--chakra-colors-blackAlpha-800)',
     body: 'var(--chakra-colors-blackAlpha-600)',

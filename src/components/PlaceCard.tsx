@@ -20,7 +20,7 @@ const PlaceCard = ({
   city = '-',
   address,
   openingHours,
-  contactNumber = '-',
+  contactNumber,
   serviceInfo,
   image,
 }: PlaceCardProps) => (
@@ -62,7 +62,7 @@ const PlaceCard = ({
         </Flex>
       </Flex>
       <Text fontWeight="bold">{address}</Text>
-      <Text variant="body">電話：{contactNumber}</Text>
+      {contactNumber && <Text variant="body">電話：{contactNumber}</Text>}
       {openingHours && <Text variant="body">營業時間：{openingHours}</Text>}
       {serviceInfo && <Text variant="body">服務：{serviceInfo}</Text>}
     </Flex>

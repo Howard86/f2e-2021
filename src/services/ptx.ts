@@ -1,6 +1,7 @@
 import JsSHA1 from 'jssha/dist/sha1';
 
 import {
+  constructActivitiesSearch,
   constructHotelsSearch,
   constructRestaurantsSearch,
   constructScenesSearch,
@@ -299,6 +300,29 @@ export const searchHotelsByKeyword = async (
     $top: count.toString(),
     $select: 'ID,Name,City,Address,ServiceInfo,Phone,Picture',
     $filter: `Picture/PictureUrl1 ne null and City ne null and (${constructHotelsSearch(
+      keyword,
+    )})`,
+  });
+
+export const getActivityCardsByCity = async (
+  city: PTX.City,
+  count = 30,
+): Promise<PTX.ActivityCard[]> =>
+  apiGet(`Tourism/Activity/${PTXCityMap[city]}`, {
+    $top: count.toString(),
+    $select: 'ID,Name,City,Address,StartTime,EndTime,Phone,Picture',
+    $filter: 'Picture/PictureUrl1 ne null and Address ne null',
+    $orderBy: 'StartTime desc',
+  });
+
+export const searchActivitiesByKeyword = async (
+  keyword: string,
+  count = 30,
+): Promise<PTX.ActivityCard[]> =>
+  apiGet('Tourism/Activity', {
+    $top: count.toString(),
+    $select: 'ID,Name,City,Address,StartTime,EndTime,Phone,Picture',
+    $filter: `Picture/PictureUrl1 ne null and City ne null and (${constructActivitiesSearch(
       keyword,
     )})`,
   });

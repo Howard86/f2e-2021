@@ -29,6 +29,7 @@ import RouteLink from '@/components/RouteLink';
 import SceneCard from '@/components/SceneCard';
 import { CITIES, CityMap, CitySlugMap } from '@/constants/category';
 import {
+  getActivityCardsByCity,
   getHotelCardsByCity,
   getRestaurantCardsByCity,
   getSceneCardsByCity,
@@ -42,6 +43,7 @@ interface CityPageProps {
   scenes: PTX.SceneCard[];
   restaurants: PTX.RestaurantCard[];
   hotels: PTX.HotelCard[];
+  activities: PTX.ActivityCard[];
 }
 
 const DEFAULT_CARD_NUMBER = 6;
@@ -52,12 +54,14 @@ const CategoryPage = ({
   scenes,
   restaurants,
   hotels,
+  activities,
 }: CityPageProps): JSX.Element => {
   const router = useRouter();
 
   const [scenePage, setScenePage] = useState(0);
   const [restaurantPage, setRestaurantPage] = useState(0);
   const [hotelPage, setHotelPage] = useState(0);
+  const [activityPage, setActivityPage] = useState(0);
 
   if (router.isFallback) {
     return <LoadingScreen mainColor={PAGE_PROPS.mainColor} minH="400px" />;
@@ -135,8 +139,49 @@ const CategoryPage = ({
           />
         </Center>
         <Banner
+          title="最新活動"
+          mainColor="activities.main"
+          href="/scenes"
+          hideButton
+        />
+        <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
+          {activities
+            .slice(
+              DEFAULT_CARD_NUMBER * activityPage,
+              DEFAULT_CARD_NUMBER * activityPage + DEFAULT_CARD_NUMBER,
+            )
+            .map((activity) => (
+              <PlaceCard
+                key={activity.ID}
+                id={activity.ID}
+                name={activity.Name}
+                city={activity.City}
+                image={activity.Picture.PictureUrl1}
+                address={activity.Address}
+                contactNumber={activity.Phone}
+                openingHours={
+                  activity.StartTime &&
+                  activity.EndTime &&
+                  `${new Date(
+                    activity.StartTime,
+                  ).toLocaleDateString()}~${new Date(
+                    activity.EndTime,
+                  ).toLocaleDateString()}`
+                }
+              />
+            ))}
+        </SimpleGrid>
+        <Center mt="8">
+          <Pagination
+            colorTheme="hotels"
+            page={activityPage}
+            total={Math.ceil(activities.length / DEFAULT_CARD_NUMBER)}
+            onPageChange={setActivityPage}
+          />
+        </Center>
+        <Banner
           title="熱門美食"
-          mainColor="restaurants.main"
+          mainColor="activities.main"
           href="/scenes"
           hideButton
         />
@@ -243,14 +288,15 @@ export const getStaticProps = async (
   }
 
   try {
-    const [scenes, restaurants, hotels] = await Promise.all([
+    const [scenes, restaurants, hotels, activities] = await Promise.all([
       getSceneCardsByCity(city, 30),
       getRestaurantCardsByCity(city, 30),
       getHotelCardsByCity(city, 30),
+      getActivityCardsByCity(city, 30),
     ]);
 
     return {
-      props: { city, scenes, restaurants, hotels },
+      props: { city, scenes, restaurants, hotels, activities },
     };
   } catch (error) {
     console.error(error);
