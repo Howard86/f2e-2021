@@ -295,6 +295,17 @@ export const searchRestaurantsByKeyword = async (
     )})`,
   });
 
+export const getHotelById = async (
+  id: string,
+): Promise<PTX.Hotel | undefined> => {
+  const result = await apiGet<PTX.Hotel[]>('Tourism/Hotel', {
+    $top: '1',
+    $filter: `ID eq '${id}'`,
+  });
+
+  return result[0];
+};
+
 export const getHotelCards = async (count = 30): Promise<PTX.HotelCard[]> =>
   apiGet('Tourism/Hotel', {
     $top: count.toString(),
@@ -312,6 +323,17 @@ export const getHotelCardsByCity = async (
     $select: 'ID,Name,City,Address,ServiceInfo,Phone,Picture',
     $filter: 'Picture/PictureUrl1 ne null and Address ne null',
     $orderBy: 'ServiceInfo desc',
+  });
+
+export const getHotelWithRemarksByCity = async (
+  city: PTX.City,
+  count = 30,
+): Promise<PTX.HotelRemark[]> =>
+  apiGet(`Tourism/Hotel/${PTXCityMap[city]}`, {
+    $top: count.toString(),
+    $select: 'ID,Name,Description,City,Address,Picture',
+    $filter: 'Picture/PictureUrl1 ne null and Address ne null',
+    $orderBy: 'ServiceInfo desc, UpdateTime desc',
   });
 
 export const searchHotelsByKeyword = async (

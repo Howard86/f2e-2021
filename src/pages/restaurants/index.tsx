@@ -177,7 +177,9 @@ const RestaurantsPage = ({
                 address={restaurant.Address}
                 contactNumber={restaurant.Phone}
                 openingHours={restaurant.OpenTime}
-                href={`/cities/${restaurant.City}/restaurant/${restaurant.ID}`}
+                href={`/cities/${CityMap[restaurant.City]}/restaurant/${
+                  restaurant.ID
+                }`}
               />
             ))}
         </SimpleGrid>

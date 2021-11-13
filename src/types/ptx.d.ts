@@ -225,6 +225,15 @@ declare namespace PTX {
     Picture: Picture;
   }
 
+  interface HotelRemark {
+    ID: string;
+    Name: string;
+    Description: string;
+    City: string;
+    Address: string;
+    Picture: Picture;
+  }
+
   interface Activity {
     ID: string;
     Name: string;

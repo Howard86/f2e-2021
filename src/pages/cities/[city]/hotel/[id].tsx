@@ -21,9 +21,11 @@ import {
 } from 'next';
 import { useRouter } from 'next/router';
 import type { ParsedUrlQuery } from 'querystring';
+import { AiFillStar } from 'react-icons/ai';
 import { BiChevronRight, BiLinkExternal, BiSync } from 'react-icons/bi';
 import { BsBookmarkPlus, BsBookmarkPlusFill } from 'react-icons/bs';
-import { FiClock, FiMapPin, FiPhoneIncoming } from 'react-icons/fi';
+import { FaFax } from 'react-icons/fa';
+import { FiMapPin, FiPhoneIncoming } from 'react-icons/fi';
 import { MdPhotoAlbum } from 'react-icons/md';
 
 import Banner from '@/components/Banner';
@@ -33,13 +35,10 @@ import LoadingScreen from '@/components/LoadingScreen';
 import RouteLink from '@/components/RouteLink';
 import SceneDetailBox from '@/components/SceneDetailText';
 import { CITIES, CityMap, CitySlugMap } from '@/constants/category';
-import {
-  getRestaurantById,
-  getRestaurantWithRemarksByCity,
-} from '@/services/ptx';
+import { getHotelById, getHotelWithRemarksByCity } from '@/services/ptx';
 
-interface RestaurantPageProps {
-  restaurant: PTX.Restaurant;
+interface HotelPageProps {
+  hotel: PTX.Hotel;
   remarks: PTX.RestaurantRemark[];
 }
 
@@ -48,14 +47,11 @@ const getGoogleMapURL = (lat?: number, lng?: number) =>
     ? `https://www.google.com/maps/search/?api=1&query=${lat}%2C${lng}`
     : undefined;
 const PAGE_PROPS = {
-  mainColor: 'restaurants.main',
-  gradientColor: 'restaurants.light',
+  mainColor: 'hotels.main',
+  gradientColor: 'hotels.light',
 };
 
-const RestaurantPage = ({
-  restaurant,
-  remarks,
-}: RestaurantPageProps): JSX.Element => {
+const HotelPage = ({ hotel, remarks }: HotelPageProps): JSX.Element => {
   const router = useRouter();
 
   // TODO: add saved info
@@ -78,26 +74,24 @@ const RestaurantPage = ({
           separator={<Icon as={BiChevronRight} />}
         >
           <BreadcrumbItem>
-            <RouteLink href="/restaurants" as={BreadcrumbLink}>
-              美食
+            <RouteLink href="/hotels" as={BreadcrumbLink}>
+              住宿
             </RouteLink>
           </BreadcrumbItem>
           <BreadcrumbItem>
             <RouteLink
-              href={`/cities/${CityMap[restaurant.City]}`}
+              href={`/cities/${CityMap[hotel.City]}`}
               as={BreadcrumbLink}
             >
-              {restaurant.City}
+              {hotel.City}
             </RouteLink>
           </BreadcrumbItem>
           <BreadcrumbItem fontWeight="bold" isCurrentPage>
             <RouteLink
-              href={`/cities/${CityMap[restaurant.City]}/restaurant/${
-                restaurant.ID
-              }`}
+              href={`/cities/${CityMap[hotel.City]}/hotel/${hotel.ID}`}
               as={BreadcrumbLink}
             >
-              {restaurant.Name}
+              {hotel.Name}
             </RouteLink>
           </BreadcrumbItem>
         </Breadcrumb>
@@ -115,8 +109,8 @@ const RestaurantPage = ({
               color={saved ? 'red.600' : 'blackAlpha.600'}
             />
             <Image
-              alt={restaurant.Picture?.PictureDescription1 || restaurant.Name}
-              src={restaurant.Picture?.PictureUrl1}
+              alt={hotel.Picture?.PictureDescription1 || hotel.Name}
+              src={hotel.Picture?.PictureUrl1}
               align="center"
               fit="cover"
               fallbackSrc="/static/fallback.jpg"
@@ -126,13 +120,17 @@ const RestaurantPage = ({
           </Box>
           <Box flexGrow={1} flexShrink={3} lineHeight="7" sx={{ p: { my: 2 } }}>
             <Heading textAlign="center" mb="4">
-              {restaurant.Name}
+              {hotel.Name}
             </Heading>
-            {restaurant.Description && (
-              <Text noOfLines={10}>{restaurant.Description}</Text>
+            {hotel.Description && (
+              <Text noOfLines={10}>{hotel.Description}</Text>
             )}
-            {restaurant.ParkingInfo && (
-              <Text noOfLines={10}>{restaurant.ParkingInfo}</Text>
+            {hotel.Spec && <Text noOfLines={10}>{hotel.Spec}</Text>}
+            {hotel.ServiceInfo && (
+              <Text noOfLines={10}>{hotel.ServiceInfo}</Text>
+            )}
+            {hotel.ParkingInfo && (
+              <Text noOfLines={10}>{hotel.ParkingInfo}</Text>
             )}
           </Box>
         </Flex>
@@ -140,52 +138,50 @@ const RestaurantPage = ({
       <Flex bg="white" flexDir="column">
         <Flex flexDir={{ base: 'column', lg: 'row' }} m="8">
           <Box>
-            <Heading>餐廳資訊</Heading>
+            <Heading>住宿資訊</Heading>
             <VStack align="flex-start" textAlign="start" mt="8" spacing={4}>
               <SceneDetailBox
                 label="地址"
                 info={
-                  restaurant.Address ||
-                  (restaurant.Position?.PositionLat &&
-                    restaurant.Position?.PositionLon &&
+                  hotel.Address ||
+                  (hotel.Position?.PositionLat &&
+                    hotel.Position?.PositionLon &&
                     '查看地圖')
                 }
-                href={
-                  restaurant.MapUrl ||
-                  getGoogleMapURL(
-                    restaurant.Position?.PositionLat,
-                    restaurant.Position?.PositionLon,
-                  )
-                }
+                href={getGoogleMapURL(
+                  hotel.Position?.PositionLat,
+                  hotel.Position?.PositionLon,
+                )}
                 icon={FiMapPin}
               />
               <SceneDetailBox
                 label="電話"
-                info={restaurant.Phone}
+                info={hotel.Phone}
                 icon={FiPhoneIncoming}
-                href={`tel:${restaurant.Phone}`}
+                href={`tel:${hotel.Phone}`}
               />
+              <SceneDetailBox label="傳真" info={hotel.Fax} icon={FaFax} />
               <SceneDetailBox
-                label="開放時間"
-                info={restaurant.OpenTime}
-                icon={FiClock}
+                label="星級"
+                info={hotel.Grade}
+                icon={AiFillStar}
               />
               <SceneDetailBox
                 label="相關鏈結"
-                info={restaurant.WebsiteUrl && '官網'}
-                href={restaurant.WebsiteUrl}
+                info={hotel.WebsiteUrl && '官網'}
+                href={hotel.WebsiteUrl}
                 icon={BiLinkExternal}
               />
               <SceneDetailBox
                 label="分類"
-                info={restaurant.Class}
+                info={hotel.Class}
                 icon={MdPhotoAlbum}
               />
               <SceneDetailBox
                 label="更新時間"
                 info={
-                  restaurant.UpdateTime &&
-                  new Date(restaurant.UpdateTime).toLocaleDateString()
+                  hotel.UpdateTime &&
+                  new Date(hotel.UpdateTime).toLocaleDateString()
                 }
                 icon={BiSync}
               />
@@ -206,7 +202,7 @@ const RestaurantPage = ({
               city={remark.City}
               description={remark.Description}
               image={remark.Picture.PictureUrl1}
-              href={`/cities/${CityMap[remark.City]}/restaurant/${remark.ID}`}
+              href={`/cities/${CityMap[remark.City]}/hotel/${remark.ID}`}
             />
           ))}
         </SimpleGrid>
@@ -215,8 +211,8 @@ const RestaurantPage = ({
   );
 };
 
-RestaurantPage.Layout = Layout;
-RestaurantPage.layoutProps = PAGE_PROPS;
+HotelPage.Layout = Layout;
+HotelPage.layoutProps = PAGE_PROPS;
 
 interface CityPath extends ParsedUrlQuery {
   city: string;
@@ -229,7 +225,7 @@ export const getStaticPaths = (): GetStaticPathsResult<CityPath> => ({
 
 export const getStaticProps = async (
   context: GetStaticPropsContext,
-): Promise<GetStaticPropsResult<RestaurantPageProps>> => {
+): Promise<GetStaticPropsResult<HotelPageProps>> => {
   if (
     typeof context.params.id !== 'string' ||
     typeof context.params.city !== 'string'
@@ -241,7 +237,7 @@ export const getStaticProps = async (
   if (citySlug !== citySlug.toLowerCase()) {
     return {
       redirect: {
-        destination: `/cities/${citySlug.toLowerCase()}/restaurant/${
+        destination: `/cities/${citySlug.toLowerCase()}/hotel/${
           context.params.id
         }`,
         permanent: true,
@@ -256,16 +252,16 @@ export const getStaticProps = async (
   }
 
   try {
-    const restaurant = await getRestaurantById(context.params.id);
+    const hotel = await getHotelById(context.params.id);
 
-    if (!restaurant) {
+    if (!hotel) {
       return { notFound: true };
     }
 
-    const remarks = await getRestaurantWithRemarksByCity(city, 6);
+    const remarks = await getHotelWithRemarksByCity(city, 6);
 
     return {
-      props: { restaurant, remarks },
+      props: { hotel, remarks },
     };
   } catch (error) {
     console.error(error);
@@ -274,4 +270,4 @@ export const getStaticProps = async (
   }
 };
 
-export default RestaurantPage;
+export default HotelPage;
