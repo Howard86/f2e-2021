@@ -18,11 +18,11 @@ import {
   getRestaurantCards,
   getSceneCards,
 } from '@/services/ptx';
-import { getWeathers } from '@/services/weather';
+import getWeathers from '@/services/weather';
 import mainBackground from '@/static/background/main.png';
 
 interface HomePageProps {
-  weathers: Weather.City[];
+  weathers: OpenData.CityWeather[];
   scenes: PTX.SceneCard[];
   restaurants: PTX.RestaurantCard[];
   hotels: PTX.HotelCard[];
