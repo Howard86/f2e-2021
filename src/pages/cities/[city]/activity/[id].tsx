@@ -79,7 +79,9 @@ const ActivityPage = ({
     <>
       <NextHeadSeo
         title={`台灣旅遊導覽網 | ${activity.Name}`}
+        description={activity.Description}
         og={{
+          type: 'article',
           title: activity.Name,
           description: activity.Picture.PictureDescription1,
           image: activity.Picture.PictureUrl1,
@@ -136,7 +138,7 @@ const ActivityPage = ({
               align="center"
               fit="cover"
               loading="lazy"
-              fallbackSrc="/static/fallback.jpg"
+              fallbackSrc="/static/fallback-lg.jpg"
               width={[600, 900]}
               height={[400, 600]}
             />

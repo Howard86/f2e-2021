@@ -69,7 +69,9 @@ const HotelPage = ({ hotel, remarks }: HotelPageProps): JSX.Element => {
     <>
       <NextHeadSeo
         title={`台灣旅遊導覽網 | ${hotel.Name}`}
+        description={hotel.Description}
         og={{
+          type: 'article',
           title: hotel.Name,
           description: hotel.Picture.PictureDescription1,
           image: hotel.Picture.PictureUrl1,
@@ -126,7 +128,7 @@ const HotelPage = ({ hotel, remarks }: HotelPageProps): JSX.Element => {
               align="center"
               fit="cover"
               loading="lazy"
-              fallbackSrc="/static/fallback.jpg"
+              fallbackSrc="/static/fallback-lg.jpg"
               width={[600, 900]}
               height={[400, 600]}
             />

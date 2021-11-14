@@ -88,7 +88,7 @@ const ScenesPage = ({
       <NextHeadSeo
         og={{
           description: '景點',
-          image: `${process.env.NEXT_PUBLIC_WEBSITE_URL}/static/background/scenes.png'`,
+          image: `https://${process.env.NEXT_PUBLIC_VERCEL_URL}/static/background/scenes.png'`,
         }}
       />
       <Background

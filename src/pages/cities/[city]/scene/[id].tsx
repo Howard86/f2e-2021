@@ -78,7 +78,9 @@ const ScenePage = ({ scene, remarks }: ScenePageProps): JSX.Element => {
     <>
       <NextHeadSeo
         title={`台灣旅遊導覽網 | ${scene.Name}`}
+        description={scene.Description}
         og={{
+          type: 'article',
           title: scene.Name,
           description: scene.Picture.PictureDescription1,
           image: scene.Picture.PictureUrl1,
@@ -135,7 +137,7 @@ const ScenePage = ({ scene, remarks }: ScenePageProps): JSX.Element => {
               align="center"
               fit="cover"
               loading="lazy"
-              fallbackSrc="/static/fallback.jpg"
+              fallbackSrc="/static/fallback-lg.jpg"
               width={[600, 900]}
               height={[400, 600]}
             />

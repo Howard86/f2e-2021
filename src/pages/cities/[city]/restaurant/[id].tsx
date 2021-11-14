@@ -63,7 +63,7 @@ const RestaurantPage = ({
   const router = useRouter();
 
   // TODO: add saved info
-  const saved = true;
+  const saved = false;
 
   if (router.isFallback) {
     return <LoadingScreen minH="400px" mainColor={PAGE_PROPS.mainColor} />;
@@ -73,6 +73,7 @@ const RestaurantPage = ({
     <>
       <NextHeadSeo
         title={`台灣旅遊導覽網 | ${restaurant.Name}`}
+        description={restaurant.Description}
         og={{
           title: restaurant.Name,
           description: restaurant.Picture.PictureDescription1,
@@ -132,7 +133,7 @@ const RestaurantPage = ({
               align="center"
               fit="cover"
               loading="lazy"
-              fallbackSrc="/static/fallback.jpg"
+              fallbackSrc="/static/fallback-lg.jpg"
               width={[600, 900]}
               height={[400, 600]}
             />

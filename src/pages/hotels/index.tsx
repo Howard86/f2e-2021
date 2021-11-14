@@ -93,7 +93,7 @@ const HotelsPage = ({
       <NextHeadSeo
         og={{
           description: '住宿',
-          image: `${process.env.NEXT_PUBLIC_WEBSITE_URL}/static/background/hotels.png'`,
+          image: `https://${process.env.NEXT_PUBLIC_VERCEL_URL}/static/background/hotels.png'`,
         }}
       />
       <Background
