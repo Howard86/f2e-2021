@@ -57,7 +57,10 @@ const FanCard = ({
         w={size}
         h={size}
         src={getAvatar(name)}
+        bg="white"
+        border="1px"
         pos="absolute"
+        borderColor="blackAlpha.600"
         zIndex="docked"
         top={[-8, -8, -16]}
         left={['calc(50% - 32px)', 'calc(50% - 32px)', 'calc(50% - 64px)']}
@@ -80,6 +83,12 @@ const FanCard = ({
         border="1px"
         borderColor="blackAlpha.600"
         overflow="hidden"
+        transition="ease-out"
+        transitionDuration="0.2s"
+        _hover={{
+          color: 'blackAlpha.400',
+          boxShadow: '12px 12px 10px',
+        }}
       >
         <Image
           alt={name}
@@ -90,7 +99,13 @@ const FanCard = ({
           objectFit="cover"
           objectPosition="center"
         />
-        <LinkBox display="flex" flexDir="column" m="4" h={[200, 180]}>
+        <LinkBox
+          display="flex"
+          flexDir="column"
+          m="4"
+          h={[200, 180]}
+          color="text.body"
+        >
           <Text
             as="h3"
             mb="4"

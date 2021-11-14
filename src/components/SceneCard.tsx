@@ -47,6 +47,11 @@ const SceneCard = ({ id, name, city, image }: SceneCardProps) => (
       left="0"
       right="0"
       bottom="0"
+      transition="ease-out"
+      transitionDuration="0.2s"
+      _hover={{
+        bgColor: 'blackAlpha.600',
+      }}
     >
       {/* TODO: add rate & view */}
       <CardBanner rate={(name.length % 3) + 2} view={name.length} saved />

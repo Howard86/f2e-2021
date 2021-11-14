@@ -55,13 +55,20 @@ const GridCard = ({
       bottom="0"
       color="white"
       p={[2, 4]}
+      transition="ease-out"
+      transitionDuration="0.2s"
+      _hover={{
+        bgColor: 'blackAlpha.600',
+      }}
     >
       {isExternal ? (
         <LinkOverlay fontWeight="bold" fontSize="lg" href={href} isExternal>
           {title}
         </LinkOverlay>
       ) : (
-        <RouteLink href={href}>{title}</RouteLink>
+        <RouteLink as={LinkOverlay} href={href}>
+          {title}
+        </RouteLink>
       )}
       <Text>{subtitle}</Text>
       <Box flexGrow={1} />
