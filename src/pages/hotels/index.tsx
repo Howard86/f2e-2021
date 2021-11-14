@@ -31,7 +31,7 @@ import DEFAULT_CARD_NUMBER from '@/constants/pagination';
 import { SIX_HOURS_IN_SECONDS } from '@/constants/time';
 import useAppToast from '@/hooks/use-app-toast';
 import { useLazyGetHotelCardsQuery } from '@/services/local';
-import { getHotelCards, getHotelCardsByCity } from '@/services/ptx';
+import { getHotelCards, getHotelCountWithCity } from '@/services/ptx';
 import background from '@/static/background/hotels.png';
 import wordOne from '@/static/background/hotels-1.png';
 import wordTwo from '@/static/background/hotels-2.png';
@@ -282,10 +282,10 @@ export const getStaticProps = async (
 ): Promise<GetStaticPropsResult<HotelsPageProps>> => {
   const [hotels, taipei, hualian, taidong, taoyuan] = await Promise.all([
     getHotelCards(30),
-    getHotelCardsByCity('臺北市', DEFAULT_FETCHED_AMOUNT),
-    getHotelCardsByCity('花蓮縣', DEFAULT_FETCHED_AMOUNT),
-    getHotelCardsByCity('臺東縣', DEFAULT_FETCHED_AMOUNT),
-    getHotelCardsByCity('桃園市', DEFAULT_FETCHED_AMOUNT),
+    getHotelCountWithCity('臺北市', DEFAULT_FETCHED_AMOUNT),
+    getHotelCountWithCity('花蓮縣', DEFAULT_FETCHED_AMOUNT),
+    getHotelCountWithCity('臺東縣', DEFAULT_FETCHED_AMOUNT),
+    getHotelCountWithCity('桃園市', DEFAULT_FETCHED_AMOUNT),
   ]);
 
   return {

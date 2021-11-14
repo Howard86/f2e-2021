@@ -336,6 +336,16 @@ export const getHotelWithRemarksByCity = async (
     $orderBy: 'ServiceInfo desc, UpdateTime desc',
   });
 
+export const getHotelCountWithCity = async (
+  city: PTX.City,
+  count = 30,
+): Promise<PTX.HotelRemark[]> =>
+  apiGet(`Tourism/Hotel/${PTXCityMap[city]}`, {
+    $top: count.toString(),
+    $select: 'ID',
+    $filter: 'Picture/PictureUrl1 ne null and Address ne null',
+  });
+
 export const searchHotelsByKeyword = async (
   keyword: string,
   count = 30,
