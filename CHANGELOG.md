@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.4](https://github.com/Howard86/nextjs-template/compare/v0.1.3...v0.1.4) (2021-11-14)
+
+### Features
+
+- **ui:** add hover effect on cards ([227336c](https://github.com/Howard86/nextjs-template/commit/227336c734c4dfe4f15d25eb0db62fef6563b66a))
+
+### Bug Fixes
+
+- fix incorrect usage of Pagination ([0f4def5](https://github.com/Howard86/nextjs-template/commit/0f4def531d2cf2b9fb4d1a31dddc8ac08d766181))
+- update typo on head ([1306165](https://github.com/Howard86/nextjs-template/commit/1306165fc41b9d65c13b179458b74e3ec6240e24))
+
 ### [0.1.3](https://github.com/Howard86/nextjs-template/compare/v0.1.2...v0.1.3) (2021-11-14)
 
 ### Features
