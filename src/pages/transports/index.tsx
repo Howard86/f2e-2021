@@ -19,11 +19,11 @@ const PAGE_PROPS = {
 const TransportsPage = (): JSX.Element => (
   <>
     <Background
-      name="住宿"
+      name="交通"
       image={background}
-      wordOneAlt="住"
+      wordOneAlt="交"
       wordOne={wordOne}
-      wordTwoAlt="宿"
+      wordTwoAlt="通"
       wordTwo={wordTwo}
       bgColor={PAGE_PROPS.gradientColor}
     >
@@ -39,24 +39,32 @@ const TransportsPage = (): JSX.Element => (
           colSpan={1}
           title="火車"
           image="/static/card/transports-1.png"
+          href="https://www.railway.gov.tw/"
+          isExternal
         />
         <GridCard
           rowSpan={1}
           colSpan={1}
           title="高鐵"
           image="/static/card/transports-2.png"
+          href="https://www.thsrc.com.tw"
+          isExternal
         />
         <GridCard
           rowSpan={[1, 1, 2]}
           colSpan={1}
           title="捷運"
           image="/static/card/transports-4.png"
+          href="https://www.metro.taipei"
+          isExternal
         />
         <GridCard
           rowSpan={1}
           colSpan={1}
           title="公車"
           image="/static/card/transports-3.png"
+          href="https://ebus.gov.taipei"
+          isExternal
         />
       </Grid>
     </Background>

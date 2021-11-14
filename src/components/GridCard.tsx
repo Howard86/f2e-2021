@@ -11,13 +11,24 @@ import {
   Text,
 } from '@chakra-ui/react';
 
+import RouteLink from './RouteLink';
+
 interface GridCardProps extends GridItemProps {
   title: string;
   subtitle?: string;
   image: string;
+  href: string;
+  isExternal?: boolean;
 }
 
-const GridCard = ({ title, subtitle, image, ...props }: GridCardProps) => (
+const GridCard = ({
+  title,
+  subtitle,
+  image,
+  href,
+  isExternal,
+  ...props
+}: GridCardProps) => (
   <GridItem
     as={LinkBox}
     pos="relative"
@@ -45,9 +56,13 @@ const GridCard = ({ title, subtitle, image, ...props }: GridCardProps) => (
       color="white"
       p={[2, 4]}
     >
-      <LinkOverlay fontWeight="bold" fontSize="lg" href="#" isExternal>
-        {title}
-      </LinkOverlay>
+      {isExternal ? (
+        <LinkOverlay fontWeight="bold" fontSize="lg" href={href} isExternal>
+          {title}
+        </LinkOverlay>
+      ) : (
+        <RouteLink href={href}>{title}</RouteLink>
+      )}
       <Text>{subtitle}</Text>
       <Box flexGrow={1} />
     </Flex>

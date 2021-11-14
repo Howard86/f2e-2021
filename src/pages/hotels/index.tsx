@@ -30,19 +30,29 @@ import { CityMap } from '@/constants/category';
 import { SIX_HOURS_IN_SECONDS } from '@/constants/time';
 import useAppToast from '@/hooks/use-app-toast';
 import { useLazyGetHotelCardsQuery } from '@/services/local';
-import { getHotelCards } from '@/services/ptx';
+import { getHotelCards, getHotelCardsByCity } from '@/services/ptx';
 import background from '@/static/background/hotels.png';
 import wordOne from '@/static/background/hotels-1.png';
 import wordTwo from '@/static/background/hotels-2.png';
 
 interface HotelsPageProps {
   hotels: PTX.HotelCard[];
+  taipei: string;
+  hualian: string;
+  taidong: string;
+  taoyuan: string;
 }
 
 const PAGE_PROPS = { mainColor: 'hotels.dark', gradientColor: 'hotels.light' };
 const DEFAULT_CARD_NUMBER = 6;
 
-const HotelsPage = ({ hotels }: HotelsPageProps): JSX.Element => {
+const HotelsPage = ({
+  hotels,
+  taipei,
+  hualian,
+  taidong,
+  taoyuan,
+}: HotelsPageProps): JSX.Element => {
   const toast = useAppToast();
   const [fetch, { data, isUninitialized, isLoading, isError, originalArgs }] =
     useLazyGetHotelCardsQuery();
@@ -156,29 +166,33 @@ const HotelsPage = ({ hotels }: HotelsPageProps): JSX.Element => {
             rowSpan={[1, 1, 2]}
             colSpan={1}
             title="台北"
-            subtitle="650間住宿"
+            subtitle={taipei}
             image="/static/card/hotels-1.png"
+            href={`/cities/${CityMap['臺北市']}`}
           />
           <GridCard
             rowSpan={1}
             colSpan={1}
             title="花蓮"
-            subtitle="650間住宿"
+            subtitle={hualian}
             image="/static/card/hotels-2.png"
+            href={`/cities/${CityMap['花蓮縣']}`}
           />
           <GridCard
             rowSpan={[1, 1, 2]}
             colSpan={1}
             title="台東"
-            subtitle="650間住宿"
+            subtitle={taidong}
             image="/static/card/hotels-4.png"
+            href={`/cities/${CityMap['臺東縣']}`}
           />
           <GridCard
             rowSpan={1}
             colSpan={1}
             title="桃園"
-            subtitle="650間住宿"
+            subtitle={taoyuan}
             image="/static/card/hotels-3.png"
+            href={`/cities/${CityMap['桃園市']}`}
           />
         </Grid>
       </Background>
@@ -257,14 +271,30 @@ const HotelsPage = ({ hotels }: HotelsPageProps): JSX.Element => {
 HotelsPage.Layout = Layout;
 HotelsPage.layoutProps = PAGE_PROPS;
 
+const DEFAULT_FETCHED_AMOUNT = 100;
+const convertFigure = (array: unknown[]) =>
+  `${
+    array.length === DEFAULT_FETCHED_AMOUNT ? '100+' : array.length.toString()
+  }間住房`;
+
 export const getStaticProps = async (
   _context: GetStaticPropsContext,
 ): Promise<GetStaticPropsResult<HotelsPageProps>> => {
-  const hotels = await getHotelCards(30);
+  const [hotels, taipei, hualian, taidong, taoyuan] = await Promise.all([
+    getHotelCards(30),
+    getHotelCardsByCity('臺北市', DEFAULT_FETCHED_AMOUNT),
+    getHotelCardsByCity('花蓮縣', DEFAULT_FETCHED_AMOUNT),
+    getHotelCardsByCity('臺東縣', DEFAULT_FETCHED_AMOUNT),
+    getHotelCardsByCity('桃園市', DEFAULT_FETCHED_AMOUNT),
+  ]);
 
   return {
     props: {
       hotels,
+      taipei: convertFigure(taipei),
+      hualian: convertFigure(hualian),
+      taidong: convertFigure(taidong),
+      taoyuan: convertFigure(taoyuan),
     },
     revalidate: SIX_HOURS_IN_SECONDS,
   };
