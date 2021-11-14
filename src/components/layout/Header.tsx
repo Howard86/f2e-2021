@@ -10,6 +10,7 @@ import {
   IconButton,
 } from '@chakra-ui/react';
 import throttle from 'lodash.throttle';
+import { useRouter } from 'next/router';
 import { FiSearch } from 'react-icons/fi';
 
 import Logo from '../icons/Logo';
@@ -29,8 +30,15 @@ interface HeaderProps extends FlexProps {
 }
 
 const Header = ({ mainColor, ...props }: HeaderProps) => {
+  const router = useRouter();
   const scrollRef = useRef(0);
   const [state, setState] = useState(initialState);
+
+  const isSolid = !state.onTop && state.isScrollingUp;
+
+  const handleOnSearch = () => {
+    router.push('/scenes');
+  };
 
   useEffect(() => {
     const handleOnScroll = throttle(
@@ -51,8 +59,6 @@ const Header = ({ mainColor, ...props }: HeaderProps) => {
       window.removeEventListener('scroll', handleOnScroll);
     };
   }, []);
-
-  const isSolid = !state.onTop && state.isScrollingUp;
 
   return (
     <Flex
@@ -104,12 +110,13 @@ const Header = ({ mainColor, ...props }: HeaderProps) => {
           fontSize={['xl', '2xl']}
           rounded="full"
           icon={<FiSearch />}
+          onClick={handleOnSearch}
           _hover={{
             bgColor: isSolid ? mainColor : 'white',
           }}
         />
       </HStack>
-      <Avatar src={getAvatar('f2e')} size="sm" ml="4" />
+      <Avatar bg="white" src={getAvatar('f2e')} size="sm" ml="4" />
     </Flex>
   );
 };
