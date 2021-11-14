@@ -1,3 +1,5 @@
-const DEFAULT_CARD_NUMBER = 6;
+export const DEFAULT_CARD_NUMBER = 6;
 
-export default DEFAULT_CARD_NUMBER;
+export const DEFAULT_FETCHED_CARD_NUMBER = 90;
+
+export const DEFAULT_FETCHED_REMARK_NUMBER = 6;

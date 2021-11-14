@@ -13,6 +13,7 @@ import SceneCard from '@/components/SceneCard';
 import SiteCardGrid from '@/components/SiteCardGrid';
 import WeatherCarousel from '@/components/WeatherCarousel';
 import { CityMap } from '@/constants/category';
+import { DEFAULT_FETCHED_REMARK_NUMBER } from '@/constants/pagination';
 import { SIX_HOURS_IN_SECONDS } from '@/constants/time';
 import {
   getHotelCards,
@@ -150,9 +151,9 @@ export const getStaticProps = async (
 ): Promise<GetStaticPropsResult<HomePageProps>> => {
   const [weathers, scenes, restaurants, hotels] = await Promise.all([
     getWeathers(),
-    getSceneCards(6),
-    getRestaurantCards(6),
-    getHotelCards(6),
+    getSceneCards(DEFAULT_FETCHED_REMARK_NUMBER),
+    getRestaurantCards(DEFAULT_FETCHED_REMARK_NUMBER),
+    getHotelCards(DEFAULT_FETCHED_REMARK_NUMBER),
   ]);
 
   return {

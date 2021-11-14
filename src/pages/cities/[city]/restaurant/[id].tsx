@@ -35,6 +35,7 @@ import LoadingScreen from '@/components/LoadingScreen';
 import RouteLink from '@/components/RouteLink';
 import SceneDetailBox from '@/components/SceneDetailText';
 import { CITIES, CityMap, CitySlugMap } from '@/constants/category';
+import { DEFAULT_FETCHED_REMARK_NUMBER } from '@/constants/pagination';
 import { ONE_DAY_IN_SECONDS } from '@/constants/time';
 import {
   getRestaurantById,
@@ -282,7 +283,10 @@ export const getStaticProps = async (
       return { notFound: true };
     }
 
-    const remarks = await getRestaurantWithRemarksByCity(city, 6);
+    const remarks = await getRestaurantWithRemarksByCity(
+      city,
+      DEFAULT_FETCHED_REMARK_NUMBER,
+    );
 
     return {
       props: { restaurant, remarks },

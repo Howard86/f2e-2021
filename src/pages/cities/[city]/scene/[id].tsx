@@ -50,6 +50,7 @@ import LoadingScreen from '@/components/LoadingScreen';
 import RouteLink from '@/components/RouteLink';
 import SceneDetailBox from '@/components/SceneDetailText';
 import { CITIES, CityMap, CitySlugMap } from '@/constants/category';
+import { DEFAULT_FETCHED_REMARK_NUMBER } from '@/constants/pagination';
 import { getSceneById, getScenesWithRemarksByCity } from '@/services/ptx';
 
 interface ScenePageProps {
@@ -309,7 +310,10 @@ export const getStaticProps = async (
       return { notFound: true };
     }
 
-    const remarks = await getScenesWithRemarksByCity(city, 6);
+    const remarks = await getScenesWithRemarksByCity(
+      city,
+      DEFAULT_FETCHED_REMARK_NUMBER,
+    );
 
     return {
       props: { scene, remarks },

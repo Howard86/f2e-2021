@@ -37,6 +37,7 @@ import LoadingScreen from '@/components/LoadingScreen';
 import RouteLink from '@/components/RouteLink';
 import SceneDetailBox from '@/components/SceneDetailText';
 import { CITIES, CityMap, CitySlugMap } from '@/constants/category';
+import { DEFAULT_FETCHED_REMARK_NUMBER } from '@/constants/pagination';
 import { ONE_DAY_IN_SECONDS } from '@/constants/time';
 import { getHotelById, getHotelWithRemarksByCity } from '@/services/ptx';
 
@@ -277,7 +278,10 @@ export const getStaticProps = async (
       return { notFound: true };
     }
 
-    const remarks = await getHotelWithRemarksByCity(city, 6);
+    const remarks = await getHotelWithRemarksByCity(
+      city,
+      DEFAULT_FETCHED_REMARK_NUMBER,
+    );
 
     return {
       props: { hotel, remarks },
