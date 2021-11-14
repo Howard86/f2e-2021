@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.3](https://github.com/Howard86/nextjs-template/compare/v0.1.2...v0.1.3) (2021-11-14)
+
+### Features
+
+- **seo:** set up basic seo for all pages ([e120ad0](https://github.com/Howard86/nextjs-template/commit/e120ad08180a432ef2971517a6435e659417dfae))
+- **ui:** add default avatar from dicebear ([30a7734](https://github.com/Howard86/nextjs-template/commit/30a7734aa341bf0014f79876397b1318c1a0a64d))
+
 ### [0.1.2](https://github.com/Howard86/nextjs-template/compare/v0.1.1...v0.1.2) (2021-11-14)
 
 ### Features
