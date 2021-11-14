@@ -20,6 +20,7 @@ import {
   GetStaticPropsResult,
 } from 'next';
 import { useRouter } from 'next/router';
+import NextHeadSeo from 'next-head-seo';
 import type { ParsedUrlQuery } from 'querystring';
 import {
   BiChevronRight,
@@ -75,6 +76,14 @@ const ActivityPage = ({
 
   return (
     <>
+      <NextHeadSeo
+        title={`台灣旅遊導覽網 | ${activity.Name}`}
+        og={{
+          title: activity.Name,
+          description: activity.Picture.PictureDescription1,
+          image: activity.Picture.PictureUrl1,
+        }}
+      />
       <Flex
         flexDir="column"
         pt="16"

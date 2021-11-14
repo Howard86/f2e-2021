@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { Box, Flex, Grid, SimpleGrid } from '@chakra-ui/react';
+import NextHeadSeo from 'next-head-seo';
 
 import Background from '@/components/Background';
 import Banner from '@/components/Banner';
@@ -18,6 +19,12 @@ const PAGE_PROPS = {
 
 const TransportsPage = (): JSX.Element => (
   <>
+    <NextHeadSeo
+      og={{
+        description: '交通',
+        image: `${process.env.NEXT_PUBLIC_WEBSITE_URL}/static/background/transports.png'`,
+      }}
+    />
     <Background
       name="交通"
       image={background}

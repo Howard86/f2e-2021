@@ -16,6 +16,7 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { GetStaticPropsContext, GetStaticPropsResult } from 'next';
+import NextHeadSeo from 'next-head-seo';
 import { BsCalendar } from 'react-icons/bs';
 import { FiSearch } from 'react-icons/fi';
 
@@ -86,6 +87,12 @@ const HotelsPage = ({
 
   return (
     <>
+      <NextHeadSeo
+        og={{
+          description: '住宿',
+          image: `${process.env.NEXT_PUBLIC_WEBSITE_URL}/static/background/hotels.png'`,
+        }}
+      />
       <Background
         name="住宿"
         image={background}

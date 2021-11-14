@@ -19,6 +19,7 @@ import {
   GetStaticPropsResult,
 } from 'next';
 import { useRouter } from 'next/router';
+import NextHeadSeo from 'next-head-seo';
 import type { ParsedUrlQuery } from 'querystring';
 import { FiSearch } from 'react-icons/fi';
 
@@ -90,6 +91,7 @@ const CategoryPage = ({
 
   return (
     <>
+      <NextHeadSeo title={theme} />
       <Background
         name="景點"
         image={background}
