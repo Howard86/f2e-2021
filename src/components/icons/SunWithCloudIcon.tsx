@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Icon, IconProps } from '@chakra-ui/react';
 
-const SunnyIcon = (props: IconProps) => (
+const SunWithCloudIcon = (props: IconProps) => (
   <Icon viewBox="0 0 76 68" {...props}>
     <path
       d="M30.7425 51.2357C44.9294 51.2357 56.4301 39.7662 56.4301 25.6179C56.4301 11.4695 44.9294 0 30.7425 0C16.5557 0 5.05493 11.4695 5.05493 25.6179C5.05493 39.7662 16.5557 51.2357 30.7425 51.2357Z"
@@ -54,4 +54,4 @@ const SunnyIcon = (props: IconProps) => (
   </Icon>
 );
 
-export default SunnyIcon;
+export default SunWithCloudIcon;
