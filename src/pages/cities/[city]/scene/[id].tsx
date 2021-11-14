@@ -50,6 +50,7 @@ import LoadingScreen from '@/components/LoadingScreen';
 import RouteLink from '@/components/RouteLink';
 import SceneDetailBox from '@/components/SceneDetailText';
 import { CITIES, CityMap, CitySlugMap } from '@/constants/category';
+import { DEFAULT_FETCHED_REMARK_NUMBER } from '@/constants/pagination';
 import { getSceneById, getScenesWithRemarksByCity } from '@/services/ptx';
 
 interface ScenePageProps {
@@ -77,7 +78,9 @@ const ScenePage = ({ scene, remarks }: ScenePageProps): JSX.Element => {
     <>
       <NextHeadSeo
         title={`台灣旅遊導覽網 | ${scene.Name}`}
+        description={scene.Description}
         og={{
+          type: 'article',
           title: scene.Name,
           description: scene.Picture.PictureDescription1,
           image: scene.Picture.PictureUrl1,
@@ -134,7 +137,7 @@ const ScenePage = ({ scene, remarks }: ScenePageProps): JSX.Element => {
               align="center"
               fit="cover"
               loading="lazy"
-              fallbackSrc="/static/fallback.jpg"
+              fallbackSrc="/static/fallback-lg.jpg"
               width={[600, 900]}
               height={[400, 600]}
             />
@@ -309,7 +312,10 @@ export const getStaticProps = async (
       return { notFound: true };
     }
 
-    const remarks = await getScenesWithRemarksByCity(city, 6);
+    const remarks = await getScenesWithRemarksByCity(
+      city,
+      DEFAULT_FETCHED_REMARK_NUMBER,
+    );
 
     return {
       props: { scene, remarks },

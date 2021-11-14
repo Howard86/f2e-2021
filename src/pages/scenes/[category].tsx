@@ -31,7 +31,11 @@ import LoadingScreen from '@/components/LoadingScreen';
 import Pagination from '@/components/Pagination';
 import SceneCard from '@/components/SceneCard';
 import { CityMap, THEMES } from '@/constants/category';
-import DEFAULT_CARD_NUMBER from '@/constants/pagination';
+import {
+  DEFAULT_CARD_NUMBER,
+  DEFAULT_FETCHED_CARD_NUMBER,
+  DEFAULT_FETCHED_REMARK_NUMBER,
+} from '@/constants/pagination';
 import { SIX_HOURS_IN_SECONDS } from '@/constants/time';
 import useAppToast from '@/hooks/use-app-toast';
 import { useLazyGetSceneCardsQuery } from '@/services/local';
@@ -254,8 +258,8 @@ export const getStaticProps = async (
 
   try {
     const [scenes, remarks] = await Promise.all([
-      getSceneCardsByThemeClass(theme, 30),
-      getScenesWithRemarksByThemeClass(theme, 6),
+      getSceneCardsByThemeClass(theme, DEFAULT_FETCHED_CARD_NUMBER),
+      getScenesWithRemarksByThemeClass(theme, DEFAULT_FETCHED_REMARK_NUMBER),
     ]);
 
     return {

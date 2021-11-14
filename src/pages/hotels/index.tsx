@@ -28,7 +28,10 @@ import LoadingScreen from '@/components/LoadingScreen';
 import Pagination from '@/components/Pagination';
 import PlaceCard from '@/components/PlaceCard';
 import { CityMap } from '@/constants/category';
-import DEFAULT_CARD_NUMBER from '@/constants/pagination';
+import {
+  DEFAULT_CARD_NUMBER,
+  DEFAULT_FETCHED_CARD_NUMBER,
+} from '@/constants/pagination';
 import { SIX_HOURS_IN_SECONDS } from '@/constants/time';
 import useAppToast from '@/hooks/use-app-toast';
 import { useLazyGetHotelCardsQuery } from '@/services/local';
@@ -90,7 +93,7 @@ const HotelsPage = ({
       <NextHeadSeo
         og={{
           description: '住宿',
-          image: `${process.env.NEXT_PUBLIC_WEBSITE_URL}/static/background/hotels.png'`,
+          image: `https://${process.env.NEXT_PUBLIC_VERCEL_URL}/static/background/hotels.png'`,
         }}
       />
       <Background
@@ -288,7 +291,7 @@ export const getStaticProps = async (
   _context: GetStaticPropsContext,
 ): Promise<GetStaticPropsResult<HotelsPageProps>> => {
   const [hotels, taipei, hualian, taidong, taoyuan] = await Promise.all([
-    getHotelCards(30),
+    getHotelCards(DEFAULT_FETCHED_CARD_NUMBER),
     getHotelCountWithCity('臺北市', DEFAULT_FETCHED_AMOUNT),
     getHotelCountWithCity('花蓮縣', DEFAULT_FETCHED_AMOUNT),
     getHotelCountWithCity('臺東縣', DEFAULT_FETCHED_AMOUNT),

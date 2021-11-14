@@ -27,7 +27,7 @@ const App = ({ Component, pageProps }: AppProps): JSX.Element => {
         og={{
           type: 'website',
           siteName: '台灣旅遊導覽網',
-          image: `${process.env.NEXT_PUBLIC_WEBSITE_URL}/static/fallback.jpg`,
+          image: `https://${process.env.NEXT_PUBLIC_VERCEL_URL}/static/fallback.jpg`,
         }}
         twitter={{
           card: 'summary',

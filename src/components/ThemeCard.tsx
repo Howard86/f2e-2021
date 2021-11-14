@@ -20,13 +20,7 @@ interface ThemeCardProps extends LinkBoxProps {
 }
 
 const ThemeCard = ({ id, theme, image, href, ...props }: ThemeCardProps) => (
-  <LinkBox
-    pos="relative"
-    overflow="hidden"
-    rounded="3xl"
-    h={['420']}
-    {...props}
-  >
+  <LinkBox pos="relative" overflow="hidden" rounded="3xl" h="420" {...props}>
     <Image
       alt={theme}
       objectFit="cover"
@@ -44,6 +38,11 @@ const ThemeCard = ({ id, theme, image, href, ...props }: ThemeCardProps) => (
       left="0"
       right="0"
       bottom="0"
+      transition="ease-out"
+      transitionDuration="0.2s"
+      _hover={{
+        bgColor: 'blackAlpha.600',
+      }}
     >
       <Box flexGrow={1} />
       <Box>

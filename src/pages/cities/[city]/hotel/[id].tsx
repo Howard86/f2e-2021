@@ -37,6 +37,7 @@ import LoadingScreen from '@/components/LoadingScreen';
 import RouteLink from '@/components/RouteLink';
 import SceneDetailBox from '@/components/SceneDetailText';
 import { CITIES, CityMap, CitySlugMap } from '@/constants/category';
+import { DEFAULT_FETCHED_REMARK_NUMBER } from '@/constants/pagination';
 import { ONE_DAY_IN_SECONDS } from '@/constants/time';
 import { getHotelById, getHotelWithRemarksByCity } from '@/services/ptx';
 
@@ -68,7 +69,9 @@ const HotelPage = ({ hotel, remarks }: HotelPageProps): JSX.Element => {
     <>
       <NextHeadSeo
         title={`台灣旅遊導覽網 | ${hotel.Name}`}
+        description={hotel.Description}
         og={{
+          type: 'article',
           title: hotel.Name,
           description: hotel.Picture.PictureDescription1,
           image: hotel.Picture.PictureUrl1,
@@ -125,7 +128,7 @@ const HotelPage = ({ hotel, remarks }: HotelPageProps): JSX.Element => {
               align="center"
               fit="cover"
               loading="lazy"
-              fallbackSrc="/static/fallback.jpg"
+              fallbackSrc="/static/fallback-lg.jpg"
               width={[600, 900]}
               height={[400, 600]}
             />
@@ -277,7 +280,10 @@ export const getStaticProps = async (
       return { notFound: true };
     }
 
-    const remarks = await getHotelWithRemarksByCity(city, 6);
+    const remarks = await getHotelWithRemarksByCity(
+      city,
+      DEFAULT_FETCHED_REMARK_NUMBER,
+    );
 
     return {
       props: { hotel, remarks },

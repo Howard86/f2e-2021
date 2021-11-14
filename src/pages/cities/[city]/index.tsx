@@ -29,7 +29,10 @@ import PlaceCard from '@/components/PlaceCard';
 import RouteLink from '@/components/RouteLink';
 import SceneCard from '@/components/SceneCard';
 import { CITIES, CityMap, CitySlugMap } from '@/constants/category';
-import DEFAULT_CARD_NUMBER from '@/constants/pagination';
+import {
+  DEFAULT_CARD_NUMBER,
+  DEFAULT_FETCHED_CARD_NUMBER,
+} from '@/constants/pagination';
 import { SIX_HOURS_IN_SECONDS } from '@/constants/time';
 import {
   getActivityCardsByCity,
@@ -299,10 +302,10 @@ export const getStaticProps = async (
 
   try {
     const [scenes, restaurants, hotels, activities] = await Promise.all([
-      getSceneCardsByCity(city, 30),
-      getRestaurantCardsByCity(city, 30),
-      getHotelCardsByCity(city, 30),
-      getActivityCardsByCity(city, 30),
+      getSceneCardsByCity(city, DEFAULT_FETCHED_CARD_NUMBER),
+      getRestaurantCardsByCity(city, DEFAULT_FETCHED_CARD_NUMBER),
+      getHotelCardsByCity(city, DEFAULT_FETCHED_CARD_NUMBER),
+      getActivityCardsByCity(city, DEFAULT_FETCHED_CARD_NUMBER),
     ]);
 
     return {

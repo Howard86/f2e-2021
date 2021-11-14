@@ -8,8 +8,6 @@ import {
 } from '@chakra-ui/react';
 import { BiChevronLeft, BiChevronRight } from 'react-icons/bi';
 
-import DEFAULT_CARD_NUMBER from '@/constants/pagination';
-
 interface PaginationProps extends ButtonGroupProps {
   colorTheme: string;
   page: number; // page starts with 0
@@ -24,7 +22,7 @@ const Pagination = ({
   onPageChange,
   ...props
 }: PaginationProps) => {
-  if (total <= DEFAULT_CARD_NUMBER) {
+  if (total <= 1) {
     return null;
   }
 

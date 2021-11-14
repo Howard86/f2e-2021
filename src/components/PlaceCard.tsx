@@ -35,13 +35,20 @@ const PlaceCard = ({
   image,
   href,
 }: PlaceCardProps) => (
-  <Flex
+  <LinkBox
+    display="flex"
     pos="relative"
     flexDir="column"
     rounded="2xl"
     border="1px"
     borderColor="blackAlpha.600"
     overflow="hidden"
+    transition="ease-out"
+    transitionDuration="0.2s"
+    _hover={{
+      color: 'blackAlpha.400',
+      boxShadow: '12px 12px 10px',
+    }}
   >
     {/* TODO: add rate & view */}
     <CardBanner
@@ -62,7 +69,7 @@ const PlaceCard = ({
       w="full"
       height={300}
     />
-    <LinkBox flexDir="column" m="4" lineHeight="6">
+    <Flex flexDir="column" m="4" lineHeight="6" color="text.body">
       <Flex justify="space-between" fontWeight="bold">
         <Text as="h3" fontSize={['lg', 'xl']} color="blackAlpha.800" my="2">
           <RouteLink href={href} as={LinkOverlay}>
@@ -78,8 +85,8 @@ const PlaceCard = ({
       {contactNumber && <Text variant="body">電話：{contactNumber}</Text>}
       {openingHours && <Text variant="body">營業時間：{openingHours}</Text>}
       {serviceInfo && <Text variant="body">{serviceInfo}</Text>}
-    </LinkBox>
-  </Flex>
+    </Flex>
+  </LinkBox>
 );
 
 export default PlaceCard;

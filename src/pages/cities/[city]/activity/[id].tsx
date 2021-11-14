@@ -44,6 +44,7 @@ import LoadingScreen from '@/components/LoadingScreen';
 import RouteLink from '@/components/RouteLink';
 import SceneDetailBox from '@/components/SceneDetailText';
 import { CITIES, CityMap, CitySlugMap } from '@/constants/category';
+import { DEFAULT_FETCHED_REMARK_NUMBER } from '@/constants/pagination';
 import { ONE_DAY_IN_SECONDS } from '@/constants/time';
 import { getActivityById, getActivityWithRemarksByCity } from '@/services/ptx';
 
@@ -78,7 +79,9 @@ const ActivityPage = ({
     <>
       <NextHeadSeo
         title={`台灣旅遊導覽網 | ${activity.Name}`}
+        description={activity.Description}
         og={{
+          type: 'article',
           title: activity.Name,
           description: activity.Picture.PictureDescription1,
           image: activity.Picture.PictureUrl1,
@@ -135,7 +138,7 @@ const ActivityPage = ({
               align="center"
               fit="cover"
               loading="lazy"
-              fallbackSrc="/static/fallback.jpg"
+              fallbackSrc="/static/fallback-lg.jpg"
               width={[600, 900]}
               height={[400, 600]}
             />
@@ -314,7 +317,10 @@ export const getStaticProps = async (
       return { notFound: true };
     }
 
-    const remarks = await getActivityWithRemarksByCity(city, 6);
+    const remarks = await getActivityWithRemarksByCity(
+      city,
+      DEFAULT_FETCHED_REMARK_NUMBER,
+    );
 
     return {
       props: { activity, remarks },

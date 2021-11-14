@@ -24,7 +24,11 @@ import LoadingScreen from '@/components/LoadingScreen';
 import Pagination from '@/components/Pagination';
 import PlaceCard from '@/components/PlaceCard';
 import { CityMap } from '@/constants/category';
-import DEFAULT_CARD_NUMBER from '@/constants/pagination';
+import {
+  DEFAULT_CARD_NUMBER,
+  DEFAULT_FETCHED_CARD_NUMBER,
+  DEFAULT_FETCHED_REMARK_NUMBER,
+} from '@/constants/pagination';
 import { SIX_HOURS_IN_SECONDS } from '@/constants/time';
 import useAppToast from '@/hooks/use-app-toast';
 import { useLazyGetRestaurantCardsQuery } from '@/services/local';
@@ -79,7 +83,7 @@ const RestaurantsPage = ({
       <NextHeadSeo
         og={{
           description: '美食',
-          image: `${process.env.NEXT_PUBLIC_WEBSITE_URL}/static/background/restaurants.png'`,
+          image: `https://${process.env.NEXT_PUBLIC_VERCEL_URL}/static/background/restaurants.png'`,
         }}
       />
       <Background
@@ -231,8 +235,8 @@ export const getStaticProps = async (
   _context: GetStaticPropsContext,
 ): Promise<GetStaticPropsResult<RestaurantsPageProps>> => {
   const [restaurants, remarks] = await Promise.all([
-    getRestaurantCards(30),
-    getRestaurantWithRemarks(6),
+    getRestaurantCards(DEFAULT_FETCHED_CARD_NUMBER),
+    getRestaurantWithRemarks(DEFAULT_FETCHED_REMARK_NUMBER),
   ]);
 
   return { props: { restaurants, remarks }, revalidate: SIX_HOURS_IN_SECONDS };

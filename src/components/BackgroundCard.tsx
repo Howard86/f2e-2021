@@ -37,6 +37,11 @@ const BackgroundCard = ({
       fontWeight="bold"
       fontSize="sm"
       color="white"
+      transition="ease-out"
+      transitionDuration="0.2s"
+      _hover={{
+        bgColor: 'blackAlpha.600',
+      }}
     >
       <Box flexGrow={1} />
       <Box

@@ -35,6 +35,7 @@ import LoadingScreen from '@/components/LoadingScreen';
 import RouteLink from '@/components/RouteLink';
 import SceneDetailBox from '@/components/SceneDetailText';
 import { CITIES, CityMap, CitySlugMap } from '@/constants/category';
+import { DEFAULT_FETCHED_REMARK_NUMBER } from '@/constants/pagination';
 import { ONE_DAY_IN_SECONDS } from '@/constants/time';
 import {
   getRestaurantById,
@@ -62,7 +63,7 @@ const RestaurantPage = ({
   const router = useRouter();
 
   // TODO: add saved info
-  const saved = true;
+  const saved = false;
 
   if (router.isFallback) {
     return <LoadingScreen minH="400px" mainColor={PAGE_PROPS.mainColor} />;
@@ -72,6 +73,7 @@ const RestaurantPage = ({
     <>
       <NextHeadSeo
         title={`台灣旅遊導覽網 | ${restaurant.Name}`}
+        description={restaurant.Description}
         og={{
           title: restaurant.Name,
           description: restaurant.Picture.PictureDescription1,
@@ -131,7 +133,7 @@ const RestaurantPage = ({
               align="center"
               fit="cover"
               loading="lazy"
-              fallbackSrc="/static/fallback.jpg"
+              fallbackSrc="/static/fallback-lg.jpg"
               width={[600, 900]}
               height={[400, 600]}
             />
@@ -282,7 +284,10 @@ export const getStaticProps = async (
       return { notFound: true };
     }
 
-    const remarks = await getRestaurantWithRemarksByCity(city, 6);
+    const remarks = await getRestaurantWithRemarksByCity(
+      city,
+      DEFAULT_FETCHED_REMARK_NUMBER,
+    );
 
     return {
       props: { restaurant, remarks },
