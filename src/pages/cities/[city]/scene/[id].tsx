@@ -20,6 +20,7 @@ import {
   GetStaticPropsResult,
 } from 'next';
 import { useRouter } from 'next/router';
+import NextHeadSeo from 'next-head-seo';
 import type { ParsedUrlQuery } from 'querystring';
 import {
   BiChevronRight,
@@ -74,6 +75,14 @@ const ScenePage = ({ scene, remarks }: ScenePageProps): JSX.Element => {
 
   return (
     <>
+      <NextHeadSeo
+        title={`台灣旅遊導覽網 | ${scene.Name}`}
+        og={{
+          title: scene.Name,
+          description: scene.Picture.PictureDescription1,
+          image: scene.Picture.PictureUrl1,
+        }}
+      />
       <Flex
         flexDir="column"
         pt="16"

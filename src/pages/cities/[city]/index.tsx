@@ -16,6 +16,7 @@ import {
   GetStaticPropsResult,
 } from 'next';
 import { useRouter } from 'next/router';
+import NextHeadSeo from 'next-head-seo';
 import type { ParsedUrlQuery } from 'querystring';
 import { BiChevronRight } from 'react-icons/bi';
 
@@ -70,6 +71,7 @@ const CategoryPage = ({
 
   return (
     <>
+      <NextHeadSeo title={`台灣旅遊導覽網 | ${city}`} />
       <Background
         name="景點"
         image={background}

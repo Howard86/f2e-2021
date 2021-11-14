@@ -24,6 +24,8 @@ import {
 
 import RouteLink from './RouteLink';
 
+import getAvatar from '@/services/avatar';
+
 interface FanCardProps extends BoxProps {
   id: string;
   city: string;
@@ -54,6 +56,7 @@ const FanCard = ({
       <Avatar
         w={size}
         h={size}
+        src={getAvatar(name)}
         pos="absolute"
         zIndex="docked"
         top={[-8, -8, -16]}

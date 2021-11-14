@@ -13,6 +13,7 @@ import {
 } from '@chakra-ui/react';
 import { GetStaticPropsContext, GetStaticPropsResult } from 'next';
 import dynamic from 'next/dynamic';
+import NextHeadSeo from 'next-head-seo';
 import { BsGrid3X3GapFill } from 'react-icons/bs';
 import { FiSearch } from 'react-icons/fi';
 
@@ -83,6 +84,12 @@ const ScenesPage = ({
 
   return (
     <>
+      <NextHeadSeo
+        og={{
+          description: '景點',
+          image: `${process.env.NEXT_PUBLIC_WEBSITE_URL}/static/background/scenes.png'`,
+        }}
+      />
       <Background
         name="景點"
         image={background}

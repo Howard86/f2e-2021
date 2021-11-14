@@ -25,13 +25,12 @@ const apiGet = async <T>(
     },
   );
 
-  console.error(response.url);
-  console.error(response.headers);
-
   if (response.ok && response.status < 400) {
     return response.json();
   }
   const text = await response.text();
+  console.error(response.url);
+  console.error(response.headers);
   console.error(text);
 
   throw new Error(response.statusText);

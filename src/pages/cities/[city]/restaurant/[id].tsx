@@ -20,6 +20,7 @@ import {
   GetStaticPropsResult,
 } from 'next';
 import { useRouter } from 'next/router';
+import NextHeadSeo from 'next-head-seo';
 import type { ParsedUrlQuery } from 'querystring';
 import { BiChevronRight, BiLinkExternal, BiSync } from 'react-icons/bi';
 import { BsBookmarkPlus, BsBookmarkPlusFill } from 'react-icons/bs';
@@ -69,6 +70,14 @@ const RestaurantPage = ({
 
   return (
     <>
+      <NextHeadSeo
+        title={`台灣旅遊導覽網 | ${restaurant.Name}`}
+        og={{
+          title: restaurant.Name,
+          description: restaurant.Picture.PictureDescription1,
+          image: restaurant.Picture.PictureUrl1,
+        }}
+      />
       <Flex
         flexDir="column"
         pt="16"

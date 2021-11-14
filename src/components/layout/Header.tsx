@@ -18,6 +18,7 @@ import RouteLink from '../RouteLink';
 import MenuPopover from './MenuPopover';
 
 import ROUTES from '@/constants/routes';
+import getAvatar from '@/services/avatar';
 
 const THROTTLED_TIME_MS = 500;
 
@@ -108,7 +109,7 @@ const Header = ({ mainColor, ...props }: HeaderProps) => {
           }}
         />
       </HStack>
-      <Avatar size="sm" ml="4" />
+      <Avatar src={getAvatar('f2e')} size="sm" ml="4" />
     </Flex>
   );
 };

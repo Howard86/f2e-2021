@@ -3,6 +3,7 @@ import React from 'react';
 import { Box, Container, Flex, SimpleGrid, Text } from '@chakra-ui/react';
 import { GetStaticPropsContext, GetStaticPropsResult } from 'next';
 import Image from 'next/image';
+import NextHeadSeo from 'next-head-seo';
 
 import Banner from '@/components/Banner';
 import Logo from '@/components/icons/Logo';
@@ -32,6 +33,11 @@ const PAGE_PROPS = { mainColor: 'scenes.main', gradientColor: 'scenes.light' };
 
 const HomePage = ({ weathers, scenes, restaurants, hotels }: HomePageProps) => (
   <>
+    <NextHeadSeo
+      og={{
+        image: `${process.env.NEXT_PUBLIC_WEBSITE_URL}static/background/main.png`,
+      }}
+    />
     <Container h="100vh" maxH={[400, 700]} centerContent>
       <Box
         pos="absolute"
