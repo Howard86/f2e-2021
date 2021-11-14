@@ -28,6 +28,7 @@ import PlaceCard from '@/components/PlaceCard';
 import RouteLink from '@/components/RouteLink';
 import SceneCard from '@/components/SceneCard';
 import { CITIES, CityMap, CitySlugMap } from '@/constants/category';
+import DEFAULT_CARD_NUMBER from '@/constants/pagination';
 import { SIX_HOURS_IN_SECONDS } from '@/constants/time';
 import {
   getActivityCardsByCity,
@@ -47,7 +48,6 @@ interface CityPageProps {
   activities: PTX.ActivityCard[];
 }
 
-const DEFAULT_CARD_NUMBER = 6;
 const PAGE_PROPS = { mainColor: 'scenes.main', gradientColor: 'scenes.light' };
 
 const CategoryPage = ({

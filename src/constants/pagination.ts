@@ -1,0 +1,3 @@
+const DEFAULT_CARD_NUMBER = 6;
+
+export default DEFAULT_CARD_NUMBER;

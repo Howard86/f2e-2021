@@ -23,6 +23,7 @@ import LoadingScreen from '@/components/LoadingScreen';
 import Pagination from '@/components/Pagination';
 import PlaceCard from '@/components/PlaceCard';
 import { CityMap } from '@/constants/category';
+import DEFAULT_CARD_NUMBER from '@/constants/pagination';
 import { SIX_HOURS_IN_SECONDS } from '@/constants/time';
 import useAppToast from '@/hooks/use-app-toast';
 import { useLazyGetRestaurantCardsQuery } from '@/services/local';
@@ -40,7 +41,6 @@ const PAGE_PROPS = {
   mainColor: 'restaurants.main',
   gradientColor: 'restaurants.light',
 };
-const DEFAULT_CARD_NUMBER = 6;
 
 const RestaurantsPage = ({
   restaurants,

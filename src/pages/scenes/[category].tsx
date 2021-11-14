@@ -30,6 +30,7 @@ import LoadingScreen from '@/components/LoadingScreen';
 import Pagination from '@/components/Pagination';
 import SceneCard from '@/components/SceneCard';
 import { CityMap, THEMES } from '@/constants/category';
+import DEFAULT_CARD_NUMBER from '@/constants/pagination';
 import { SIX_HOURS_IN_SECONDS } from '@/constants/time';
 import useAppToast from '@/hooks/use-app-toast';
 import { useLazyGetSceneCardsQuery } from '@/services/local';
@@ -47,7 +48,6 @@ interface CategoryPageProps {
   remarks: PTX.SceneRemark[];
 }
 
-const DEFAULT_CARD_NUMBER = 6;
 const PAGE_PROPS = { mainColor: 'scenes.main', gradientColor: 'scenes.light' };
 
 const CategoryPage = ({
