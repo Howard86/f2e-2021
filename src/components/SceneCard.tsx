@@ -4,33 +4,40 @@ import {
   Box,
   Flex,
   Icon,
+  Image,
   LinkBox,
   LinkBoxProps,
   LinkOverlay,
   Text,
 } from '@chakra-ui/react';
-import Image from 'next/image';
 import { FiMapPin } from 'react-icons/fi';
 
 import CardBanner from './CardBanner';
 import RouteLink from './RouteLink';
 
+import { CityMap } from '@/constants/category';
+
 interface SceneCardProps extends LinkBoxProps {
   id: string;
   name: string;
   city: string;
-  image: string | StaticImageData;
+  image: string;
 }
 
 const SceneCard = ({ id, name, city, image }: SceneCardProps) => (
-  <LinkBox pos="relative" overflow="hidden" rounded="2xl">
+  <LinkBox
+    h={['380px', '420px', '420px', '500px']}
+    pos="relative"
+    overflow="hidden"
+    rounded="2xl"
+  >
     <Image
-      layout="responsive"
       objectFit="cover"
       objectPosition="center"
+      fallbackSrc="/static/fallback.jpg"
       src={image}
-      width={368}
-      height={420}
+      w="full"
+      h="full"
     />
     <Flex
       pos="absolute"
@@ -42,24 +49,26 @@ const SceneCard = ({ id, name, city, image }: SceneCardProps) => (
       bottom="0"
     >
       {/* TODO: add rate & view */}
-      <CardBanner rate={4.5} view={67} saved />
+      <CardBanner rate={(name.length % 3) + 2} view={name.length} saved />
       <Box flexGrow={1} />
       <Flex
         display="flex"
+        flexDir="column"
         bgColor="blackAlpha.500"
         p="4"
         color="white"
-        justify="space-between"
-        align="center"
         roundedBottom="3xl"
         zIndex="docked"
       >
         <Text variant="headline-3">
-          <RouteLink as={LinkOverlay} href={`/scenes/${city}/${id}`}>
+          <RouteLink
+            as={LinkOverlay}
+            href={`/cities/${CityMap[city]}/scene/${id}`}
+          >
             {name}
           </RouteLink>
         </Text>
-        <Flex align="center">
+        <Flex alignSelf="flex-end" align="center">
           <Icon as={FiMapPin} boxSize="24px" mr="1" />
           <Text as="span">{city}</Text>
         </Flex>

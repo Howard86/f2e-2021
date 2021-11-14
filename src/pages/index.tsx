@@ -11,17 +11,21 @@ import PlaceCard from '@/components/PlaceCard';
 import SceneCard from '@/components/SceneCard';
 import SiteCardGrid from '@/components/SiteCardGrid';
 import WeatherCarousel from '@/components/WeatherCarousel';
-import { getHotels, getRestaurants, getScenes } from '@/services/tdx';
-import { getWeathers } from '@/services/weather';
+import { CityMap } from '@/constants/category';
+import { SIX_HOURS_IN_SECONDS } from '@/constants/time';
+import {
+  getHotelCards,
+  getRestaurantCards,
+  getSceneCards,
+} from '@/services/ptx';
+import getWeathers from '@/services/weather';
 import mainBackground from '@/static/background/main.png';
-import mockCard from '@/static/mock/card.png';
-import mockFood from '@/static/mock/food.png';
 
 interface HomePageProps {
-  weathers: Weather.City[];
-  scenes: TDX.Scene[];
-  restaurants: TDX.Restaurant[];
-  hotels: TDX.Hotel[];
+  weathers: OpenData.CityWeather[];
+  scenes: PTX.SceneCard[];
+  restaurants: PTX.RestaurantCard[];
+  hotels: PTX.HotelCard[];
 }
 
 const PAGE_PROPS = { mainColor: 'scenes.main', gradientColor: 'scenes.light' };
@@ -83,11 +87,11 @@ const HomePage = ({ weathers, scenes, restaurants, hotels }: HomePageProps) => (
       <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
         {scenes.map((scene) => (
           <SceneCard
-            key={scene.id}
-            id={scene.id}
-            name={scene.name}
-            city={scene.city}
-            image={scene.image || mockCard}
+            key={scene.ID}
+            id={scene.ID}
+            name={scene.Name}
+            city={scene.City}
+            image={scene.Picture?.PictureUrl1}
           />
         ))}
       </SimpleGrid>
@@ -100,14 +104,17 @@ const HomePage = ({ weathers, scenes, restaurants, hotels }: HomePageProps) => (
       <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
         {restaurants.map((restaurant) => (
           <PlaceCard
-            key={restaurant.id}
-            id={restaurant.id}
-            name={restaurant.name}
-            city={restaurant.city}
-            image={restaurant.image || mockFood}
-            address={restaurant.address}
-            contactNumber={restaurant.contactNumber}
-            openingHours={restaurant.openingHours}
+            key={restaurant.ID}
+            id={restaurant.ID}
+            name={restaurant.Name}
+            city={restaurant.City}
+            image={restaurant.Picture.PictureUrl1}
+            address={restaurant.Address}
+            contactNumber={restaurant.Phone}
+            openingHours={restaurant.OpenTime}
+            href={`/cities/${CityMap[restaurant.City]}/restaurant/${
+              restaurant.ID
+            }`}
           />
         ))}
       </SimpleGrid>
@@ -116,14 +123,15 @@ const HomePage = ({ weathers, scenes, restaurants, hotels }: HomePageProps) => (
       <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
         {hotels.map((hotel) => (
           <PlaceCard
-            key={hotel.id}
-            id={hotel.id}
-            name={hotel.name}
-            city={hotel.city}
-            image={hotel.image || mockFood}
-            address={hotel.address}
-            contactNumber={hotel.contactNumber}
-            openingHours={hotel.openingHours}
+            key={hotel.ID}
+            id={hotel.ID}
+            name={hotel.Name}
+            city={hotel.City}
+            image={hotel.Picture.PictureUrl1}
+            address={hotel.Address}
+            contactNumber={hotel.Phone}
+            serviceInfo={hotel.ServiceInfo}
+            href={`/cities/${CityMap[hotel.City]}/hotel/${hotel.ID}`}
           />
         ))}
       </SimpleGrid>
@@ -136,18 +144,19 @@ export const getStaticProps = async (
 ): Promise<GetStaticPropsResult<HomePageProps>> => {
   const [weathers, scenes, restaurants, hotels] = await Promise.all([
     getWeathers(),
-    getScenes(),
-    getRestaurants(),
-    getHotels(),
+    getSceneCards(6),
+    getRestaurantCards(6),
+    getHotelCards(6),
   ]);
 
   return {
     props: {
       weathers,
-      scenes: scenes.slice(0, 6),
-      restaurants: restaurants.slice(0, 6),
-      hotels: hotels.slice(0, 6),
+      scenes,
+      restaurants,
+      hotels,
     },
+    revalidate: SIX_HOURS_IN_SECONDS,
   };
 };
 

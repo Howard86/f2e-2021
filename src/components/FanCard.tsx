@@ -8,12 +8,12 @@ import {
   HStack,
   Icon,
   IconButton,
+  Image,
   LinkBox,
   LinkOverlay,
   Text,
   useToken,
 } from '@chakra-ui/react';
-import Image from 'next/image';
 import { AiOutlineEye } from 'react-icons/ai';
 import {
   BsBookmarkPlus,
@@ -22,26 +22,35 @@ import {
   BsHeartFill,
 } from 'react-icons/bs';
 
-interface PlaceCardProps extends BoxProps {
+import RouteLink from './RouteLink';
+
+interface FanCardProps extends BoxProps {
+  id: string;
+  city: string;
   name: string;
   description: string;
-  image: string | StaticImageData;
+  image: string;
   liked?: boolean;
   saved?: boolean;
+  href: string;
 }
 
+// TODO: this design is a bit against the structure, consider refactor all cards
 const FanCard = ({
+  id,
   name,
+  city,
   description,
   image,
   liked,
   saved,
+  href,
   ...props
-}: PlaceCardProps) => {
+}: FanCardProps) => {
   const size = useToken('w', ['64px', '64px', '128px']);
 
   return (
-    <Box pos="relative" {...props}>
+    <Box mt={[8, 8, 16]} pos="relative" {...props}>
       <Avatar
         w={size}
         h={size}
@@ -69,30 +78,39 @@ const FanCard = ({
         borderColor="blackAlpha.600"
         overflow="hidden"
       >
-        <Image src={image} width={400} height={300} />
-        <LinkBox display="flex" flexDir="column" m="4">
-          <LinkOverlay href="#" isExternal>
-            <Text
-              as="h3"
-              pb="4"
-              fontSize={['xl', '2xl']}
-              fontWeight="bold"
-              noOfLines={1}
-            >
+        <Image
+          alt={name}
+          src={image}
+          w="full"
+          h={[300, 200]}
+          fallbackSrc="/static/fallback.jpg"
+          objectFit="cover"
+          objectPosition="center"
+        />
+        <LinkBox display="flex" flexDir="column" m="4" h={[200, 180]}>
+          <Text
+            as="h3"
+            mb="4"
+            fontSize={['xl', '2xl']}
+            fontWeight="bold"
+            noOfLines={1}
+          >
+            <RouteLink as={LinkOverlay} href={href}>
               {name}
-            </Text>
-          </LinkOverlay>
-          <Text>{description}</Text>
+            </RouteLink>
+          </Text>
+          <Text noOfLines={[4, 3]}>{description}</Text>
+          <Box flexGrow={1} />
           <Flex justify="flex-end" mt="8">
             <HStack color="blackAlpha.600">
               <Icon as={AiOutlineEye} boxSize="24px" />
-              <Text as="span">3萬</Text>
+              <Text as="span">{id.charAt(id.length - 1)}萬</Text>
               <Icon
                 as={liked ? BsHeartFill : BsHeart}
                 color={liked ? 'red.600' : 'inherit'}
                 boxSize="24px"
               />
-              <Text as="span">3千</Text>
+              <Text as="span">{id.charAt(id.length - 2)}千</Text>
             </HStack>
           </Flex>
         </LinkBox>

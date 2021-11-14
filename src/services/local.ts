@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { ApiResponse } from 'next-api-handler';
 
 export const localApi = createApi({
   reducerPath: 'local',
@@ -6,8 +7,32 @@ export const localApi = createApi({
     baseUrl: '/api',
   }),
   endpoints: (builder) => ({
-    getName: builder.query<Local.HelloApi, void>({ query: () => 'hello' }),
+    getSceneCards: builder.query<
+      ApiResponse<PTX.SceneCard[]>,
+      { keyword: string } & Partial<Local.SearchScenesQuery>
+    >({
+      query: (params) => ({
+        url: 'scenes',
+        params,
+      }),
+    }),
+    getRestaurantCards: builder.query<
+      ApiResponse<PTX.RestaurantCard[]>,
+      { keyword: string }
+    >({
+      query: (params) => ({ url: 'restaurants', params }),
+    }),
+    getHotelCards: builder.query<
+      ApiResponse<PTX.HotelCard[]>,
+      { keyword: string }
+    >({
+      query: (params) => ({ url: 'hotels', params }),
+    }),
   }),
 });
 
-export const { useGetNameQuery } = localApi;
+export const {
+  useLazyGetSceneCardsQuery,
+  useLazyGetRestaurantCardsQuery,
+  useLazyGetHotelCardsQuery,
+} = localApi;

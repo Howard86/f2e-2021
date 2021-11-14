@@ -3,37 +3,38 @@ import React from 'react';
 import {
   Box,
   Flex,
+  Image,
   LinkBox,
   LinkBoxProps,
   LinkOverlay,
   Text,
 } from '@chakra-ui/react';
-import Image from 'next/image';
+
+import RouteLink from './RouteLink';
 
 interface ThemeCardProps extends LinkBoxProps {
-  name: string;
-  image: string | StaticImageData;
-  imageWidth?: number;
-  imageHeight?: number;
+  id: string;
+  theme: string;
+  image: string;
   href?: string;
 }
 
-const ThemeCard = ({
-  name,
-  image,
-  imageHeight = 420,
-  imageWidth = 386,
-  href = '#',
-  ...props
-}: ThemeCardProps) => (
-  <LinkBox pos="relative" overflow="hidden" rounded="3xl" {...props}>
+const ThemeCard = ({ id, theme, image, href, ...props }: ThemeCardProps) => (
+  <LinkBox
+    pos="relative"
+    overflow="hidden"
+    rounded="3xl"
+    h={['420']}
+    {...props}
+  >
     <Image
-      alt={name}
+      alt={theme}
       objectFit="cover"
       objectPosition="center"
+      fallbackSrc="/static/fallback.jpg"
       src={image}
-      width={imageWidth}
-      height={imageHeight}
+      w="full"
+      h="full"
     />
     <Flex
       pos="absolute"
@@ -42,7 +43,7 @@ const ThemeCard = ({
       top="0"
       left="0"
       right="0"
-      bottom="1"
+      bottom="0"
     >
       <Box flexGrow={1} />
       <Box>
@@ -54,9 +55,15 @@ const ThemeCard = ({
           color="white"
           fontSize={['xl', '2xl']}
         >
-          <LinkOverlay href={href} isExternal>
-            {name}
-          </LinkOverlay>
+          {href ? (
+            <LinkOverlay href={href} isExternal>
+              {theme}
+            </LinkOverlay>
+          ) : (
+            <RouteLink as={LinkOverlay} href={`/scenes/${theme}`}>
+              {theme}
+            </RouteLink>
+          )}
         </Text>
       </Box>
     </Flex>

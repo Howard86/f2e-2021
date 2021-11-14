@@ -1,18 +1,28 @@
 import React from 'react';
 
-import { Flex, FlexProps, Icon, Text } from '@chakra-ui/react';
-import Image from 'next/image';
+import {
+  Flex,
+  FlexProps,
+  Icon,
+  Image,
+  LinkBox,
+  LinkOverlay,
+  Text,
+} from '@chakra-ui/react';
 import { FiMapPin } from 'react-icons/fi';
 
 import CardBanner from './CardBanner';
+import RouteLink from './RouteLink';
 
 interface PlaceCardProps extends FlexProps {
   name: string;
   city: string;
   address: string;
-  openingHours: string;
-  contactNumber: string;
-  image: string | StaticImageData;
+  openingHours?: string;
+  contactNumber?: string;
+  serviceInfo?: string;
+  image: string;
+  href: string;
 }
 
 const PlaceCard = ({
@@ -21,7 +31,9 @@ const PlaceCard = ({
   address,
   openingHours,
   contactNumber,
+  serviceInfo,
   image,
+  href,
 }: PlaceCardProps) => (
   <Flex
     pos="relative"
@@ -35,8 +47,8 @@ const PlaceCard = ({
     <CardBanner
       pos="absolute"
       top="0"
-      rate={4}
-      view={39}
+      rate={(name.length % 3) + 2}
+      view={address.length}
       saved
       left="0"
       right="0"
@@ -44,29 +56,29 @@ const PlaceCard = ({
     />
     <Image
       src={image}
+      fallbackSrc="/static/fallback.jpg"
       objectFit="cover"
-      objectPosition="cover"
-      width={400}
+      align="center"
+      w="full"
       height={300}
     />
-    <Flex flexDir="column" m="4" lineHeight="6">
-      <Flex
-        flexDir={['row', 'column', 'row']}
-        justify="space-between"
-        fontWeight="bold"
-      >
-        <Text as="h3" fontSize="2xl" color="blackAlpha.800" noOfLines={1}>
-          {name}
+    <LinkBox flexDir="column" m="4" lineHeight="6">
+      <Flex justify="space-between" fontWeight="bold">
+        <Text as="h3" fontSize={['lg', 'xl']} color="blackAlpha.800" my="2">
+          <RouteLink href={href} as={LinkOverlay}>
+            {name}
+          </RouteLink>
         </Text>
-        <Flex align="center" pt="2" pb="4">
+        <Flex flexShrink={0} align="center" pt="2" pb="4">
           <Icon as={FiMapPin} boxSize={6} mr="1" />
           <Text as="span">{city}</Text>
         </Flex>
       </Flex>
       <Text fontWeight="bold">{address}</Text>
-      <Text variant="body">營業時間：{openingHours}</Text>
-      <Text variant="body">電話：{contactNumber}</Text>
-    </Flex>
+      {contactNumber && <Text variant="body">電話：{contactNumber}</Text>}
+      {openingHours && <Text variant="body">營業時間：{openingHours}</Text>}
+      {serviceInfo && <Text variant="body">{serviceInfo}</Text>}
+    </LinkBox>
   </Flex>
 );
 

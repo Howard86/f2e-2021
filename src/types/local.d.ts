@@ -1,6 +1,12 @@
 declare namespace Local {
-  interface HelloApi {
-    name: string;
-    timestamp: number;
+  interface SearchScenesQuery {
+    keyword: string;
+    city: PTX.City;
+    theme: PTX.SceneClass;
+  }
+
+  interface SearchQuery {
+    keyword: string;
+    city: PTX.City;
   }
 }

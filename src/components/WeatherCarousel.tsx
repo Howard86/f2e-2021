@@ -8,7 +8,7 @@ import WeatherStat from './WeatherStat';
 const NUMBER_OF_SLIDES = 5;
 
 interface WeatherCarouselProps extends StackProps {
-  weathers: Weather.City[];
+  weathers: OpenData.CityWeather[];
 }
 
 const WeatherCarousel = ({ weathers, ...props }: WeatherCarouselProps) => {
@@ -83,7 +83,9 @@ const WeatherCarousel = ({ weathers, ...props }: WeatherCarouselProps) => {
             mx="4"
             key={weather.id}
             city={weather.city}
-            temperature={weather.temperature}
+            minT={weather.minT}
+            maxT={weather.maxT}
+            weather={weather.weather}
           />
         ))}
       </Flex>

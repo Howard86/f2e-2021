@@ -20,7 +20,7 @@ const Layout = ({
 }: LayoutProps) => (
   <>
     <Header mainColor={mainColor} />
-    <Box as="main" {...props}>
+    <Box as="main" minH="100%" {...props}>
       {children}
     </Box>
     <DynamicFooter mainColor={mainColor} gradientColor={gradientColor} />

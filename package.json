@@ -1,6 +1,6 @@
 {
   "name": "nextjs-template",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Next.js template configured with TypeScript, Charka UI, ESLint, Prettier and git hooks",
   "repository": {
     "type": "git",
@@ -44,8 +44,10 @@
     "@emotion/styled": "^11.3.0",
     "@reduxjs/toolkit": "^1.6.2",
     "framer-motion": "^5.2.1",
+    "jssha": "^3.2.0",
     "lodash.throttle": "^4.1.1",
     "next": "^12.0.3",
+    "next-api-handler": "^0.0.7",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-icons": "^4.3.1",

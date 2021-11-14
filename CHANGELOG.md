@@ -2,6 +2,39 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.2](https://github.com/Howard86/nextjs-template/compare/v0.1.1...v0.1.2) (2021-11-14)
+
+### Features
+
+- **activity:** add activity in city page ([a4e2622](https://github.com/Howard86/nextjs-template/commit/a4e26221bbb3cb96a0bc305539b48ae9cc3afcdd))
+- **activity:** add ActivityPage ([292f546](https://github.com/Howard86/nextjs-template/commit/292f546a3a80a94361938ed74bd0806375e25150))
+- add revalition time for static page ([7cbe1b0](https://github.com/Howard86/nextjs-template/commit/7cbe1b0508ba8c8529ca9f4c3f7f3a144af70b10))
+- **city:** add /cities/[city] with new service api ([b531357](https://github.com/Howard86/nextjs-template/commit/b531357d5605e5cbd5535069a29420366f94c6d3))
+- **config:** set up server-side PTX getApi ([578c7d2](https://github.com/Howard86/nextjs-template/commit/578c7d29b5085869c0a6773c8dcf04c213dd431c))
+- **hotel:** add hotel services & update hotel page ([b1d9484](https://github.com/Howard86/nextjs-template/commit/b1d9484cd303eda0d0602a6f874de45f2aaa97a1))
+- **hotel:** add HotelPage ([c83a1f5](https://github.com/Howard86/nextjs-template/commit/c83a1f5adfb5e7deb0a6e6fa0ba0f36829403567))
+- **main:** update main page ([87cd37a](https://github.com/Howard86/nextjs-template/commit/87cd37a4afca09d160986d6926f925d074ea7c41))
+- **restaurants:** add restaurant services ([9073f83](https://github.com/Howard86/nextjs-template/commit/9073f838653a0ca6d1f3519e8cc6c2b5b0d2fc02))
+- **restaurants:** add RestaurantPage with id ([4ae2c9d](https://github.com/Howard86/nextjs-template/commit/4ae2c9d5a6e9f783acd5edcd2b2614c95cbb67b4))
+- **restaurants:** update restarant page with search ([da19723](https://github.com/Howard86/nextjs-template/commit/da1972378b68ec841a5247fa737d6c104b20368f))
+- **scenes:** add /api/scenes endpoint to support search ([1f3bed4](https://github.com/Howard86/nextjs-template/commit/1f3bed461282d9d9978c9e28b4537291fa5e6a6f))
+- **scenes:** add SceneModal to support search feature ([2f829df](https://github.com/Howard86/nextjs-template/commit/2f829dfa311b8d0c4f893ace41f4775e5afff18e))
+- **scenes:** implement search on scenes ([ad8f565](https://github.com/Howard86/nextjs-template/commit/ad8f56586d97448678afa216d6e25fc4836b7e01))
+- **scenes:** replace /scenes page with ptx services ([8e98397](https://github.com/Howard86/nextjs-template/commit/8e9839724303270ea8c630ad44ffa2c7a3ed5c0a))
+- **scenes:** update category page & scenes page data ([c59a4dc](https://github.com/Howard86/nextjs-template/commit/c59a4dc936dff613afcea45312e1f7ecf371c21c))
+- **scenes:** update ScenePage with more icons ([20b6caa](https://github.com/Howard86/nextjs-template/commit/20b6caa040ae4be3b808f3ed817ced41030e83c6))
+- **scenes:** update search in /scenes/category page ([7d80986](https://github.com/Howard86/nextjs-template/commit/7d80986df2497cdcb385e58d438cf64735c476af))
+- **transport:** update transport page ([cadc9f2](https://github.com/Howard86/nextjs-template/commit/cadc9f253e33404193ac0930049b626b4c223059))
+- **ui:** add GoogleMap to all info page ([ae13ab8](https://github.com/Howard86/nextjs-template/commit/ae13ab89fd17f9047222e799c87f0fa987363582))
+- **ui:** update fallback image ([710ee4e](https://github.com/Howard86/nextjs-template/commit/710ee4ed1b2afaaf22ba8a5076b40a92f8e269a2))
+- **weather:** update wather icons and ui ([a9a5ce9](https://github.com/Howard86/nextjs-template/commit/a9a5ce99330b9efd8f84a6c7e7b47183640f25a6))
+- **weather:** update weather services with open data api ([7b1d0da](https://github.com/Howard86/nextjs-template/commit/7b1d0da8780f2ba9e0752d712009dced8cbb7f8d))
+
+### Bug Fixes
+
+- **ui:** update loader style ([5229706](https://github.com/Howard86/nextjs-template/commit/5229706feaf4c7dea815c3bbe95733f7083dcfe4))
+- update image loading & ui behaviour ([4d91bef](https://github.com/Howard86/nextjs-template/commit/4d91bef423e5a73b7c47122337c2e699d5d92491))
+
 ### [0.1.1](https://github.com/Howard86/nextjs-template/compare/v0.1.0...v0.1.1) (2021-11-12)
 
 ### Features
