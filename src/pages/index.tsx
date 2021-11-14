@@ -35,7 +35,7 @@ const HomePage = ({ weathers, scenes, restaurants, hotels }: HomePageProps) => (
   <>
     <NextHeadSeo
       og={{
-        image: `${process.env.NEXT_PUBLIC_WEBSITE_URL}static/background/main.png`,
+        image: `${process.env.NEXT_PUBLIC_WEBSITE_URL}/static/background/main.png`,
       }}
     />
     <Container h="100vh" maxH={[400, 700]} centerContent>
