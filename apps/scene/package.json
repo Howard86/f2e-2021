@@ -31,7 +31,7 @@
     "check-all": "yarn type-check && yarn lint && yarn format",
     "type-check": "tsc --noEmit",
     "lint": "eslint . --ext .ts,.tsx",
-    "format": "prettier --write .",
+    "format": "prettier --write . --ignore-path ../../.prettierignore",
     "gen:theme-typings": "chakra-cli tokens src/theme/index.ts",
     "dev": "next dev",
     "build": "next build",

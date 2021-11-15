@@ -34,10 +34,13 @@
     ]
   },
   "scripts": {
+    "build": "lerna run build --parallel",
+    "bootstrap": "lerna bootstrap",
     "check-all": "yarn type-check && yarn lint && yarn format",
-    "type-check": "tsc --noEmit",
+    "type-check": "lerna run type-check --stream --parallel",
     "lint": "eslint . --ext .ts,.tsx",
     "format": "prettier --write .",
+    "release": "lerna version --conventional-commits --include-merged-tags",
     "prepare": "husky install"
   },
   "dependencies": {},

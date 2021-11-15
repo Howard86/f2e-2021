@@ -1,4 +1,5 @@
 {
+  "root": true,
   "parser": "@typescript-eslint/parser",
   "plugins": ["@typescript-eslint", "simple-import-sort"],
   "extends": [
@@ -19,6 +20,7 @@
     "node": true
   },
   "rules": {
+    "no-html-link-for-pages": 0,
     "import/extensions": 0,
     "react/prop-types": 0,
     "react/jsx-props-no-spreading": 0,
