@@ -1,3 +1,15 @@
+# Change Log
+
+All notable changes to this project will be documented in this file.
+See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
+# 0.2.0 (2021-11-15)
+
+### Features
+
+- **config:** add lerna & yarn workspace config ([b8f83aa](https://github.com/Howard86/f2e-2011/commit/b8f83aa950669365a8bb323abd96f36fbc07808d))
+- **config:** set up build script & config ([3d32e23](https://github.com/Howard86/f2e-2011/commit/3d32e2353a3c43f30cdeee28a54b2cfc036555c2))
+
 # Changelog
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
