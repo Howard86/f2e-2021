@@ -5,7 +5,8 @@
   "useWorkspaces": true,
   "command": {
     "version": {
-      "ignoreChanges": ["*.md"]
+      "ignoreChanges": ["*.md"],
+      "message": "chore(release): tag & update changelog"
     }
   }
 }
