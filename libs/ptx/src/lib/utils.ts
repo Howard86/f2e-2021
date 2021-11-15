@@ -1,4 +1,4 @@
-import { PTX } from './types';
+import { PTX } from '../types';
 
 const SCENE_KEYWORDS: (keyof PTX.Scene)[] = [
   'Description',
