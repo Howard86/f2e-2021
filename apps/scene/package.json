@@ -1,13 +1,13 @@
 {
-  "name": "nextjs-template",
+  "name": "@f2e/scene",
   "version": "0.1.4",
-  "description": "Next.js template configured with TypeScript, Charka UI, ESLint, Prettier and git hooks",
+  "description": "Taiwan scene search powered by PTX API",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Howard86/nextjs-template"
+    "url": "https://github.com/Howard86/f2e-2011"
   },
   "author": "Howard Tai <howard@howardism.dev>",
-  "license": "MIT",
+  "license": "UNLICENSED",
   "keywords": [
     "template",
     "next.js",
@@ -24,9 +24,9 @@
     "commitlint"
   ],
   "bugs": {
-    "url": "https://github.com/Howard86/nextjs-template/issues"
+    "url": "https://github.com/Howard86/f2e-2011/issues"
   },
-  "homepage": "https://github.com/Howard86/nextjs-template",
+  "homepage": "https://github.com/Howard86/f2e-2011",
   "scripts": {
     "check-all": "yarn type-check && yarn lint && yarn format",
     "type-check": "tsc --noEmit",
