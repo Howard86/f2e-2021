@@ -1,0 +1,18 @@
+{
+  "name": "@f2e/ptx",
+  "version": "0.1.0",
+  "description": "Shared utilities to connect to PTX API",
+  "main": "build/index.js",
+  "typings": "build/index.d.ts",
+  "author": "Howard Tai <howard@howardism.dev>",
+  "license": "UNLICENSED",
+  "private": true,
+  "scripts": {
+    "lint": "eslint src --ext ts",
+    "format": "prettier --write src --ignore-path ../../.prettierignore",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "jssha": "^3.2.0"
+  }
+}
