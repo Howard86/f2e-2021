@@ -8,6 +8,8 @@
   "license": "UNLICENSED",
   "private": true,
   "scripts": {
+    "lint": "eslint src --ext ts",
+    "format": "prettier --write src --ignore-path ../../.prettierignore",
     "build": "tsc"
   },
   "dependencies": {
