@@ -15,6 +15,7 @@ import {
   Tooltip,
   useDisclosure,
 } from '@chakra-ui/react';
+import { CityMap, getHotelCards, getHotelCountWithCity, PTX } from '@f2e/ptx';
 import { GetStaticPropsContext, GetStaticPropsResult } from 'next';
 import NextHeadSeo from 'next-head-seo';
 import { BsCalendar } from 'react-icons/bs';
@@ -27,7 +28,6 @@ import Layout from '@/components/layout/Layout';
 import LoadingScreen from '@/components/LoadingScreen';
 import Pagination from '@/components/Pagination';
 import PlaceCard from '@/components/PlaceCard';
-import { CityMap } from '@/constants/category';
 import {
   DEFAULT_CARD_NUMBER,
   DEFAULT_FETCHED_CARD_NUMBER,
@@ -35,7 +35,6 @@ import {
 import { SIX_HOURS_IN_SECONDS } from '@/constants/time';
 import useAppToast from '@/hooks/use-app-toast';
 import { useLazyGetHotelCardsQuery } from '@/services/local';
-import { getHotelCards, getHotelCountWithCity } from '@/services/ptx';
 import background from '@/static/background/hotels.png';
 import wordOne from '@/static/background/hotels-1.png';
 import wordTwo from '@/static/background/hotels-2.png';

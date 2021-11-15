@@ -1,3 +1,5 @@
+import { PTX } from './types';
+
 export const THEMES: PTX.SceneClass[] = [
   '休閒農業類',
   '其他',

@@ -11,6 +11,12 @@ import {
   SimpleGrid,
   useDisclosure,
 } from '@chakra-ui/react';
+import {
+  CityMap,
+  getRestaurantCards,
+  getRestaurantWithRemarks,
+  PTX,
+} from '@f2e/ptx';
 import { GetStaticPropsContext, GetStaticPropsResult } from 'next';
 import NextHeadSeo from 'next-head-seo';
 import { FiSearch } from 'react-icons/fi';
@@ -23,7 +29,6 @@ import Layout from '@/components/layout/Layout';
 import LoadingScreen from '@/components/LoadingScreen';
 import Pagination from '@/components/Pagination';
 import PlaceCard from '@/components/PlaceCard';
-import { CityMap } from '@/constants/category';
 import {
   DEFAULT_CARD_NUMBER,
   DEFAULT_FETCHED_CARD_NUMBER,
@@ -32,7 +37,6 @@ import {
 import { SIX_HOURS_IN_SECONDS } from '@/constants/time';
 import useAppToast from '@/hooks/use-app-toast';
 import { useLazyGetRestaurantCardsQuery } from '@/services/local';
-import { getRestaurantCards, getRestaurantWithRemarks } from '@/services/ptx';
 import background from '@/static/background/restaurants.png';
 import wordOne from '@/static/background/restaurants-1.png';
 import wordTwo from '@/static/background/restaurants-2.png';

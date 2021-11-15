@@ -21,10 +21,10 @@ import {
   SimpleGrid,
   Stack,
 } from '@chakra-ui/react';
+import { CityMap, COUNTIES, MAJOR_CITIES, PTX, THEMES } from '@f2e/ptx';
 import { useRouter } from 'next/router';
 import { FiSearch } from 'react-icons/fi';
 
-import { CityMap, COUNTIES, MAJOR_CITIES, THEMES } from '@/constants/category';
 import useAppToast from '@/hooks/use-app-toast';
 
 const DEFAULT_MENU_VALUE = '選擇縣市' as const;

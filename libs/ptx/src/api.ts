@@ -1,13 +1,13 @@
 import JsSHA1 from 'jssha/dist/sha1';
 
+import { PTXCityMap } from './category';
+import { PTX } from './types';
 import {
   constructActivitiesSearch,
   constructHotelsSearch,
   constructRestaurantsSearch,
   constructScenesSearch,
 } from './utils';
-
-import { PTXCityMap } from '@/constants/category';
 
 const getAuthorizationHeader = () => {
   const AppID = process.env.PTX_APP_ID;

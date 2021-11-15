@@ -11,6 +11,16 @@ import {
   SimpleGrid,
 } from '@chakra-ui/react';
 import {
+  CITIES,
+  CityMap,
+  CitySlugMap,
+  getActivityCardsByCity,
+  getHotelCardsByCity,
+  getRestaurantCardsByCity,
+  getSceneCardsByCity,
+  PTX,
+} from '@f2e/ptx';
+import {
   GetStaticPathsResult,
   GetStaticPropsContext,
   GetStaticPropsResult,
@@ -28,18 +38,11 @@ import Pagination from '@/components/Pagination';
 import PlaceCard from '@/components/PlaceCard';
 import RouteLink from '@/components/RouteLink';
 import SceneCard from '@/components/SceneCard';
-import { CITIES, CityMap, CitySlugMap } from '@/constants/category';
 import {
   DEFAULT_CARD_NUMBER,
   DEFAULT_FETCHED_CARD_NUMBER,
 } from '@/constants/pagination';
 import { SIX_HOURS_IN_SECONDS } from '@/constants/time';
-import {
-  getActivityCardsByCity,
-  getHotelCardsByCity,
-  getRestaurantCardsByCity,
-  getSceneCardsByCity,
-} from '@/services/ptx';
 import background from '@/static/background/scenes.png';
 import wordOne from '@/static/background/scenes-1.png';
 import wordTwo from '@/static/background/scenes-2.png';

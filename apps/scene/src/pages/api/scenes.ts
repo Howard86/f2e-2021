@@ -1,16 +1,19 @@
 import {
+  CITIES,
+  PTX,
+  searchScenesByKeyword,
+  searchScenesByKeywordAndCity,
+  searchScenesByKeywordAndTheme,
+  THEMES,
+} from '@f2e/ptx';
+import {
   BadRequestException,
   NextApiRequestWithQuery,
   NotFoundException,
   RouterBuilder,
 } from 'next-api-handler';
 
-import { CITIES, THEMES } from '@/constants/category';
-import {
-  searchScenesByKeyword,
-  searchScenesByKeywordAndCity,
-  searchScenesByKeywordAndTheme,
-} from '@/services/ptx';
+import { Local } from '@/types/local';
 
 const router = new RouterBuilder();
 router.get(

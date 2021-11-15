@@ -1,5 +1,8 @@
+import { PTX } from '@f2e/ptx';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { ApiResponse } from 'next-api-handler';
+
+import { Local } from '@/types/local';
 
 export const localApi = createApi({
   reducerPath: 'local',

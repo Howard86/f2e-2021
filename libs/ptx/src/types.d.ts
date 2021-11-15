@@ -1,5 +1,5 @@
-declare namespace PTX {
-  interface ApiParam {
+export namespace PTX {
+  export interface ApiParam {
     $top: string;
     $skip: string;
     $orderBy: string;
@@ -8,7 +8,7 @@ declare namespace PTX {
     $spatialFilter: string;
   }
 
-  interface SceneCard {
+  export interface SceneCard {
     ID: string;
     Name: string;
     City: string;
@@ -17,7 +17,7 @@ declare namespace PTX {
     };
   }
 
-  interface SceneRemark {
+  export interface SceneRemark {
     ID: string;
     Name: string;
     City: string;
@@ -27,7 +27,7 @@ declare namespace PTX {
     };
   }
 
-  interface SceneTheme {
+  export interface SceneTheme {
     ID: string;
     City: string;
     Class: SceneClass;
@@ -36,7 +36,7 @@ declare namespace PTX {
     };
   }
 
-  interface RawSceneTheme {
+  export interface RawSceneTheme {
     ID: string;
     City: string;
     Class1?: SceneClass;
@@ -47,7 +47,7 @@ declare namespace PTX {
     };
   }
 
-  interface Scene {
+  export interface Scene {
     ID: string;
     Name: string;
     City?: string;
@@ -76,7 +76,7 @@ declare namespace PTX {
   }
 
   // generate from 3,000 results with https://app.quicktype.io
-  type SceneClass =
+  export type SceneClass =
     | '休閒農業類'
     | '其他'
     | '古蹟類'
@@ -96,7 +96,7 @@ declare namespace PTX {
     | '都會公園類'
     | '體育健身類';
 
-  type City =
+  export type City =
     | '臺北市'
     | '新北市'
     | '桃園市'
@@ -120,7 +120,7 @@ declare namespace PTX {
     | '澎湖縣'
     | '連江縣';
 
-  type CitySlug =
+  export type CitySlug =
     | 'taipei'
     | 'newtaipei'
     | 'taoyuan'
@@ -144,7 +144,7 @@ declare namespace PTX {
     | 'penghucounty'
     | 'lienchiangcounty';
 
-  interface Restaurant {
+  export interface Restaurant {
     ID: string;
     Name: string;
     Description: string;
@@ -163,7 +163,7 @@ declare namespace PTX {
     MapUrl?: string;
   }
 
-  type RestaurantClass =
+  export type RestaurantClass =
     | '中式美食'
     | '伴手禮'
     | '其他'
@@ -173,7 +173,7 @@ declare namespace PTX {
     | '異國料理'
     | '素食';
 
-  interface RestaurantCard {
+  export interface RestaurantCard {
     ID: string;
     Name: string;
     City: string;
@@ -183,7 +183,7 @@ declare namespace PTX {
     Picture: Picture;
   }
 
-  interface RestaurantRemark {
+  export interface RestaurantRemark {
     ID: string;
     Name: string;
     Description: string;
@@ -192,7 +192,7 @@ declare namespace PTX {
     Picture: Picture;
   }
 
-  interface Hotel {
+  export interface Hotel {
     ID: string;
     Name: string;
     Description?: string;
@@ -213,9 +213,13 @@ declare namespace PTX {
     City?: string;
   }
 
-  type HotelClass = '一般旅館' | '一般觀光旅館' | '國際觀光旅館' | '民宿';
+  export type HotelClass =
+    | '一般旅館'
+    | '一般觀光旅館'
+    | '國際觀光旅館'
+    | '民宿';
 
-  interface HotelCard {
+  export interface HotelCard {
     ID: string;
     Name: string;
     City: string;
@@ -225,7 +229,7 @@ declare namespace PTX {
     Picture: Picture;
   }
 
-  interface HotelRemark {
+  export interface HotelRemark {
     ID: string;
     Name: string;
     Description: string;
@@ -234,7 +238,7 @@ declare namespace PTX {
     Picture: Picture;
   }
 
-  interface Activity {
+  export interface Activity {
     ID: string;
     Name: string;
     Description: string;
@@ -260,7 +264,7 @@ declare namespace PTX {
     TravelInfo?: string;
   }
 
-  interface ActivityCard {
+  export interface ActivityCard {
     ID: string;
     Name: string;
     City: string;
@@ -271,7 +275,7 @@ declare namespace PTX {
     EndTime: string;
   }
 
-  interface ActivityRemark {
+  export interface ActivityRemark {
     ID: string;
     Name: string;
     Description: string;
@@ -280,7 +284,7 @@ declare namespace PTX {
     Picture: Picture;
   }
 
-  interface Picture {
+  export interface Picture {
     PictureUrl1?: string;
     PictureDescription1?: string;
     PictureUrl2?: string;
@@ -289,7 +293,7 @@ declare namespace PTX {
     PictureDescription3?: string;
   }
 
-  interface Position {
+  export interface Position {
     PositionLon: number;
     PositionLat: number;
     GeoHash: string;

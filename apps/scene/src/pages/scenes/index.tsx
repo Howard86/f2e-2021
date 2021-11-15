@@ -11,6 +11,13 @@ import {
   useBreakpointValue,
   useDisclosure,
 } from '@chakra-ui/react';
+import {
+  CityMap,
+  getSceneCards,
+  getScenesWithRemarks,
+  getSceneTheme,
+  PTX,
+} from '@f2e/ptx';
 import { GetStaticPropsContext, GetStaticPropsResult } from 'next';
 import dynamic from 'next/dynamic';
 import NextHeadSeo from 'next-head-seo';
@@ -24,16 +31,10 @@ import Layout from '@/components/layout/Layout';
 import LoadingScreen from '@/components/LoadingScreen';
 import SceneCard from '@/components/SceneCard';
 import ThemeCard from '@/components/ThemeCard';
-import { CityMap } from '@/constants/category';
 import { DEFAULT_FETCHED_REMARK_NUMBER } from '@/constants/pagination';
 import { SIX_HOURS_IN_SECONDS } from '@/constants/time';
 import useAppToast from '@/hooks/use-app-toast';
 import { useLazyGetSceneCardsQuery } from '@/services/local';
-import {
-  getSceneCards,
-  getScenesWithRemarks,
-  getSceneTheme,
-} from '@/services/ptx';
 import background from '@/static/background/scenes.png';
 import wordOne from '@/static/background/scenes-1.png';
 import wordTwo from '@/static/background/scenes-2.png';

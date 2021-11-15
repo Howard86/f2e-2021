@@ -10,12 +10,11 @@ import {
   LinkOverlay,
   Text,
 } from '@chakra-ui/react';
+import { CityMap } from '@f2e/ptx';
 import { FiMapPin } from 'react-icons/fi';
 
 import CardBanner from './CardBanner';
 import RouteLink from './RouteLink';
-
-import { CityMap } from '@/constants/category';
 
 interface SceneCardProps extends LinkBoxProps {
   id: string;

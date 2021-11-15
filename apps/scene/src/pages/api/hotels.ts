@@ -1,11 +1,10 @@
+import { searchHotelsByKeyword } from '@f2e/ptx';
 import {
   BadRequestException,
   NextApiRequestWithQuery,
   NotFoundException,
   RouterBuilder,
 } from 'next-api-handler';
-
-import { searchHotelsByKeyword } from '@/services/ptx';
 
 const router = new RouterBuilder();
 router.get(async (req: NextApiRequestWithQuery<{ keyword?: string }>) => {

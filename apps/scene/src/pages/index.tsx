@@ -1,6 +1,13 @@
 import React from 'react';
 
 import { Box, Container, Flex, SimpleGrid, Text } from '@chakra-ui/react';
+import {
+  CityMap,
+  getHotelCards,
+  getRestaurantCards,
+  getSceneCards,
+  PTX,
+} from '@f2e/ptx';
 import { GetStaticPropsContext, GetStaticPropsResult } from 'next';
 import Image from 'next/image';
 import NextHeadSeo from 'next-head-seo';
@@ -12,14 +19,8 @@ import PlaceCard from '@/components/PlaceCard';
 import SceneCard from '@/components/SceneCard';
 import SiteCardGrid from '@/components/SiteCardGrid';
 import WeatherCarousel from '@/components/WeatherCarousel';
-import { CityMap } from '@/constants/category';
 import { DEFAULT_FETCHED_REMARK_NUMBER } from '@/constants/pagination';
 import { SIX_HOURS_IN_SECONDS } from '@/constants/time';
-import {
-  getHotelCards,
-  getRestaurantCards,
-  getSceneCards,
-} from '@/services/ptx';
 import getWeathers from '@/services/weather';
 import mainBackground from '@/static/background/main.png';
 

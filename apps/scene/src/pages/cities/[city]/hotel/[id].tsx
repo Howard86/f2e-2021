@@ -15,6 +15,14 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import {
+  CITIES,
+  CityMap,
+  CitySlugMap,
+  getHotelById,
+  getHotelWithRemarksByCity,
+  PTX,
+} from '@f2e/ptx';
+import {
   GetStaticPathsResult,
   GetStaticPropsContext,
   GetStaticPropsResult,
@@ -36,10 +44,8 @@ import Layout from '@/components/layout/Layout';
 import LoadingScreen from '@/components/LoadingScreen';
 import RouteLink from '@/components/RouteLink';
 import SceneDetailBox from '@/components/SceneDetailText';
-import { CITIES, CityMap, CitySlugMap } from '@/constants/category';
 import { DEFAULT_FETCHED_REMARK_NUMBER } from '@/constants/pagination';
 import { ONE_DAY_IN_SECONDS } from '@/constants/time';
-import { getHotelById, getHotelWithRemarksByCity } from '@/services/ptx';
 
 interface HotelPageProps {
   hotel: PTX.Hotel;

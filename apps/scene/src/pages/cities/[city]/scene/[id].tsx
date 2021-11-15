@@ -15,6 +15,14 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import {
+  CITIES,
+  CityMap,
+  CitySlugMap,
+  getSceneById,
+  getScenesWithRemarksByCity,
+  PTX,
+} from '@f2e/ptx';
+import {
   GetStaticPathsResult,
   GetStaticPropsContext,
   GetStaticPropsResult,
@@ -49,9 +57,7 @@ import Layout from '@/components/layout/Layout';
 import LoadingScreen from '@/components/LoadingScreen';
 import RouteLink from '@/components/RouteLink';
 import SceneDetailBox from '@/components/SceneDetailText';
-import { CITIES, CityMap, CitySlugMap } from '@/constants/category';
 import { DEFAULT_FETCHED_REMARK_NUMBER } from '@/constants/pagination';
-import { getSceneById, getScenesWithRemarksByCity } from '@/services/ptx';
 
 interface ScenePageProps {
   scene: PTX.Scene;
