@@ -8,6 +8,7 @@
   },
   "author": "Howard Tai <howard@howardism.dev>",
   "license": "UNLICENSED",
+  "private": true,
   "keywords": [
     "template",
     "next.js",
@@ -41,6 +42,7 @@
     "@chakra-ui/react": "^1.6.12",
     "@emotion/react": "^11.5.0",
     "@emotion/styled": "^11.3.0",
+    "@f2e/ptx": "^0.0.1",
     "@reduxjs/toolkit": "^1.6.2",
     "framer-motion": "^5.2.1",
     "jssha": "^3.2.0",

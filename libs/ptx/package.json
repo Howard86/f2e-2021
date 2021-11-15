@@ -1,0 +1,9 @@
+{
+  "name": "@f2e/ptx",
+  "version": "0.0.1",
+  "description": "Shared utilities to connect to PTX API",
+  "main": "src",
+  "author": "Howard Tai <howard@howardism.dev>",
+  "license": "UNLICENSED",
+  "private": true
+}
