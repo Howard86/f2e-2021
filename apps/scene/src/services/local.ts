@@ -1,4 +1,4 @@
-import { PTX } from '@f2e/ptx';
+import { HotelCard, RestaurantCard, SceneCard } from '@f2e/ptx';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { ApiResponse } from 'next-api-handler';
 
@@ -11,7 +11,7 @@ export const localApi = createApi({
   }),
   endpoints: (builder) => ({
     getSceneCards: builder.query<
-      ApiResponse<PTX.SceneCard[]>,
+      ApiResponse<SceneCard[]>,
       { keyword: string } & Partial<Local.SearchScenesQuery>
     >({
       query: (params) => ({
@@ -20,17 +20,16 @@ export const localApi = createApi({
       }),
     }),
     getRestaurantCards: builder.query<
-      ApiResponse<PTX.RestaurantCard[]>,
+      ApiResponse<RestaurantCard[]>,
       { keyword: string }
     >({
       query: (params) => ({ url: 'restaurants', params }),
     }),
-    getHotelCards: builder.query<
-      ApiResponse<PTX.HotelCard[]>,
-      { keyword: string }
-    >({
-      query: (params) => ({ url: 'hotels', params }),
-    }),
+    getHotelCards: builder.query<ApiResponse<HotelCard[]>, { keyword: string }>(
+      {
+        query: (params) => ({ url: 'hotels', params }),
+      },
+    ),
   }),
 });
 

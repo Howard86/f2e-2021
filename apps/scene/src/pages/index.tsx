@@ -6,7 +6,9 @@ import {
   getHotelCards,
   getRestaurantCards,
   getSceneCards,
-  PTX,
+  HotelCard,
+  RestaurantCard,
+  SceneCard as TSceneCard,
 } from '@f2e/ptx';
 import { GetStaticPropsContext, GetStaticPropsResult } from 'next';
 import Image from 'next/image';
@@ -26,9 +28,9 @@ import mainBackground from '@/static/background/main.png';
 
 interface HomePageProps {
   weathers: OpenData.CityWeather[];
-  scenes: PTX.SceneCard[];
-  restaurants: PTX.RestaurantCard[];
-  hotels: PTX.HotelCard[];
+  scenes: TSceneCard[];
+  restaurants: RestaurantCard[];
+  hotels: HotelCard[];
 }
 
 const PAGE_PROPS = { mainColor: 'scenes.main', gradientColor: 'scenes.light' };

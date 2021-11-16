@@ -1,6 +1,6 @@
 import {
   CITIES,
-  PTX,
+  SceneCard,
   searchScenesByKeyword,
   searchScenesByKeywordAndCity,
   searchScenesByKeywordAndTheme,
@@ -22,7 +22,7 @@ router.get(
       throw new BadRequestException('keyword not found');
     }
 
-    let results: PTX.SceneCard[];
+    let results: SceneCard[];
 
     // TODO: refactor logic
     if (req.query.city) {

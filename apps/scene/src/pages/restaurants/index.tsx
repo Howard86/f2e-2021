@@ -15,7 +15,8 @@ import {
   CityMap,
   getRestaurantCards,
   getRestaurantWithRemarks,
-  PTX,
+  RestaurantCard,
+  RestaurantRemark,
 } from '@f2e/ptx';
 import { GetStaticPropsContext, GetStaticPropsResult } from 'next';
 import NextHeadSeo from 'next-head-seo';
@@ -42,8 +43,8 @@ import wordOne from '@/static/background/restaurants-1.png';
 import wordTwo from '@/static/background/restaurants-2.png';
 
 interface RestaurantsPageProps {
-  restaurants: PTX.RestaurantCard[];
-  remarks: PTX.RestaurantRemark[];
+  restaurants: RestaurantCard[];
+  remarks: RestaurantRemark[];
 }
 
 const PAGE_PROPS = {

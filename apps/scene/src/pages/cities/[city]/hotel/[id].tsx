@@ -17,10 +17,12 @@ import {
 import {
   CITIES,
   CityMap,
+  CitySlug,
   CitySlugMap,
   getHotelById,
   getHotelWithRemarksByCity,
-  PTX,
+  Hotel,
+  RestaurantRemark,
 } from '@f2e/ptx';
 import {
   GetStaticPathsResult,
@@ -48,8 +50,8 @@ import { DEFAULT_FETCHED_REMARK_NUMBER } from '@/constants/pagination';
 import { ONE_DAY_IN_SECONDS } from '@/constants/time';
 
 interface HotelPageProps {
-  hotel: PTX.Hotel;
-  remarks: PTX.RestaurantRemark[];
+  hotel: Hotel;
+  remarks: RestaurantRemark[];
 }
 
 const getGoogleMapURL = (lat?: number, lng?: number) =>
@@ -261,7 +263,7 @@ export const getStaticProps = async (
     return { notFound: true };
   }
 
-  const citySlug = context.params.city as PTX.CitySlug;
+  const citySlug = context.params.city as CitySlug;
   if (citySlug !== citySlug.toLowerCase()) {
     return {
       redirect: {

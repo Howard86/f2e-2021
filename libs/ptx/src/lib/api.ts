@@ -1,6 +1,13 @@
 import JsSHA1 from 'jssha/dist/sha1';
 
-import { PTX } from '../types';
+export interface ApiParam {
+  $top: string;
+  $skip: string;
+  $orderBy: string;
+  $filter: string;
+  $select: string;
+  $spatialFilter: string;
+}
 
 export const getAuthorizationHeader = () => {
   const AppID = process.env.PTX_APP_ID;
@@ -22,7 +29,7 @@ export const getAuthorizationHeader = () => {
 
 export const apiGet = async <T>(
   url: string,
-  params?: Partial<PTX.ApiParam>,
+  params?: Partial<ApiParam>,
 ): Promise<T> => {
   const response = await fetch(
     `${process.env.PTX_BASE_URL}/${url}?${new URLSearchParams({

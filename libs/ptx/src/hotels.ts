@@ -1,12 +1,52 @@
 import { apiGet } from './lib/api';
+import { PTXCityMap } from './lib/category';
+import { City, Picture, Position } from './lib/shared-types';
 import { constructHotelsSearch } from './lib/utils';
-import { PTXCityMap } from './category';
-import { PTX } from './types';
 
-export const getHotelById = async (
-  id: string,
-): Promise<PTX.Hotel | undefined> => {
-  const result = await apiGet<PTX.Hotel[]>('Tourism/Hotel', {
+export interface Hotel {
+  ID: string;
+  Name: string;
+  Description?: string;
+  Address: string;
+  ZipCode?: string;
+  Phone: string;
+  Fax: string;
+  Picture: Picture;
+  Position: Position;
+  Class: HotelClass;
+  ParkingInfo: string;
+  SrcUpdateTime: string;
+  UpdateTime: string;
+  Grade?: string;
+  ServiceInfo?: string;
+  WebsiteUrl?: string;
+  Spec?: string;
+  City?: string;
+}
+
+export type HotelClass = '一般旅館' | '一般觀光旅館' | '國際觀光旅館' | '民宿';
+
+export interface HotelCard {
+  ID: string;
+  Name: string;
+  City: string;
+  Address: string;
+  ServiceInfo?: string;
+  Phone?: string;
+  Picture: Picture;
+}
+
+export interface HotelRemark {
+  ID: string;
+  Name: string;
+  Description: string;
+  City: string;
+  Address: string;
+  Picture: Picture;
+}
+
+export const getHotelById = async (id: string): Promise<Hotel | undefined> => {
+  const result = await apiGet<Hotel[]>('Tourism/Hotel', {
     $top: '1',
     $filter: `ID eq '${id}'`,
   });
@@ -14,7 +54,7 @@ export const getHotelById = async (
   return result[0];
 };
 
-export const getHotelCards = async (count = 30): Promise<PTX.HotelCard[]> =>
+export const getHotelCards = async (count = 30): Promise<HotelCard[]> =>
   apiGet('Tourism/Hotel', {
     $top: count.toString(),
     $select: 'ID,Name,City,Address,ServiceInfo,Phone,Picture',
@@ -23,9 +63,9 @@ export const getHotelCards = async (count = 30): Promise<PTX.HotelCard[]> =>
   });
 
 export const getHotelCardsByCity = async (
-  city: PTX.City,
+  city: City,
   count = 30,
-): Promise<PTX.HotelCard[]> =>
+): Promise<HotelCard[]> =>
   apiGet(`Tourism/Hotel/${PTXCityMap[city]}`, {
     $top: count.toString(),
     $select: 'ID,Name,City,Address,ServiceInfo,Phone,Picture',
@@ -34,9 +74,9 @@ export const getHotelCardsByCity = async (
   });
 
 export const getHotelWithRemarksByCity = async (
-  city: PTX.City,
+  city: City,
   count = 30,
-): Promise<PTX.HotelRemark[]> =>
+): Promise<HotelRemark[]> =>
   apiGet(`Tourism/Hotel/${PTXCityMap[city]}`, {
     $top: count.toString(),
     $select: 'ID,Name,Description,City,Address,Picture',
@@ -45,9 +85,9 @@ export const getHotelWithRemarksByCity = async (
   });
 
 export const getHotelCountWithCity = async (
-  city: PTX.City,
+  city: City,
   count = 30,
-): Promise<PTX.HotelRemark[]> =>
+): Promise<HotelRemark[]> =>
   apiGet(`Tourism/Hotel/${PTXCityMap[city]}`, {
     $top: count.toString(),
     $select: 'ID',
@@ -57,7 +97,7 @@ export const getHotelCountWithCity = async (
 export const searchHotelsByKeyword = async (
   keyword: string,
   count = 30,
-): Promise<PTX.HotelCard[]> =>
+): Promise<HotelCard[]> =>
   apiGet('Tourism/Hotel', {
     $top: count.toString(),
     $select: 'ID,Name,City,Address,ServiceInfo,Phone,Picture',

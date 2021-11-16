@@ -21,7 +21,14 @@ import {
   SimpleGrid,
   Stack,
 } from '@chakra-ui/react';
-import { CityMap, COUNTIES, MAJOR_CITIES, PTX, THEMES } from '@f2e/ptx';
+import {
+  City,
+  CityMap,
+  COUNTIES,
+  MAJOR_CITIES,
+  SceneClass,
+  THEMES,
+} from '@f2e/ptx';
 import { useRouter } from 'next/router';
 import { FiSearch } from 'react-icons/fi';
 
@@ -32,10 +39,10 @@ const DEFAULT_MENU_VALUE = '選擇縣市' as const;
 const SceneModal = ({ onClose, ...props }: Omit<ModalProps, 'children'>) => {
   const router = useRouter();
   const toast = useAppToast();
-  const [themeName, setThemeName] = useState<PTX.SceneClass>(undefined);
-  const [cityName, setCityName] = useState<
-    PTX.City | typeof DEFAULT_MENU_VALUE
-  >(DEFAULT_MENU_VALUE);
+  const [themeName, setThemeName] = useState<SceneClass>(undefined);
+  const [cityName, setCityName] = useState<City | typeof DEFAULT_MENU_VALUE>(
+    DEFAULT_MENU_VALUE,
+  );
 
   const MajorCityButtons = useMemo(
     () => (
@@ -94,7 +101,7 @@ const SceneModal = ({ onClose, ...props }: Omit<ModalProps, 'children'>) => {
   };
 
   const onSelectTheme = (event: ChangeEvent<HTMLSelectElement>) => {
-    setThemeName(event.target.value as PTX.SceneClass);
+    setThemeName(event.target.value as SceneClass);
   };
 
   const menuGroupStyle: BoxProps = {

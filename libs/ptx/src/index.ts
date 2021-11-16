@@ -1,6 +1,6 @@
 export * from './activities';
-export * from './category';
+export * from './bikes';
 export * from './hotels';
+export * from './lib';
 export * from './restaurants';
 export * from './scenes';
-export type { PTX } from './types';

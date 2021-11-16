@@ -1,9 +1,97 @@
 import { apiGet } from './lib/api';
+import { PTXCityMap } from './lib/category';
+import { City, Picture, Position } from './lib/shared-types';
 import { constructScenesSearch } from './lib/utils';
-import { PTXCityMap } from './category';
-import { PTX } from './types';
 
-export const getSceneCards = (count = 30): Promise<PTX.SceneCard[]> =>
+export interface SceneCard {
+  ID: string;
+  Name: string;
+  City: string;
+  Picture: {
+    PictureUrl1: string;
+  };
+}
+
+export interface SceneRemark {
+  ID: string;
+  Name: string;
+  City: string;
+  Remarks: string;
+  Picture: {
+    PictureUrl1: string;
+  };
+}
+
+export interface SceneTheme {
+  ID: string;
+  City: string;
+  Class: SceneClass;
+  Picture: {
+    PictureUrl1: string;
+  };
+}
+
+export interface RawSceneTheme {
+  ID: string;
+  City: string;
+  Class1?: SceneClass;
+  Class2?: SceneClass;
+  Class3?: SceneClass;
+  Picture: {
+    PictureUrl1: string;
+  };
+}
+
+export interface Scene {
+  ID: string;
+  Name: string;
+  City?: string;
+  DescriptionDetail: string;
+  Description?: string;
+  Phone: string;
+  Address: string;
+  ZipCode?: string;
+  TravelInfo?: string;
+  OpenTime: string;
+  Picture: Picture;
+  Position: Position;
+  // API return {}
+  ParkingPosition: unknown;
+  TicketInfo?: string;
+  Remarks?: string;
+  SrcUpdateTime: string;
+  UpdateTime: string;
+  Class1?: SceneClass;
+  Level?: string;
+  MapUrl?: string;
+  Class2?: SceneClass;
+  Class3?: SceneClass;
+  WebsiteUrl?: string;
+  Keyword?: string;
+}
+
+// generate from 3,000 results with https://app.quicktype.io
+export type SceneClass =
+  | '休閒農業類'
+  | '其他'
+  | '古蹟類'
+  | '國家公園類'
+  | '國家風景區類'
+  | '小吃/特產類'
+  | '廟宇類'
+  | '文化類'
+  | '林場類'
+  | '森林遊樂區類'
+  | '溫泉類'
+  | '生態類'
+  | '自然風景類'
+  | '藝術類'
+  | '觀光工廠類'
+  | '遊憩類'
+  | '都會公園類'
+  | '體育健身類';
+
+export const getSceneCards = (count = 30): Promise<SceneCard[]> =>
   apiGet('Tourism/ScenicSpot', {
     $top: count.toString(),
     $select: 'ID,City,Name,Picture',
@@ -13,8 +101,8 @@ export const getSceneCards = (count = 30): Promise<PTX.SceneCard[]> =>
 
 export const getScenesWithRemarks = async (
   count = 30,
-): Promise<PTX.SceneRemark[]> => {
-  const results = await apiGet<PTX.SceneRemark[]>('Tourism/ScenicSpot', {
+): Promise<SceneRemark[]> => {
+  const results = await apiGet<SceneRemark[]>('Tourism/ScenicSpot', {
     $top: (count * 5).toString(),
     $select: 'ID,Name,City,Remarks,Picture',
     $filter: 'Picture/PictureUrl1 ne null and Remarks ne null and City ne null',
@@ -26,16 +114,16 @@ export const getScenesWithRemarks = async (
     .slice(0, count);
 };
 
-export const getSceneTheme = async (count = 30): Promise<PTX.SceneTheme[]> => {
-  const rawResults = await apiGet<PTX.RawSceneTheme[]>('Tourism/ScenicSpot', {
+export const getSceneTheme = async (count = 30): Promise<SceneTheme[]> => {
+  const rawResults = await apiGet<RawSceneTheme[]>('Tourism/ScenicSpot', {
     $top: (count * 10).toString(),
     $select: 'ID,City,Class1,Class2,Class3,Picture',
     $filter: 'Picture/PictureUrl1 ne null and City ne null and Class1 ne null',
     $orderBy: 'UpdateTime desc',
   });
 
-  const classSet = new Set<PTX.SceneClass>();
-  const results: PTX.SceneTheme[] = [];
+  const classSet = new Set<SceneClass>();
+  const results: SceneTheme[] = [];
 
   // eslint-disable-next-line no-restricted-syntax
   for (const result of rawResults) {
@@ -70,10 +158,10 @@ export const getSceneTheme = async (count = 30): Promise<PTX.SceneTheme[]> => {
 };
 
 export const getSceneCardsByCity = async (
-  city: PTX.City,
+  city: City,
   count = 30,
-): Promise<PTX.SceneCard[]> => {
-  const results = await apiGet<Omit<PTX.SceneCard, 'City'>[]>(
+): Promise<SceneCard[]> => {
+  const results = await apiGet<Omit<SceneCard, 'City'>[]>(
     `Tourism/ScenicSpot/${PTXCityMap[city]}`,
     {
       $top: count.toString(),
@@ -87,10 +175,10 @@ export const getSceneCardsByCity = async (
 
 // TODO: improve this query
 export const getSceneCardsByThemeClass = async (
-  theme: PTX.SceneClass,
+  theme: SceneClass,
   count: number,
-): Promise<PTX.SceneCard[]> =>
-  apiGet<PTX.SceneCard[]>(`Tourism/ScenicSpot`, {
+): Promise<SceneCard[]> =>
+  apiGet<SceneCard[]>(`Tourism/ScenicSpot`, {
     $top: count.toString(),
     $select: 'ID,City,Name,Picture',
     $filter: `Picture/PictureUrl1 ne null and City ne null and (Class1 eq '${theme}' or Class2 eq '${theme}' or Class3 eq '${theme}')`,
@@ -98,10 +186,10 @@ export const getSceneCardsByThemeClass = async (
   });
 
 export const getScenesWithRemarksByCity = async (
-  city: PTX.City,
+  city: City,
   count = 30,
-): Promise<PTX.SceneRemark[]> => {
-  const results = await apiGet<PTX.SceneRemark[]>(
+): Promise<SceneRemark[]> => {
+  const results = await apiGet<SceneRemark[]>(
     `Tourism/ScenicSpot/${PTXCityMap[city]}`,
     {
       $top: (count * 5).toString(),
@@ -117,10 +205,10 @@ export const getScenesWithRemarksByCity = async (
 };
 
 export const getScenesWithRemarksByThemeClass = async (
-  theme: PTX.SceneClass,
+  theme: SceneClass,
   count = 30,
-): Promise<PTX.SceneRemark[]> => {
-  const results = await apiGet<PTX.SceneRemark[]>('Tourism/ScenicSpot', {
+): Promise<SceneRemark[]> => {
+  const results = await apiGet<SceneRemark[]>('Tourism/ScenicSpot', {
     $top: (count * 5).toString(),
     $select: 'ID,Name,City,Remarks,Picture',
     $filter: `Picture/PictureUrl1 ne null and Remarks ne null and City ne null and (Class1 eq '${theme}' or Class2 eq '${theme}' or Class3 eq '${theme}')`,
@@ -132,10 +220,8 @@ export const getScenesWithRemarksByThemeClass = async (
     .slice(0, count);
 };
 
-export const getSceneById = async (
-  id: string,
-): Promise<PTX.Scene | undefined> => {
-  const result = await apiGet<PTX.Scene[]>('Tourism/ScenicSpot', {
+export const getSceneById = async (id: string): Promise<Scene | undefined> => {
+  const result = await apiGet<Scene[]>('Tourism/ScenicSpot', {
     $top: '1',
     $filter: `ID eq '${id}'`,
   });
@@ -146,7 +232,7 @@ export const getSceneById = async (
 export const searchScenesByKeyword = async (
   keyword: string,
   count = 30,
-): Promise<PTX.SceneCard[]> =>
+): Promise<SceneCard[]> =>
   apiGet('Tourism/ScenicSpot', {
     $top: count.toString(),
     $select: 'ID,City,Name,Picture',
@@ -157,9 +243,9 @@ export const searchScenesByKeyword = async (
 
 export const searchScenesByKeywordAndCity = async (
   keyword: string,
-  city: PTX.City,
+  city: City,
   count = 30,
-): Promise<PTX.SceneCard[]> =>
+): Promise<SceneCard[]> =>
   apiGet(`Tourism/ScenicSpot/${PTXCityMap[city]}`, {
     $top: count.toString(),
     $select: 'ID,City,Name,Picture',
@@ -170,9 +256,9 @@ export const searchScenesByKeywordAndCity = async (
 
 export const searchScenesByKeywordAndTheme = async (
   keyword: string,
-  theme: PTX.SceneClass,
+  theme: SceneClass,
   count = 30,
-): Promise<PTX.SceneCard[]> =>
+): Promise<SceneCard[]> =>
   apiGet('Tourism/ScenicSpot', {
     $top: count.toString(),
     $select: 'ID,City,Name,Picture',
