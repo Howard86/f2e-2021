@@ -1,12 +1,58 @@
 import { apiGet } from './lib/api';
+import { PTXCityMap } from './lib/category';
+import { City, Picture, Position } from './lib/shared-types';
 import { constructActivitiesSearch } from './lib/utils';
-import { PTXCityMap } from './category';
-import { PTX } from './types';
+
+export interface Activity {
+  ID: string;
+  Name: string;
+  Description: string;
+  Particpation?: string;
+  Location?: string;
+  Address?: string;
+  Phone?: string;
+  Organizer: string;
+  StartTime: string;
+  EndTime: string;
+  Picture: Picture;
+  Position: Position;
+  Class1?: string;
+  SrcUpdateTime: string;
+  UpdateTime: string;
+  Class2?: string;
+  Cycle?: string;
+  WebsiteUrl?: string;
+  City?: string;
+  ParkingInfo?: string;
+  Charge?: string;
+  MapUrl?: string;
+  TravelInfo?: string;
+}
+
+export interface ActivityCard {
+  ID: string;
+  Name: string;
+  City: string;
+  Address: string;
+  Phone: string;
+  Picture: Picture;
+  StartTime: string;
+  EndTime: string;
+}
+
+export interface ActivityRemark {
+  ID: string;
+  Name: string;
+  Description: string;
+  City: string;
+  Address: string;
+  Picture: Picture;
+}
 
 export const getActivityById = async (
   id: string,
-): Promise<PTX.Activity | undefined> => {
-  const result = await apiGet<PTX.Activity[]>('Tourism/Activity', {
+): Promise<Activity | undefined> => {
+  const result = await apiGet<Activity[]>('Tourism/Activity', {
     $top: '1',
     $filter: `ID eq '${id}'`,
   });
@@ -15,9 +61,9 @@ export const getActivityById = async (
 };
 
 export const getActivityCardsByCity = async (
-  city: PTX.City,
+  city: City,
   count = 30,
-): Promise<PTX.ActivityCard[]> =>
+): Promise<ActivityCard[]> =>
   apiGet(`Tourism/Activity/${PTXCityMap[city]}`, {
     $top: count.toString(),
     $select: 'ID,Name,City,Address,StartTime,EndTime,Phone,Picture',
@@ -26,9 +72,9 @@ export const getActivityCardsByCity = async (
   });
 
 export const getActivityWithRemarksByCity = async (
-  city: PTX.City,
+  city: City,
   count = 30,
-): Promise<PTX.ActivityRemark[]> =>
+): Promise<ActivityRemark[]> =>
   apiGet(`Tourism/Activity/${PTXCityMap[city]}`, {
     $top: count.toString(),
     $select: 'ID,Name,Description,City,Address,Picture',
@@ -39,7 +85,7 @@ export const getActivityWithRemarksByCity = async (
 export const searchActivitiesByKeyword = async (
   keyword: string,
   count = 30,
-): Promise<PTX.ActivityCard[]> =>
+): Promise<ActivityCard[]> =>
   apiGet('Tourism/Activity', {
     $top: count.toString(),
     $select: 'ID,Name,City,Address,StartTime,EndTime,Phone,Picture',

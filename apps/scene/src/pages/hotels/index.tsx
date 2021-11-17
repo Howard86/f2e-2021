@@ -15,7 +15,12 @@ import {
   Tooltip,
   useDisclosure,
 } from '@chakra-ui/react';
-import { CityMap, getHotelCards, getHotelCountWithCity, PTX } from '@f2e/ptx';
+import {
+  CityMap,
+  getHotelCards,
+  getHotelCountWithCity,
+  HotelCard,
+} from '@f2e/ptx';
 import { GetStaticPropsContext, GetStaticPropsResult } from 'next';
 import NextHeadSeo from 'next-head-seo';
 import { BsCalendar } from 'react-icons/bs';
@@ -40,7 +45,7 @@ import wordOne from '@/static/background/hotels-1.png';
 import wordTwo from '@/static/background/hotels-2.png';
 
 interface HotelsPageProps {
-  hotels: PTX.HotelCard[];
+  hotels: HotelCard[];
   taipei: string;
   hualian: string;
   taidong: string;

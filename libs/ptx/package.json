@@ -1,6 +1,6 @@
 {
   "name": "@f2e/ptx",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Shared utilities to connect to PTX API",
   "main": "build/index.js",
   "typings": "build/index.d.ts",
@@ -8,9 +8,11 @@
   "license": "UNLICENSED",
   "private": true,
   "scripts": {
+    "clean": "rm -r build",
     "lint": "eslint src --ext ts",
     "format": "prettier --write src --ignore-path ../../.prettierignore",
-    "build": "tsc"
+    "build": "tsc",
+    "build:fresh": "yarn clean && yarn build"
   },
   "dependencies": {
     "jssha": "^3.2.0"

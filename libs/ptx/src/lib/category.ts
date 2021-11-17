@@ -1,6 +1,8 @@
-import { PTX } from './types';
+import type { SceneClass } from '../scenes';
 
-export const THEMES: PTX.SceneClass[] = [
+import type { City } from './shared-types';
+
+export const THEMES: SceneClass[] = [
   '休閒農業類',
   '其他',
   '古蹟類',
@@ -21,7 +23,7 @@ export const THEMES: PTX.SceneClass[] = [
   '體育健身類',
 ];
 
-export const CITIES: (PTX.City & keyof typeof CityMap)[] = [
+export const CITIES: (City & keyof typeof CityMap)[] = [
   '臺北市',
   '新北市',
   '桃園市',
@@ -46,7 +48,7 @@ export const CITIES: (PTX.City & keyof typeof CityMap)[] = [
   '連江縣',
 ];
 
-export const MAJOR_CITIES: PTX.City[] = [
+export const MAJOR_CITIES: City[] = [
   '臺北市',
   '新北市',
   '桃園市',
@@ -55,7 +57,7 @@ export const MAJOR_CITIES: PTX.City[] = [
   '高雄市',
 ];
 
-export const COUNTIES: PTX.City[] = [
+export const COUNTIES: City[] = [
   '基隆市',
   '新竹市',
   '新竹縣',

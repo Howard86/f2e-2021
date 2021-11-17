@@ -17,7 +17,9 @@ import {
   CityMap,
   getSceneCardsByThemeClass,
   getScenesWithRemarksByThemeClass,
-  PTX,
+  SceneCard as TSceneCard,
+  SceneClass,
+  SceneRemark,
   THEMES,
 } from '@f2e/ptx';
 import {
@@ -50,9 +52,9 @@ import wordOne from '@/static/background/scenes-1.png';
 import wordTwo from '@/static/background/scenes-2.png';
 
 interface CategoryPageProps {
-  theme: PTX.SceneClass;
-  scenes: PTX.SceneCard[];
-  remarks: PTX.SceneRemark[];
+  theme: SceneClass;
+  scenes: TSceneCard[];
+  remarks: SceneRemark[];
 }
 
 const PAGE_PROPS = { mainColor: 'scenes.main', gradientColor: 'scenes.light' };
@@ -247,7 +249,7 @@ export const getStaticProps = async (
     return { notFound: true };
   }
 
-  const theme = context.params.category as PTX.SceneClass;
+  const theme = context.params.category as SceneClass;
 
   if (!THEMES.includes(theme)) {
     return {

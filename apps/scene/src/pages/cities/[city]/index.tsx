@@ -11,14 +11,19 @@ import {
   SimpleGrid,
 } from '@chakra-ui/react';
 import {
+  ActivityCard,
   CITIES,
+  City,
   CityMap,
+  CitySlug,
   CitySlugMap,
   getActivityCardsByCity,
   getHotelCardsByCity,
   getRestaurantCardsByCity,
   getSceneCardsByCity,
-  PTX,
+  HotelCard,
+  RestaurantCard,
+  SceneCard as TSceneCard,
 } from '@f2e/ptx';
 import {
   GetStaticPathsResult,
@@ -48,11 +53,11 @@ import wordOne from '@/static/background/scenes-1.png';
 import wordTwo from '@/static/background/scenes-2.png';
 
 interface CityPageProps {
-  city: PTX.City;
-  scenes: PTX.SceneCard[];
-  restaurants: PTX.RestaurantCard[];
-  hotels: PTX.HotelCard[];
-  activities: PTX.ActivityCard[];
+  city: City;
+  scenes: TSceneCard[];
+  restaurants: RestaurantCard[];
+  hotels: HotelCard[];
+  activities: ActivityCard[];
 }
 
 const PAGE_PROPS = { mainColor: 'scenes.main', gradientColor: 'scenes.light' };
@@ -285,7 +290,7 @@ export const getStaticProps = async (
     return { notFound: true };
   }
 
-  const citySlug = context.params.city as PTX.CitySlug;
+  const citySlug = context.params.city as CitySlug;
   if (citySlug !== citySlug.toLowerCase()) {
     return {
       redirect: {

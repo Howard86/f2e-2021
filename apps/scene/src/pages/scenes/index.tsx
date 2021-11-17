@@ -16,7 +16,9 @@ import {
   getSceneCards,
   getScenesWithRemarks,
   getSceneTheme,
-  PTX,
+  SceneCard as TSceneCard,
+  SceneRemark,
+  SceneTheme,
 } from '@f2e/ptx';
 import { GetStaticPropsContext, GetStaticPropsResult } from 'next';
 import dynamic from 'next/dynamic';
@@ -42,9 +44,9 @@ import wordTwo from '@/static/background/scenes-2.png';
 const DynamicSceneModal = dynamic(() => import('@/components/SceneModal'));
 
 interface ScenesPageProps {
-  scenes: PTX.SceneCard[];
-  remarks: PTX.SceneRemark[];
-  themes: PTX.SceneTheme[];
+  scenes: TSceneCard[];
+  remarks: SceneRemark[];
+  themes: SceneTheme[];
 }
 
 const PAGE_PROPS = { mainColor: 'scenes.main', gradientColor: 'scenes.light' };

@@ -1,6 +1,6 @@
-import { PTX } from '../types';
+import type { Activity, Hotel, Restaurant, Scene } from '..';
 
-const SCENE_KEYWORDS: (keyof PTX.Scene)[] = [
+const SCENE_KEYWORDS: (keyof Scene)[] = [
   'Description',
   'Name',
   'DescriptionDetail',
@@ -14,7 +14,7 @@ const SCENE_KEYWORDS: (keyof PTX.Scene)[] = [
   'Class3',
 ];
 
-const RESTAURANT_KEYWORDS: (keyof PTX.Restaurant)[] = [
+const RESTAURANT_KEYWORDS: (keyof Restaurant)[] = [
   'Name',
   'Description',
   'Address',
@@ -24,7 +24,7 @@ const RESTAURANT_KEYWORDS: (keyof PTX.Restaurant)[] = [
   'ParkingInfo',
 ];
 
-const HOTEL_KEYWORDS: (keyof PTX.Hotel)[] = [
+const HOTEL_KEYWORDS: (keyof Hotel)[] = [
   'Address',
   'City',
   'Class',
@@ -36,7 +36,7 @@ const HOTEL_KEYWORDS: (keyof PTX.Hotel)[] = [
   'Spec',
 ];
 
-const ACTIVITY_KEYWORDS: (keyof PTX.Activity)[] = [
+const ACTIVITY_KEYWORDS: (keyof Activity)[] = [
   'Name',
   'Description',
   'Particpation',

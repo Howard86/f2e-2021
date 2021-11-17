@@ -1,0 +1,226 @@
+[
+  {
+    "StationUID": "TPE500108047",
+    "StationID": "500108047",
+    "AuthorityID": "TPE",
+    "StationName": {
+      "Zh_tw": "YouBike2.0_瑞光公共住宅(瑞光路)",
+      "En": "YouBike2.0_Ruiguang Public Housing (Ruiguang Rd)"
+    },
+    "StationPosition": {
+      "PositionLon": 121.57951,
+      "PositionLat": 25.07335,
+      "GeoHash": "wsqqws7qz"
+    },
+    "StationAddress": {
+      "Zh_tw": "瑞光路160號",
+      "En": "No. 160, Ruiguang Rd."
+    },
+    "BikesCapacity": 18,
+    "ServiceType": 2,
+    "SrcUpdateTime": "2021-11-16T23:42:03+08:00",
+    "UpdateTime": "2021-11-16T23:45:25+08:00",
+    "bike": {
+      "StationUID": "TPE500108047",
+      "StationID": "500108047",
+      "ServiceStatus": 1,
+      "ServiceType": 2,
+      "AvailableRentBikes": 5,
+      "AvailableReturnBikes": 13,
+      "SrcUpdateTime": "2021-11-16T23:42:03+08:00",
+      "UpdateTime": "2021-11-16T23:45:25+08:00"
+    }
+  },
+  {
+    "StationUID": "TPE500108060",
+    "StationID": "500108060",
+    "AuthorityID": "TPE",
+    "StationName": {
+      "Zh_tw": "YouBike2.0_碧湖公園",
+      "En": "YouBike2.0_Bihu Park"
+    },
+    "StationPosition": {
+      "PositionLon": 121.58287,
+      "PositionLat": 25.07988,
+      "GeoHash": "wsqqwttuy"
+    },
+    "StationAddress": {
+      "Zh_tw": "內湖路二段/內湖路二段103巷口(東北側)",
+      "En": "Sec. 2, Neihu Rd. / Ln. 103, Sec. 2, Neihu Rd. (Northeast)"
+    },
+    "BikesCapacity": 15,
+    "ServiceType": 2,
+    "SrcUpdateTime": "2021-11-16T23:35:56+08:00",
+    "UpdateTime": "2021-11-16T23:45:25+08:00",
+    "bike": {
+      "StationUID": "TPE500108060",
+      "StationID": "500108060",
+      "ServiceStatus": 1,
+      "ServiceType": 2,
+      "AvailableRentBikes": 1,
+      "AvailableReturnBikes": 14,
+      "SrcUpdateTime": "2021-11-16T23:35:56+08:00",
+      "UpdateTime": "2021-11-16T23:45:25+08:00"
+    }
+  },
+  {
+    "StationUID": "TPE500108061",
+    "StationID": "500108061",
+    "AuthorityID": "TPE",
+    "StationName": {
+      "Zh_tw": "YouBike2.0_碧湖公園(內湖路二段103巷)",
+      "En": "YouBike2.0_Bihu Park (Ln. 103, Sec. 2, Neihu Rd.)"
+    },
+    "StationPosition": {
+      "PositionLon": 121.58109,
+      "PositionLat": 25.08317,
+      "GeoHash": "wsqqwwk8h"
+    },
+    "StationAddress": {
+      "Zh_tw": "內湖路二段103巷76號(對面)",
+      "En": "No. 76, Ln. 103, Sec. 2, Neihu Rd. (Opposite)"
+    },
+    "BikesCapacity": 19,
+    "ServiceType": 2,
+    "SrcUpdateTime": "2021-11-16T23:33:10+08:00",
+    "UpdateTime": "2021-11-16T23:45:25+08:00",
+    "bike": {
+      "StationUID": "TPE500108061",
+      "StationID": "500108061",
+      "ServiceStatus": 1,
+      "ServiceType": 2,
+      "AvailableRentBikes": 7,
+      "AvailableReturnBikes": 12,
+      "SrcUpdateTime": "2021-11-16T23:33:10+08:00",
+      "UpdateTime": "2021-11-16T23:45:25+08:00"
+    }
+  },
+  {
+    "StationUID": "TPE500108062",
+    "StationID": "500108062",
+    "AuthorityID": "TPE",
+    "StationName": {
+      "Zh_tw": "YouBike2.0_貿七社區",
+      "En": "YouBike2.0_Maoqi Community"
+    },
+    "StationPosition": {
+      "PositionLon": 121.58534,
+      "PositionLat": 25.08357,
+      "GeoHash": "wsqqwwrdr"
+    },
+    "StationAddress": {
+      "Zh_tw": "內湖路二段179巷48弄17號(旁)",
+      "En": "No. 17, Aly. 48, Ln. 179, Sec. 2, Neihu Rd."
+    },
+    "BikesCapacity": 17,
+    "ServiceType": 2,
+    "SrcUpdateTime": "2021-11-16T21:57:10+08:00",
+    "UpdateTime": "2021-11-16T23:45:25+08:00",
+    "bike": {
+      "StationUID": "TPE500108062",
+      "StationID": "500108062",
+      "ServiceStatus": 1,
+      "ServiceType": 2,
+      "AvailableRentBikes": 9,
+      "AvailableReturnBikes": 8,
+      "SrcUpdateTime": "2021-11-16T21:57:10+08:00",
+      "UpdateTime": "2021-11-16T23:45:25+08:00"
+    }
+  },
+  {
+    "StationUID": "TPE500108063",
+    "StationID": "500108063",
+    "AuthorityID": "TPE",
+    "StationName": {
+      "Zh_tw": "YouBike2.0_內湖區農會",
+      "En": "YouBike2.0_Neihu District Farmers' Association"
+    },
+    "StationPosition": {
+      "PositionLon": 121.58891,
+      "PositionLat": 25.08165,
+      "GeoHash": "wsqqwvfr4"
+    },
+    "StationAddress": {
+      "Zh_tw": "內湖路二段334號(前)",
+      "En": "No. 334, Sec. 2, Neihu Rd."
+    },
+    "BikesCapacity": 12,
+    "ServiceType": 2,
+    "SrcUpdateTime": "2021-11-16T23:31:08+08:00",
+    "UpdateTime": "2021-11-16T23:45:25+08:00",
+    "bike": {
+      "StationUID": "TPE500108063",
+      "StationID": "500108063",
+      "ServiceStatus": 1,
+      "ServiceType": 2,
+      "AvailableRentBikes": 3,
+      "AvailableReturnBikes": 9,
+      "SrcUpdateTime": "2021-11-16T23:31:08+08:00",
+      "UpdateTime": "2021-11-16T23:45:25+08:00"
+    }
+  },
+  {
+    "StationUID": "TPE500108070",
+    "StationID": "500108070",
+    "AuthorityID": "TPE",
+    "StationName": {
+      "Zh_tw": "YouBike2.0_捷運港墘站(2號出口)",
+      "En": "YouBike2.0_MRT Gangqian Sta. (Exit 2)"
+    },
+    "StationPosition": {
+      "PositionLon": 121.57584,
+      "PositionLat": 25.07967,
+      "GeoHash": "wsqqwt8gd"
+    },
+    "StationAddress": {
+      "Zh_tw": "內湖路一段520號",
+      "En": "No. 520, Sec. 1, Neihu Rd."
+    },
+    "BikesCapacity": 15,
+    "ServiceType": 2,
+    "SrcUpdateTime": "2021-11-16T23:18:10+08:00",
+    "UpdateTime": "2021-11-16T23:45:25+08:00",
+    "bike": {
+      "StationUID": "TPE500108070",
+      "StationID": "500108070",
+      "ServiceStatus": 1,
+      "ServiceType": 2,
+      "AvailableRentBikes": 2,
+      "AvailableReturnBikes": 13,
+      "SrcUpdateTime": "2021-11-16T23:18:10+08:00",
+      "UpdateTime": "2021-11-16T23:45:25+08:00"
+    }
+  },
+  {
+    "StationUID": "TPE500108084",
+    "StationID": "500108084",
+    "AuthorityID": "TPE",
+    "StationName": {
+      "Zh_tw": "YouBike2.0_瑞湖陽光街口",
+      "En": "YouBike2.0_Rueihu St. & Yangguang St. Intersection"
+    },
+    "StationPosition": {
+      "PositionLon": 121.57603,
+      "PositionLat": 25.07296,
+      "GeoHash": "wsqqws2uw"
+    },
+    "StationAddress": {
+      "Zh_tw": "瑞湖街101號對側",
+      "En": "No. 101, Rueihu St. (Opposite)"
+    },
+    "BikesCapacity": 11,
+    "ServiceType": 2,
+    "SrcUpdateTime": "2021-11-16T21:50:55+08:00",
+    "UpdateTime": "2021-11-16T23:45:25+08:00",
+    "bike": {
+      "StationUID": "TPE500108084",
+      "StationID": "500108084",
+      "ServiceStatus": 1,
+      "ServiceType": 2,
+      "AvailableRentBikes": 0,
+      "AvailableReturnBikes": 11,
+      "SrcUpdateTime": "2021-11-16T21:50:55+08:00",
+      "UpdateTime": "2021-11-16T23:45:25+08:00"
+    }
+  }
+]

@@ -17,10 +17,12 @@ import {
 import {
   CITIES,
   CityMap,
+  CitySlug,
   CitySlugMap,
   getSceneById,
   getScenesWithRemarksByCity,
-  PTX,
+  Scene,
+  SceneRemark,
 } from '@f2e/ptx';
 import {
   GetStaticPathsResult,
@@ -60,8 +62,8 @@ import SceneDetailBox from '@/components/SceneDetailText';
 import { DEFAULT_FETCHED_REMARK_NUMBER } from '@/constants/pagination';
 
 interface ScenePageProps {
-  scene: PTX.Scene;
-  remarks: PTX.SceneRemark[];
+  scene: Scene;
+  remarks: SceneRemark[];
 }
 
 const getGoogleMapURL = (lat?: number, lng?: number) =>
@@ -293,7 +295,7 @@ export const getStaticProps = async (
     return { notFound: true };
   }
 
-  const citySlug = context.params.city as PTX.CitySlug;
+  const citySlug = context.params.city as CitySlug;
   if (citySlug !== citySlug.toLowerCase()) {
     return {
       redirect: {

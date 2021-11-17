@@ -15,12 +15,14 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import {
+  Activity,
+  ActivityRemark,
   CITIES,
   CityMap,
+  CitySlug,
   CitySlugMap,
   getActivityById,
   getActivityWithRemarksByCity,
-  PTX,
 } from '@f2e/ptx';
 import {
   GetStaticPathsResult,
@@ -55,8 +57,8 @@ import { DEFAULT_FETCHED_REMARK_NUMBER } from '@/constants/pagination';
 import { ONE_DAY_IN_SECONDS } from '@/constants/time';
 
 interface ActivityPageProps {
-  activity: PTX.Activity;
-  remarks: PTX.ActivityRemark[];
+  activity: Activity;
+  remarks: ActivityRemark[];
 }
 
 const getGoogleMapURL = (lat?: number, lng?: number) =>
@@ -298,7 +300,7 @@ export const getStaticProps = async (
     return { notFound: true };
   }
 
-  const citySlug = context.params.city as PTX.CitySlug;
+  const citySlug = context.params.city as CitySlug;
   if (citySlug !== citySlug.toLowerCase()) {
     return {
       redirect: {
