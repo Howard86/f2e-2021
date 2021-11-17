@@ -7,6 +7,9 @@ const styles: ChakraTheme['styles'] = {
       scrollBehavior: 'smooth',
     },
     body: {
+      fontFamily: 'Roboto, sans-serif',
+      color: 'white',
+      bg: 'blackAlpha.800',
       h: 'full',
     },
     '#__next': {
