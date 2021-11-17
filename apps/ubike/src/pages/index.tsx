@@ -2,12 +2,20 @@ import React, { useEffect, useRef, useState } from 'react';
 
 import {
   Box,
+  Flex,
+  Icon,
   IconButton,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalHeader,
   Tab,
   TabList,
   TabPanel,
   TabPanels,
   Tabs,
+  useDisclosure,
   VStack,
 } from '@chakra-ui/react';
 import type mapboxgl from 'mapbox-gl';
@@ -15,26 +23,38 @@ import Head from 'next/head';
 import { render } from 'react-dom';
 import { BiMinus, BiPlus } from 'react-icons/bi';
 import { IoLocate } from 'react-icons/io5';
+import { MdOutlinePlace } from 'react-icons/md';
 
+import BikeIcon from '@/components/icons/BikeIcon';
+import DockIcon from '@/components/icons/DockIcon';
 import useAppToast from '@/hooks/use-app-toast';
 import { useLazyGetStationsQuery } from '@/services/local';
+
+interface StationModalProps {
+  name: string;
+  rentNumber: number;
+  returnNumber: number;
+  address: string;
+}
 
 const DEFAULT_ZOOM = 15;
 
 const HomePage = () => {
   const toast = useAppToast();
   const mapRef = useRef<mapboxgl.Map>(null);
+  // TODO: refactor with useReducer
+  const [modalProps, setModalProps] = useState<StationModalProps>({
+    name: '',
+    rentNumber: 0,
+    returnNumber: 0,
+    address: '',
+  });
   const divRef = useRef<HTMLDivElement>();
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const [getStations, { data }] = useLazyGetStationsQuery();
 
-  const [position, setPosition] = useState<Partial<mapboxgl.MapboxOptions>>({
-    center: [0, 0],
-    zoom: 0,
-  });
   const [loaded, setLoaded] = useState(false);
-
-  // eslint-disable-next-line no-console
-  console.log('position :>> ', position);
+  const [rendered, setRendered] = useState(false);
 
   const onLocate = async () => {
     if (!window.navigator) {
@@ -64,25 +84,35 @@ const HomePage = () => {
         throw new Error('Browser not supported');
       }
 
-      setPosition(newPosition);
-
-      if (mapRef.current) {
+      const flyToCurrent = () => {
         mapRef.current.flyTo({
           center: newPosition.center,
           zoom: DEFAULT_ZOOM,
         });
-      } else {
-        mapRef.current = new MapboxGL.Map({
-          container: divRef.current,
-          style: 'mapbox://styles/mapbox/dark-v10',
-          localIdeographFontFamily: "'Roboto', sans-serif",
-          ...newPosition,
-        });
+      };
+
+      if (mapRef.current) {
+        flyToCurrent();
+        return;
       }
+
+      mapRef.current = new MapboxGL.Map({
+        container: divRef.current,
+        style: 'mapbox://styles/mapbox/dark-v10',
+        localIdeographFontFamily: "'Roboto', sans-serif",
+        ...newPosition,
+      });
 
       const currentElm = document.createElement('div');
       render(
-        <Box h="10" w="10" bgImage="url(/icons/current.png)" />,
+        <Box
+          id="current"
+          h="40px"
+          w="40px"
+          bgImage="url(/icons/current.png)"
+          pointer="cursor"
+          onClick={flyToCurrent}
+        />,
         currentElm,
       );
 
@@ -142,7 +172,7 @@ const HomePage = () => {
 
   useEffect(() => {
     const setMarkers = async () => {
-      if (!data || !loaded) {
+      if (!data || !loaded || rendered) {
         return;
       }
 
@@ -151,28 +181,45 @@ const HomePage = () => {
       const stations = {
         type: 'FeatureCollection' as const,
         features: data.data.map((station) => {
+          const coordinates = [
+            station.StationPosition.PositionLon,
+            station.StationPosition.PositionLat,
+          ] as [number, number];
+
+          const onClick = () => {
+            setModalProps({
+              name: station.StationName.Zh_tw,
+              address: station.StationAddress.Zh_tw,
+              rentNumber: station.bike.AvailableRentBikes,
+              returnNumber: station.bike.AvailableReturnBikes,
+            });
+            onOpen();
+            mapRef.current.flyTo({ center: coordinates, zoom: DEFAULT_ZOOM });
+          };
+
           const markerNode = document.createElement('div');
 
           render(
-            <Box h="82px" w="80px" bgImage="url(/icons/marker.png)" />,
+            <Box
+              id={station.StationUID}
+              h="82px"
+              w="80px"
+              bgImage="url(/icons/marker.png)"
+              cursor="pointer"
+              onClick={onClick}
+            />,
             markerNode,
           );
 
           new MapboxGL.Marker(markerNode)
-            .setLngLat([
-              station.StationPosition.PositionLon,
-              station.StationPosition.PositionLat,
-            ])
+            .setLngLat(coordinates)
             .addTo(mapRef.current);
 
           return {
             type: 'Feature' as const,
             geometry: {
               type: 'Point' as const,
-              coordinates: [
-                station.StationPosition.PositionLon,
-                station.StationPosition.PositionLat,
-              ] as [number, number],
+              coordinates,
             },
             properties: station,
           };
@@ -185,31 +232,12 @@ const HomePage = () => {
           data: stations,
         });
       }
+
+      setRendered(true);
     };
 
     setMarkers();
-  }, [data, loaded]);
-
-  useEffect(() => {
-    if (!mapRef.current || !loaded) {
-      return;
-    }
-
-    const handleMove = () => {
-      const center = mapRef.current.getCenter();
-      setPosition({
-        center: [center.lng, center.lat],
-        zoom: mapRef.current.getZoom(),
-      });
-    };
-
-    mapRef.current.on('move', handleMove);
-
-    // eslint-disable-next-line consistent-return
-    return () => {
-      mapRef.current.off('move', handleMove);
-    };
-  }, [loaded]);
+  }, [data, loaded, onOpen, rendered, toast]);
 
   return (
     <>
@@ -334,7 +362,7 @@ const HomePage = () => {
                   }}
                 >
                   <IconButton
-                    disabled={loaded}
+                    isLoading={loaded && !rendered}
                     aria-label="定位"
                     icon={<IoLocate />}
                     onClick={onLocate}
@@ -345,6 +373,41 @@ const HomePage = () => {
             <TabPanel />
           </TabPanels>
         </Tabs>
+        <Modal
+          isOpen={isOpen}
+          onClose={onClose}
+          scrollBehavior="inside"
+          size="sm"
+          initialFocusRef={undefined}
+        >
+          <ModalContent mt="auto" color="black" rounded="3xl">
+            <ModalHeader maxW="95%" pb="2">
+              {modalProps.name}
+            </ModalHeader>
+            <ModalCloseButton mt="1.5" />
+            <ModalBody mb="4" fontSize="lg">
+              <Flex sx={{ mb: 4, div: { w: '50%', alignItems: 'center' } }}>
+                <Flex>
+                  <BikeIcon color="secondary.main" fontSize="2xl" mr="2" />
+                  可租借：{modalProps.rentNumber}台
+                </Flex>
+                <Flex>
+                  <DockIcon color="secondary.main" fontSize="2xl" mr="2" />
+                  可歸還：{modalProps.returnNumber}台
+                </Flex>
+              </Flex>
+              <Flex>
+                <Icon
+                  color="secondary.main"
+                  as={MdOutlinePlace}
+                  fontSize="2xl"
+                  mr="2"
+                />
+                {modalProps.address}
+              </Flex>
+            </ModalBody>
+          </ModalContent>
+        </Modal>
       </Box>
     </>
   );
