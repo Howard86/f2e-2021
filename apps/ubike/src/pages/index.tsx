@@ -196,7 +196,6 @@ const HomePage = () => {
             onOpen();
             mapRef.current.flyTo({ center: coordinates, zoom: DEFAULT_ZOOM });
           };
-
           const markerNode = document.createElement('div');
 
           render(
