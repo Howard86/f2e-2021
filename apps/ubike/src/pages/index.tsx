@@ -16,8 +16,8 @@ import {
   Tooltip,
 } from '@chakra-ui/react';
 import {
+  BIKE_CITIES,
   BikeCycling,
-  CITIES,
   City,
   CityMap,
   getCyclingShapeByCity,
@@ -107,7 +107,7 @@ const HomePage = ({ cyclingPath }: HomePageProps) => {
                 onChange={onSelect}
                 sx={{ div: { color: 'red.100' } }}
               >
-                {CITIES.map((city) => (
+                {BIKE_CITIES.map((city) => (
                   <option value={CityMap[city]}>{city}</option>
                 ))}
               </Select>
@@ -180,7 +180,7 @@ export const getStaticProps = async (): Promise<
 > => {
   const cities =
     process.env.NODE_ENV === 'production'
-      ? CITIES
+      ? BIKE_CITIES
       : (['臺北市', '花蓮縣'] as City[]);
 
   const allCityPaths = await Promise.all(
