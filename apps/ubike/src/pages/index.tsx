@@ -1,19 +1,11 @@
 import React from 'react';
 
 import { Box, Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react';
-import dynamic from 'next/dynamic';
-import Head from 'next/head';
 
-const DynamicMap = dynamic(() => import('@/components/Map'), { ssr: false });
+import Map from '@/components/Map';
 
 const HomePage = () => (
   <>
-    <Head>
-      <link
-        href="https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css"
-        rel="stylesheet"
-      />
-    </Head>
     <Box h="full">
       <Tabs variant="unstyled">
         <TabList
@@ -64,10 +56,8 @@ const HomePage = () => (
             },
           }}
         >
-          <TabPanel>
-            {/* <Box h="100vh"> */}
-            <DynamicMap />
-            {/* </Box> */}
+          <TabPanel h="100vh">
+            <Map />
           </TabPanel>
           <TabPanel />
         </TabPanels>

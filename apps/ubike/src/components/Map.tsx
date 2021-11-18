@@ -226,74 +226,61 @@ const Map = () => {
           rel="stylesheet"
         />
       </Head>
-
-      <Box h="100vh">
-        <Box
-          pos="absolute"
-          ref={divRef}
-          top="0"
-          bottom="0"
-          left="0"
-          right="0"
+      <Box pos="absolute" ref={divRef} top="0" bottom="0" left="0" right="0" />
+      <VStack
+        sx={{
+          pos: 'absolute',
+          bottom: 0,
+          left: 0,
+          m: 8,
+          button: {
+            fontSize: '32px',
+            display: 'inline-flex',
+            rounded: 'full',
+            bg: 'blackAlpha.700',
+            boxSize: '64px',
+            _hover: {
+              bg: 'blackAlpha.600',
+            },
+          },
+          zIndex: 11,
+        }}
+        spacing={4}
+      >
+        <IconButton aria-label="放大" icon={<BiPlus />} onClick={onZoomIn} />
+        <IconButton aria-label="縮小" icon={<BiMinus />} onClick={onZoomOut} />
+      </VStack>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          pos: 'absolute',
+          left: 0,
+          right: 0,
+          bottom: 0,
+          button: {
+            display: 'inline-flex',
+            fontSize: '60px',
+            bg: 'primary.main',
+            boxShadow: '0 0 20px var(--chakra-colors-secondary-main)',
+            rounded: 'full',
+            boxSize: '100px',
+            _hover: {
+              bg: 'primary.dark',
+            },
+          },
+          m: 8,
+          zIndex: 'docked',
+        }}
+      >
+        <IconButton
+          isLoading={loaded && !rendered}
+          aria-label="定位"
+          icon={<IoLocate />}
+          onClick={onLocate}
         />
-        <VStack
-          sx={{
-            pos: 'absolute',
-            bottom: 0,
-            left: 0,
-            m: 8,
-            button: {
-              fontSize: '32px',
-              display: 'inline-flex',
-              rounded: 'full',
-              bg: 'blackAlpha.700',
-              boxSize: '64px',
-              _hover: {
-                bg: 'blackAlpha.600',
-              },
-            },
-            zIndex: 11,
-          }}
-          spacing={4}
-        >
-          <IconButton aria-label="放大" icon={<BiPlus />} onClick={onZoomIn} />
-          <IconButton
-            aria-label="縮小"
-            icon={<BiMinus />}
-            onClick={onZoomOut}
-          />
-        </VStack>
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'center',
-            pos: 'absolute',
-            left: 0,
-            right: 0,
-            bottom: 0,
-            button: {
-              display: 'inline-flex',
-              fontSize: '60px',
-              bg: 'primary.main',
-              boxShadow: '0 0 20px var(--chakra-colors-secondary-main)',
-              rounded: 'full',
-              boxSize: '100px',
-              _hover: {
-                bg: 'primary.dark',
-              },
-            },
-            m: 8,
-            zIndex: 'docked',
-          }}
-        >
-          <IconButton
-            isLoading={loaded && !rendered}
-            aria-label="定位"
-            icon={<IoLocate />}
-            onClick={onLocate}
-          />
-        </Box>
       </Box>
+
       <Modal
         isOpen={isOpen}
         onClose={onClose}
