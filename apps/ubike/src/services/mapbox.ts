@@ -39,10 +39,10 @@ export const attachJSX = (
   const node = document.createElement('div');
   render(Element, node);
 
-  new mapboxgl.Marker(node).setLngLat(coordinates).addTo(map);
+  return new mapboxgl.Marker(node).setLngLat(coordinates).addTo(map);
 };
 
-export const addLayer = (
+export const addLayerAndSource = (
   map: mapboxgl.Map,
   sourceName: string,
   geoJson: GeoJSONMultiLineString,
@@ -80,4 +80,6 @@ export const addLayer = (
   }
 
   map.fitBounds(bounds);
+
+  return sourceName;
 };

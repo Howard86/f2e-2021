@@ -30,7 +30,7 @@ import { getDifficulty } from '@/services/utils';
 
 const HomePage = () => {
   const theme = useTheme();
-  const mapRef = useMap();
+  const { mapRef, layerIdRef, markersRef } = useMap();
   const [tabIndex, setTabIndex] = useState(0);
   const [selectedCity, setSelectedCity] = useState<CityMap>();
   const { data } = useGetCyclingByCityQuery(selectedCity, {
@@ -121,8 +121,24 @@ const HomePage = () => {
                         return;
                       }
 
-                      const { addLayer } = await import('@/services/mapbox');
-                      addLayer(
+                      const { addLayerAndSource: addLayer } = await import(
+                        '@/services/mapbox'
+                      );
+
+                      if (mapRef.current.getLayer(layerIdRef.current)) {
+                        mapRef.current.removeLayer(layerIdRef.current);
+                      }
+
+                      if (mapRef.current.getSource(layerIdRef.current)) {
+                        mapRef.current.removeSource(layerIdRef.current);
+                      }
+                      // eslint-disable-next-line no-restricted-syntax
+                      for (const marker of markersRef.current) {
+                        marker.remove();
+                      }
+                      markersRef.current = [];
+
+                      layerIdRef.current = addLayer(
                         mapRef.current,
                         path.RouteName,
                         path.geoJson,
@@ -131,31 +147,35 @@ const HomePage = () => {
                       const coordinates = path.geoJson
                         .coordinates[0] as Coordinate[];
 
-                      attachJSX(
-                        mapRef.current,
-                        <Box
-                          px="var(--chakra-space-2)"
-                          py="var(--chakra-space-1)"
-                          bgColor="var(--chakra-colors-primary-main)"
-                          color="white"
-                          rounded="var(--chakra-radii-xl)"
-                        >
-                          起點
-                        </Box>,
-                        coordinates[0],
+                      markersRef.current.push(
+                        attachJSX(
+                          mapRef.current,
+                          <Box
+                            px="var(--chakra-space-2)"
+                            py="var(--chakra-space-1)"
+                            bgColor="var(--chakra-colors-primary-main)"
+                            color="white"
+                            rounded="var(--chakra-radii-xl)"
+                          >
+                            起點
+                          </Box>,
+                          coordinates[0],
+                        ),
                       );
-                      attachJSX(
-                        mapRef.current,
-                        <Box
-                          px="var(--chakra-space-2)"
-                          py="var(--chakra-space-1)"
-                          bgColor="var(--chakra-colors-primary-main)"
-                          color="white"
-                          rounded="var(--chakra-radii-xl)"
-                        >
-                          終點
-                        </Box>,
-                        coordinates[coordinates.length - 1],
+                      markersRef.current.push(
+                        attachJSX(
+                          mapRef.current,
+                          <Box
+                            px="var(--chakra-space-2)"
+                            py="var(--chakra-space-1)"
+                            bgColor="var(--chakra-colors-primary-main)"
+                            color="white"
+                            rounded="var(--chakra-radii-xl)"
+                          >
+                            終點
+                          </Box>,
+                          coordinates[coordinates.length - 1],
+                        ),
                       );
 
                       setTabIndex(0);

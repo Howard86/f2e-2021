@@ -38,7 +38,7 @@ interface StationModalProps {
 
 const Map = () => {
   const toast = useAppToast();
-  const mapRef = useMap();
+  const { mapRef, markersRef } = useMap();
   // TODO: refactor with useReducer
   const [modalProps, setModalProps] = useState<StationModalProps>({
     name: '',
@@ -164,25 +164,30 @@ const Map = () => {
 
       const { attachJSX } = await import('@/services/mapbox');
 
-      const stations = {
-        type: 'FeatureCollection' as const,
-        features: data.data.map((station) => {
-          const coordinate = [
-            station.StationPosition.PositionLon,
-            station.StationPosition.PositionLat,
-          ] as Coordinate;
+      // eslint-disable-next-line no-restricted-syntax
+      for (const existedMarker of markersRef.current) {
+        existedMarker.remove();
+      }
 
-          const onClick = () => {
-            setModalProps({
-              name: station.StationName.Zh_tw,
-              address: station.StationAddress.Zh_tw,
-              rentNumber: station.bike.AvailableRentBikes,
-              returnNumber: station.bike.AvailableReturnBikes,
-            });
-            onOpen();
-            mapRef.current.flyTo({ center: coordinate, zoom: DEFAULT_ZOOM });
-          };
+      // eslint-disable-next-line no-restricted-syntax
+      for (const station of data.data) {
+        const coordinate = [
+          station.StationPosition.PositionLon,
+          station.StationPosition.PositionLat,
+        ] as Coordinate;
 
+        const onClick = () => {
+          setModalProps({
+            name: station.StationName.Zh_tw,
+            address: station.StationAddress.Zh_tw,
+            rentNumber: station.bike.AvailableRentBikes,
+            returnNumber: station.bike.AvailableReturnBikes,
+          });
+          onOpen();
+          mapRef.current.flyTo({ center: coordinate, zoom: DEFAULT_ZOOM });
+        };
+
+        markersRef.current.push(
           attachJSX(
             mapRef.current,
             <Box
@@ -195,31 +200,15 @@ const Map = () => {
               zIndex="modal"
             />,
             coordinate,
-          );
-
-          return {
-            type: 'Feature' as const,
-            geometry: {
-              type: 'Point' as const,
-              coordinates: coordinate,
-            },
-            properties: station,
-          };
-        }),
-      };
-
-      if (!mapRef.current.getSource('stations')) {
-        mapRef.current.addSource('stations', {
-          type: 'geojson',
-          data: stations,
-        });
+          ),
+        );
       }
 
       setRendered(true);
     };
 
     setMarkers();
-  }, [data, loaded, mapRef, onOpen, rendered, toast]);
+  }, [data, loaded, mapRef, markersRef, onOpen, rendered, toast]);
 
   return (
     <>
