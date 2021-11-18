@@ -15,40 +15,34 @@ import {
   Tabs,
   Tooltip,
 } from '@chakra-ui/react';
-import {
-  BIKE_CITIES,
-  BikeCycling,
-  City,
-  CityMap,
-  getCyclingShapeByCity,
-} from '@f2e/ptx';
-import type { GetStaticPropsResult } from 'next';
+import { BIKE_CITIES, CityMap } from '@f2e/ptx';
 import { BsCaretDownFill } from 'react-icons/bs';
 
 import DistanceIcon from '@/components/icons/DistanceIcon';
 import PlaceIcon from '@/components/icons/PlaceIcon';
 import StarIcon from '@/components/icons/StarIcon';
 import Map from '@/components/Map';
+import { useGetCyclingByCityQuery } from '@/services/local';
 import { getDifficulty } from '@/services/utils';
 
-type CyclingPath = Record<CityMap, BikeCycling[]>;
-
-interface HomePageProps {
-  cyclingPath: CyclingPath;
-}
-
-const ONE_DAY = 24 * 60 * 60;
-
-const HomePage = ({ cyclingPath }: HomePageProps) => {
+const HomePage = () => {
+  const [tabIndex, setTabIndex] = useState(0);
   const [selectedCity, setSelectedCity] = useState<CityMap>();
+  const { data } = useGetCyclingByCityQuery(selectedCity, {
+    skip: tabIndex !== 1 || !selectedCity,
+  });
 
   const onSelect = (event: ChangeEvent<HTMLSelectElement>) => {
     setSelectedCity(event.target.value as CityMap);
   };
 
+  const handleTabsChange = (index: number) => {
+    setTabIndex(index);
+  };
+
   return (
     <Box h="full" color="white">
-      <Tabs variant="unstyled">
+      <Tabs variant="unstyled" index={tabIndex} onChange={handleTabsChange}>
         <TabList
           sx={{
             display: 'inline-flex',
@@ -108,15 +102,19 @@ const HomePage = ({ cyclingPath }: HomePageProps) => {
                 sx={{ div: { color: 'red.100' } }}
               >
                 {BIKE_CITIES.map((city) => (
-                  <option value={CityMap[city]}>{city}</option>
+                  <option key={city} value={CityMap[city]}>
+                    {city}
+                  </option>
                 ))}
               </Select>
-              <SimpleGrid columns={[1, 2, 4]} spacing={[4, 8]} my="4">
-                {selectedCity &&
-                  cyclingPath[selectedCity]?.map((path) => (
+              <SimpleGrid columns={[1, 2, 4]} spacing={[4, 8]} my={[4, 8]}>
+                {data &&
+                  data.success &&
+                  data.data.map((path, i) => (
                     <Box
-                      key={`${path.RouteName}-${path.CyclingLength}`}
-                      p="4"
+                      // eslint-disable-next-line react/no-array-index-key
+                      key={`${path.RouteName}-${path.CyclingLength}-${i}`}
+                      p={[4, 6]}
                       bg="white"
                       color="blackAlpha.800"
                       rounded="xl"
@@ -173,38 +171,6 @@ const HomePage = ({ cyclingPath }: HomePageProps) => {
       </Tabs>
     </Box>
   );
-};
-
-export const getStaticProps = async (): Promise<
-  GetStaticPropsResult<HomePageProps>
-> => {
-  const cities =
-    process.env.NODE_ENV === 'production'
-      ? BIKE_CITIES
-      : (['臺北市', '花蓮縣'] as City[]);
-
-  const allCityPaths = await Promise.all(
-    cities.map((city) => getCyclingShapeByCity(city)),
-  );
-
-  const cyclingPath = {} as CyclingPath;
-
-  cities.forEach((city, index) => {
-    cyclingPath[CityMap[city]] = allCityPaths[index];
-  });
-
-  try {
-    return {
-      props: {
-        cyclingPath,
-      },
-      revalidate: ONE_DAY,
-    };
-  } catch (error) {
-    return {
-      notFound: true,
-    };
-  }
 };
 
 export default HomePage;
