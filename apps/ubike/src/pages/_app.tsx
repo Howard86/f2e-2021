@@ -6,6 +6,7 @@ import type { AppProps } from 'next/app';
 import NextHeadSeo from 'next-head-seo';
 import { Provider as ReduxProvider } from 'react-redux';
 
+import MapContextProvider from '@/components/MapContextProvider';
 import store from '@/redux/store';
 import theme from '@/theme';
 
@@ -22,9 +23,11 @@ const App = ({ Component, pageProps }: AppProps): JSX.Element => {
       <NextHeadSeo title="ubike" />
       <ReduxProvider store={store}>
         <ChakraProvider resetCSS theme={theme}>
-          <Layout>
-            <Component {...pageProps} />
-          </Layout>
+          <MapContextProvider>
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
+          </MapContextProvider>
         </ChakraProvider>
       </ReduxProvider>
     </>

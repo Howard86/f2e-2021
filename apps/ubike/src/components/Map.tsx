@@ -19,10 +19,13 @@ import { BiMinus, BiPlus } from 'react-icons/bi';
 import { IoLocate } from 'react-icons/io5';
 import { MdOutlinePlace } from 'react-icons/md';
 
+import { useMap } from './MapContextProvider';
+
 import BikeIcon from '@/components/icons/BikeIcon';
 import DockIcon from '@/components/icons/DockIcon';
 import useAppToast from '@/hooks/use-app-toast';
 import { useLazyGetStationsQuery } from '@/services/local';
+import type { Coordinate } from '@/services/mapbox';
 
 const DEFAULT_ZOOM = 15;
 
@@ -35,7 +38,7 @@ interface StationModalProps {
 
 const Map = () => {
   const toast = useAppToast();
-  const mapRef = useRef<mapboxgl.Map>(null);
+  const { mapRef, markersRef } = useMap();
   // TODO: refactor with useReducer
   const [modalProps, setModalProps] = useState<StationModalProps>({
     name: '',
@@ -161,25 +164,30 @@ const Map = () => {
 
       const { attachJSX } = await import('@/services/mapbox');
 
-      const stations = {
-        type: 'FeatureCollection' as const,
-        features: data.data.map((station) => {
-          const coordinates = [
-            station.StationPosition.PositionLon,
-            station.StationPosition.PositionLat,
-          ] as [number, number];
+      // eslint-disable-next-line no-restricted-syntax
+      for (const existedMarker of markersRef.current) {
+        existedMarker.remove();
+      }
 
-          const onClick = () => {
-            setModalProps({
-              name: station.StationName.Zh_tw,
-              address: station.StationAddress.Zh_tw,
-              rentNumber: station.bike.AvailableRentBikes,
-              returnNumber: station.bike.AvailableReturnBikes,
-            });
-            onOpen();
-            mapRef.current.flyTo({ center: coordinates, zoom: DEFAULT_ZOOM });
-          };
+      // eslint-disable-next-line no-restricted-syntax
+      for (const station of data.data) {
+        const coordinate = [
+          station.StationPosition.PositionLon,
+          station.StationPosition.PositionLat,
+        ] as Coordinate;
 
+        const onClick = () => {
+          setModalProps({
+            name: station.StationName.Zh_tw,
+            address: station.StationAddress.Zh_tw,
+            rentNumber: station.bike.AvailableRentBikes,
+            returnNumber: station.bike.AvailableReturnBikes,
+          });
+          onOpen();
+          mapRef.current.flyTo({ center: coordinate, zoom: DEFAULT_ZOOM });
+        };
+
+        markersRef.current.push(
           attachJSX(
             mapRef.current,
             <Box
@@ -191,32 +199,16 @@ const Map = () => {
               onClick={onClick}
               zIndex="modal"
             />,
-            coordinates,
-          );
-
-          return {
-            type: 'Feature' as const,
-            geometry: {
-              type: 'Point' as const,
-              coordinates,
-            },
-            properties: station,
-          };
-        }),
-      };
-
-      if (!mapRef.current.getSource('stations')) {
-        mapRef.current.addSource('stations', {
-          type: 'geojson',
-          data: stations,
-        });
+            coordinate,
+          ),
+        );
       }
 
       setRendered(true);
     };
 
     setMarkers();
-  }, [data, loaded, onOpen, rendered, toast]);
+  }, [data, loaded, mapRef, markersRef, onOpen, rendered, toast]);
 
   return (
     <>
@@ -226,74 +218,61 @@ const Map = () => {
           rel="stylesheet"
         />
       </Head>
-
-      <Box h="100vh">
-        <Box
-          pos="absolute"
-          ref={divRef}
-          top="0"
-          bottom="0"
-          left="0"
-          right="0"
+      <Box pos="absolute" ref={divRef} top="0" bottom="0" left="0" right="0" />
+      <VStack
+        sx={{
+          pos: 'absolute',
+          bottom: 0,
+          left: 0,
+          m: 8,
+          button: {
+            fontSize: '32px',
+            display: 'inline-flex',
+            rounded: 'full',
+            bg: 'blackAlpha.700',
+            boxSize: '64px',
+            _hover: {
+              bg: 'blackAlpha.600',
+            },
+          },
+          zIndex: 11,
+        }}
+        spacing={4}
+      >
+        <IconButton aria-label="放大" icon={<BiPlus />} onClick={onZoomIn} />
+        <IconButton aria-label="縮小" icon={<BiMinus />} onClick={onZoomOut} />
+      </VStack>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          pos: 'absolute',
+          left: 0,
+          right: 0,
+          bottom: 0,
+          button: {
+            display: 'inline-flex',
+            fontSize: '60px',
+            bg: 'primary.main',
+            boxShadow: '0 0 20px var(--chakra-colors-secondary-main)',
+            rounded: 'full',
+            boxSize: '100px',
+            _hover: {
+              bg: 'primary.dark',
+            },
+          },
+          m: 8,
+          zIndex: 'docked',
+        }}
+      >
+        <IconButton
+          isLoading={loaded && !rendered}
+          aria-label="定位"
+          icon={<IoLocate />}
+          onClick={onLocate}
         />
-        <VStack
-          sx={{
-            pos: 'absolute',
-            bottom: 0,
-            left: 0,
-            m: 8,
-            button: {
-              fontSize: '32px',
-              display: 'inline-flex',
-              rounded: 'full',
-              bg: 'blackAlpha.700',
-              boxSize: '64px',
-              _hover: {
-                bg: 'blackAlpha.600',
-              },
-            },
-            zIndex: 11,
-          }}
-          spacing={4}
-        >
-          <IconButton aria-label="放大" icon={<BiPlus />} onClick={onZoomIn} />
-          <IconButton
-            aria-label="縮小"
-            icon={<BiMinus />}
-            onClick={onZoomOut}
-          />
-        </VStack>
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'center',
-            pos: 'absolute',
-            left: 0,
-            right: 0,
-            bottom: 0,
-            button: {
-              display: 'inline-flex',
-              fontSize: '60px',
-              bg: 'primary.main',
-              boxShadow: '0 0 20px var(--chakra-colors-secondary-main)',
-              rounded: 'full',
-              boxSize: '100px',
-              _hover: {
-                bg: 'primary.dark',
-              },
-            },
-            m: 8,
-            zIndex: 'docked',
-          }}
-        >
-          <IconButton
-            isLoading={loaded && !rendered}
-            aria-label="定位"
-            icon={<IoLocate />}
-            onClick={onLocate}
-          />
-        </Box>
       </Box>
+
       <Modal
         isOpen={isOpen}
         onClose={onClose}

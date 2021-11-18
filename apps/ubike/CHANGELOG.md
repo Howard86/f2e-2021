@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.2.0](https://github.com/Howard86/f2e-2011/compare/@f2e/ubike@0.1.0...@f2e/ubike@0.2.0) (2021-11-18)
+
+### Bug Fixes
+
+- omit unrecognized cities ([ff0b9be](https://github.com/Howard86/f2e-2011/commit/ff0b9be55af1d2078df7e8ac8ba5c4057fb44b2d))
+
+### Features
+
+- **bike:** add /api/cyclings to replace getStaticProps ([a99c8c1](https://github.com/Howard86/f2e-2011/commit/a99c8c157f7ff3d64b5b5eca34f5c95b9ce2c3e1))
+- **bike:** add bike card with updated service ([7861cef](https://github.com/Howard86/f2e-2011/commit/7861cef11689a2a9b1435d6fb5835888971a65b9))
+- **map:** add geoJson with card handler ([a65cf91](https://github.com/Howard86/f2e-2011/commit/a65cf9160734952de0066ec122954389449ef2de))
+- **map:** manage marker in MapContext ([62e9a12](https://github.com/Howard86/f2e-2011/commit/62e9a1252393005df982c5f04c4c3b9035fde5c3))
+
 # 0.1.0 (2021-11-17)
 
 ### Bug Fixes
