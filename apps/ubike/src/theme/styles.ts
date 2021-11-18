@@ -8,7 +8,6 @@ const styles: ChakraTheme['styles'] = {
     },
     body: {
       fontFamily: 'Roboto, sans-serif',
-      color: 'white',
       bg: 'blackAlpha.800',
       h: 'full',
     },
