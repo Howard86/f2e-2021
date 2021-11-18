@@ -19,6 +19,8 @@ import { BiMinus, BiPlus } from 'react-icons/bi';
 import { IoLocate } from 'react-icons/io5';
 import { MdOutlinePlace } from 'react-icons/md';
 
+import { useMap } from './MapContextProvider';
+
 import BikeIcon from '@/components/icons/BikeIcon';
 import DockIcon from '@/components/icons/DockIcon';
 import useAppToast from '@/hooks/use-app-toast';
@@ -35,7 +37,7 @@ interface StationModalProps {
 
 const Map = () => {
   const toast = useAppToast();
-  const mapRef = useRef<mapboxgl.Map>(null);
+  const mapRef = useMap();
   // TODO: refactor with useReducer
   const [modalProps, setModalProps] = useState<StationModalProps>({
     name: '',
@@ -216,7 +218,7 @@ const Map = () => {
     };
 
     setMarkers();
-  }, [data, loaded, onOpen, rendered, toast]);
+  }, [data, loaded, mapRef, onOpen, rendered, toast]);
 
   return (
     <>
