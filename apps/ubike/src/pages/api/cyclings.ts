@@ -1,11 +1,9 @@
 import {
-  AvailableBike,
   BIKE_CITIES,
   BikeCycling,
   CitySlug,
   CitySlugMap,
   getCyclingShapeByCity,
-  Station,
 } from '@f2e/ptx';
 import {
   BadRequestException,
@@ -13,11 +11,12 @@ import {
   NotFoundException,
   RouterBuilder,
 } from 'next-api-handler';
+import { GeoJSONMultiLineString, parse } from 'wellknown';
 
 import mock from '@/mock-bike.json';
 
-export interface StationWithBike extends Station {
-  bike: AvailableBike;
+export interface BikeCyclingWithGeoJson extends BikeCycling {
+  geoJson: GeoJSONMultiLineString;
 }
 
 export interface CyclingQueryParam {
@@ -26,7 +25,7 @@ export interface CyclingQueryParam {
 
 const router = new RouterBuilder();
 
-router.get<BikeCycling[]>(
+router.get<BikeCyclingWithGeoJson[]>(
   async (req: NextApiRequestWithQuery<Partial<CyclingQueryParam>>) => {
     if (!req.query.city) {
       throw new BadRequestException(`Missing city=${req.query.city}`);
@@ -39,10 +38,15 @@ router.get<BikeCycling[]>(
     }
 
     if (process.env.NODE_ENV !== 'production') {
-      return mock as BikeCycling[];
+      return mock as BikeCyclingWithGeoJson[];
     }
 
-    return getCyclingShapeByCity(city);
+    const results = await getCyclingShapeByCity(city);
+
+    return results.map((result) => ({
+      ...result,
+      geoJson: parse(result.Geometry) as GeoJSONMultiLineString,
+    }));
   },
 );
 

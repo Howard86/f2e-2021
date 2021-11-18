@@ -1,8 +1,10 @@
-import { BikeCycling } from '@f2e/ptx';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { SuccessApiResponse } from 'next-api-handler';
 
-import type { CyclingQueryParam } from '@/pages/api/cyclings';
+import type {
+  BikeCyclingWithGeoJson,
+  CyclingQueryParam,
+} from '@/pages/api/cyclings';
 import type { StationQueryParam, StationWithBike } from '@/pages/api/stations';
 
 const ONE_HOUR = 60 * 60;
@@ -21,7 +23,7 @@ export const localApi = createApi({
       query: ({ lat, lng }) => `stations?lat=${lat}&lng=${lng}`,
     }),
     getCyclingByCity: builder.query<
-      SuccessApiResponse<BikeCycling[]>,
+      SuccessApiResponse<BikeCyclingWithGeoJson[]>,
       CyclingQueryParam['city']
     >({
       query: (citySlug) => `cyclings?city=${citySlug}`,

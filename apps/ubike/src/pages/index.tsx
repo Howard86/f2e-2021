@@ -14,6 +14,7 @@ import {
   TabPanels,
   Tabs,
   Tooltip,
+  useTheme,
 } from '@chakra-ui/react';
 import { BIKE_CITIES, CityMap } from '@f2e/ptx';
 import { BsCaretDownFill } from 'react-icons/bs';
@@ -22,10 +23,14 @@ import DistanceIcon from '@/components/icons/DistanceIcon';
 import PlaceIcon from '@/components/icons/PlaceIcon';
 import StarIcon from '@/components/icons/StarIcon';
 import Map from '@/components/Map';
+import { useMap } from '@/components/MapContextProvider';
 import { useGetCyclingByCityQuery } from '@/services/local';
+import { attachJSX, Coordinate } from '@/services/mapbox';
 import { getDifficulty } from '@/services/utils';
 
 const HomePage = () => {
+  const theme = useTheme();
+  const mapRef = useMap();
   const [tabIndex, setTabIndex] = useState(0);
   const [selectedCity, setSelectedCity] = useState<CityMap>();
   const { data } = useGetCyclingByCityQuery(selectedCity, {
@@ -110,60 +115,108 @@ const HomePage = () => {
               <SimpleGrid columns={[1, 2, 4]} spacing={[4, 8]} my={[4, 8]}>
                 {data &&
                   data.success &&
-                  data.data.map((path, i) => (
-                    <Box
-                      // eslint-disable-next-line react/no-array-index-key
-                      key={`${path.RouteName}-${path.CyclingLength}-${i}`}
-                      p={[4, 6]}
-                      bg="white"
-                      color="blackAlpha.800"
-                      rounded="xl"
-                      cursor="pointer"
-                      _hover={{
-                        bg: 'whiteAlpha.900',
-                      }}
-                    >
-                      <Tooltip label={path.RouteName}>
-                        <Heading fontSize="lg" mb="2" noOfLines={1}>
-                          {path.RouteName}
-                        </Heading>
-                      </Tooltip>
-                      <Flex
-                        fontSize="sm"
-                        sx={{
-                          mb: 4,
-                          div: { w: '50%', alignItems: 'center' },
+                  data.data.map((path, i) => {
+                    const onClick = async () => {
+                      if (!mapRef.current) {
+                        return;
+                      }
+
+                      const { addLayer } = await import('@/services/mapbox');
+                      addLayer(
+                        mapRef.current,
+                        path.RouteName,
+                        path.geoJson,
+                        theme.colors.primary.main,
+                      );
+                      const coordinates = path.geoJson
+                        .coordinates[0] as Coordinate[];
+
+                      attachJSX(
+                        mapRef.current,
+                        <Box
+                          px="var(--chakra-space-2)"
+                          py="var(--chakra-space-1)"
+                          bgColor="var(--chakra-colors-primary-main)"
+                          color="white"
+                          rounded="var(--chakra-radii-xl)"
+                        >
+                          起點
+                        </Box>,
+                        coordinates[0],
+                      );
+                      attachJSX(
+                        mapRef.current,
+                        <Box
+                          px="var(--chakra-space-2)"
+                          py="var(--chakra-space-1)"
+                          bgColor="var(--chakra-colors-primary-main)"
+                          color="white"
+                          rounded="var(--chakra-radii-xl)"
+                        >
+                          終點
+                        </Box>,
+                        coordinates[coordinates.length - 1],
+                      );
+
+                      setTabIndex(0);
+                    };
+
+                    return (
+                      <Box
+                        // eslint-disable-next-line react/no-array-index-key
+                        key={`${path.RouteName}-${path.CyclingLength}-${i}`}
+                        p={[4, 6]}
+                        bg="white"
+                        color="blackAlpha.800"
+                        rounded="xl"
+                        cursor="pointer"
+                        _hover={{
+                          bg: 'whiteAlpha.900',
                         }}
+                        onClick={onClick}
                       >
-                        <Flex>
-                          <DistanceIcon fontSize="2xl" mr="1" />
-                          {path.CyclingLength
-                            ? (path.CyclingLength / 1000).toFixed(1)
-                            : '-'}
-                          KM
-                        </Flex>
-                        <Flex>
-                          <PlaceIcon
-                            color="secondary.main"
-                            fontSize="2xl"
-                            mr="1"
-                          />
-                          {path.City}
-                        </Flex>
-                      </Flex>
-                      <HStack>
-                        {new Array(getDifficulty(path.CyclingLength))
-                          .fill(0)
-                          .map((_, index) => (
-                            <StarIcon
-                              // eslint-disable-next-line react/no-array-index-key
-                              key={`${path.RouteName}-${index}`}
-                              color="primary.main"
+                        <Tooltip label={path.RouteName}>
+                          <Heading fontSize="lg" mb="2" noOfLines={1}>
+                            {path.RouteName}
+                          </Heading>
+                        </Tooltip>
+                        <Flex
+                          fontSize="sm"
+                          sx={{
+                            mb: 4,
+                            div: { w: '50%', alignItems: 'center' },
+                          }}
+                        >
+                          <Flex>
+                            <DistanceIcon fontSize="2xl" mr="1" />
+                            {path.CyclingLength
+                              ? (path.CyclingLength / 1000).toFixed(1)
+                              : '-'}
+                            KM
+                          </Flex>
+                          <Flex>
+                            <PlaceIcon
+                              color="secondary.main"
+                              fontSize="2xl"
+                              mr="1"
                             />
-                          ))}
-                      </HStack>
-                    </Box>
-                  ))}
+                            {path.City}
+                          </Flex>
+                        </Flex>
+                        <HStack>
+                          {new Array(getDifficulty(path.CyclingLength))
+                            .fill(0)
+                            .map((_, index) => (
+                              <StarIcon
+                                // eslint-disable-next-line react/no-array-index-key
+                                key={`${path.RouteName}-${index}`}
+                                color="primary.main"
+                              />
+                            ))}
+                        </HStack>
+                      </Box>
+                    );
+                  })}
               </SimpleGrid>
             </Container>
           </TabPanel>

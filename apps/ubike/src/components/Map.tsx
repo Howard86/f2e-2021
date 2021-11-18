@@ -25,6 +25,7 @@ import BikeIcon from '@/components/icons/BikeIcon';
 import DockIcon from '@/components/icons/DockIcon';
 import useAppToast from '@/hooks/use-app-toast';
 import { useLazyGetStationsQuery } from '@/services/local';
+import type { Coordinate } from '@/services/mapbox';
 
 const DEFAULT_ZOOM = 15;
 
@@ -166,10 +167,10 @@ const Map = () => {
       const stations = {
         type: 'FeatureCollection' as const,
         features: data.data.map((station) => {
-          const coordinates = [
+          const coordinate = [
             station.StationPosition.PositionLon,
             station.StationPosition.PositionLat,
-          ] as [number, number];
+          ] as Coordinate;
 
           const onClick = () => {
             setModalProps({
@@ -179,7 +180,7 @@ const Map = () => {
               returnNumber: station.bike.AvailableReturnBikes,
             });
             onOpen();
-            mapRef.current.flyTo({ center: coordinates, zoom: DEFAULT_ZOOM });
+            mapRef.current.flyTo({ center: coordinate, zoom: DEFAULT_ZOOM });
           };
 
           attachJSX(
@@ -193,14 +194,14 @@ const Map = () => {
               onClick={onClick}
               zIndex="modal"
             />,
-            coordinates,
+            coordinate,
           );
 
           return {
             type: 'Feature' as const,
             geometry: {
               type: 'Point' as const,
-              coordinates,
+              coordinates: coordinate,
             },
             properties: station,
           };

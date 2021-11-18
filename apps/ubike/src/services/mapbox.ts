@@ -1,5 +1,8 @@
 import mapboxgl from 'mapbox-gl';
 import { render } from 'react-dom';
+import type { GeoJSONMultiLineString } from 'wellknown';
+
+export type Coordinate = [number, number];
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
 
@@ -37,4 +40,44 @@ export const attachJSX = (
   render(Element, node);
 
   new mapboxgl.Marker(node).setLngLat(coordinates).addTo(map);
+};
+
+export const addLayer = (
+  map: mapboxgl.Map,
+  sourceName: string,
+  geoJson: GeoJSONMultiLineString,
+  color: string,
+) => {
+  map.addSource(sourceName, {
+    type: 'geojson',
+    data: {
+      type: 'Feature',
+      geometry: geoJson,
+      properties: {},
+    },
+  });
+
+  map.addLayer({
+    id: sourceName,
+    type: 'line',
+    source: sourceName,
+    layout: {},
+    paint: {
+      'line-color': color,
+      'line-width': 3,
+    },
+  });
+
+  const bounds = new mapboxgl.LngLatBounds(
+    geoJson.coordinates[0][0] as Coordinate,
+    geoJson.coordinates[0][0] as Coordinate,
+  );
+
+  // eslint-disable-next-line no-restricted-syntax
+  for (const coordinate of geoJson.coordinates[0]) {
+    // eslint-disable-next-line no-restricted-syntax
+    bounds.extend(coordinate as Coordinate);
+  }
+
+  map.fitBounds(bounds);
 };
