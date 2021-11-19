@@ -16,6 +16,7 @@ import {
 } from '@chakra-ui/react';
 import type mapboxgl from 'mapbox-gl';
 import Head from 'next/head';
+import Image from 'next/image';
 import { BiMinus, BiPlus } from 'react-icons/bi';
 import { IoLocate } from 'react-icons/io5';
 import { MdOutlinePlace } from 'react-icons/md';
@@ -25,6 +26,7 @@ import { useMap } from './MapContextProvider';
 import BikeIcon from '@/components/icons/BikeIcon';
 import DockIcon from '@/components/icons/DockIcon';
 import useAppToast from '@/hooks/use-app-toast';
+import background from '@/map.jpg';
 import { useGetStationsByCoordinateMutation } from '@/services/local';
 import type { Coordinate } from '@/services/mapbox';
 
@@ -268,7 +270,17 @@ const Map = () => {
           left="0"
           right="0"
           bottom="0"
+          zIndex="1"
         />
+        <Box pos="fixed" top="0" h="full" w="full" overflow="hidden">
+          <Image
+            alt="背景"
+            src={background}
+            layout="fill"
+            objectFit="cover"
+            objectPosition="center"
+          />
+        </Box>
         <VStack
           sx={{
             pos: 'absolute',

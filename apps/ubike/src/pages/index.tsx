@@ -39,7 +39,12 @@ const HomePage = () => {
 
   return (
     <Box h="full" color="white">
-      <Tabs variant="unstyled" index={tabIndex} onChange={handleTabsChange}>
+      <Tabs
+        id="tab"
+        variant="unstyled"
+        index={tabIndex}
+        onChange={handleTabsChange}
+      >
         <TabList
           sx={{
             display: 'inline-flex',
