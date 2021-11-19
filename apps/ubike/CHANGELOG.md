@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.3.0](https://github.com/Howard86/f2e-2011/compare/@f2e/ubike@0.2.0...@f2e/ubike@0.3.0) (2021-11-19)
+
+### Bug Fixes
+
+- **ui:** fix staggerChildren failling to work sometimes ([0adea22](https://github.com/Howard86/f2e-2011/commit/0adea222db675509790b2822fb4ea87d8ad9ced2))
+- update getStations query to mutaion to fix modal handler ([856d3a0](https://github.com/Howard86/f2e-2011/commit/856d3a00706b1c464053362614541c153f9baf25))
+- update map style with toast ([6170770](https://github.com/Howard86/f2e-2011/commit/6170770e6f5489a7e4726e88ed9c7b3be629770e))
+
+### Features
+
+- **map:** add searchRadius based on devices ([d1de827](https://github.com/Howard86/f2e-2011/commit/d1de8271217bf78ac6dc2cf166ebcd147f611b9e))
+- **map:** add stationIdSetRef to track existed markers ([d51399c](https://github.com/Howard86/f2e-2011/commit/d51399cdcfbcfd1afa0aec7e8e99a255a1ba709a))
+- **ui:** add animations ([70a4a6c](https://github.com/Howard86/f2e-2011/commit/70a4a6c0242eb770242900564cff2befd7217b5f))
+- **ui:** add loading spinner ([8de2212](https://github.com/Howard86/f2e-2011/commit/8de221288c4aab393993af5d8ed51e330d09c91c))
+- update app data and background ([36eee98](https://github.com/Howard86/f2e-2011/commit/36eee98e9e8962ee1119a0f18859b1e2e2fcaeb6))
+
+### Performance Improvements
+
+- **ptx:** remove unused fields from ptx ([2ad70cb](https://github.com/Howard86/f2e-2011/commit/2ad70cb1d7fee02deff594f500aaf8d5ad5b0566))
+
 # [0.2.0](https://github.com/Howard86/f2e-2011/compare/@f2e/ubike@0.1.0...@f2e/ubike@0.2.0) (2021-11-18)
 
 ### Bug Fixes
