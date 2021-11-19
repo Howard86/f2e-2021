@@ -16,11 +16,11 @@ export const localApi = createApi({
     baseUrl: '/api',
   }),
   endpoints: (builder) => ({
-    getStations: builder.query<
+    getStationsByCoordinate: builder.mutation<
       SuccessApiResponse<StationWithBike[]>,
       Record<keyof StationQueryParam, number>
     >({
-      query: ({ lat, lng }) => `stations?lat=${lat}&lng=${lng}`,
+      query: ({ lat, lng, r }) => `stations?lat=${lat}&lng=${lng}&r=${r}`,
     }),
     getCyclingByCity: builder.query<
       SuccessApiResponse<BikeCyclingWithGeoJson[]>,
@@ -31,4 +31,5 @@ export const localApi = createApi({
   }),
 });
 
-export const { useLazyGetStationsQuery, useGetCyclingByCityQuery } = localApi;
+export const { useGetCyclingByCityQuery, useGetStationsByCoordinateMutation } =
+  localApi;

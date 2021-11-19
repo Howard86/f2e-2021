@@ -8,15 +8,15 @@ import {
 
 import type mapboxgl from 'mapbox-gl';
 
-const MapContext = createContext<{
+interface MapContextState {
   mapRef: MutableRefObject<mapboxgl.Map>;
   markersRef: MutableRefObject<mapboxgl.Marker[]>;
+  stationIdSetRef: MutableRefObject<Set<string>>;
+  positionMarkerRef: MutableRefObject<mapboxgl.Marker>;
   layerIdRef: MutableRefObject<string>;
-}>({
-  mapRef: null,
-  markersRef: null,
-  layerIdRef: null,
-});
+}
+
+const MapContext = createContext<MapContextState>({} as MapContextState);
 
 interface MapContextProviderProps {
   children: ReactNode;
@@ -25,10 +25,20 @@ interface MapContextProviderProps {
 const MapContextProvider = ({ children }: MapContextProviderProps) => {
   const mapRef = useRef<mapboxgl.Map>(null);
   const markersRef = useRef<mapboxgl.Marker[]>([]);
+  const stationIdSetRef = useRef<Set<string>>(new Set<string>());
+  const positionMarkerRef = useRef<mapboxgl.Marker>(null);
   const layerIdRef = useRef<string>('');
 
   return (
-    <MapContext.Provider value={{ mapRef, markersRef, layerIdRef }}>
+    <MapContext.Provider
+      value={{
+        mapRef,
+        markersRef,
+        layerIdRef,
+        positionMarkerRef,
+        stationIdSetRef,
+      }}
+    >
       {children}
     </MapContext.Provider>
   );

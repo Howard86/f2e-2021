@@ -1,9 +1,9 @@
 import {
-  AvailableBike,
+  AvailableBikeInfo,
   BikeQueryParam,
   getNearByAvailableBikes,
   getNearByStations,
-  Station,
+  StationInfo,
 } from '@f2e/ptx';
 import {
   BadRequestException,
@@ -13,13 +13,14 @@ import {
 
 import mock from '@/mock.json';
 
-export interface StationWithBike extends Station {
-  bike: AvailableBike;
+export interface StationWithBike extends StationInfo {
+  bike: AvailableBikeInfo;
 }
 
 export interface StationQueryParam {
   lat: string;
   lng: string;
+  r: string;
 }
 
 const router = new RouterBuilder();
@@ -28,11 +29,16 @@ router.get<StationWithBike[]>(
   async (req: NextApiRequestWithQuery<Partial<StationQueryParam>>) => {
     const latitude = Number.parseFloat(req.query.lat);
     const longitude = Number.parseFloat(req.query.lng);
+    const radius = Number.parseFloat(req.query.r);
 
     if (Number.isNaN(latitude) || Number.isNaN(longitude)) {
       throw new BadRequestException(
         `Incorrect lat=${req.query.lat} or ${req.query.lng}`,
       );
+    }
+
+    if (Number.isNaN(radius) || radius < 500 || radius > 1000) {
+      throw new BadRequestException(`Invalid input of radisu ${radius}`);
     }
 
     if (process.env.NODE_ENV !== 'production') {
@@ -43,7 +49,7 @@ router.get<StationWithBike[]>(
       lat: latitude,
       lng: longitude,
       count: 30,
-      meter: 700,
+      meter: radius,
     };
 
     const [stations, bikes] = await Promise.all([

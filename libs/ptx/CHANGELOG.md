@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.1](https://github.com/Howard86/f2e-2021/compare/@f2e/ptx@0.3.0...@f2e/ptx@0.3.1) (2021-11-19)
+
+### Performance Improvements
+
+- **ptx:** remove unused fields from ptx ([2ad70cb](https://github.com/Howard86/f2e-2021/commit/2ad70cb1d7fee02deff594f500aaf8d5ad5b0566))
+
 # [0.3.0](https://github.com/Howard86/f2e-2021/compare/@f2e/ptx@0.2.0...@f2e/ptx@0.3.0) (2021-11-18)
 
 ### Bug Fixes

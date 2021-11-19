@@ -10,11 +10,13 @@ import {
   ModalCloseButton,
   ModalContent,
   ModalHeader,
+  useBreakpointValue,
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';
 import type mapboxgl from 'mapbox-gl';
 import Head from 'next/head';
+import Image from 'next/image';
 import { BiMinus, BiPlus } from 'react-icons/bi';
 import { IoLocate } from 'react-icons/io5';
 import { MdOutlinePlace } from 'react-icons/md';
@@ -24,7 +26,8 @@ import { useMap } from './MapContextProvider';
 import BikeIcon from '@/components/icons/BikeIcon';
 import DockIcon from '@/components/icons/DockIcon';
 import useAppToast from '@/hooks/use-app-toast';
-import { useLazyGetStationsQuery } from '@/services/local';
+import background from '@/map.jpg';
+import { useGetStationsByCoordinateMutation } from '@/services/local';
 import type { Coordinate } from '@/services/mapbox';
 
 const DEFAULT_ZOOM = 15;
@@ -38,7 +41,9 @@ interface StationModalProps {
 
 const Map = () => {
   const toast = useAppToast();
-  const { mapRef, markersRef } = useMap();
+  const searchRadius = useBreakpointValue({ base: 500, md: 700, lg: 1000 });
+  const { mapRef, markersRef, positionMarkerRef, stationIdSetRef } = useMap();
+  const currentPositionRef = useRef<{ lat: number; lng: number } | null>(null);
   // TODO: refactor with useReducer
   const [modalProps, setModalProps] = useState<StationModalProps>({
     name: '',
@@ -48,12 +53,77 @@ const Map = () => {
   });
   const divRef = useRef<HTMLDivElement>();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [getStations, { data }] = useLazyGetStationsQuery();
+  const [getStations, { isLoading }] = useGetStationsByCoordinateMutation();
 
   const [loaded, setLoaded] = useState(false);
-  const [rendered, setRendered] = useState(false);
+
+  const loadStationMarker = async () => {
+    if (!currentPositionRef.current) {
+      return;
+    }
+
+    const { attachJSXMarker } = await import('@/services/mapbox');
+
+    const result = await getStations({
+      ...currentPositionRef.current,
+      r: searchRadius,
+    }).unwrap();
+
+    if (result.data.length === 0) {
+      toast({ description: '此地區不提供 YouBike 服務！', status: 'warning' });
+      return;
+    }
+
+    toast({
+      description: `方圓${searchRadius}公尺內，共有${result.data.length}個 YouBike 站`,
+    });
+
+    result.data.forEach((station) => {
+      if (!stationIdSetRef.current.has(station.StationUID)) {
+        const coordinate = [
+          station.StationPosition.PositionLon,
+          station.StationPosition.PositionLat,
+        ] as Coordinate;
+
+        stationIdSetRef.current.add(station.StationUID);
+
+        markersRef.current.push(
+          attachJSXMarker(
+            mapRef.current,
+            <Box
+              id={station.StationUID}
+              h="82px"
+              w="80px"
+              bgImage="url(/icons/marker.png)"
+              cursor="pointer"
+              onClick={() => {
+                setModalProps({
+                  name: station.StationName.Zh_tw,
+                  address: station.StationAddress.Zh_tw,
+                  rentNumber: station.bike.AvailableRentBikes,
+                  returnNumber: station.bike.AvailableReturnBikes,
+                });
+                onOpen();
+                mapRef.current.flyTo({
+                  center: coordinate,
+                  zoom: DEFAULT_ZOOM,
+                });
+              }}
+              zIndex="modal"
+            />,
+            coordinate,
+          ),
+        );
+      }
+    });
+  };
 
   const onLocate = async () => {
+    if (currentPositionRef.current) {
+      await loadStationMarker();
+      return;
+    }
+
     if (!window.navigator) {
       toast({ description: '偵測定位系統失敗', status: 'error' });
       return;
@@ -84,15 +154,21 @@ const Map = () => {
         });
       };
 
-      if (mapRef.current) {
+      currentPositionRef.current = {
+        lat: geoLocation.coords.latitude,
+        lng: geoLocation.coords.longitude,
+      };
+
+      const { initialize, attachJSXMarker } = await import('@/services/mapbox');
+
+      if (mapRef.current && positionMarkerRef.current) {
         flyToCurrent();
-        return;
+        positionMarkerRef.current.remove();
+      } else {
+        mapRef.current = initialize(divRef.current, newPosition);
       }
 
-      const { initialize, attachJSX } = await import('@/services/mapbox');
-      mapRef.current = initialize(divRef.current, newPosition);
-
-      attachJSX(
+      positionMarkerRef.current = attachJSXMarker(
         mapRef.current,
         <Box
           id="current"
@@ -106,10 +182,7 @@ const Map = () => {
         newPosition.center,
       );
 
-      getStations({
-        lat: geoLocation.coords.latitude,
-        lng: geoLocation.coords.longitude,
-      });
+      await loadStationMarker();
 
       setLoaded(true);
     } catch (error) {
@@ -140,7 +213,6 @@ const Map = () => {
 
   const onZoomIn = () => {
     if (!mapRef.current) {
-      toast({ description: '請先定位', status: 'info' });
       return;
     }
 
@@ -149,7 +221,6 @@ const Map = () => {
 
   const onZoomOut = () => {
     if (!mapRef.current) {
-      toast({ description: '請先定位', status: 'info' });
       return;
     }
 
@@ -157,58 +228,31 @@ const Map = () => {
   };
 
   useEffect(() => {
-    const setMarkers = async () => {
-      if (!data || !loaded || rendered) {
-        return;
-      }
+    if (!loaded || !mapRef.current) {
+      return;
+    }
 
-      const { attachJSX } = await import('@/services/mapbox');
-
-      // eslint-disable-next-line no-restricted-syntax
-      for (const existedMarker of markersRef.current) {
-        existedMarker.remove();
-      }
-
-      // eslint-disable-next-line no-restricted-syntax
-      for (const station of data.data) {
-        const coordinate = [
-          station.StationPosition.PositionLon,
-          station.StationPosition.PositionLat,
-        ] as Coordinate;
-
-        const onClick = () => {
-          setModalProps({
-            name: station.StationName.Zh_tw,
-            address: station.StationAddress.Zh_tw,
-            rentNumber: station.bike.AvailableRentBikes,
-            returnNumber: station.bike.AvailableReturnBikes,
-          });
-          onOpen();
-          mapRef.current.flyTo({ center: coordinate, zoom: DEFAULT_ZOOM });
-        };
-
-        markersRef.current.push(
-          attachJSX(
-            mapRef.current,
-            <Box
-              id={station.StationUID}
-              h="82px"
-              w="80px"
-              bgImage="url(/icons/marker.png)"
-              cursor="pointer"
-              onClick={onClick}
-              zIndex="modal"
-            />,
-            coordinate,
-          ),
-        );
-      }
-
-      setRendered(true);
+    const handleMapLoad = () => {
+      mapRef.current.resize();
     };
 
-    setMarkers();
-  }, [data, loaded, mapRef, markersRef, onOpen, rendered, toast]);
+    const handleMapMove = () => {
+      const center = mapRef.current.getCenter();
+      currentPositionRef.current = {
+        lat: center.lat,
+        lng: center.lng,
+      };
+    };
+
+    mapRef.current.on('render', handleMapLoad);
+    mapRef.current.on('move', handleMapMove);
+
+    // eslint-disable-next-line consistent-return
+    return () => {
+      mapRef.current.off('render', handleMapLoad);
+      mapRef.current.off('move', handleMapMove);
+    };
+  }, [loaded, mapRef]);
 
   return (
     <>
@@ -218,59 +262,104 @@ const Map = () => {
           rel="stylesheet"
         />
       </Head>
-      <Box pos="absolute" ref={divRef} top="0" bottom="0" left="0" right="0" />
-      <VStack
-        sx={{
-          pos: 'absolute',
-          bottom: 0,
-          left: 0,
-          m: 8,
-          button: {
-            fontSize: '32px',
-            display: 'inline-flex',
-            rounded: 'full',
-            bg: 'blackAlpha.700',
-            boxSize: '64px',
-            _hover: {
-              bg: 'blackAlpha.600',
-            },
-          },
-          zIndex: 11,
-        }}
-        spacing={4}
-      >
-        <IconButton aria-label="放大" icon={<BiPlus />} onClick={onZoomIn} />
-        <IconButton aria-label="縮小" icon={<BiMinus />} onClick={onZoomOut} />
-      </VStack>
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          pos: 'absolute',
-          left: 0,
-          right: 0,
-          bottom: 0,
-          button: {
-            display: 'inline-flex',
-            fontSize: '60px',
-            bg: 'primary.main',
-            boxShadow: '0 0 20px var(--chakra-colors-secondary-main)',
-            rounded: 'full',
-            boxSize: '100px',
-            _hover: {
-              bg: 'primary.dark',
-            },
-          },
-          m: 8,
-          zIndex: 'docked',
-        }}
-      >
-        <IconButton
-          isLoading={loaded && !rendered}
-          aria-label="定位"
-          icon={<IoLocate />}
-          onClick={onLocate}
+      <Box h="calc(100vh - 128px)" maxW="fill-available">
+        <Box
+          pos="absolute"
+          ref={divRef}
+          top="0"
+          left="0"
+          right="0"
+          bottom="0"
+          zIndex="1"
         />
+        <Box pos="fixed" top="0" h="full" w="full" overflow="hidden">
+          <Image
+            alt="背景"
+            src={background}
+            layout="fill"
+            objectFit="cover"
+            objectPosition="center"
+          />
+        </Box>
+        <VStack
+          sx={{
+            pos: 'absolute',
+            bottom: 0,
+            left: 0,
+            m: 8,
+            button: {
+              fontSize: '24px',
+              display: 'inline-flex',
+              rounded: 'full',
+              bg: 'blackAlpha.700',
+              boxSize: '48px',
+              _hover: {
+                bg: 'blackAlpha.600',
+                boxSize: '64px',
+                fontSize: '40px',
+              },
+              transition: 'all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1)',
+            },
+            zIndex: 11,
+          }}
+          spacing={4}
+        >
+          <IconButton aria-label="放大" icon={<BiPlus />} onClick={onZoomIn} />
+          <IconButton
+            aria-label="縮小"
+            icon={<BiMinus />}
+            onClick={onZoomOut}
+          />
+        </VStack>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            pos: 'absolute',
+            left: 0,
+            right: 0,
+            bottom: 0,
+            button: {
+              display: 'inline-flex',
+              fontSize: '72px',
+              bg: 'primary.main',
+              rounded: 'full',
+              boxSize: '100px',
+              _hover: {
+                bg: 'primary.main',
+                _after: {
+                  boxShadow: '0 0 20px var(--chakra-colors-secondary-main)',
+                },
+              },
+              _after: {
+                content: '""',
+                rounded: 'full',
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                h: 'full',
+                w: 'full',
+                boxShadow: '0 0 10px var(--chakra-colors-secondary-main)',
+                transition: 'all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1)',
+              },
+              _focus: {
+                bg: 'primary.dark',
+                _after: {
+                  boxShadow: '0 0 20px var(--chakra-colors-secondary-main)',
+                },
+              },
+            },
+            m: 8,
+            zIndex: 'docked',
+          }}
+        >
+          <IconButton
+            isLoading={isLoading}
+            aria-label="定位"
+            icon={<IoLocate />}
+            onClick={onLocate}
+          />
+        </Box>
       </Box>
 
       <Modal
