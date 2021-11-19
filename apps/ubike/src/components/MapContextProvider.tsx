@@ -11,10 +11,12 @@ import type mapboxgl from 'mapbox-gl';
 const MapContext = createContext<{
   mapRef: MutableRefObject<mapboxgl.Map>;
   markersRef: MutableRefObject<mapboxgl.Marker[]>;
+  positionMarkerRef: MutableRefObject<mapboxgl.Marker>;
   layerIdRef: MutableRefObject<string>;
 }>({
   mapRef: null,
   markersRef: null,
+  positionMarkerRef: null,
   layerIdRef: null,
 });
 
@@ -25,10 +27,13 @@ interface MapContextProviderProps {
 const MapContextProvider = ({ children }: MapContextProviderProps) => {
   const mapRef = useRef<mapboxgl.Map>(null);
   const markersRef = useRef<mapboxgl.Marker[]>([]);
+  const positionMarkerRef = useRef<mapboxgl.Marker>(null);
   const layerIdRef = useRef<string>('');
 
   return (
-    <MapContext.Provider value={{ mapRef, markersRef, layerIdRef }}>
+    <MapContext.Provider
+      value={{ mapRef, markersRef, layerIdRef, positionMarkerRef }}
+    >
       {children}
     </MapContext.Provider>
   );

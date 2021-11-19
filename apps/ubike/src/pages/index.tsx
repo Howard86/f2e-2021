@@ -24,11 +24,13 @@ import PlaceIcon from '@/components/icons/PlaceIcon';
 import StarIcon from '@/components/icons/StarIcon';
 import Map from '@/components/Map';
 import { useMap } from '@/components/MapContextProvider';
+import useAppToast from '@/hooks/use-app-toast';
 import { useGetCyclingByCityQuery } from '@/services/local';
 import { attachJSX, Coordinate } from '@/services/mapbox';
 import { getDifficulty } from '@/services/utils';
 
 const HomePage = () => {
+  const toast = useAppToast();
   const theme = useTheme();
   const { mapRef, layerIdRef, markersRef } = useMap();
   const [tabIndex, setTabIndex] = useState(0);
@@ -89,7 +91,7 @@ const HomePage = () => {
           <Tab>騎乘路線</Tab>
         </TabList>
         <TabPanels p="0">
-          <TabPanel h="100vh">
+          <TabPanel>
             <Map />
           </TabPanel>
           <TabPanel>
@@ -118,6 +120,11 @@ const HomePage = () => {
                   data.data.map((path, i) => {
                     const onClick = async () => {
                       if (!mapRef.current) {
+                        toast({
+                          description: '麻煩請先打開定位',
+                          status: 'info',
+                        });
+                        setTabIndex(0);
                         return;
                       }
 

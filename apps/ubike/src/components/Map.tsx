@@ -38,7 +38,7 @@ interface StationModalProps {
 
 const Map = () => {
   const toast = useAppToast();
-  const { mapRef, markersRef } = useMap();
+  const { mapRef, markersRef, positionMarkerRef } = useMap();
   // TODO: refactor with useReducer
   const [modalProps, setModalProps] = useState<StationModalProps>({
     name: '',
@@ -84,15 +84,16 @@ const Map = () => {
         });
       };
 
-      if (mapRef.current) {
+      const { initialize, attachJSX } = await import('@/services/mapbox');
+
+      if (mapRef.current && positionMarkerRef.current) {
         flyToCurrent();
-        return;
+        positionMarkerRef.current.remove();
+      } else {
+        mapRef.current = initialize(divRef.current, newPosition);
       }
 
-      const { initialize, attachJSX } = await import('@/services/mapbox');
-      mapRef.current = initialize(divRef.current, newPosition);
-
-      attachJSX(
+      positionMarkerRef.current = attachJSX(
         mapRef.current,
         <Box
           id="current"
@@ -210,6 +211,23 @@ const Map = () => {
     setMarkers();
   }, [data, loaded, mapRef, markersRef, onOpen, rendered, toast]);
 
+  useEffect(() => {
+    if (!loaded || !mapRef.current) {
+      return;
+    }
+
+    const handleMapLoad = () => {
+      mapRef.current.resize();
+    };
+
+    mapRef.current.on('render', handleMapLoad);
+
+    // eslint-disable-next-line consistent-return
+    return () => {
+      mapRef.current.off('render', handleMapLoad);
+    };
+  }, [loaded, mapRef]);
+
   return (
     <>
       <Head>
@@ -218,59 +236,72 @@ const Map = () => {
           rel="stylesheet"
         />
       </Head>
-      <Box pos="absolute" ref={divRef} top="0" bottom="0" left="0" right="0" />
-      <VStack
-        sx={{
-          pos: 'absolute',
-          bottom: 0,
-          left: 0,
-          m: 8,
-          button: {
-            fontSize: '32px',
-            display: 'inline-flex',
-            rounded: 'full',
-            bg: 'blackAlpha.700',
-            boxSize: '64px',
-            _hover: {
-              bg: 'blackAlpha.600',
-            },
-          },
-          zIndex: 11,
-        }}
-        spacing={4}
-      >
-        <IconButton aria-label="放大" icon={<BiPlus />} onClick={onZoomIn} />
-        <IconButton aria-label="縮小" icon={<BiMinus />} onClick={onZoomOut} />
-      </VStack>
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          pos: 'absolute',
-          left: 0,
-          right: 0,
-          bottom: 0,
-          button: {
-            display: 'inline-flex',
-            fontSize: '60px',
-            bg: 'primary.main',
-            boxShadow: '0 0 20px var(--chakra-colors-secondary-main)',
-            rounded: 'full',
-            boxSize: '100px',
-            _hover: {
-              bg: 'primary.dark',
-            },
-          },
-          m: 8,
-          zIndex: 'docked',
-        }}
-      >
-        <IconButton
-          isLoading={loaded && !rendered}
-          aria-label="定位"
-          icon={<IoLocate />}
-          onClick={onLocate}
+      <Box h="100vh" maxW="fill-available" overflow="hi">
+        <Box
+          pos="absolute"
+          ref={divRef}
+          top="0"
+          bottom="0"
+          left="0"
+          right="0"
         />
+        <VStack
+          sx={{
+            pos: 'absolute',
+            bottom: 0,
+            left: 0,
+            m: 8,
+            button: {
+              fontSize: '32px',
+              display: 'inline-flex',
+              rounded: 'full',
+              bg: 'blackAlpha.700',
+              boxSize: '64px',
+              _hover: {
+                bg: 'blackAlpha.600',
+              },
+            },
+            zIndex: 11,
+          }}
+          spacing={4}
+        >
+          <IconButton aria-label="放大" icon={<BiPlus />} onClick={onZoomIn} />
+          <IconButton
+            aria-label="縮小"
+            icon={<BiMinus />}
+            onClick={onZoomOut}
+          />
+        </VStack>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            pos: 'absolute',
+            left: 0,
+            right: 0,
+            bottom: 0,
+            button: {
+              display: 'inline-flex',
+              fontSize: '60px',
+              bg: 'primary.main',
+              boxShadow: '0 0 20px var(--chakra-colors-secondary-main)',
+              rounded: 'full',
+              boxSize: '100px',
+              _hover: {
+                bg: 'primary.dark',
+              },
+            },
+            m: 8,
+            zIndex: 'docked',
+          }}
+        >
+          <IconButton
+            isLoading={loaded && !rendered}
+            aria-label="定位"
+            icon={<IoLocate />}
+            onClick={onLocate}
+          />
+        </Box>
       </Box>
 
       <Modal
