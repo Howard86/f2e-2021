@@ -25,7 +25,6 @@ import { getDifficulty } from '@/services/utils';
 
 interface CycleCardProps {
   name: string;
-  key: string;
   length?: number;
   city: City;
   onToggle: VoidFunction;
@@ -41,7 +40,6 @@ const variants: Variants = {
 
 const CycleCard = ({
   name,
-  key,
   city,
   length,
   onToggle,
@@ -110,7 +108,6 @@ const CycleCard = ({
   return (
     <MotionBox
       ref={ref}
-      key={key}
       p={[4, 6]}
       bg="white"
       color="blackAlpha.800"

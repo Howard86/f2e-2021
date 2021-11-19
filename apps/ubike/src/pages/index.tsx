@@ -25,10 +25,13 @@ import { useGetCyclingByCityQuery } from '@/services/local';
 const MotionGrid = motion<SimpleGridProps>(SimpleGrid);
 
 const vairants: Variants = {
+  hidden: { opacity: 0 },
   show: {
+    opacity: 1,
     transition: {
-      staggerChildren: 0.2,
-      delayChildren: 0.1,
+      type: 'spring',
+      stiffness: 120,
+      staggerChildren: 0.125,
     },
   },
 };
@@ -139,9 +142,8 @@ const HomePage = () => {
                   size="lg"
                 />
               </Flex>
-              {data && data.success && (
+              {data && data.success && !isFetching && (
                 <MotionGrid
-                  key={selectedCity}
                   columns={[1, 2, 4]}
                   spacing={[4, 8]}
                   my={[4, 8]}
