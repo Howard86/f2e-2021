@@ -20,7 +20,7 @@ export const localApi = createApi({
       SuccessApiResponse<StationWithBike[]>,
       Record<keyof StationQueryParam, number>
     >({
-      query: ({ lat, lng }) => `stations?lat=${lat}&lng=${lng}`,
+      query: ({ lat, lng, r }) => `stations?lat=${lat}&lng=${lng}&r=${r}`,
     }),
     getCyclingByCity: builder.query<
       SuccessApiResponse<BikeCyclingWithGeoJson[]>,

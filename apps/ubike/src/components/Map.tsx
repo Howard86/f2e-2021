@@ -10,6 +10,7 @@ import {
   ModalCloseButton,
   ModalContent,
   ModalHeader,
+  useBreakpointValue,
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';
@@ -38,6 +39,7 @@ interface StationModalProps {
 
 const Map = () => {
   const toast = useAppToast();
+  const searchRadius = useBreakpointValue({ base: 500, md: 700, lg: 1000 });
   const { mapRef, markersRef, positionMarkerRef, stationIdSetRef } = useMap();
   const currentPositionRef = useRef<{ lat: number; lng: number } | null>(null);
   // TODO: refactor with useReducer
@@ -60,7 +62,19 @@ const Map = () => {
 
     const { attachJSXMarker } = await import('@/services/mapbox');
 
-    const result = await getStations(currentPositionRef.current).unwrap();
+    const result = await getStations({
+      ...currentPositionRef.current,
+      r: searchRadius,
+    }).unwrap();
+
+    if (result.data.length === 0) {
+      toast({ description: '此地區不提供 YouBike 服務！', status: 'warning' });
+      return;
+    }
+
+    toast({
+      description: `方圓${searchRadius}公尺內，共有${result.data.length}個 YouBike 站`,
+    });
 
     result.data.forEach((station) => {
       if (!stationIdSetRef.current.has(station.StationUID)) {
@@ -197,7 +211,6 @@ const Map = () => {
 
   const onZoomIn = () => {
     if (!mapRef.current) {
-      toast({ description: '請先定位', status: 'info' });
       return;
     }
 
@@ -206,7 +219,6 @@ const Map = () => {
 
   const onZoomOut = () => {
     if (!mapRef.current) {
-      toast({ description: '請先定位', status: 'info' });
       return;
     }
 
