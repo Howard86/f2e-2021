@@ -84,7 +84,7 @@ const Map = () => {
         });
       };
 
-      const { initialize, attachJSX } = await import('@/services/mapbox');
+      const { initialize, attachJSXMarker } = await import('@/services/mapbox');
 
       if (mapRef.current && positionMarkerRef.current) {
         flyToCurrent();
@@ -93,7 +93,7 @@ const Map = () => {
         mapRef.current = initialize(divRef.current, newPosition);
       }
 
-      positionMarkerRef.current = attachJSX(
+      positionMarkerRef.current = attachJSXMarker(
         mapRef.current,
         <Box
           id="current"
@@ -163,7 +163,7 @@ const Map = () => {
         return;
       }
 
-      const { attachJSX } = await import('@/services/mapbox');
+      const { attachJSXMarker } = await import('@/services/mapbox');
 
       // eslint-disable-next-line no-restricted-syntax
       for (const existedMarker of markersRef.current) {
@@ -189,7 +189,7 @@ const Map = () => {
         };
 
         markersRef.current.push(
-          attachJSX(
+          attachJSXMarker(
             mapRef.current,
             <Box
               id={station.StationUID}

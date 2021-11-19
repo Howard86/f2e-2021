@@ -31,7 +31,7 @@ export const initialize = (
   });
 };
 
-export const attachJSX = (
+export const attachJSXMarker = (
   map: mapboxgl.Map,
   Element: JSX.Element,
   coordinates: mapboxgl.LngLatLike,

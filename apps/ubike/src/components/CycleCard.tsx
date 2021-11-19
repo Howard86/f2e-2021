@@ -15,6 +15,7 @@ import DistanceIcon from './icons/DistanceIcon';
 import PlaceIcon from './icons/PlaceIcon';
 import StarIcon from './icons/StarIcon';
 import { useMap } from './MapContextProvider';
+import RouteMarker from './RouteMarker';
 
 import useAppToast from '@/hooks/use-app-toast';
 import { Coordinate } from '@/services/mapbox';
@@ -50,7 +51,7 @@ const CycleCard = ({
       return;
     }
 
-    const { addLayerAndSource: addLayer, attachJSX } = await import(
+    const { addLayerAndSource, attachJSXMarker } = await import(
       '@/services/mapbox'
     );
 
@@ -67,7 +68,7 @@ const CycleCard = ({
     }
     markersRef.current = [];
 
-    layerIdRef.current = addLayer(
+    layerIdRef.current = addLayerAndSource(
       mapRef.current,
       name,
       geoJson,
@@ -76,32 +77,16 @@ const CycleCard = ({
     const coordinates = geoJson.coordinates[0] as Coordinate[];
 
     markersRef.current.push(
-      attachJSX(
+      attachJSXMarker(
         mapRef.current,
-        <Box
-          px="var(--chakra-space-2)"
-          py="var(--chakra-space-1)"
-          bgColor="var(--chakra-colors-primary-main)"
-          color="white"
-          rounded="var(--chakra-radii-xl)"
-        >
-          起點
-        </Box>,
+        <RouteMarker>起點</RouteMarker>,
         coordinates[0],
       ),
     );
     markersRef.current.push(
-      attachJSX(
+      attachJSXMarker(
         mapRef.current,
-        <Box
-          px="var(--chakra-space-2)"
-          py="var(--chakra-space-1)"
-          bgColor="var(--chakra-colors-primary-main)"
-          color="white"
-          rounded="var(--chakra-radii-xl)"
-        >
-          終點
-        </Box>,
+        <RouteMarker>終點</RouteMarker>,
         coordinates[coordinates.length - 1],
       ),
     );
