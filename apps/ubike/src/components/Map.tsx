@@ -38,7 +38,8 @@ interface StationModalProps {
 
 const Map = () => {
   const toast = useAppToast();
-  const { mapRef, markersRef, positionMarkerRef } = useMap();
+  const { mapRef, markersRef, positionMarkerRef, stationIdSetRef } = useMap();
+  const currentPositionRef = useRef<{ lat: number; lng: number } | null>(null);
   // TODO: refactor with useReducer
   const [modalProps, setModalProps] = useState<StationModalProps>({
     name: '',
@@ -52,7 +53,61 @@ const Map = () => {
 
   const [loaded, setLoaded] = useState(false);
 
+  const loadStationMarker = async () => {
+    if (!currentPositionRef.current) {
+      return;
+    }
+
+    const { attachJSXMarker } = await import('@/services/mapbox');
+
+    const result = await getStations(currentPositionRef.current).unwrap();
+
+    result.data.forEach((station) => {
+      if (!stationIdSetRef.current.has(station.StationUID)) {
+        const coordinate = [
+          station.StationPosition.PositionLon,
+          station.StationPosition.PositionLat,
+        ] as Coordinate;
+
+        stationIdSetRef.current.add(station.StationUID);
+
+        markersRef.current.push(
+          attachJSXMarker(
+            mapRef.current,
+            <Box
+              id={station.StationUID}
+              h="82px"
+              w="80px"
+              bgImage="url(/icons/marker.png)"
+              cursor="pointer"
+              onClick={() => {
+                setModalProps({
+                  name: station.StationName.Zh_tw,
+                  address: station.StationAddress.Zh_tw,
+                  rentNumber: station.bike.AvailableRentBikes,
+                  returnNumber: station.bike.AvailableReturnBikes,
+                });
+                onOpen();
+                mapRef.current.flyTo({
+                  center: coordinate,
+                  zoom: DEFAULT_ZOOM,
+                });
+              }}
+              zIndex="modal"
+            />,
+            coordinate,
+          ),
+        );
+      }
+    });
+  };
+
   const onLocate = async () => {
+    if (currentPositionRef.current) {
+      await loadStationMarker();
+      return;
+    }
+
     if (!window.navigator) {
       toast({ description: '偵測定位系統失敗', status: 'error' });
       return;
@@ -83,6 +138,11 @@ const Map = () => {
         });
       };
 
+      currentPositionRef.current = {
+        lat: geoLocation.coords.latitude,
+        lng: geoLocation.coords.longitude,
+      };
+
       const { initialize, attachJSXMarker } = await import('@/services/mapbox');
 
       if (mapRef.current && positionMarkerRef.current) {
@@ -106,45 +166,7 @@ const Map = () => {
         newPosition.center,
       );
 
-      const result = await getStations({
-        lat: geoLocation.coords.latitude,
-        lng: geoLocation.coords.longitude,
-      }).unwrap();
-
-      result.data.forEach((station) => {
-        const coordinate = [
-          station.StationPosition.PositionLon,
-          station.StationPosition.PositionLat,
-        ] as Coordinate;
-
-        markersRef.current.push(
-          attachJSXMarker(
-            mapRef.current,
-            <Box
-              id={station.StationUID}
-              h="82px"
-              w="80px"
-              bgImage="url(/icons/marker.png)"
-              cursor="pointer"
-              onClick={() => {
-                setModalProps({
-                  name: station.StationName.Zh_tw,
-                  address: station.StationAddress.Zh_tw,
-                  rentNumber: station.bike.AvailableRentBikes,
-                  returnNumber: station.bike.AvailableReturnBikes,
-                });
-                onOpen();
-                mapRef.current.flyTo({
-                  center: coordinate,
-                  zoom: DEFAULT_ZOOM,
-                });
-              }}
-              zIndex="modal"
-            />,
-            coordinate,
-          ),
-        );
-      });
+      await loadStationMarker();
 
       setLoaded(true);
     } catch (error) {
@@ -200,11 +222,21 @@ const Map = () => {
       mapRef.current.resize();
     };
 
+    const handleMapMove = () => {
+      const center = mapRef.current.getCenter();
+      currentPositionRef.current = {
+        lat: center.lat,
+        lng: center.lng,
+      };
+    };
+
     mapRef.current.on('render', handleMapLoad);
+    mapRef.current.on('move', handleMapMove);
 
     // eslint-disable-next-line consistent-return
     return () => {
       mapRef.current.off('render', handleMapLoad);
+      mapRef.current.off('move', handleMapMove);
     };
   }, [loaded, mapRef]);
 

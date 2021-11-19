@@ -38,7 +38,7 @@ const CycleCard = ({
 }: CycleCardProps) => {
   const toast = useAppToast();
   const ref = useRef();
-  const { mapRef, layerIdRef, markersRef } = useMap();
+  const { mapRef, layerIdRef, markersRef, stationIdSetRef } = useMap();
   const theme = useTheme();
 
   const onClick = async () => {
@@ -62,6 +62,8 @@ const CycleCard = ({
     if (mapRef.current.getSource(layerIdRef.current)) {
       mapRef.current.removeSource(layerIdRef.current);
     }
+
+    stationIdSetRef.current.clear();
     // eslint-disable-next-line no-restricted-syntax
     for (const marker of markersRef.current) {
       marker.remove();
