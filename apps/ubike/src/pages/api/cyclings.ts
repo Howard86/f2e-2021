@@ -1,6 +1,6 @@
 import {
   BIKE_CITIES,
-  BikeCycling,
+  BikeCyclingInfo,
   CitySlug,
   CitySlugMap,
   getCyclingShapeByCity,
@@ -15,7 +15,8 @@ import { GeoJSONMultiLineString, parse } from 'wellknown';
 
 import mock from '@/mock-bike.json';
 
-export interface BikeCyclingWithGeoJson extends BikeCycling {
+export interface BikeCyclingWithGeoJson
+  extends Omit<BikeCyclingInfo, 'Geometry'> {
   geoJson: GeoJSONMultiLineString;
 }
 
@@ -38,14 +39,14 @@ router.get<BikeCyclingWithGeoJson[]>(
     }
 
     if (process.env.NODE_ENV !== 'production') {
-      return mock as BikeCyclingWithGeoJson[];
+      return mock as unknown as BikeCyclingWithGeoJson[];
     }
 
     const results = await getCyclingShapeByCity(city);
 
-    return results.map((result) => ({
-      ...result,
-      geoJson: parse(result.Geometry) as GeoJSONMultiLineString,
+    return results.map(({ Geometry, ...rest }) => ({
+      ...rest,
+      geoJson: parse(Geometry) as GeoJSONMultiLineString,
     }));
   },
 );

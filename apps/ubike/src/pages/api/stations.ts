@@ -1,9 +1,9 @@
 import {
-  AvailableBike,
+  AvailableBikeInfo,
   BikeQueryParam,
   getNearByAvailableBikes,
   getNearByStations,
-  Station,
+  StationInfo,
 } from '@f2e/ptx';
 import {
   BadRequestException,
@@ -13,8 +13,8 @@ import {
 
 import mock from '@/mock.json';
 
-export interface StationWithBike extends Station {
-  bike: AvailableBike;
+export interface StationWithBike extends StationInfo {
+  bike: AvailableBikeInfo;
 }
 
 export interface StationQueryParam {

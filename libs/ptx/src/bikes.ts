@@ -63,6 +63,25 @@ export interface BikeCycling {
   FinishedTime?: string;
 }
 
+export interface StationInfo {
+  StationUID: string;
+  StationName: StationName;
+  StationPosition: StationPosition;
+  StationAddress: StationAddress;
+}
+
+export interface AvailableBikeInfo {
+  AvailableRentBikes: number;
+  AvailableReturnBikes: number;
+}
+
+export interface BikeCyclingInfo {
+  RouteName: string;
+  City: City;
+  CyclingLength?: number;
+  Geometry: string;
+}
+
 const mapToPTXParam = ({
   lat,
   lng,
@@ -75,13 +94,22 @@ const mapToPTXParam = ({
 });
 
 export const getNearByStations = (query: BikeQueryParam) =>
-  apiGet<Station[]>('Bike/Station/NearBy', mapToPTXParam(query));
+  apiGet<StationInfo[]>('Bike/Station/NearBy', {
+    ...mapToPTXParam(query),
+    $select: 'StationUID,StationName,StationPosition,StationAddress',
+    $filter: 'ServiceType eq 2',
+  });
 
 export const getNearByAvailableBikes = (query: BikeQueryParam) =>
-  apiGet<AvailableBike[]>('Bike/Availability/NearBy', mapToPTXParam(query));
+  apiGet<AvailableBikeInfo[]>('Bike/Availability/NearBy', {
+    ...mapToPTXParam(query),
+    $select: 'StationUID,AvailableRentBikes,AvailableReturnBikes',
+    $filter: 'ServiceType eq 2',
+  });
 
-export const getCyclingShapeByCity = (city: City) =>
-  apiGet<BikeCycling[]>(`Cycling/Shape/${PTXCityMap[city]}`, {
-    $top: '100',
-    $filter: 'CyclingLength gt 0',
+export const getCyclingShapeByCity = (city: City, count = 100) =>
+  apiGet<BikeCyclingInfo[]>(`Cycling/Shape/${PTXCityMap[city]}`, {
+    $top: count.toString(),
+    $select: 'RouteName,City,CyclingLength,Geometry',
+    $filter: 'CyclingLength gt 300 and Geometry ne null',
   });
