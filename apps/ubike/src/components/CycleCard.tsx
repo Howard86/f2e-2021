@@ -2,6 +2,7 @@ import React, { useRef } from 'react';
 
 import {
   Box,
+  BoxProps,
   Flex,
   Heading,
   HStack,
@@ -9,6 +10,7 @@ import {
   useTheme,
 } from '@chakra-ui/react';
 import type { City } from '@f2e/ptx';
+import { motion, Variants } from 'framer-motion';
 import type { GeoJSONMultiLineString } from 'wellknown';
 
 import DistanceIcon from './icons/DistanceIcon';
@@ -23,14 +25,23 @@ import { getDifficulty } from '@/services/utils';
 
 interface CycleCardProps {
   name: string;
+  key: string;
   length?: number;
   city: City;
   onToggle: VoidFunction;
   geoJson: GeoJSONMultiLineString;
 }
 
+const MotionBox = motion<BoxProps>(Box);
+
+const variants: Variants = {
+  hidden: { opacity: 0, translateY: 20 },
+  show: { opacity: 1, translateY: 0 },
+};
+
 const CycleCard = ({
   name,
+  key,
   city,
   length,
   onToggle,
@@ -97,8 +108,9 @@ const CycleCard = ({
   };
 
   return (
-    <Box
+    <MotionBox
       ref={ref}
+      key={key}
       p={[4, 6]}
       bg="white"
       color="blackAlpha.800"
@@ -108,6 +120,7 @@ const CycleCard = ({
         bg: 'whiteAlpha.900',
       }}
       onClick={onClick}
+      variants={variants}
     >
       <Tooltip label={name}>
         <Heading fontSize="lg" mb="2" noOfLines={1}>
@@ -140,7 +153,7 @@ const CycleCard = ({
           />
         ))}
       </HStack>
-    </Box>
+    </MotionBox>
   );
 };
 

@@ -288,14 +288,17 @@ const Map = () => {
             left: 0,
             m: 8,
             button: {
-              fontSize: '32px',
+              fontSize: '24px',
               display: 'inline-flex',
               rounded: 'full',
               bg: 'blackAlpha.700',
-              boxSize: '64px',
+              boxSize: '48px',
               _hover: {
                 bg: 'blackAlpha.600',
+                boxSize: '64px',
+                fontSize: '40px',
               },
+              transition: 'all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1)',
             },
             zIndex: 11,
           }}
@@ -318,13 +321,32 @@ const Map = () => {
             bottom: 0,
             button: {
               display: 'inline-flex',
-              fontSize: '60px',
+              fontSize: '72px',
               bg: 'primary.main',
-              boxShadow: '0 0 20px var(--chakra-colors-secondary-main)',
               rounded: 'full',
               boxSize: '100px',
               _hover: {
+                bg: 'primary.main',
+                _after: {
+                  boxShadow: '0 0 20px var(--chakra-colors-secondary-main)',
+                },
+              },
+              _after: {
+                content: '""',
+                rounded: 'full',
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                h: 'full',
+                w: 'full',
+                boxShadow: '0 0 10px var(--chakra-colors-secondary-main)',
+                transition: 'all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1)',
+              },
+              _focus: {
                 bg: 'primary.dark',
+                _after: {
+                  boxShadow: '0 0 20px var(--chakra-colors-secondary-main)',
+                },
               },
             },
             m: 8,

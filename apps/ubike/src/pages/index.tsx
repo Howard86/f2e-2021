@@ -5,6 +5,7 @@ import {
   Container,
   Select,
   SimpleGrid,
+  SimpleGridProps,
   Tab,
   TabList,
   TabPanel,
@@ -12,11 +13,23 @@ import {
   Tabs,
 } from '@chakra-ui/react';
 import { BIKE_CITIES, CityMap } from '@f2e/ptx';
+import { motion, Variants } from 'framer-motion';
 import { BsCaretDownFill } from 'react-icons/bs';
 
 import CycleCard from '@/components/CycleCard';
 import Map from '@/components/Map';
 import { useGetCyclingByCityQuery } from '@/services/local';
+
+const MotionGrid = motion<SimpleGridProps>(SimpleGrid);
+
+const vairants: Variants = {
+  show: {
+    transition: {
+      staggerChildren: 0.2,
+      delayChildren: 0.1,
+    },
+  },
+};
 
 const HomePage = () => {
   const [tabIndex, setTabIndex] = useState(0);
@@ -72,6 +85,9 @@ const HomePage = () => {
                 _hover: {
                   bg: 'primary.dark',
                 },
+                _focus: {
+                  bg: 'primary.dark',
+                },
               },
               _hover: {
                 bg: 'whiteAlpha.200',
@@ -79,7 +95,9 @@ const HomePage = () => {
               _first: {
                 mr: -2.5,
               },
+              transition: 'all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1)',
             },
+            transition: 'all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1)',
           }}
         >
           <Tab>租車/還車</Tab>
@@ -109,10 +127,17 @@ const HomePage = () => {
                   </option>
                 ))}
               </Select>
-              <SimpleGrid columns={[1, 2, 4]} spacing={[4, 8]} my={[4, 8]}>
-                {data &&
-                  data.success &&
-                  data.data.map((path, i) => (
+              {data && data.success && (
+                <MotionGrid
+                  key={selectedCity}
+                  columns={[1, 2, 4]}
+                  spacing={[4, 8]}
+                  my={[4, 8]}
+                  variants={vairants}
+                  initial="hidden"
+                  animate="show"
+                >
+                  {data.data.map((path, i) => (
                     <CycleCard
                       // eslint-disable-next-line react/no-array-index-key
                       key={`${path.RouteName}-${path.CyclingLength}-${i}`}
@@ -123,7 +148,8 @@ const HomePage = () => {
                       geoJson={path.geoJson}
                     />
                   ))}
-              </SimpleGrid>
+                </MotionGrid>
+              )}
             </Container>
           </TabPanel>
         </TabPanels>
