@@ -3,9 +3,11 @@ import React, { ChangeEvent, useState } from 'react';
 import {
   Box,
   Container,
+  Flex,
   Select,
   SimpleGrid,
   SimpleGridProps,
+  Spinner,
   Tab,
   TabList,
   TabPanel,
@@ -34,7 +36,7 @@ const vairants: Variants = {
 const HomePage = () => {
   const [tabIndex, setTabIndex] = useState(0);
   const [selectedCity, setSelectedCity] = useState<CityMap>();
-  const { data } = useGetCyclingByCityQuery(selectedCity, {
+  const { data, isFetching } = useGetCyclingByCityQuery(selectedCity, {
     skip: tabIndex !== 1 || !selectedCity,
   });
 
@@ -109,24 +111,34 @@ const HomePage = () => {
           </TabPanel>
           <TabPanel>
             <Container maxW="container.lg">
-              <Select
-                icon={<BsCaretDownFill />}
-                w="120px"
-                rounded="full"
-                placeholder="選擇地區"
-                fontWeight="bold"
-                bg="whiteAlpha.200"
-                border="none"
-                value={selectedCity}
-                onChange={onSelect}
-                sx={{ div: { color: 'red.100' } }}
-              >
-                {BIKE_CITIES.map((city) => (
-                  <option key={city} value={CityMap[city]}>
-                    {city}
-                  </option>
-                ))}
-              </Select>
+              <Flex justify="space-between" align="center">
+                <Select
+                  icon={<BsCaretDownFill />}
+                  w="120px"
+                  rounded="full"
+                  placeholder="選擇地區"
+                  fontWeight="bold"
+                  bg="whiteAlpha.200"
+                  border="none"
+                  value={selectedCity}
+                  onChange={onSelect}
+                  sx={{ div: { color: 'red.100' } }}
+                >
+                  {BIKE_CITIES.map((city) => (
+                    <option key={city} value={CityMap[city]}>
+                      {city}
+                    </option>
+                  ))}
+                </Select>
+                <Spinner
+                  display={isFetching ? 'block' : 'none'}
+                  thickness="3px"
+                  speed="0.65s"
+                  emptyColor="gray.200"
+                  color="secondary.main"
+                  size="lg"
+                />
+              </Flex>
               {data && data.success && (
                 <MotionGrid
                   key={selectedCity}
