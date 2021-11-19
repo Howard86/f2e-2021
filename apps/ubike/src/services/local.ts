@@ -16,7 +16,7 @@ export const localApi = createApi({
     baseUrl: '/api',
   }),
   endpoints: (builder) => ({
-    getStations: builder.query<
+    getStationsByCoordinate: builder.mutation<
       SuccessApiResponse<StationWithBike[]>,
       Record<keyof StationQueryParam, number>
     >({
@@ -31,4 +31,5 @@ export const localApi = createApi({
   }),
 });
 
-export const { useLazyGetStationsQuery, useGetCyclingByCityQuery } = localApi;
+export const { useGetCyclingByCityQuery, useGetStationsByCoordinateMutation } =
+  localApi;

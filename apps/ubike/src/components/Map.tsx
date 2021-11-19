@@ -24,7 +24,7 @@ import { useMap } from './MapContextProvider';
 import BikeIcon from '@/components/icons/BikeIcon';
 import DockIcon from '@/components/icons/DockIcon';
 import useAppToast from '@/hooks/use-app-toast';
-import { useLazyGetStationsQuery } from '@/services/local';
+import { useGetStationsByCoordinateMutation } from '@/services/local';
 import type { Coordinate } from '@/services/mapbox';
 
 const DEFAULT_ZOOM = 15;
@@ -48,10 +48,9 @@ const Map = () => {
   });
   const divRef = useRef<HTMLDivElement>();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [getStations, { data }] = useLazyGetStationsQuery();
+  const [getStations, { isLoading }] = useGetStationsByCoordinateMutation();
 
   const [loaded, setLoaded] = useState(false);
-  const [rendered, setRendered] = useState(false);
 
   const onLocate = async () => {
     if (!window.navigator) {
@@ -107,9 +106,44 @@ const Map = () => {
         newPosition.center,
       );
 
-      getStations({
+      const result = await getStations({
         lat: geoLocation.coords.latitude,
         lng: geoLocation.coords.longitude,
+      }).unwrap();
+
+      result.data.forEach((station) => {
+        const coordinate = [
+          station.StationPosition.PositionLon,
+          station.StationPosition.PositionLat,
+        ] as Coordinate;
+
+        markersRef.current.push(
+          attachJSXMarker(
+            mapRef.current,
+            <Box
+              id={station.StationUID}
+              h="82px"
+              w="80px"
+              bgImage="url(/icons/marker.png)"
+              cursor="pointer"
+              onClick={() => {
+                setModalProps({
+                  name: station.StationName.Zh_tw,
+                  address: station.StationAddress.Zh_tw,
+                  rentNumber: station.bike.AvailableRentBikes,
+                  returnNumber: station.bike.AvailableReturnBikes,
+                });
+                onOpen();
+                mapRef.current.flyTo({
+                  center: coordinate,
+                  zoom: DEFAULT_ZOOM,
+                });
+              }}
+              zIndex="modal"
+            />,
+            coordinate,
+          ),
+        );
       });
 
       setLoaded(true);
@@ -158,60 +192,6 @@ const Map = () => {
   };
 
   useEffect(() => {
-    const setMarkers = async () => {
-      if (!data || !loaded || rendered) {
-        return;
-      }
-
-      const { attachJSXMarker } = await import('@/services/mapbox');
-
-      // eslint-disable-next-line no-restricted-syntax
-      for (const existedMarker of markersRef.current) {
-        existedMarker.remove();
-      }
-
-      // eslint-disable-next-line no-restricted-syntax
-      for (const station of data.data) {
-        const coordinate = [
-          station.StationPosition.PositionLon,
-          station.StationPosition.PositionLat,
-        ] as Coordinate;
-
-        const onClick = () => {
-          setModalProps({
-            name: station.StationName.Zh_tw,
-            address: station.StationAddress.Zh_tw,
-            rentNumber: station.bike.AvailableRentBikes,
-            returnNumber: station.bike.AvailableReturnBikes,
-          });
-          onOpen();
-          mapRef.current.flyTo({ center: coordinate, zoom: DEFAULT_ZOOM });
-        };
-
-        markersRef.current.push(
-          attachJSXMarker(
-            mapRef.current,
-            <Box
-              id={station.StationUID}
-              h="82px"
-              w="80px"
-              bgImage="url(/icons/marker.png)"
-              cursor="pointer"
-              onClick={onClick}
-              zIndex="modal"
-            />,
-            coordinate,
-          ),
-        );
-      }
-
-      setRendered(true);
-    };
-
-    setMarkers();
-  }, [data, loaded, mapRef, markersRef, onOpen, rendered, toast]);
-
-  useEffect(() => {
     if (!loaded || !mapRef.current) {
       return;
     }
@@ -236,14 +216,14 @@ const Map = () => {
           rel="stylesheet"
         />
       </Head>
-      <Box h="100vh" maxW="fill-available" overflow="hi">
+      <Box h="calc(100vh - 128px)" maxW="fill-available">
         <Box
           pos="absolute"
           ref={divRef}
           top="0"
-          bottom="0"
           left="0"
           right="0"
+          bottom="0"
         />
         <VStack
           sx={{
@@ -296,7 +276,7 @@ const Map = () => {
           }}
         >
           <IconButton
-            isLoading={loaded && !rendered}
+            isLoading={isLoading}
             aria-label="定位"
             icon={<IoLocate />}
             onClick={onLocate}
