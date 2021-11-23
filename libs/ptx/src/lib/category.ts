@@ -73,6 +73,8 @@ export const BIKE_CITIES: City[] = [
   '連江縣',
 ];
 
+export const BUS_ESTIMATE_CITIES: City[] = ['桃園市', '臺中市', '高雄市'];
+
 export const MAJOR_CITIES: City[] = [
   '臺北市',
   '新北市',

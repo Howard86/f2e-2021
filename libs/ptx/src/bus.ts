@@ -75,7 +75,55 @@ export interface SubRoute {
   HolidayLastBusTime?: string;
 }
 
+export interface BusEstimation {
+  PlateNumb: string;
+  StopUID: string;
+  StopID: string;
+  StopName: NameType;
+  RouteUID: string;
+  RouteID: string;
+  RouteName: NameType;
+  SubRouteUID: string;
+  SubRouteID: string;
+  SubRouteName: NameType;
+  Direction: BusDirection;
+  StopSequence: number;
+  StopStatus: BusStopStatus;
+  SrcUpdateTime: string;
+  UpdateTime: string;
+  EstimateTime?: number; // only when BusStopStatus = 0
+  NextBusTime?: string;
+  Estimates?: Estimate[]; // only for BUS_ESTIMATED_CITIES
+}
+
+export interface Estimate {
+  PlateNumb: string;
+  EstimateTime: number;
+  IsLastBus: boolean;
+  VehicleStopStatus?: number;
+}
+
+export enum BusDirection {
+  '去程',
+  '返程',
+  '迴圈',
+  '未知' = 255,
+}
+
+export enum BusStopStatus {
+  '正常',
+  '尚未發車',
+  '交管不停靠',
+  '末班車已過',
+  '今日未營運',
+}
+
 export const getBusRouteByCity = (city: City, count = 30) =>
   apiGet<BusRoute[]>(`Bus/Route/City/${PTXCityMap[city]}`, {
     $top: count.toString(),
   });
+
+export const getBusEstimationByRouteAndCity = (route: string, city: City) =>
+  apiGet<BusEstimation[]>(
+    `Bus/EstimatedTimeOfArrival/City/${PTXCityMap[city]}/${route}`,
+  );
