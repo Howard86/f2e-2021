@@ -19,7 +19,7 @@ export interface BusRoute {
   TicketPriceDescriptionZh: TicketPriceDescriptionZh;
   TicketPriceDescriptionEn: TicketPriceDescriptionEn;
   RouteMapImageUrl: string;
-  City: string;
+  City: PTXCityMap;
   CityCode: string;
   UpdateTime: string; // as Date
   VersionID: number;
@@ -127,7 +127,7 @@ export interface RouteStop {
   SubRouteID: string;
   SubRouteName: NameType;
   Direction: number;
-  City: string;
+  City: PTXCityMap;
   CityCode: string;
   Stops: Stop[];
   UpdateTime: string;
@@ -151,6 +151,31 @@ export interface StopPosition {
   GeoHash: string;
 }
 
+export interface BusRouteDetail {
+  RouteUID: string;
+  RouteID: string;
+  HasSubRoutes: boolean;
+  Operators: Operator[];
+  AuthorityID: string;
+  ProviderID: string;
+  SubRoutes: SubRoute[];
+  BusRouteType: number;
+  RouteName: NameType;
+  DepartureStopNameZh: string;
+  DepartureStopNameEn: string;
+  DestinationStopNameZh: string;
+  DestinationStopNameEn: string;
+  TicketPriceDescriptionZh: TicketPriceDescriptionZh;
+  TicketPriceDescriptionEn: TicketPriceDescriptionEn;
+  FareBufferZoneDescriptionZh: string;
+  FareBufferZoneDescriptionEn: string;
+  RouteMapImageUrl: string;
+  City: PTXCityMap;
+  CityCode: string;
+  UpdateTime: string;
+  VersionID: number;
+}
+
 export const getBusRouteByCity = (city: City, count = 30) =>
   apiGet<BusRoute[]>(`Bus/Route/City/${PTXCityMap[city]}`, {
     $top: count.toString(),
@@ -163,3 +188,8 @@ export const getBusEstimationByRouteAndCity = (route: string, city: City) =>
 
 export const getRouteStopByCityAndRouteName = (route: string, city: City) =>
   apiGet<RouteStop[]>(`Bus/StopOfRoute/City/${PTXCityMap[city]}/${route}`);
+
+export const getBusRouteDetailByCityAndRouteName = (
+  route: string,
+  city: City,
+) => apiGet<BusRouteDetail[]>(`Bus/Route/City/${PTXCityMap[city]}/${route}`);
