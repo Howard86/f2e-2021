@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.4.0](https://github.com/Howard86/f2e-2021/compare/@f2e/ptx@0.3.1...@f2e/ptx@0.4.0) (2021-11-23)
+
+### Features
+
+- add getRouteStopByCityAndRouteName ([3082f1e](https://github.com/Howard86/f2e-2021/commit/3082f1e0e4f4210131e86791c827fb2c1c991eda))
+- **bus:** add /api/bus-estimation ([20dba1c](https://github.com/Howard86/f2e-2021/commit/20dba1cb5473dc0b3de0b31429e684feed54b90f))
+- **bus:** add /api/bus-route api ([fba47b3](https://github.com/Howard86/f2e-2021/commit/fba47b37ee69127f572f6d64cb9c614e542f8cea))
+- **bus:** add getBusRouteDetail ([b95f4ba](https://github.com/Howard86/f2e-2021/commit/b95f4baf503dbdefa8a27ecf8980ccf18eeddd8c))
+
 ## [0.3.1](https://github.com/Howard86/f2e-2021/compare/@f2e/ptx@0.3.0...@f2e/ptx@0.3.1) (2021-11-19)
 
 ### Performance Improvements
