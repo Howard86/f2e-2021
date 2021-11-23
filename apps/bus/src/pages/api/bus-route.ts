@@ -3,7 +3,7 @@ import {
   CITIES,
   CitySlug,
   CitySlugMap,
-  getBusRouteByCity,
+  getBusRoutesByCity,
 } from '@f2e/ptx';
 import {
   BadRequestException,
@@ -30,7 +30,7 @@ router.get<BusRoute[]>(
       throw new NotFoundException(`city ${req.query.city} does not exist`);
     }
 
-    return getBusRouteByCity(city, 99999);
+    return getBusRoutesByCity(city, 99999);
   },
 );
 

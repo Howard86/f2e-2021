@@ -176,20 +176,26 @@ export interface BusRouteDetail {
   VersionID: number;
 }
 
-export const getBusRouteByCity = (city: City, count = 30) =>
+export const getBusRoutesByCity = (city: City, count = 30) =>
   apiGet<BusRoute[]>(`Bus/Route/City/${PTXCityMap[city]}`, {
     $top: count.toString(),
   });
 
-export const getBusEstimationByRouteAndCity = (route: string, city: City) =>
+export const getBusEstimationsByRouteAndCity = (route: string, city: City) =>
   apiGet<BusEstimation[]>(
     `Bus/EstimatedTimeOfArrival/City/${PTXCityMap[city]}/${route}`,
   );
 
-export const getRouteStopByCityAndRouteName = (route: string, city: City) =>
+export const getRouteStopsByCityAndRouteName = (route: string, city: City) =>
   apiGet<RouteStop[]>(`Bus/StopOfRoute/City/${PTXCityMap[city]}/${route}`);
 
-export const getBusRouteDetailByCityAndRouteName = (
+export const getBusRouteDetailByCityAndRouteName = async (
   route: string,
   city: City,
-) => apiGet<BusRouteDetail[]>(`Bus/Route/City/${PTXCityMap[city]}/${route}`);
+) => {
+  const results = await apiGet<BusRouteDetail[]>(
+    `Bus/Route/City/${PTXCityMap[city]}/${route}`,
+  );
+
+  return results[0];
+};
