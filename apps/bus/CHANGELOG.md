@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.2.0](https://github.com/Howard86/f2e-2011/compare/@f2e/bus@0.1.0...@f2e/bus@0.2.0) (2021-11-23)
+
+### Features
+
+- **bus:** add /api/bus-estimation ([20dba1c](https://github.com/Howard86/f2e-2011/commit/20dba1cb5473dc0b3de0b31429e684feed54b90f))
+- **bus:** add /api/bus-route api ([fba47b3](https://github.com/Howard86/f2e-2011/commit/fba47b37ee69127f572f6d64cb9c614e542f8cea))
+
 # 0.1.0 (2021-11-23)
 
 ### Features

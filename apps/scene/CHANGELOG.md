@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.4](https://github.com/Howard86/f2e-2011/compare/@f2e/scene@0.2.3...@f2e/scene@0.2.4) (2021-11-23)
+
+**Note:** Version bump only for package @f2e/scene
+
 ## [0.2.3](https://github.com/Howard86/f2e-2011/compare/@f2e/scene@0.2.2...@f2e/scene@0.2.3) (2021-11-19)
 
 **Note:** Version bump only for package @f2e/scene
