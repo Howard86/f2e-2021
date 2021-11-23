@@ -23,6 +23,9 @@ const colors = {
     '800': '#4C1056',
     '900': '#26082B',
   },
+  gradient: {
+    bg: 'linear-gradient(180deg, #200337 0%, rgba(51, 61, 113, 0.82) 49.48%, #443B68 100%)',
+  },
 };
 
 export default colors;
