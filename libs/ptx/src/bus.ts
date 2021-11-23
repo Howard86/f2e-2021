@@ -118,6 +118,39 @@ export enum BusStopStatus {
   '今日未營運',
 }
 
+export interface RouteStop {
+  RouteUID: string;
+  RouteID: string;
+  RouteName: NameType;
+  Operators: Operator[];
+  SubRouteUID: string;
+  SubRouteID: string;
+  SubRouteName: NameType;
+  Direction: number;
+  City: string;
+  CityCode: string;
+  Stops: Stop[];
+  UpdateTime: string;
+  VersionID: number;
+}
+
+export interface Stop {
+  StopUID: string;
+  StopID: string;
+  StopName: NameType;
+  StopBoarding: number;
+  StopSequence: number;
+  StopPosition: StopPosition;
+  StationID: string;
+  LocationCityCode: string;
+}
+
+export interface StopPosition {
+  PositionLon: number;
+  PositionLat: number;
+  GeoHash: string;
+}
+
 export const getBusRouteByCity = (city: City, count = 30) =>
   apiGet<BusRoute[]>(`Bus/Route/City/${PTXCityMap[city]}`, {
     $top: count.toString(),
@@ -127,3 +160,6 @@ export const getBusEstimationByRouteAndCity = (route: string, city: City) =>
   apiGet<BusEstimation[]>(
     `Bus/EstimatedTimeOfArrival/City/${PTXCityMap[city]}/${route}`,
   );
+
+export const getRouteStopByCityAndRouteName = (route: string, city: City) =>
+  apiGet<RouteStop[]>(`Bus/StopOfRoute/City/${PTXCityMap[city]}/${route}`);
