@@ -19,7 +19,7 @@ const HomePage = () => (
       mx="8"
     >
       <LogoIcon minW="145px" width="50%" />
-      <Heading as="h1" mb="8" fontSize="xl">
+      <Heading as="h1" mb="8" fontSize="xl" textAlign="center">
         提供最即時的公車動態，讓您輕鬆掌握資訊，現在就開始規劃您的路線吧！
       </Heading>
       <VStack spacing={4}>

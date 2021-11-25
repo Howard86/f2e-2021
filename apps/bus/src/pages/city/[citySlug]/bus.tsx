@@ -96,6 +96,7 @@ const BusPage = ({ citySlug, busRoutes }: BusPageProps) => {
         border="2px"
         borderColor="primary.200"
         rounded="2xl"
+        bgColor="whiteAlpha.100"
         backdropFilter="blur(8px)"
         _hover={{ borderColor: 'secondary.200' }}
       >
