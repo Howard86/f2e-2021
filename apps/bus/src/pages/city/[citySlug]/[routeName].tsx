@@ -120,7 +120,7 @@ const BusRoutePage = ({ route, forward, backward }: BusRoutePageProps) => {
           </HStack>
         </Flex>
         <Box flexGrow={1} overflowY="auto" />
-        <Tabs variant="solid-rounded">
+        <Tabs variant="solid-rounded" zIndex="sticky">
           <TabList bg="primary.600" p="4">
             <Heading as="h1" alignSelf="center">
               {route.RouteName.Zh_tw}
@@ -129,7 +129,7 @@ const BusRoutePage = ({ route, forward, backward }: BusRoutePageProps) => {
             <Tab>{route.DepartureStopNameZh}</Tab>
             <Tab ml="2">{route.DestinationStopNameZh}</Tab>
           </TabList>
-          <TabPanels bg="primary.800" h="200" overflowY="auto">
+          <TabPanels bg="primary.800" h="128" overflowY="auto">
             <TabPanel p="0">{renderRouteStops(forward)}</TabPanel>
             <TabPanel p="0">{renderRouteStops(backward)}</TabPanel>
           </TabPanels>
@@ -263,6 +263,10 @@ export const getStaticProps = async (
         ) || null,
     },
   };
+};
+
+BusRoutePage.layoutProps = {
+  showMap: true,
 };
 
 export default BusRoutePage;
