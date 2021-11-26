@@ -39,6 +39,12 @@
         "allow": ["warn", "error"]
       }
     ],
+    "no-restricted-syntax": [
+      2,
+      "ForInStatement",
+      "LabeledStatement",
+      "WithStatement"
+    ],
     "simple-import-sort/exports": 2,
     "simple-import-sort/imports": [
       2,
