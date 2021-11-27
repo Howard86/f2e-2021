@@ -62,6 +62,7 @@ interface BusRoutePageProps {
 enum ZoomLevel {
   Stop = 16,
   Stops = 15,
+  Marker = 13.5,
   City = 12,
 }
 
@@ -167,7 +168,7 @@ const BusRoutePage = ({
     }
 
     const handleAttachStops = async () => {
-      const { attachJSXMarker, addLayerAndSource } = await import(
+      const { createJSXMarker, addLayerAndSource } = await import(
         '@/services/mapbox'
       );
 
@@ -179,12 +180,9 @@ const BusRoutePage = ({
 
       mapContextRef.current.markers = [...forward.Stops, ...backward.Stops].map(
         (stop) =>
-          attachJSXMarker(
-            mapContextRef.current.map,
-            <Circle
-              borderWidth="1px"
-              size="20px"
-              borderColor="var(--chakra-colors-secondary-100)"
+          createJSXMarker(
+            <VStack
+              spacing={0}
               cursor="pointer"
               onClick={async () => {
                 const { getPosition } = await import('@/services/mapbox');
@@ -197,9 +195,23 @@ const BusRoutePage = ({
                 );
               }}
             >
-              {getTwoDigitString(stop.StopSequence)}
-            </Circle>,
+              <Circle
+                borderWidth="1px"
+                size="28px"
+                borderColor="var(--chakra-colors-secondary-200)"
+                bgColor="var(--chakra-colors-secondary-100)"
+                color="var(--chakra-colors-secondary-800)"
+              >
+                {getTwoDigitString(stop.StopSequence)}
+              </Circle>
+              <Box
+                h="12px"
+                borderLeftWidth="2px"
+                borderColor="var(--chakra-colors-secondary-200)"
+              />
+            </VStack>,
             [stop.StopPosition.PositionLon, stop.StopPosition.PositionLat],
+            { offset: [0, -12] },
           ),
       );
 
@@ -230,6 +242,32 @@ const BusRoutePage = ({
     router.isFallback,
     theme.colors.primary,
   ]);
+
+  useEffect(() => {
+    if (router.isFallback || !isLoaded || !mapContextRef.current.map) {
+      return;
+    }
+
+    const { map } = mapContextRef.current;
+
+    const handleZoom = () => {
+      for (const marker of mapContextRef.current.markers) {
+        marker.remove();
+      }
+
+      if (map.getZoom() >= ZoomLevel.Marker) {
+        for (const marker of mapContextRef.current.markers) {
+          marker.addTo(map);
+        }
+      }
+    };
+
+    map.on('zoomend', handleZoom);
+    // eslint-disable-next-line consistent-return
+    return () => {
+      map.off('zoomend', handleZoom);
+    };
+  }, [isLoaded, mapContextRef, router.isFallback]);
 
   if (router.isFallback) {
     return null;

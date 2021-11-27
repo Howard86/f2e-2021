@@ -31,15 +31,15 @@ export const initialize = (
   });
 };
 
-export const attachJSXMarker = (
-  map: mapboxgl.Map,
+export const createJSXMarker = (
   Element: JSX.Element,
   coordinates: mapboxgl.LngLatLike,
+  options?: mapboxgl.MarkerOptions,
 ) => {
   const node = document.createElement('div');
   render(Element, node);
 
-  return new mapboxgl.Marker(node).setLngLat(coordinates).addTo(map);
+  return new mapboxgl.Marker(node, options).setLngLat(coordinates);
 };
 
 export const addLayerAndSource = (

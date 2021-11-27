@@ -54,7 +54,9 @@ const Map = () => {
         lng: geoLocation.coords.longitude,
       };
 
-      const { attachJSXMarker } = await import('@/services/mapbox');
+      const { createJSXMarker: attachJSXMarker } = await import(
+        '@/services/mapbox'
+      );
 
       if (mapContextRef.current.map && mapContextRef.current.positionMarker) {
         flyToCurrent();
@@ -62,7 +64,6 @@ const Map = () => {
       }
 
       mapContextRef.current.positionMarker = attachJSXMarker(
-        mapContextRef.current.map,
         <Box
           id="current"
           h="40px"
@@ -74,6 +75,8 @@ const Map = () => {
         />,
         newPosition.center,
       );
+      mapContextRef.current.positionMarker.addTo(mapContextRef.current.map);
+      flyToCurrent();
     } catch (error) {
       const { code } = error as GeolocationPositionError;
       console.error(error);
