@@ -48,6 +48,7 @@ import { GeoJSONLineString, parse } from 'wellknown';
 import ExternalLink from '@/components/ExternalLink';
 import { useMap } from '@/components/MapContextProvider';
 import { getMiddleElement } from '@/utils/array';
+import { getTwoDigitString } from '@/utils/string';
 
 type Nullable<T> = T | null;
 
@@ -56,6 +57,12 @@ interface BusRoutePageProps {
   route: BusRouteDetail;
   forward: Nullable<RouteStop>;
   backward: Nullable<RouteStop>;
+}
+
+enum ZoomLevel {
+  Stop = 16,
+  Stops = 15,
+  City = 12,
 }
 
 const BusRoutePage = ({
@@ -78,8 +85,29 @@ const BusRoutePage = ({
   };
 
   const renderRouteStops = (routeStop: RouteStop | undefined) =>
-    routeStop?.Stops.map((stop, index) => (
-      <Flex key={stop.StopUID} align="center" justify="space-between" px="4">
+    routeStop?.Stops.map((stop) => (
+      <Flex
+        key={stop.StopUID}
+        align="center"
+        justify="space-between"
+        px="4"
+        cursor="pointer"
+        onClick={async () => {
+          if (!mapContextRef.current.map) {
+            return;
+          }
+
+          const { getPosition } = await import('@/services/mapbox');
+
+          mapContextRef.current.map.flyTo(
+            getPosition(
+              stop.StopPosition.PositionLat,
+              stop.StopPosition.PositionLon,
+              ZoomLevel.Stop,
+            ),
+          );
+        }}
+      >
         <Text>{stop.StopName.Zh_tw}</Text>
         <VStack spacing={0}>
           <Box h="20px" borderLeft="2px" borderColor="primary.200" />
@@ -91,7 +119,7 @@ const BusRoutePage = ({
             borderColor="primary.200"
             rounded="full"
           >
-            {index + 1}
+            {getTwoDigitString(stop.StopSequence)}
           </Circle>
           <Box h="20px" borderLeft="2px" borderColor="primary.200" />
         </VStack>
@@ -113,7 +141,7 @@ const BusRoutePage = ({
         getPosition(
           middleStop.StopPosition.PositionLat,
           middleStop.StopPosition.PositionLon,
-          8,
+          ZoomLevel.City,
         ),
       );
 
@@ -153,7 +181,24 @@ const BusRoutePage = ({
         (stop) =>
           attachJSXMarker(
             mapContextRef.current.map,
-            <Box>{stop.StopSequence}</Box>,
+            <Circle
+              borderWidth="1px"
+              size="20px"
+              borderColor="var(--chakra-colors-secondary-100)"
+              cursor="pointer"
+              onClick={async () => {
+                const { getPosition } = await import('@/services/mapbox');
+                mapContextRef.current.map.flyTo(
+                  getPosition(
+                    stop.StopPosition.PositionLat,
+                    stop.StopPosition.PositionLon,
+                    ZoomLevel.Stops,
+                  ),
+                );
+              }}
+            >
+              {getTwoDigitString(stop.StopSequence)}
+            </Circle>,
             [stop.StopPosition.PositionLon, stop.StopPosition.PositionLat],
           ),
       );
@@ -178,10 +223,10 @@ const BusRoutePage = ({
   }, [
     backward?.Stops,
     forward?.Stops,
+    route?.RouteUID,
     geoJson,
     isLoaded,
     mapContextRef,
-    route.RouteUID,
     router.isFallback,
     theme.colors.primary,
   ]);
