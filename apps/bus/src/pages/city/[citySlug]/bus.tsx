@@ -9,11 +9,13 @@ import {
   Input,
   LinkBox,
   LinkOverlay,
+  Select,
   Text,
 } from '@chakra-ui/react';
 import {
   BusRoute,
   CITIES,
+  CityMap,
   CitySlug,
   CitySlugMap,
   getBusRoutesByCity,
@@ -58,6 +60,10 @@ const BusPage = ({ citySlug, busRoutes }: BusPageProps) => {
   // TODO: add lodash.debounce
   const onSearch = (event: ChangeEvent<HTMLInputElement>) => {
     setSearchString(event.target.value);
+  };
+
+  const onSelectCity = (event: ChangeEvent<HTMLSelectElement>) => {
+    router.push(`/city/${event.target.value}/bus`);
   };
 
   const onArrowClick = () => {
@@ -119,19 +125,32 @@ const BusPage = ({ citySlug, busRoutes }: BusPageProps) => {
 
   return (
     <Flex pos="relative" flexDir="column" h="full" color="white">
-      <Flex p="4" bg="primary.800">
+      <Flex py="4" pl="2" pr="4" bg="primary.800">
         <IconButton
           aria-label="back to previous page"
           variant="ghost"
-          mr="4"
           fontSize="4xl"
           onClick={onArrowClick}
           icon={<BiChevronLeft />}
         />
+        <Select
+          defaultValue={citySlug}
+          maxW="110px"
+          onChange={onSelectCity}
+          roundedRight="none"
+        >
+          {CITIES.map((city) => (
+            <option key={CityMap[city]} value={CityMap[city]}>
+              {city}
+            </option>
+          ))}
+        </Select>
         <Input
           value={searchString}
           onChange={onSearch}
           placeholder="請輸入公車路線編號"
+          roundedLeft="none"
+          borderLeft="none"
         />
       </Flex>
       <Box flexGrow={1} overflowY="auto">
