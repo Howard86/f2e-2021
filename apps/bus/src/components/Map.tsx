@@ -150,7 +150,7 @@ const Map = () => {
         zIndex="docked"
       />
       <Box
-        pos="absolute"
+        pos="relative"
         top="0"
         bottom="0"
         left="0"

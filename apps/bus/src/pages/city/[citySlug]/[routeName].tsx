@@ -120,7 +120,7 @@ const BusRoutePage = ({
   };
 
   const onArrowClick = () => {
-    router.back();
+    router.push(`/city/${citySlug}/bus`);
   };
 
   const onHomeClick = () => {
@@ -195,7 +195,7 @@ const BusRoutePage = ({
 
       return (
         <Flex
-          key={stop.StopUID}
+          key={`${stop.StopUID}-${stop.StopSequence}`}
           align="center"
           justify="space-between"
           px="4"
@@ -430,12 +430,12 @@ const BusRoutePage = ({
           zIndex="sticky"
         >
           <TabList bg="primary.600" p="4">
-            <Heading as="h1" alignSelf="center">
+            <Heading as="h1" alignSelf="center" noOfLines={1}>
               {route.RouteName.Zh_tw}
             </Heading>
             <Box flexGrow={1} />
-            <Tab>{route.DepartureStopNameZh}</Tab>
-            <Tab ml="2">{route.DestinationStopNameZh}</Tab>
+            <Tab whiteSpace="nowrap">{route.DepartureStopNameZh}</Tab>
+            <Tab whiteSpace="nowrap">{route.DestinationStopNameZh}</Tab>
           </TabList>
           <TabPanels bg="primary.800" h="128" overflowY="auto">
             <TabPanel p="0">{renderRouteStops(forward)}</TabPanel>

@@ -105,13 +105,12 @@ const BusPage = ({ citySlug, busRoutes }: BusPageProps) => {
         bgColor="whiteAlpha.100"
         backdropFilter="blur(8px)"
         _hover={{ borderColor: 'secondary.200' }}
+        _active={{ borderColor: 'secondary.200' }}
       >
         <Heading fontSize="2xl" mb="4">
           <RouteLink
             as={LinkOverlay}
-            href={`/city/${citySlug}/${
-              busRoute.RouteName.En.toLowerCase() || busRoute.RouteName.Zh_tw
-            }`}
+            href={`/city/${citySlug}/${busRoute.RouteName.Zh_tw}`}
           >
             {busRoute.RouteName.Zh_tw}
           </RouteLink>
