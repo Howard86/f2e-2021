@@ -6,7 +6,6 @@ import {
   Circle,
   Drawer,
   DrawerBody,
-  DrawerCloseButton,
   DrawerContent,
   DrawerHeader,
   Flex,
@@ -100,6 +99,8 @@ const BusRoutePage = ({
   );
   const [selectedStopId, setSelectedStopId] = useState<EntityId>(INITIAL_ID);
   const { divRef, mapContextRef, isLoaded, setLoaded } = useMap();
+  // TODO: refactor with useReducer
+  const extendDisclosure = useDisclosure();
   const { isOpen, onClose, onOpen } = useDisclosure();
   const stopDisclosure = useDisclosure();
   const { data, selectedStop } = useGetBusEstimationQuery(
@@ -114,6 +115,11 @@ const BusRoutePage = ({
       }),
     },
   );
+
+  const onDrawerClose = () => {
+    stopDisclosure.onClose();
+    extendDisclosure.onOpen();
+  };
 
   const onSwitchTab = (index: number) => {
     setSelectedDirection(index);
@@ -209,6 +215,7 @@ const BusRoutePage = ({
 
             setSelectedStopId(stop.StopUID);
             stopDisclosure.onOpen();
+            extendDisclosure.onClose();
             mapContextRef.current.map.flyTo(
               getPosition(
                 stop.StopPosition.PositionLat,
@@ -423,13 +430,23 @@ const BusRoutePage = ({
           </HStack>
         </Flex>
         <Box flexGrow={1} overflowY="auto" />
+
         <Tabs
           index={selectedDirection}
           onChange={onSwitchTab}
           variant="solid-rounded"
           zIndex="sticky"
         >
-          <TabList bg="primary.600" p="4">
+          <TabList pos="relative" bg="primary.600" p="4">
+            <IconButton
+              pos="absolute"
+              top="0"
+              left="30%"
+              w="40%"
+              aria-label="extend to top"
+              h="4px"
+              onClick={extendDisclosure.onToggle}
+            />
             <Heading as="h1" alignSelf="center" noOfLines={1}>
               {route.RouteName.Zh_tw}
             </Heading>
@@ -437,7 +454,13 @@ const BusRoutePage = ({
             <Tab whiteSpace="nowrap">{route.DepartureStopNameZh}</Tab>
             <Tab whiteSpace="nowrap">{route.DestinationStopNameZh}</Tab>
           </TabList>
-          <TabPanels bg="primary.800" h="128" overflowY="auto">
+          <TabPanels
+            bg="primary.800"
+            h={extendDisclosure.isOpen ? 'calc(100vh - 144px)' : 128}
+            transition="ease-in-out"
+            transitionDuration="0.35s"
+            overflowX="hidden"
+          >
             <TabPanel p="0">{renderRouteStops(forward)}</TabPanel>
             <TabPanel p="0">{renderRouteStops(backward)}</TabPanel>
           </TabPanels>
@@ -517,7 +540,7 @@ const BusRoutePage = ({
       {selectedStop && (
         <Drawer
           isOpen={stopDisclosure.isOpen}
-          onClose={stopDisclosure.onClose}
+          onClose={onDrawerClose}
           size="lg"
           closeOnOverlayClick={false}
           placement="bottom"
@@ -543,7 +566,20 @@ const BusRoutePage = ({
             <DrawerHeader pb="0" zIndex="docked" noOfLines={1}>
               {selectedStop.StopName.Zh_tw}
             </DrawerHeader>
-            <DrawerCloseButton zIndex="docked" />
+            <IconButton
+              pos="absolute"
+              right="4"
+              top="5"
+              rounded="full"
+              size="xs"
+              color="primary.600"
+              bgColor="primary.50"
+              aria-label="close modal"
+              fontSize="xl"
+              zIndex="docked"
+              icon={<MdClose />}
+              onClick={onDrawerClose}
+            />
             <DrawerBody display="flex" flexDir="column" pt="0" zIndex="docked">
               <Text noOfLines={1} color="primary.200">
                 往
