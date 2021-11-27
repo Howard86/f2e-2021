@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import {
   Box,
@@ -43,6 +43,7 @@ import { IoHome } from 'react-icons/io5';
 import { MdClose } from 'react-icons/md';
 
 import ExternalLink from '@/components/ExternalLink';
+import { useMap } from '@/components/MapContextProvider';
 
 type Nullable<T> = T | null;
 
@@ -54,6 +55,7 @@ interface BusRoutePageProps {
 
 const BusRoutePage = ({ route, forward, backward }: BusRoutePageProps) => {
   const router = useRouter();
+  const { divRef, mapContextRef, isLoaded, setLoaded } = useMap();
   const { isOpen, onClose, onOpen } = useDisclosure();
 
   // debugger;
@@ -85,6 +87,62 @@ const BusRoutePage = ({ route, forward, backward }: BusRoutePageProps) => {
         </VStack>
       </Flex>
     ));
+
+  useEffect(() => {
+    if (router.isFallback || !forward?.Stops || !backward?.Stops) {
+      return;
+    }
+
+    const handleAttachStops = async () => {
+      const { attachJSXMarker } = await import('@/services/mapbox');
+
+      if (mapContextRef.current.markers.length > 0) {
+        for (const marker of mapContextRef.current.markers) {
+          marker.remove();
+        }
+      }
+
+      mapContextRef.current.markers = [...forward.Stops, ...backward.Stops].map(
+        (stop) =>
+          attachJSXMarker(
+            mapContextRef.current.map,
+            <Box>{stop.StopSequence}</Box>,
+            [stop.StopPosition.PositionLon, stop.StopPosition.PositionLat],
+          ),
+      );
+    };
+
+    if (isLoaded) {
+      handleAttachStops();
+      return;
+    }
+
+    const handleInitialise = async () => {
+      const { initialize, getPosition } = await import('@/services/mapbox');
+
+      mapContextRef.current.map = initialize(
+        divRef.current,
+        getPosition(
+          forward.Stops[0].StopPosition.PositionLat,
+          forward.Stops[0].StopPosition.PositionLon,
+          8,
+        ),
+      );
+
+      await handleAttachStops();
+      setLoaded();
+    };
+
+    handleInitialise();
+  }, [
+    backward?.Stops,
+    divRef,
+    forward?.Stops,
+    isLoaded,
+    mapContextRef,
+    router.isFallback,
+    setLoaded,
+  ]);
 
   if (router.isFallback) {
     return null;

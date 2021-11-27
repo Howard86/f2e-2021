@@ -3,9 +3,11 @@ import {
   MutableRefObject,
   ReactNode,
   useContext,
+  useMemo,
   useRef,
 } from 'react';
 
+import { useDisclosure } from '@chakra-ui/react';
 import type mapboxgl from 'mapbox-gl';
 
 interface MapContextState {
@@ -16,15 +18,21 @@ interface MapContextState {
   layerId: string;
 }
 
-const MapContext = createContext<MutableRefObject<MapContextState>>(
-  {} as MutableRefObject<MapContextState>,
-);
+interface MapContextValue {
+  divRef: MutableRefObject<HTMLDivElement>;
+  mapContextRef: MutableRefObject<MapContextState>;
+  isLoaded: boolean;
+  setLoaded: VoidFunction;
+}
+
+const MapContext = createContext<MapContextValue>({} as MapContextValue);
 
 interface MapContextProviderProps {
   children: ReactNode;
 }
 
 const MapContextProvider = ({ children }: MapContextProviderProps) => {
+  const divRef = useRef<HTMLDivElement>();
   const mapContextRef = useRef<MapContextState>({
     map: null,
     markers: [],
@@ -32,10 +40,14 @@ const MapContextProvider = ({ children }: MapContextProviderProps) => {
     positionMarker: null,
     layerId: '',
   });
+  const { onOpen, isOpen } = useDisclosure();
 
-  return (
-    <MapContext.Provider value={mapContextRef}>{children}</MapContext.Provider>
+  const context = useMemo(
+    () => ({ mapContextRef, isLoaded: isOpen, setLoaded: onOpen, divRef }),
+    [isOpen, onOpen],
   );
+
+  return <MapContext.Provider value={context}>{children}</MapContext.Provider>;
 };
 
 export const useMap = () => useContext(MapContext);

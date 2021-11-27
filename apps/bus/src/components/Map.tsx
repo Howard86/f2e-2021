@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 import { Box, IconButton } from '@chakra-ui/react';
 import type mapboxgl from 'mapbox-gl';
@@ -15,11 +15,8 @@ const DEFAULT_ZOOM = 15;
 
 const Map = () => {
   const toast = useAppToast();
-  const mapContextRef = useMap();
+  const { mapContextRef, divRef, isLoaded } = useMap();
   const currentPositionRef = useRef<{ lat: number; lng: number } | null>(null);
-  const divRef = useRef<HTMLDivElement>();
-
-  const [loaded, setLoaded] = useState(false);
 
   const onLocate = async () => {
     if (!window.navigator) {
@@ -57,13 +54,11 @@ const Map = () => {
         lng: geoLocation.coords.longitude,
       };
 
-      const { initialize, attachJSXMarker } = await import('@/services/mapbox');
+      const { attachJSXMarker } = await import('@/services/mapbox');
 
       if (mapContextRef.current.map && mapContextRef.current.positionMarker) {
         flyToCurrent();
         mapContextRef.current.positionMarker.remove();
-      } else {
-        mapContextRef.current.map = initialize(divRef.current, newPosition);
       }
 
       mapContextRef.current.positionMarker = attachJSXMarker(
@@ -72,15 +67,13 @@ const Map = () => {
           id="current"
           h="40px"
           w="40px"
-          bgImage="url(/icons/current.png)"
+          bgImage="url(/current.png)"
           pointer="cursor"
           onClick={flyToCurrent}
           zIndex="modal"
         />,
         newPosition.center,
       );
-
-      setLoaded(true);
     } catch (error) {
       const { code } = error as GeolocationPositionError;
       console.error(error);
@@ -108,7 +101,7 @@ const Map = () => {
   };
 
   useEffect(() => {
-    if (!loaded || !mapContextRef.current.map) {
+    if (!isLoaded || !mapContextRef.current.map) {
       return;
     }
 
@@ -134,7 +127,7 @@ const Map = () => {
       map.off('render', handleMapLoad);
       map.off('move', handleMapMove);
     };
-  }, [loaded, mapContextRef]);
+  }, [isLoaded, mapContextRef]);
 
   return (
     <>
@@ -171,7 +164,8 @@ const Map = () => {
       </Box>
       <IconButton
         pos="absolute"
-        bottom="4"
+        isLoading={!isLoaded}
+        bottom={isLoaded ? 12 : 4}
         right="4"
         fontSize="2xl"
         rounded="full"
