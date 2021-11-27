@@ -535,8 +535,9 @@ const BusRoutePage = ({
                 alt="background"
                 src={background}
                 placeholder="blur"
-                height={200}
+                layout="fill"
                 objectFit="cover"
+                objectPosition="bottom"
               />
             </Box>
             <DrawerHeader pb="0" zIndex="docked" noOfLines={1}>
@@ -583,11 +584,12 @@ const BusRoutePage = ({
                   下一站
                 </Button>
               </HStack>
-              <Box>
+              <Box pos="absolute" bottom="1" left="0" right="0">
                 <Image
                   src={bus}
                   placeholder="blur"
-                  width={150}
+                  width={200}
+                  height={60}
                   objectFit="contain"
                 />
               </Box>

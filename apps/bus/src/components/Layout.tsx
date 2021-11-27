@@ -14,10 +14,10 @@ export interface LayoutProps {
 
 const slidingAnimation = keyframes`
   from {
-    object-position: 10% 50%;
+    object-position: 0 50%;
   }
   to {
-    object-position: 90% 50%;
+    object-position: 100% 50%;
   }
 `;
 

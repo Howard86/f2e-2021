@@ -1,12 +1,53 @@
 import React from 'react';
 
-import { Box, Button, Center, Flex, Heading, VStack } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Center,
+  Heading,
+  keyframes,
+  VStack,
+} from '@chakra-ui/react';
 
 import bus from '@/bus.png';
 import LogoIcon from '@/components/icons/Logo';
 import Image from '@/components/Image';
 import RouteLink from '@/components/RouteLink';
+import human from '@/human.png';
 import station from '@/station.png';
+
+const busAnimation = keyframes`
+  0% {
+    left: -100%;
+  }
+  45% {
+    left: 32%;
+  }
+  65% {
+    left: 32%;
+  }
+  100% {
+    left: 150%;
+  }
+`;
+
+const humanAnimation = keyframes`
+  0% {
+    opacity: 1;
+  }
+  22.5% {
+    opacity: 1;
+  }
+  32.5% {
+    opacity: 0;
+  }
+  72.5% {
+    opacity: 0;
+  }
+  82.5% {
+    opacity: 1; 
+  }
+`;
 
 const HomePage = () => (
   <>
@@ -35,20 +76,25 @@ const HomePage = () => (
         </Button>
       </VStack>
     </Center>
-    <Flex
+    <Box pos="fixed" left="60%" bottom="5.5%" w="full">
+      <Image alt="station" src={station} placeholder="blur" />
+    </Box>
+    <Box pos="fixed" left="70%" bottom="4.8%" w="full">
+      <Image
+        alt="human"
+        src={human}
+        placeholder="blur"
+        animation={`${humanAnimation} 20s ease-in-out infinite`}
+      />
+    </Box>
+    <Box
       pos="fixed"
-      bottom="8"
+      bottom="4.5%"
       w="full"
-      align="flex-end"
-      justify="space-between"
+      animation={`${busAnimation} 10s ease-in-out infinite`}
     >
-      <Box pos="relative" maxW="40%" ml="4" mb="2">
-        <Image alt="bus" src={bus} placeholder="blur" />
-      </Box>
-      <Box pos="relative" maxW="40%">
-        <Image alt="station" src={station} placeholder="blur" />
-      </Box>
-    </Flex>
+      <Image alt="bus" src={bus} placeholder="blur" />
+    </Box>
   </>
 );
 
