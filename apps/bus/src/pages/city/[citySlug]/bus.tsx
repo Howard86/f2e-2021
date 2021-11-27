@@ -2,6 +2,7 @@ import React, { ChangeEvent, useMemo, useState } from 'react';
 
 import {
   Box,
+  Button,
   Center,
   Flex,
   Heading,
@@ -10,6 +11,7 @@ import {
   LinkBox,
   LinkOverlay,
   Select,
+  SimpleGrid,
   Text,
 } from '@chakra-ui/react';
 import {
@@ -27,6 +29,7 @@ import type {
 } from 'next';
 import { useRouter } from 'next/router';
 import { BiChevronLeft } from 'react-icons/bi';
+import { FiDelete } from 'react-icons/fi';
 
 import bus from '@/bus.png';
 import Image from '@/components/Image';
@@ -39,6 +42,28 @@ interface BusPageProps {
 }
 
 const DEFAULT_SEARCH_STRING = '';
+
+const BUTTON_TEXTS = [
+  '紅',
+  '藍',
+  '1',
+  '2',
+  '3',
+  '綠',
+  '棕',
+  '4',
+  '5',
+  '6',
+  '黃',
+  '小',
+  '7',
+  '8',
+  '9',
+  '幹線',
+  '市民',
+  '重設',
+  '0',
+] as const;
 
 const BusPage = ({ citySlug, busRoutes }: BusPageProps) => {
   const [searchString, setSearchString] = useState(DEFAULT_SEARCH_STRING);
@@ -56,6 +81,38 @@ const BusPage = ({ citySlug, busRoutes }: BusPageProps) => {
       busRoute.RouteName.Zh_tw.includes(searchString),
     );
   }, [busRoutes, hasNotSearched, searchString]);
+
+  const onClickArray = useMemo(
+    () =>
+      BUTTON_TEXTS.map((text) => {
+        switch (text) {
+          case '1':
+          case '2':
+          case '3':
+          case '4':
+          case '5':
+          case '6':
+          case '7':
+          case '8':
+          case '9':
+          case '0':
+            return () => setSearchString((existedText) => existedText + text);
+
+          case '重設':
+            return () => setSearchString(DEFAULT_SEARCH_STRING);
+
+          default:
+            return () => setSearchString(text);
+        }
+      }),
+    [],
+  );
+
+  const onDeleteText = () => {
+    setSearchString((existedText) =>
+      existedText.slice(0, existedText.length - 1),
+    );
+  };
 
   // TODO: add lodash.debounce
   const onSearch = (event: ChangeEvent<HTMLInputElement>) => {
@@ -155,8 +212,26 @@ const BusPage = ({ citySlug, busRoutes }: BusPageProps) => {
       <Box flexGrow={1} overflowY="auto">
         {renderContent()}
       </Box>
-      {/* TODO: add keyboard */}
-      <Box flexShrink={0} bg="primary.800" h="200px" />
+      <SimpleGrid
+        flexShrink={0}
+        bg="primary.800"
+        h="200px"
+        columns={5}
+        spacing={2}
+        p="2"
+      >
+        {BUTTON_TEXTS.map((text, index) => (
+          <Button variant="outline" key={text} onClick={onClickArray[index]}>
+            {text}
+          </Button>
+        ))}
+        <IconButton
+          variant="outline"
+          aria-label="delete one character"
+          onClick={onDeleteText}
+          icon={<FiDelete />}
+        />
+      </SimpleGrid>
     </Flex>
   );
 };
