@@ -176,6 +176,17 @@ export interface BusRouteDetail {
   VersionID: number;
 }
 
+export interface BusRouteShape {
+  RouteUID: string;
+  RouteID: string;
+  RouteName: NameType;
+  SubRouteName: Record<string, unknown>;
+  Geometry: string;
+  EncodedPolyline: string;
+  UpdateTime: string;
+  VersionID: number;
+}
+
 export const getBusRoutesByCity = (city: City, count = 30) =>
   apiGet<BusRoute[]>(`Bus/Route/City/${PTXCityMap[city]}`, {
     $top: count.toString(),
@@ -195,6 +206,17 @@ export const getBusRouteDetailByCityAndRouteName = async (
 ) => {
   const results = await apiGet<BusRouteDetail[]>(
     `Bus/Route/City/${PTXCityMap[city]}/${route}`,
+  );
+
+  return results[0];
+};
+
+export const getBusRouteShapeByCityAndRouteName = async (
+  route: string,
+  city: City,
+) => {
+  const results = await apiGet<BusRouteShape[]>(
+    `Bus/Shape/City/${PTXCityMap[city]}/${route}`,
   );
 
   return results[0];

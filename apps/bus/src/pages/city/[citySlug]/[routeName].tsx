@@ -19,6 +19,7 @@ import {
   Tabs,
   Text,
   useDisclosure,
+  useTheme,
   VStack,
 } from '@chakra-ui/react';
 import {
@@ -28,6 +29,7 @@ import {
   CitySlug,
   CitySlugMap,
   getBusRouteDetailByCityAndRouteName,
+  getBusRouteShapeByCityAndRouteName,
   getRouteStopsByCityAndRouteName,
   RouteStop,
 } from '@f2e/ptx';
@@ -41,24 +43,32 @@ import { BiChevronLeft } from 'react-icons/bi';
 import { BsInfoCircle } from 'react-icons/bs';
 import { IoHome } from 'react-icons/io5';
 import { MdClose } from 'react-icons/md';
+import { GeoJSONLineString, parse } from 'wellknown';
 
 import ExternalLink from '@/components/ExternalLink';
 import { useMap } from '@/components/MapContextProvider';
+import { getMiddleElement } from '@/utils/array';
 
 type Nullable<T> = T | null;
 
 interface BusRoutePageProps {
+  geoJson: GeoJSONLineString;
   route: BusRouteDetail;
   forward: Nullable<RouteStop>;
   backward: Nullable<RouteStop>;
 }
 
-const BusRoutePage = ({ route, forward, backward }: BusRoutePageProps) => {
+const BusRoutePage = ({
+  route,
+  forward,
+  backward,
+  geoJson,
+}: BusRoutePageProps) => {
+  const theme = useTheme();
   const router = useRouter();
   const { divRef, mapContextRef, isLoaded, setLoaded } = useMap();
   const { isOpen, onClose, onOpen } = useDisclosure();
 
-  // debugger;
   const onArrowClick = () => {
     router.back();
   };
@@ -89,12 +99,49 @@ const BusRoutePage = ({ route, forward, backward }: BusRoutePageProps) => {
     ));
 
   useEffect(() => {
-    if (router.isFallback || !forward?.Stops || !backward?.Stops) {
+    if (isLoaded || router.isFallback) {
+      return;
+    }
+
+    const handleInitialise = async () => {
+      const { initialize, getPosition } = await import('@/services/mapbox');
+
+      const middleStop = getMiddleElement(forward.Stops);
+
+      mapContextRef.current.map = initialize(
+        divRef.current,
+        getPosition(
+          middleStop.StopPosition.PositionLat,
+          middleStop.StopPosition.PositionLon,
+          8,
+        ),
+      );
+
+      await new Promise<void>((res) => {
+        mapContextRef.current.map.on('load', res);
+      });
+      setLoaded();
+    };
+
+    handleInitialise();
+  }, [
+    divRef,
+    forward?.Stops,
+    isLoaded,
+    mapContextRef,
+    router.isFallback,
+    setLoaded,
+  ]);
+
+  useEffect(() => {
+    if (!isLoaded || router.isFallback) {
       return;
     }
 
     const handleAttachStops = async () => {
-      const { attachJSXMarker } = await import('@/services/mapbox');
+      const { attachJSXMarker, addLayerAndSource } = await import(
+        '@/services/mapbox'
+      );
 
       if (mapContextRef.current.markers.length > 0) {
         for (const marker of mapContextRef.current.markers) {
@@ -110,38 +157,33 @@ const BusRoutePage = ({ route, forward, backward }: BusRoutePageProps) => {
             [stop.StopPosition.PositionLon, stop.StopPosition.PositionLat],
           ),
       );
-    };
 
-    if (isLoaded) {
-      handleAttachStops();
-      return;
-    }
+      if (mapContextRef.current.map.getLayer(mapContextRef.current.layerId)) {
+        mapContextRef.current.map.removeLayer(mapContextRef.current.layerId);
+      }
 
-    const handleInitialise = async () => {
-      const { initialize, getPosition } = await import('@/services/mapbox');
+      if (mapContextRef.current.map.getSource(mapContextRef.current.layerId)) {
+        mapContextRef.current.map.removeSource(mapContextRef.current.layerId);
+      }
 
-      mapContextRef.current.map = initialize(
-        divRef.current,
-        getPosition(
-          forward.Stops[0].StopPosition.PositionLat,
-          forward.Stops[0].StopPosition.PositionLon,
-          8,
-        ),
+      mapContextRef.current.layerId = addLayerAndSource(
+        mapContextRef.current.map,
+        route.RouteUID,
+        geoJson,
+        theme.colors.primary[200],
       );
-
-      await handleAttachStops();
-      setLoaded();
     };
 
-    handleInitialise();
+    handleAttachStops();
   }, [
     backward?.Stops,
-    divRef,
     forward?.Stops,
+    geoJson,
     isLoaded,
     mapContextRef,
+    route.RouteUID,
     router.isFallback,
-    setLoaded,
+    theme.colors.primary,
   ]);
 
   if (router.isFallback) {
@@ -303,6 +345,20 @@ export const getStaticProps = async (
     };
   }
 
+  const routeShape = await getBusRouteShapeByCityAndRouteName(
+    routeName,
+    CitySlugMap[citySlug],
+  );
+
+  if (!routeShape) {
+    return {
+      redirect: {
+        destination: `/city/${citySlug}`,
+        permanent: false,
+      },
+    };
+  }
+
   const routeStops = await getRouteStopsByCityAndRouteName(
     routeName,
     CitySlugMap[citySlug],
@@ -311,6 +367,7 @@ export const getStaticProps = async (
   return {
     props: {
       route,
+      geoJson: parse(routeShape.Geometry) as GeoJSONLineString,
       forward:
         routeStops.find(
           (routeStop) => routeStop.Direction === BusDirection.去程,

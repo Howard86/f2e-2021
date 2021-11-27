@@ -1,6 +1,6 @@
 import mapboxgl from 'mapbox-gl';
 import { render } from 'react-dom';
-import type { GeoJSONMultiLineString } from 'wellknown';
+import type { GeoJSONLineString } from 'wellknown';
 
 export type Coordinate = [number, number];
 
@@ -45,7 +45,7 @@ export const attachJSXMarker = (
 export const addLayerAndSource = (
   map: mapboxgl.Map,
   sourceName: string,
-  geoJson: GeoJSONMultiLineString,
+  geoJson: GeoJSONLineString,
   color: string,
 ) => {
   map.addSource(sourceName, {
@@ -69,11 +69,11 @@ export const addLayerAndSource = (
   });
 
   const bounds = new mapboxgl.LngLatBounds(
-    geoJson.coordinates[0][0] as Coordinate,
-    geoJson.coordinates[0][0] as Coordinate,
+    geoJson.coordinates[0] as Coordinate,
+    geoJson.coordinates[0] as Coordinate,
   );
 
-  for (const coordinate of geoJson.coordinates[0]) {
+  for (const coordinate of geoJson.coordinates) {
     bounds.extend(coordinate as Coordinate);
   }
 
