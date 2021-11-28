@@ -1,13 +1,37 @@
+import type { BusEstimation } from '@f2e/ptx';
+import { createEntityAdapter, EntityState } from '@reduxjs/toolkit';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import type { SuccessApiResponse } from 'next-api-handler';
 
-const ONE_HOUR = 60 * 60;
+import type { BusEstimationParam } from '@/pages/api/bus-estimation';
 
-// eslint-disable-next-line import/prefer-default-export
+const busEstimationAdapter = createEntityAdapter<BusEstimation>({
+  selectId: (busEstimation) => busEstimation.StopUID,
+});
+
 export const localApi = createApi({
   reducerPath: 'local',
-  keepUnusedDataFor: ONE_HOUR,
   baseQuery: fetchBaseQuery({
     baseUrl: '/api',
   }),
-  endpoints: (_builder) => ({}),
+  endpoints: (builder) => ({
+    getBusEstimation: builder.query<
+      EntityState<BusEstimation>,
+      BusEstimationParam
+    >({
+      query: (params) => ({
+        url: 'bus-estimation',
+        params,
+      }),
+      transformResponse: (res: SuccessApiResponse<BusEstimation[]>) =>
+        busEstimationAdapter.addMany(
+          busEstimationAdapter.getInitialState(),
+          res.data,
+        ),
+    }),
+  }),
 });
+
+export const busEstimationSelector = busEstimationAdapter.getSelectors();
+
+export const { useGetBusEstimationQuery } = localApi;

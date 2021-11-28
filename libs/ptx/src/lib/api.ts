@@ -32,7 +32,7 @@ export const apiGet = async <T>(
   params?: Partial<ApiParam>,
 ): Promise<T> => {
   const response = await fetch(
-    `${process.env.PTX_BASE_URL}/${url}?${new URLSearchParams({
+    `${process.env.PTX_BASE_URL}/${encodeURI(url)}?${new URLSearchParams({
       $format: 'JSON',
       ...params,
     }).toString()}`,
