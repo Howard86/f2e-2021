@@ -69,8 +69,11 @@ const useGetLocation = () => {
         />,
         newPosition.center,
       );
-      mapContextRef.current.positionMarker.addTo(mapContextRef.current.map);
-      flyToCurrent();
+
+      if (mapContextRef.current.map) {
+        mapContextRef.current.positionMarker.addTo(mapContextRef.current.map);
+        flyToCurrent();
+      }
     } catch (error) {
       const { code } = error as GeolocationPositionError;
       console.error(error);

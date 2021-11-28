@@ -3,14 +3,18 @@ import React, { useEffect } from 'react';
 import { Box, IconButton } from '@chakra-ui/react';
 import Head from 'next/head';
 import Image from 'next/image';
-import { IoLocate } from 'react-icons/io5';
+import { BiCurrentLocation } from 'react-icons/bi';
 
 import { useMap } from './MapContextProvider';
 
 import useGetLocation from '@/hooks/use-get-location';
 import background from '@/map.jpg';
 
-const Map = () => {
+interface MapProps {
+  hideLocate?: boolean;
+}
+
+const Map = ({ hideLocate }: MapProps) => {
   const { mapContextRef, divRef, isLoaded } = useMap();
   const { onLocate, currentPositionRef } = useGetLocation();
 
@@ -78,15 +82,15 @@ const Map = () => {
       </Box>
       <IconButton
         pos="absolute"
-        isLoading={!isLoaded}
-        bottom={isLoaded ? 12 : 4}
+        display={hideLocate ? 'none' : 'inline-flex'}
+        bottom="4"
         right="4"
         fontSize="2xl"
         rounded="full"
         shadow="lg"
         aria-label="定位"
         zIndex="docked"
-        icon={<IoLocate />}
+        icon={<BiCurrentLocation />}
         onClick={onLocate}
       />
     </>

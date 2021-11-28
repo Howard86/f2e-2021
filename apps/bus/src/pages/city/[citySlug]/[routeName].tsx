@@ -122,7 +122,7 @@ const BusRoutePage = ({
   };
 
   const onArrowClick = () => {
-    router.push(`/city/${citySlug}/bus`);
+    router.back();
   };
 
   const onHomeClick = () => {

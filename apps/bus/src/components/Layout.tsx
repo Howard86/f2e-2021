@@ -10,6 +10,7 @@ import Image from '@/components/Image';
 export interface LayoutProps {
   children: ReactNode;
   showMap?: boolean;
+  hideLocate?: boolean;
 }
 
 const slidingAnimation = keyframes`
@@ -24,7 +25,7 @@ const slidingAnimation = keyframes`
 export const MOBILE_MAP_BOTTOM = '200px';
 export const DESKTOP_MAP_LEFT = '400px';
 
-const Layout = ({ children, showMap }: LayoutProps) => (
+const Layout = ({ children, showMap, hideLocate }: LayoutProps) => (
   <Box h="full" bgGradient="var(--chakra-colors-gradient-bg)">
     <Box pos="fixed" w="full" h="full" overflow="hidden">
       <Image
@@ -38,13 +39,13 @@ const Layout = ({ children, showMap }: LayoutProps) => (
     </Box>
     <Box
       pos="absolute"
-      top={[72, 66]}
+      top={['72px', 66]}
       bottom={[MOBILE_MAP_BOTTOM, 0]}
       left={[0, DESKTOP_MAP_LEFT]}
       right="0"
       opacity={showMap ? 1 : 0}
     >
-      <Map />
+      <Map hideLocate={hideLocate} />
     </Box>
     {children}
   </Box>
