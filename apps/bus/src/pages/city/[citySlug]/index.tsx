@@ -36,6 +36,7 @@ import RouteKeyBoard from '@/components/RouteKeyBoard';
 import RouteLink from '@/components/RouteLink';
 import { DESKTOP_DISPLAY, MOBILE_DISPLAY } from '@/constants/style';
 import station from '@/station.png';
+import { addToLocalStorage } from '@/utils/local-storage';
 
 interface BusPageProps {
   citySlug: CitySlug;
@@ -67,6 +68,8 @@ const roadAnimation = keyframes`
   }
 `;
 
+export const CITY_STORAGE_KEY = 'selected-city';
+
 const BusPage = ({ citySlug, busRoutes }: BusPageProps) => {
   const [searchString, setSearchString] = useState(DEFAULT_SEARCH_STRING);
   const router = useRouter();
@@ -90,6 +93,7 @@ const BusPage = ({ citySlug, busRoutes }: BusPageProps) => {
   };
 
   const onSelectCity = (event: ChangeEvent<HTMLSelectElement>) => {
+    addToLocalStorage(CITY_STORAGE_KEY, event.target.value);
     router.push(`/city/${event.target.value}/bus`);
   };
 

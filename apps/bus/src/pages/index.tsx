@@ -79,10 +79,9 @@ const HomePage = () => {
         提供最即時的公車動態，讓您輕鬆掌握資訊，現在就開始規劃您的路線吧！
       </Heading>
       <Stack direction={['column', 'row']} spacing={[4, 8]}>
-        {/* TODO: add local storage helper */}
         <Button
           as={RouteLink}
-          href="/city/taipei/bus"
+          href="/city"
           leftIcon={<FaBusAlt />}
           variant="neon"
           size={size}
