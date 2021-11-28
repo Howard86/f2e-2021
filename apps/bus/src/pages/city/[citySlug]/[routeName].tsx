@@ -59,18 +59,16 @@ import {
   busEstimationSelector,
   useGetBusEstimationQuery,
 } from '@/services/local';
-import { getMiddleElement } from '@/utils/array';
+import { getLastElement, getMiddleElement } from '@/utils/array';
 import { getTwoDigitString } from '@/utils/string';
-
-type Nullable<T> = T | null;
 
 interface BusRoutePageProps {
   citySlug: CitySlug;
   routeName: string;
   geoJson: GeoJSONLineString;
   route: BusRouteDetail;
-  forward: Nullable<RouteStop>;
-  backward: Nullable<RouteStop>;
+  directions: BusDirection[];
+  routeStopEntity: RouteStopEntity;
 }
 
 enum ZoomLevel {
@@ -80,6 +78,8 @@ enum ZoomLevel {
   City = 12,
 }
 
+type RouteStopEntity = Record<BusDirection, RouteStop>;
+
 const INITIAL_ID = '';
 const STOP_LIST_MAX_HEIGHT = 'calc(100vh - 144px)';
 
@@ -87,9 +87,9 @@ const BusRoutePage = ({
   citySlug,
   routeName,
   route,
-  forward,
-  backward,
   geoJson,
+  directions,
+  routeStopEntity,
 }: BusRoutePageProps) => {
   const theme = useTheme();
   const router = useRouter();
@@ -132,56 +132,14 @@ const BusRoutePage = ({
     router.push('/');
   };
 
-  const onNextStopClick = async () => {
-    let nextStop =
-      selectedDirection === BusDirection.去程
-        ? forward.Stops[
-            forward.Stops.findIndex((stop) => stop.StopUID === selectedStopId) +
-              1
-          ]
-        : backward.Stops[
-            backward.Stops.findIndex(
-              (stop) => stop.StopUID === selectedStopId,
-            ) + 1
-          ];
+  const handleRouteStopClick = async (step: 1 | -1) => {
+    const currentStops = routeStopEntity[selectedDirection].Stops;
 
-    // could reach the end of the index
-    if (!nextStop && selectedDirection === BusDirection.去程) {
-      [nextStop] = backward.Stops;
+    const previousStop =
+      currentStops[
+        currentStops.findIndex((stop) => stop.StopUID === selectedStopId) + step
+      ];
 
-      setSelectedDirection(BusDirection.返程);
-    }
-
-    setSelectedStopId(nextStop.StopUID);
-
-    const { getPosition } = await import('@/services/mapbox');
-    mapContextRef.current.map.flyTo(
-      getPosition(
-        nextStop.StopPosition.PositionLat,
-        nextStop.StopPosition.PositionLon,
-        ZoomLevel.Stop,
-      ),
-    );
-  };
-
-  const onPreviousStopClick = async () => {
-    let previousStop =
-      selectedDirection === BusDirection.去程
-        ? forward.Stops[
-            forward.Stops.findIndex((stop) => stop.StopUID === selectedStopId) -
-              1
-          ]
-        : backward.Stops[
-            backward.Stops.findIndex(
-              (stop) => stop.StopUID === selectedStopId,
-            ) - 1
-          ];
-
-    // could reach the end of the index
-    if (!previousStop && selectedDirection === BusDirection.返程) {
-      previousStop = forward.Stops[forward.Stops.length - 1];
-      setSelectedDirection(BusDirection.去程);
-    }
     setSelectedStopId(previousStop.StopUID);
 
     const { getPosition } = await import('@/services/mapbox');
@@ -194,64 +152,13 @@ const BusRoutePage = ({
     );
   };
 
-  const renderRouteStops = (routeStop: RouteStop | undefined) =>
-    routeStop?.Stops.map((stop) => {
-      const busEstimation = data?.entities[stop.StopUID];
+  const onPreviousStopClick = async () => {
+    await handleRouteStopClick(-1);
+  };
 
-      return (
-        <Flex
-          key={`${stop.StopUID}-${stop.StopSequence}`}
-          align="center"
-          justify="space-between"
-          px="4"
-          cursor="pointer"
-          onClick={async () => {
-            if (!mapContextRef.current.map || !isLoaded) {
-              return;
-            }
-
-            const { getPosition } = await import('@/services/mapbox');
-
-            setSelectedStopId(stop.StopUID);
-            stopDisclosure.onOpen();
-            extendDisclosure.onClose();
-            mapContextRef.current.map.flyTo(
-              getPosition(
-                stop.StopPosition.PositionLat,
-                stop.StopPosition.PositionLon,
-                ZoomLevel.Stop,
-              ),
-            );
-          }}
-        >
-          <Text>
-            {/* TODO: add stop status util to better support different scenario */}
-            {busEstimation?.StopStatus === BusStopStatus.正常
-              ? `${
-                  busEstimation?.EstimateTime
-                    ? `${Math.floor(busEstimation?.EstimateTime / 60)}分`
-                    : '進站中'
-                }`
-              : '今日未營運'}{' '}
-            {stop.StopName.Zh_tw}
-          </Text>
-          <VStack spacing={0}>
-            <Box h="20px" borderLeft="2px" borderColor="primary.200" />
-            <Circle
-              size="20px"
-              fontSize="9px"
-              fontWeight="bold"
-              borderWidth="2px"
-              borderColor="primary.200"
-              rounded="full"
-            >
-              {getTwoDigitString(stop.StopSequence)}
-            </Circle>
-            <Box h="20px" borderLeft="2px" borderColor="primary.200" />
-          </VStack>
-        </Flex>
-      );
-    });
+  const onNextStopClick = async () => {
+    await handleRouteStopClick(1);
+  };
 
   useEffect(() => {
     if (isLoaded || router.isFallback) {
@@ -261,7 +168,9 @@ const BusRoutePage = ({
     const handleInitialise = async () => {
       const { initialize, getPosition } = await import('@/services/mapbox');
 
-      const middleStop = getMiddleElement(forward.Stops);
+      const middleStop = getMiddleElement(
+        routeStopEntity[selectedDirection].Stops,
+      );
 
       mapContextRef.current.map = initialize(
         divRef.current,
@@ -281,10 +190,11 @@ const BusRoutePage = ({
     handleInitialise();
   }, [
     divRef,
-    forward?.Stops,
     isLoaded,
     mapContextRef,
+    routeStopEntity,
     router.isFallback,
+    selectedDirection,
     setLoaded,
   ]);
 
@@ -304,41 +214,42 @@ const BusRoutePage = ({
         }
       }
 
-      mapContextRef.current.markers = [...forward.Stops, ...backward.Stops].map(
-        (stop) =>
-          createJSXMarker(
-            <VStack
-              spacing={0}
-              cursor="pointer"
-              onClick={async () => {
-                const { getPosition } = await import('@/services/mapbox');
-                mapContextRef.current.map.flyTo(
-                  getPosition(
-                    stop.StopPosition.PositionLat,
-                    stop.StopPosition.PositionLon,
-                    ZoomLevel.Stops,
-                  ),
-                );
-              }}
+      mapContextRef.current.markers = routeStopEntity[
+        selectedDirection
+      ].Stops.map((stop) =>
+        createJSXMarker(
+          <VStack
+            spacing={0}
+            cursor="pointer"
+            onClick={async () => {
+              const { getPosition } = await import('@/services/mapbox');
+              mapContextRef.current.map.flyTo(
+                getPosition(
+                  stop.StopPosition.PositionLat,
+                  stop.StopPosition.PositionLon,
+                  ZoomLevel.Stops,
+                ),
+              );
+            }}
+          >
+            <Circle
+              borderWidth="1px"
+              size="28px"
+              borderColor="var(--chakra-colors-secondary-200)"
+              bgColor="var(--chakra-colors-secondary-100)"
+              color="var(--chakra-colors-secondary-800)"
             >
-              <Circle
-                borderWidth="1px"
-                size="28px"
-                borderColor="var(--chakra-colors-secondary-200)"
-                bgColor="var(--chakra-colors-secondary-100)"
-                color="var(--chakra-colors-secondary-800)"
-              >
-                {getTwoDigitString(stop.StopSequence)}
-              </Circle>
-              <Box
-                h="12px"
-                borderLeftWidth="2px"
-                borderColor="var(--chakra-colors-secondary-200)"
-              />
-            </VStack>,
-            [stop.StopPosition.PositionLon, stop.StopPosition.PositionLat],
-            { offset: [0, -12] },
-          ),
+              {getTwoDigitString(stop.StopSequence)}
+            </Circle>
+            <Box
+              h="12px"
+              borderLeftWidth="2px"
+              borderColor="var(--chakra-colors-secondary-200)"
+            />
+          </VStack>,
+          [stop.StopPosition.PositionLon, stop.StopPosition.PositionLat],
+          { offset: [0, -12] },
+        ),
       );
 
       if (mapContextRef.current.map.getLayer(mapContextRef.current.layerId)) {
@@ -359,14 +270,14 @@ const BusRoutePage = ({
 
     handleAttachStops();
   }, [
-    backward?.Stops,
-    forward?.Stops,
     route?.RouteUID,
     geoJson,
     isLoaded,
     mapContextRef,
     router.isFallback,
     theme.colors.primary,
+    routeStopEntity,
+    selectedDirection,
   ]);
 
   useEffect(() => {
@@ -479,8 +390,77 @@ const BusRoutePage = ({
               transitionDuration="0.35s"
               overflowX="hidden"
             >
-              <TabPanel p="0">{renderRouteStops(forward)}</TabPanel>
-              <TabPanel p="0">{renderRouteStops(backward)}</TabPanel>
+              {directions.map((busDirection) => (
+                <TabPanel key={busDirection} p="0">
+                  {routeStopEntity[busDirection].Stops.map((stop) => (
+                    <Flex
+                      key={`${busDirection}-${stop.StopUID}-${stop.StopSequence}`}
+                      align="center"
+                      justify="space-between"
+                      px="4"
+                      cursor="pointer"
+                      onClick={async () => {
+                        if (!mapContextRef.current.map || !isLoaded) {
+                          return;
+                        }
+
+                        const { getPosition } = await import(
+                          '@/services/mapbox'
+                        );
+
+                        setSelectedStopId(stop.StopUID);
+                        stopDisclosure.onOpen();
+                        extendDisclosure.onClose();
+                        mapContextRef.current.map.flyTo(
+                          getPosition(
+                            stop.StopPosition.PositionLat,
+                            stop.StopPosition.PositionLon,
+                            ZoomLevel.Stop,
+                          ),
+                        );
+                      }}
+                    >
+                      <Text>
+                        {/* TODO: add stop status util to better support different scenario */}
+                        {data?.entities[stop.StopUID].StopStatus ===
+                        BusStopStatus.正常
+                          ? `${
+                              data?.entities[stop.StopUID].EstimateTime
+                                ? `${Math.floor(
+                                    data?.entities[stop.StopUID].EstimateTime /
+                                      60,
+                                  )}分`
+                                : '進站中'
+                            }`
+                          : '今日未營運'}{' '}
+                        {stop.StopName.Zh_tw}
+                      </Text>
+                      <VStack spacing={0}>
+                        <Box
+                          h="20px"
+                          borderLeft="2px"
+                          borderColor="primary.200"
+                        />
+                        <Circle
+                          size="20px"
+                          fontSize="9px"
+                          fontWeight="bold"
+                          borderWidth="2px"
+                          borderColor="primary.200"
+                          rounded="full"
+                        >
+                          {getTwoDigitString(stop.StopSequence)}
+                        </Circle>
+                        <Box
+                          h="20px"
+                          borderLeft="2px"
+                          borderColor="primary.200"
+                        />
+                      </VStack>
+                    </Flex>
+                  ))}
+                </TabPanel>
+              ))}
             </TabPanels>
           </Tabs>
         </Flex>
@@ -541,7 +521,10 @@ const BusRoutePage = ({
                   variant="ghost"
                   size="sm"
                   leftIcon={<BiChevronLeft />}
-                  isDisabled={forward.Stops[0].StopUID === selectedStopId}
+                  isDisabled={
+                    routeStopEntity[selectedDirection].Stops[0].StopUID ===
+                    selectedStopId
+                  }
                   onClick={onPreviousStopClick}
                 >
                   上一站
@@ -561,8 +544,8 @@ const BusRoutePage = ({
                   rightIcon={<BiChevronRight />}
                   size="sm"
                   isDisabled={
-                    backward.Stops[backward.Stops.length - 1].StopUID ===
-                    selectedStopId
+                    getLastElement(routeStopEntity[selectedDirection].Stops)
+                      .StopUID === selectedStopId
                   }
                   onClick={onNextStopClick}
                 >
@@ -640,20 +623,25 @@ export const getStaticProps = async (
     CitySlugMap[citySlug],
   );
 
+  const directions: BusDirection[] = [];
+  const routeStopEntity = {} as RouteStopEntity;
+
+  for (const routeStop of routeStops) {
+    // TODO: might have routes that have multiple directions
+    if (!directions.includes(routeStop.Direction)) {
+      directions.push(routeStop.Direction);
+      routeStopEntity[routeStop.Direction] = routeStop;
+    }
+  }
+
   return {
     props: {
       citySlug,
       routeName,
       route,
       geoJson: parse(routeShape.Geometry) as GeoJSONLineString,
-      forward:
-        routeStops.find(
-          (routeStop) => routeStop.Direction === BusDirection.去程,
-        ) || null,
-      backward:
-        routeStops.find(
-          (routeStop) => routeStop.Direction === BusDirection.返程,
-        ) || null,
+      directions,
+      routeStopEntity,
     },
   };
 };
