@@ -1,22 +1,12 @@
-import {
-  useBreakpointValue,
-  useToast,
-  UseToastOptions,
-} from '@chakra-ui/react';
+import { useToast, UseToastOptions } from '@chakra-ui/react';
 
 const DEFAULT_OPTIONS: UseToastOptions = {
   status: 'success',
   isClosable: true,
   variant: 'left-accent',
+  position: 'bottom',
 };
 
-const useAppToast = (options = DEFAULT_OPTIONS) => {
-  const position = useBreakpointValue<UseToastOptions['position']>({
-    base: 'bottom',
-    md: 'top-right',
-  });
-
-  return useToast({ position, ...options });
-};
+const useAppToast = (options = DEFAULT_OPTIONS) => useToast(options);
 
 export default useAppToast;
