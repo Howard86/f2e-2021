@@ -71,6 +71,7 @@ type RouteStopEntity = Record<BusDirection, RouteStop>;
 
 const INITIAL_ID = '';
 const STOP_LIST_MAX_HEIGHT = 'calc(100vh - 144px)';
+const THIRTY_SECONDS = 30_000;
 
 const BusRoutePage = ({
   citySlug,
@@ -106,6 +107,7 @@ const BusRoutePage = ({
           res.data &&
           busEstimationSelector.selectById(res.data, selectedStopId),
       }),
+      pollingInterval: THIRTY_SECONDS,
     },
   );
 
