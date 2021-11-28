@@ -177,3 +177,28 @@ export enum CitySlugMap {
   'penghucounty' = '澎湖縣',
   'lienchiangcounty' = '連江縣',
 }
+
+export enum CityCodeSlugMap {
+  'CHA' = 'changhuacounty',
+  'CYQ' = 'chiayicounty',
+  'HSQ' = 'hsinchucounty',
+  'HUA' = 'hualiencounty',
+  'ILA' = 'yilancounty',
+  'KIN' = 'kinmencounty',
+  'LIE' = 'lienchiangcounty',
+  'MIA' = 'miaolicounty',
+  'NAN' = 'nantoucounty',
+  'PEN' = 'penghucounty',
+  'PIF' = 'pingtungcounty',
+  'TTT' = 'taitungcounty',
+  'YUN' = 'yunlincounty',
+  'CYI' = 'chiayicounty',
+  'HSZ' = 'hsinchu',
+  'KEE' = 'keelung',
+  'KHH' = 'kaohsiung',
+  'NWT' = 'newtaipei',
+  'TAO' = 'taoyuan',
+  'TNN' = 'tainan',
+  'TPE' = 'taipei',
+  'TXG' = 'taichung',
+}

@@ -143,7 +143,7 @@ export interface Stop {
   StopSequence: number;
   StopPosition: StopPosition;
   StationID: string;
-  LocationCityCode: string;
+  LocationCityCode: LocationCityCode;
 }
 
 export interface StopPosition {
@@ -188,6 +188,52 @@ export interface BusRouteShape {
   VersionID: number;
 }
 
+export interface BusStation {
+  StationUID: string;
+  StationID: string;
+  StationName: NameType;
+  StationPosition: StopPosition;
+  StationAddress: string;
+  Stops: BusStationStop[];
+  LocationCityCode: LocationCityCode;
+  Bearing: string;
+  UpdateTime: string;
+  VersionID: number;
+}
+
+export interface BusStationStop {
+  StopUID: string;
+  StopID: string;
+  StopName: NameType;
+  RouteUID: string;
+  RouteID: string;
+  RouteName: NameType;
+}
+
+type LocationCityCode =
+  | 'CHA'
+  | 'CYQ'
+  | 'HSQ'
+  | 'HUA'
+  | 'ILA'
+  | 'KIN'
+  | 'LIE'
+  | 'MIA'
+  | 'NAN'
+  | 'PEN'
+  | 'PIF'
+  | 'TTT'
+  | 'YUN'
+  | 'CYI'
+  | 'HSZ'
+  | 'KEE'
+  | 'KHH'
+  | 'NWT'
+  | 'TAO'
+  | 'TNN'
+  | 'TPE'
+  | 'TXG';
+
 export const getBusRoutesByCity = (city: City, count = 30) =>
   apiGet<BusRoute[]>(`Bus/Route/City/${PTXCityMap[city]}`, {
     $top: count.toString(),
@@ -222,3 +268,14 @@ export const getBusRouteShapeByCityAndRouteName = async (
 
   return results[0];
 };
+
+export const getNearbyBusStations = (
+  lat: number,
+  lng: number,
+  radius = 1000,
+  count = 100,
+) =>
+  apiGet<BusStation[]>(`Bus/Station/NearBy`, {
+    $spatialFilter: `nearby(${lat},${lng},${radius})`,
+    $top: count.toString(),
+  });
