@@ -44,6 +44,7 @@ import type {
   GetStaticPropsResult,
 } from 'next';
 import { useRouter } from 'next/router';
+import NextHeadSeo from 'next-head-seo';
 import { BiChevronLeft, BiChevronRight } from 'react-icons/bi';
 import { BsInfoCircle } from 'react-icons/bs';
 import { IoHome } from 'react-icons/io5';
@@ -318,6 +319,7 @@ const BusRoutePage = ({
 
   return (
     <>
+      <NextHeadSeo title={`Iro Bus | ${routeName}-${CitySlugMap[citySlug]}`} />
       <Flex pos="relative" flexDir="column" h="full" color="white">
         <Flex p={4} bg="primary.800" justify="space-between" align="center">
           <IconButton

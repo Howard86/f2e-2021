@@ -26,6 +26,7 @@ import type {
   GetStaticPropsResult,
 } from 'next';
 import { useRouter } from 'next/router';
+import NextHeadSeo from 'next-head-seo';
 import { BiChevronLeft } from 'react-icons/bi';
 
 import bus from '@/bus.png';
@@ -153,103 +154,106 @@ const BusPage = ({ citySlug, busRoutes }: BusPageProps) => {
   };
 
   return (
-    <Flex pos="relative" flexDir="column" h="full" color="white">
-      <Flex p="4" bg="primary.800" align="center" justify="space-between">
-        <NavBarItems display={DESKTOP_DISPLAY} citySlug={citySlug} />
-        <IconButton
-          display={MOBILE_DISPLAY}
-          aria-label="back to previous page"
-          variant="ghost"
-          fontSize="4xl"
-          onClick={onArrowClick}
-          icon={<BiChevronLeft />}
-        />
-        <BusSearchInput
-          display={MOBILE_DISPLAY}
-          citySlug={citySlug}
-          onSelectCity={onSelectCity}
-          searchString={searchString}
-          onSearch={onSearch}
-        />
-      </Flex>
-      <Flex
-        flexDir={['column', 'row-reverse']}
-        flexGrow={1}
-        overflowY="auto"
-        maxW="100vw"
-      >
+    <>
+      <NextHeadSeo title={`Iro Bus | ${CitySlugMap[citySlug]}`} />
+      <Flex pos="relative" flexDir="column" h="full" color="white">
+        <Flex p="4" bg="primary.800" align="center" justify="space-between">
+          <NavBarItems display={DESKTOP_DISPLAY} citySlug={citySlug} />
+          <IconButton
+            display={MOBILE_DISPLAY}
+            aria-label="back to previous page"
+            variant="ghost"
+            fontSize="4xl"
+            onClick={onArrowClick}
+            icon={<BiChevronLeft />}
+          />
+          <BusSearchInput
+            display={MOBILE_DISPLAY}
+            citySlug={citySlug}
+            onSelectCity={onSelectCity}
+            searchString={searchString}
+            onSearch={onSearch}
+          />
+        </Flex>
         <Flex
+          flexDir={['column', 'row-reverse']}
           flexGrow={1}
-          flexDir="column"
-          mx={[0, 12]}
-          mt={[0, 16]}
-          mb={[0, 4]}
-          rounded={['none', '3xl']}
-          borderColor="secondary.900"
-          borderWidth={[0, '12px']}
           overflowY="auto"
+          maxW="100vw"
         >
-          <Flex display={['none', 'flex']} p="4" bg="primary.700">
-            <BusSearchInput
-              citySlug={citySlug}
-              onSelectCity={onSelectCity}
-              searchString={searchString}
-              onSearch={onSearch}
-            />
-          </Flex>
-          <Box flexGrow={1} overflowY="auto">
-            {renderContent()}
-          </Box>
-        </Flex>
-        <Flex flexDir="column" flexShrink={0}>
-          <Box flexGrow={4} />
-          <Box
-            pos="relative"
+          <Flex
+            flexGrow={1}
+            flexDir="column"
             mx={[0, 12]}
-            p={[0, 4]}
-            bg="primary.800"
-            borderTopRadius="3xl"
-            shadow="xl"
+            mt={[0, 16]}
+            mb={[0, 4]}
+            rounded={['none', '3xl']}
+            borderColor="secondary.900"
+            borderWidth={[0, '12px']}
+            overflowY="auto"
           >
-            <Box
-              display={DESKTOP_DISPLAY}
-              pos="absolute"
-              left="0"
-              right="0"
-              top="-12"
-            >
-              <Square
-                w="120px"
-                bg="secondary.800"
-                p="4"
-                mx="auto"
-                fontWeight="bold"
-                roundedTop="2xl"
-                zIndex="docked"
-                border="2px"
-                borderColor="secondary.400"
-              >
-                快速搜尋
-              </Square>
+            <Flex display={['none', 'flex']} p="4" bg="primary.700">
+              <BusSearchInput
+                citySlug={citySlug}
+                onSelectCity={onSelectCity}
+                searchString={searchString}
+                onSearch={onSearch}
+              />
+            </Flex>
+            <Box flexGrow={1} overflowY="auto">
+              {renderContent()}
             </Box>
-            <RouteKeyBoard setSearchString={setSearchString} />
-          </Box>
-          <Box flexGrow={1} />
-          <Box pos="relative" ml="16" p="8" display={DESKTOP_DISPLAY}>
-            <Image src={bus} animation={`${busAnimation} 3s ease infinite`} />
-            <Circle
-              pos="absolute"
-              h="1"
-              w="20"
-              bgGradient="linear(to-r, #172E5E 0, whiteAlpha.600 50%, #172E5E)"
-              zIndex=""
-              bottom="6"
-              animation={`${roadAnimation} 6s ease-out infinite`}
-            />
-          </Box>
+          </Flex>
+          <Flex flexDir="column" flexShrink={0}>
+            <Box flexGrow={4} />
+            <Box
+              pos="relative"
+              mx={[0, 12]}
+              p={[0, 4]}
+              bg="primary.800"
+              borderTopRadius="3xl"
+              shadow="xl"
+            >
+              <Box
+                display={DESKTOP_DISPLAY}
+                pos="absolute"
+                left="0"
+                right="0"
+                top="-12"
+              >
+                <Square
+                  w="120px"
+                  bg="secondary.800"
+                  p="4"
+                  mx="auto"
+                  fontWeight="bold"
+                  roundedTop="2xl"
+                  zIndex="docked"
+                  border="2px"
+                  borderColor="secondary.400"
+                >
+                  快速搜尋
+                </Square>
+              </Box>
+              <RouteKeyBoard setSearchString={setSearchString} />
+            </Box>
+            <Box flexGrow={1} />
+            <Box pos="relative" ml="16" p="8" display={DESKTOP_DISPLAY}>
+              <Image src={bus} animation={`${busAnimation} 3s ease infinite`} />
+              <Circle
+                pos="absolute"
+                h="1"
+                w="20"
+                bgGradient="linear(to-r, #172E5E 0, whiteAlpha.600 50%, #172E5E)"
+                zIndex=""
+                bottom="6"
+                animation={`${roadAnimation} 6s ease-out infinite`}
+              />
+            </Box>
+          </Flex>
         </Flex>
       </Flex>
-    </Flex>
+    </>
   );
 };
 
