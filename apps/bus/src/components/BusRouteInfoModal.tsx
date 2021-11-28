@@ -21,6 +21,8 @@ import { MdClose } from 'react-icons/md';
 
 import ExternalLink from './ExternalLink';
 
+import { getBusRouteDestinations } from '@/utils/bus';
+
 interface BusRouteInfoModalProps extends Omit<ModalProps, 'children'> {
   route: BusRouteDetail;
 }
@@ -59,7 +61,7 @@ const BusRouteInfoModal = ({
       />
       <ModalBody textAlign="center" p="0" bg="gradient.bg">
         <Heading p="4" fontSize="lg">
-          Start:{route.DepartureStopNameZh}-{route.DestinationStopNameZh}
+          {getBusRouteDestinations(route)}
         </Heading>
         <Tabs isFitted>
           <TabList>

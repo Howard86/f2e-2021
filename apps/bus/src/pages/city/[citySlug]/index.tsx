@@ -36,6 +36,7 @@ import RouteKeyBoard from '@/components/RouteKeyBoard';
 import RouteLink from '@/components/RouteLink';
 import { DESKTOP_DISPLAY, MOBILE_DISPLAY } from '@/constants/style';
 import station from '@/station.png';
+import { getBusRouteDestinations } from '@/utils/bus';
 import { addToLocalStorage } from '@/utils/local-storage';
 
 interface BusPageProps {
@@ -146,9 +147,7 @@ const BusPage = ({ citySlug, busRoutes }: BusPageProps) => {
             {busRoute.RouteName.Zh_tw}
           </RouteLink>
         </Heading>
-        <Text>
-          {busRoute.DepartureStopNameZh}-{busRoute.DestinationStopNameZh}
-        </Text>
+        <Text>{getBusRouteDestinations(busRoute)}</Text>
       </LinkBox>
     ));
   };

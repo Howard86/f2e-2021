@@ -17,7 +17,9 @@ import {
   TabPanel,
   TabPanels,
   Tabs,
+  TabsProps,
   Text,
+  useBreakpointValue,
   useDisclosure,
   useTheme,
   VStack,
@@ -93,6 +95,10 @@ const BusRoutePage = ({
 }: BusRoutePageProps) => {
   const theme = useTheme();
   const router = useRouter();
+  const tabsProps = useBreakpointValue<Omit<TabsProps, 'children'>>({
+    base: { variant: 'solid-rounded' },
+    md: { isFitted: true, variant: 'line' },
+  });
   const [selectedDirection, setSelectedDirection] = useState<BusDirection>(
     BusDirection.去程,
   );
@@ -115,6 +121,10 @@ const BusRoutePage = ({
     },
   );
 
+  // as bus direction might only be 迴圈
+  const selectedBusRoute =
+    routeStopEntity?.[selectedDirection] || routeStopEntity?.[directions[0]];
+
   const onDrawerClose = () => {
     stopDisclosure.onClose();
     extendDisclosure.onOpen();
@@ -133,7 +143,7 @@ const BusRoutePage = ({
   };
 
   const handleRouteStopClick = async (step: 1 | -1) => {
-    const currentStops = routeStopEntity[selectedDirection].Stops;
+    const currentStops = selectedBusRoute.Stops;
 
     const previousStop =
       currentStops[
@@ -168,9 +178,7 @@ const BusRoutePage = ({
     const handleInitialise = async () => {
       const { initialize, getPosition } = await import('@/services/mapbox');
 
-      const middleStop = getMiddleElement(
-        routeStopEntity[selectedDirection].Stops,
-      );
+      const middleStop = getMiddleElement(selectedBusRoute.Stops);
 
       mapContextRef.current.map = initialize(
         divRef.current,
@@ -192,9 +200,8 @@ const BusRoutePage = ({
     divRef,
     isLoaded,
     mapContextRef,
-    routeStopEntity,
     router.isFallback,
-    selectedDirection,
+    selectedBusRoute?.Stops,
     setLoaded,
   ]);
 
@@ -214,9 +221,7 @@ const BusRoutePage = ({
         }
       }
 
-      mapContextRef.current.markers = routeStopEntity[
-        selectedDirection
-      ].Stops.map((stop) =>
+      mapContextRef.current.markers = selectedBusRoute.Stops.map((stop) =>
         createJSXMarker(
           <VStack
             spacing={0}
@@ -276,8 +281,7 @@ const BusRoutePage = ({
     mapContextRef,
     router.isFallback,
     theme.colors.primary,
-    routeStopEntity,
-    selectedDirection,
+    selectedBusRoute?.Stops,
   ]);
 
   useEffect(() => {
@@ -352,11 +356,19 @@ const BusRoutePage = ({
             w={['auto', DESKTOP_MAP_LEFT]}
             index={selectedDirection}
             onChange={onSwitchTab}
-            variant="solid-rounded"
             zIndex="sticky"
-            isFitted
+            {...tabsProps}
           >
-            <TabList pos="relative" bg="primary.600" p="4">
+            <TabList
+              sx={{
+                pos: 'relative',
+                p: 4,
+                bg: 'primary.600',
+                button: {
+                  whiteSpace: 'noWrap',
+                },
+              }}
+            >
               <IconButton
                 display={MOBILE_DISPLAY}
                 pos="absolute"
@@ -376,8 +388,16 @@ const BusRoutePage = ({
                 {route.RouteName.Zh_tw}
               </Heading>
               <Box display={MOBILE_DISPLAY} flexGrow={1} />
-              <Tab whiteSpace="nowrap">{route.DepartureStopNameZh}</Tab>
-              <Tab whiteSpace="nowrap">{route.DestinationStopNameZh}</Tab>
+              {directions.length > 1 ? (
+                <>
+                  <Tab>{route.DestinationStopNameZh}</Tab>
+                  <Tab>{route.DepartureStopNameZh}</Tab>
+                </>
+              ) : (
+                <Tab>
+                  {routeStopEntity[directions[0]].Stops[0].StopName.Zh_tw}
+                </Tab>
+              )}
             </TabList>
             <TabPanels
               bg="secondary.900"
@@ -522,8 +542,7 @@ const BusRoutePage = ({
                   size="sm"
                   leftIcon={<BiChevronLeft />}
                   isDisabled={
-                    routeStopEntity[selectedDirection].Stops[0].StopUID ===
-                    selectedStopId
+                    selectedBusRoute.Stops[0].StopUID === selectedStopId
                   }
                   onClick={onPreviousStopClick}
                 >
@@ -544,8 +563,8 @@ const BusRoutePage = ({
                   rightIcon={<BiChevronRight />}
                   size="sm"
                   isDisabled={
-                    getLastElement(routeStopEntity[selectedDirection].Stops)
-                      .StopUID === selectedStopId
+                    getLastElement(selectedBusRoute.Stops).StopUID ===
+                    selectedStopId
                   }
                   onClick={onNextStopClick}
                 >
