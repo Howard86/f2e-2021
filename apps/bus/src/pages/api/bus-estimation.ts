@@ -1,5 +1,5 @@
 import {
-  BusEstimation,
+  BusEstimationInfo,
   CITIES,
   CitySlug,
   CitySlugMap,
@@ -19,7 +19,7 @@ export interface BusEstimationParam {
   city: CitySlug;
 }
 
-router.get<BusEstimation[]>(
+router.get<BusEstimationInfo[]>(
   (req: NextApiRequestWithQuery<Partial<BusEstimationParam>>) => {
     if (!req.query.city || !req.query.route) {
       throw new BadRequestException(

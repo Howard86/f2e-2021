@@ -1,8 +1,8 @@
-import { BusEstimation, BusRoute, BusStopStatus } from '@f2e/ptx';
+import { BusEstimationInfo, BusRouteInfo, BusStopStatus } from '@f2e/ptx';
 
 import { getMinute } from './string';
 
-export const getBusRouteDestinations = (busRoute: BusRoute): string => {
+export const getBusRouteDestinations = (busRoute: BusRouteInfo): string => {
   if (!busRoute.DepartureStopNameZh) {
     return busRoute.DestinationStopNameZh;
   }
@@ -24,7 +24,7 @@ export const getSubRouteTime = (
 ): string => (firstTime && lastTime ? `${firstTime}-${lastTime}` : '無標註');
 
 export const getBusEstimationStatus = (
-  busEstimation?: BusEstimation,
+  busEstimation?: BusEstimationInfo,
 ): string => {
   if (!busEstimation) {
     return '未知';

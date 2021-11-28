@@ -1,4 +1,4 @@
-import { BusStation, getNearbyBusStations } from '@f2e/ptx';
+import { BusStationInfo, getNearbyBusStations } from '@f2e/ptx';
 import {
   BadRequestException,
   NextApiRequestWithQuery,
@@ -12,7 +12,7 @@ export interface StationQueryParam {
 
 const router = new RouterBuilder();
 
-router.get<BusStation[]>(
+router.get<BusStationInfo[]>(
   async (req: NextApiRequestWithQuery<Partial<StationQueryParam>>) => {
     const latitude = Number.parseFloat(req.query.lat);
     const longitude = Number.parseFloat(req.query.lng);

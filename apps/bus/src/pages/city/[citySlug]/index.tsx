@@ -14,7 +14,7 @@ import {
   Text,
 } from '@chakra-ui/react';
 import {
-  BusRoute,
+  BusRouteInfo,
   CITIES,
   CitySlug,
   CitySlugMap,
@@ -42,7 +42,7 @@ import { addToLocalStorage } from '@/utils/local-storage';
 
 interface BusPageProps {
   citySlug: CitySlug;
-  busRoutes: BusRoute[];
+  busRoutes: BusRouteInfo[];
 }
 
 const DEFAULT_SEARCH_STRING = '';
@@ -273,8 +273,7 @@ export const getStaticProps = async (
     };
   }
 
-  // TODO: add $select to use less fields
-  const busRoutes = await getBusRoutesByCity(CitySlugMap[citySlug], 9999);
+  const busRoutes = await getBusRoutesByCity(CitySlugMap[citySlug], 1000);
 
   return {
     props: {

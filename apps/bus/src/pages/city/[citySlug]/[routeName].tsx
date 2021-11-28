@@ -22,14 +22,14 @@ import {
 } from '@chakra-ui/react';
 import {
   BusDirection,
-  BusRouteDetail,
+  BusRouteDetailInfo,
   CITIES,
   CitySlug,
   CitySlugMap,
   getBusRouteDetailByCityAndRouteName,
   getBusRouteShapeByCityAndRouteName,
   getRouteStopsByCityAndRouteName,
-  RouteStop,
+  RouteStopInfo,
 } from '@f2e/ptx';
 import type { EntityId } from '@reduxjs/toolkit';
 import type {
@@ -62,12 +62,12 @@ interface BusRoutePageProps {
   citySlug: CitySlug;
   routeName: string;
   geoJson: GeoJSONLineString;
-  route: BusRouteDetail;
+  route: BusRouteDetailInfo;
   directions: BusDirection[];
   routeStopEntity: RouteStopEntity;
 }
 
-type RouteStopEntity = Record<BusDirection, RouteStop>;
+type RouteStopEntity = Record<BusDirection, RouteStopInfo>;
 
 const INITIAL_ID = '';
 const STOP_LIST_MAX_HEIGHT = 'calc(100vh - 144px)';
@@ -97,13 +97,13 @@ const BusRoutePage = ({
   const extendDisclosure = useDisclosure();
   const { isOpen, onClose, onOpen } = useDisclosure();
   const stopDisclosure = useDisclosure();
-  const { data, selectedStop } = useGetBusEstimationQuery(
+  const { data, selectedBusEstimation } = useGetBusEstimationQuery(
     { city: citySlug, route: routeName },
     {
       skip: router.isFallback,
       selectFromResult: (res) => ({
         ...res,
-        selectedStop:
+        selectedBusEstimation:
           res.data &&
           busEstimationSelector.selectById(res.data, selectedStopId),
       }),
@@ -296,7 +296,7 @@ const BusRoutePage = ({
             spacing={[1, 4]}
             zIndex="overlay"
             right={[0, 4]}
-            bottom={[0, 106]}
+            bottom={[0, '72px']}
           >
             <IconButton
               aria-label="show more detail"
@@ -455,12 +455,12 @@ const BusRoutePage = ({
         </Flex>
       </Flex>
       <BusRouteInfoModal isOpen={isOpen} onClose={onClose} route={route} />
-      {selectedStop && (
+      {selectedBusEstimation && (
         <BusStopDrawer
           selectedStopId={selectedStopId}
           setSelectedStopId={setSelectedStopId}
           route={route}
-          selectedStop={selectedStop}
+          busEstimation={selectedBusEstimation}
           selectedBusRoute={selectedBusRoute}
           onClose={onDrawerClose}
           isOpen={stopDisclosure.isOpen}

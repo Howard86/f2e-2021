@@ -10,14 +10,14 @@ import {
   DrawerProps,
   HStack,
   IconButton,
+  Tag,
   Text,
 } from '@chakra-ui/react';
 import {
   BusDirection,
-  BusEstimation,
-  BusRouteDetail,
-  BusStopStatus,
-  RouteStop,
+  BusEstimationInfo,
+  BusRouteDetailInfo,
+  RouteStopInfo,
 } from '@f2e/ptx';
 import { EntityId } from '@reduxjs/toolkit';
 import { BiChevronLeft, BiChevronRight } from 'react-icons/bi';
@@ -29,13 +29,14 @@ import background from '@/background-small.png';
 import bus from '@/bus.png';
 import { useMap } from '@/components/MapContextProvider';
 import { getLastElement } from '@/utils/array';
+import { getBusEstimationStatus } from '@/utils/bus';
 
 interface BusStopDrawerProps extends Omit<DrawerProps, 'children'> {
   selectedStopId: EntityId;
-  route: BusRouteDetail;
+  route: BusRouteDetailInfo;
   setSelectedStopId: Dispatch<SetStateAction<EntityId>>;
-  selectedStop: BusEstimation;
-  selectedBusRoute: RouteStop;
+  busEstimation: BusEstimationInfo;
+  selectedBusRoute: RouteStopInfo;
 }
 
 export enum ZoomLevel {
@@ -50,7 +51,7 @@ const BusStopDrawer = ({
   route,
   selectedStopId,
   setSelectedStopId,
-  selectedStop,
+  busEstimation,
   selectedBusRoute,
   ...props
 }: BusStopDrawerProps) => {
@@ -104,7 +105,7 @@ const BusStopDrawer = ({
           />
         </Box>
         <DrawerHeader pb="0" zIndex="docked" noOfLines={1}>
-          {selectedStop.StopName.Zh_tw}
+          {busEstimation.StopName.Zh_tw}
         </DrawerHeader>
         <IconButton
           pos="absolute"
@@ -123,7 +124,7 @@ const BusStopDrawer = ({
         <DrawerBody display="flex" flexDir="column" pt="0" zIndex="docked">
           <Text noOfLines={1} color="primary.200">
             往
-            {selectedStop.Direction === BusDirection.去程
+            {busEstimation.Direction === BusDirection.去程
               ? route.DestinationStopNameZh
               : route.DepartureStopNameZh}
           </Text>
@@ -137,16 +138,9 @@ const BusStopDrawer = ({
             >
               上一站
             </Button>
-            <Text minW="40px">
-              {/* TODO: add stop status util to better support different scenario */}
-              {selectedStop?.StopStatus === BusStopStatus.正常
-                ? `${
-                    selectedStop?.EstimateTime
-                      ? `${Math.floor(selectedStop?.EstimateTime / 60)}分`
-                      : '進站中'
-                  }`
-                : '今日未營運'}{' '}
-            </Text>
+            <Tag colorScheme="secondary" ml="2">
+              {getBusEstimationStatus(busEstimation)}
+            </Tag>
             <Button
               variant="ghost"
               rightIcon={<BiChevronRight />}
