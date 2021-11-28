@@ -3,8 +3,8 @@ import { createEntityAdapter, EntityState } from '@reduxjs/toolkit';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import type { SuccessApiResponse } from 'next-api-handler';
 
-import type { BusEstimationParam } from '@/pages/api/bus-estimation';
-import type { StationQueryParam } from '@/pages/api/bus-nearby';
+import type { BusEstimationParam } from '@/pages/api/bus/estimation';
+import type { StationQueryParam } from '@/pages/api/bus/nearby';
 
 const busEstimationAdapter = createEntityAdapter<BusEstimationInfo>({
   selectId: (busEstimation) => busEstimation.StopUID,
@@ -21,7 +21,7 @@ export const localApi = createApi({
       BusEstimationParam
     >({
       query: (params) => ({
-        url: 'bus-estimation',
+        url: 'bus/estimation',
         params,
       }),
       transformResponse: (res: SuccessApiResponse<BusEstimationInfo[]>) =>
@@ -34,7 +34,7 @@ export const localApi = createApi({
       SuccessApiResponse<BusStationInfo[]>,
       Record<keyof StationQueryParam, number>
     >({
-      query: ({ lat, lng }) => `bus-nearby?lat=${lat}&lng=${lng}`,
+      query: ({ lat, lng }) => `bus/nearby?lat=${lat}&lng=${lng}`,
     }),
   }),
 });
