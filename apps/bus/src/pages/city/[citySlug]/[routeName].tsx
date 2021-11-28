@@ -13,6 +13,7 @@ import {
   TabPanels,
   Tabs,
   TabsProps,
+  Tag,
   Text,
   useBreakpointValue,
   useDisclosure,
@@ -22,7 +23,6 @@ import {
 import {
   BusDirection,
   BusRouteDetail,
-  BusStopStatus,
   CITIES,
   CitySlug,
   CitySlugMap,
@@ -55,6 +55,7 @@ import {
   useGetBusEstimationQuery,
 } from '@/services/local';
 import { getMiddleElement } from '@/utils/array';
+import { getBusEstimationStatus } from '@/utils/bus';
 import { getTwoDigitString } from '@/utils/string';
 
 interface BusRoutePageProps {
@@ -375,73 +376,76 @@ const BusRoutePage = ({
             >
               {directions.map((busDirection) => (
                 <TabPanel key={busDirection} p="0">
-                  {routeStopEntity[busDirection].Stops.map((stop) => (
-                    <Flex
-                      key={`${busDirection}-${stop.StopUID}-${stop.StopSequence}`}
-                      align="center"
-                      justify="space-between"
-                      px="4"
-                      cursor="pointer"
-                      onClick={async () => {
-                        if (!mapContextRef.current.map || !isLoaded) {
-                          return;
-                        }
+                  {routeStopEntity[busDirection].Stops.map((stop) => {
+                    const status = getBusEstimationStatus(
+                      data?.entities[stop.StopUID],
+                    );
 
-                        const { getPosition } = await import(
-                          '@/services/mapbox'
-                        );
+                    const isComing = status === '進站中';
+                    return (
+                      <Flex
+                        key={`${busDirection}-${stop.StopUID}-${stop.StopSequence}`}
+                        align="center"
+                        px="4"
+                        cursor="pointer"
+                        onClick={async () => {
+                          if (!mapContextRef.current.map || !isLoaded) {
+                            return;
+                          }
 
-                        setSelectedStopId(stop.StopUID);
-                        stopDisclosure.onOpen();
-                        extendDisclosure.onClose();
-                        mapContextRef.current.map.flyTo(
-                          getPosition(
-                            stop.StopPosition.PositionLat,
-                            stop.StopPosition.PositionLon,
-                            ZoomLevel.Stop,
-                          ),
-                        );
-                      }}
-                    >
-                      <Text>
-                        {/* TODO: add stop status util to better support different scenario */}
-                        {data?.entities[stop.StopUID].StopStatus ===
-                        BusStopStatus.正常
-                          ? `${
-                              data?.entities[stop.StopUID].EstimateTime
-                                ? `${Math.floor(
-                                    data?.entities[stop.StopUID].EstimateTime /
-                                      60,
-                                  )}分`
-                                : '進站中'
-                            }`
-                          : '今日未營運'}{' '}
-                        {stop.StopName.Zh_tw}
-                      </Text>
-                      <VStack spacing={0}>
-                        <Box
-                          h="20px"
-                          borderLeft="2px"
-                          borderColor="primary.200"
-                        />
-                        <Circle
-                          size="20px"
-                          fontSize="9px"
-                          fontWeight="bold"
-                          borderWidth="2px"
-                          borderColor="primary.200"
-                          rounded="full"
-                        >
-                          {getTwoDigitString(stop.StopSequence)}
-                        </Circle>
-                        <Box
-                          h="20px"
-                          borderLeft="2px"
-                          borderColor="primary.200"
-                        />
-                      </VStack>
-                    </Flex>
-                  ))}
+                          const { getPosition } = await import(
+                            '@/services/mapbox'
+                          );
+
+                          setSelectedStopId(stop.StopUID);
+                          stopDisclosure.onOpen();
+                          extendDisclosure.onClose();
+                          mapContextRef.current.map.flyTo(
+                            getPosition(
+                              stop.StopPosition.PositionLat,
+                              stop.StopPosition.PositionLon,
+                              ZoomLevel.Stop,
+                            ),
+                          );
+                        }}
+                      >
+                        <Text>{stop.StopName.Zh_tw}</Text>
+                        <Tag colorScheme="secondary" ml="2">
+                          {status}
+                        </Tag>
+                        <Box flexGrow={1} />
+                        <VStack spacing={0}>
+                          <Box
+                            h="20px"
+                            borderLeft="2px"
+                            borderColor="primary.200"
+                          />
+                          <Circle
+                            size="20px"
+                            fontSize="9px"
+                            fontWeight="bold"
+                            borderWidth="2px"
+                            borderColor="primary.200"
+                            bg={isComing ? 'primary.200' : 'transparent'}
+                            color={isComing ? 'secondary.700' : 'white'}
+                            boxShadow={
+                              isComing
+                                ? '0 0 5px var(--chakra-colors-secondary-200),0 0 10px var(--chakra-colors-secondary-300),0 0 15px var(--chakra-colors-secondary-400)'
+                                : 'none'
+                            }
+                            rounded="full"
+                          >
+                            {getTwoDigitString(stop.StopSequence)}
+                          </Circle>
+                          <Box
+                            h="20px"
+                            borderLeft="2px"
+                            borderColor="primary.200"
+                          />
+                        </VStack>
+                      </Flex>
+                    );
+                  })}
                 </TabPanel>
               ))}
             </TabPanels>

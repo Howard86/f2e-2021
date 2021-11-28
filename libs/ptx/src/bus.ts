@@ -77,7 +77,7 @@ export interface SubRoute {
 }
 
 export interface BusEstimation {
-  PlateNumb: string;
+  PlateNumb?: string;
   StopUID: string;
   StopID: string;
   StopName: NameType;
