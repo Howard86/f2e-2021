@@ -36,6 +36,7 @@ import NavBarItems from '@/components/NavBarItems';
 import RouteKeyBoard from '@/components/RouteKeyBoard';
 import RouteLink from '@/components/RouteLink';
 import { DESKTOP_DISPLAY, MOBILE_DISPLAY } from '@/constants/style';
+import { ONE_DAY } from '@/constants/time';
 import station from '@/station.png';
 import { getBusRouteDestinations } from '@/utils/bus';
 import { addToLocalStorage } from '@/utils/local-storage';
@@ -280,6 +281,7 @@ export const getStaticProps = async (
       citySlug,
       busRoutes,
     },
+    revalidate: ONE_DAY,
   };
 };
 

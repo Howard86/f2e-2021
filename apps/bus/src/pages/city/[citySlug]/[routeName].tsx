@@ -50,6 +50,7 @@ import { DESKTOP_MAP_LEFT } from '@/components/Layout';
 import { useMap } from '@/components/MapContextProvider';
 import NavBarItems from '@/components/NavBarItems';
 import { DESKTOP_DISPLAY, MOBILE_DISPLAY } from '@/constants/style';
+import { ONE_DAY, THIRTY_SEC_IN_MS } from '@/constants/time';
 import {
   busEstimationSelector,
   useGetBusEstimationQuery,
@@ -71,7 +72,6 @@ type RouteStopEntity = Record<BusDirection, RouteStopInfo>;
 
 const INITIAL_ID = '';
 const STOP_LIST_MAX_HEIGHT = 'calc(100vh - 144px)';
-const THIRTY_SECONDS = 30_000;
 
 const BusRoutePage = ({
   citySlug,
@@ -107,7 +107,7 @@ const BusRoutePage = ({
           res.data &&
           busEstimationSelector.selectById(res.data, selectedStopId),
       }),
-      pollingInterval: THIRTY_SECONDS,
+      pollingInterval: THIRTY_SEC_IN_MS,
     },
   );
 
@@ -544,6 +544,7 @@ export const getStaticProps = async (
       directions,
       routeStopEntity,
     },
+    revalidate: ONE_DAY,
   };
 };
 
