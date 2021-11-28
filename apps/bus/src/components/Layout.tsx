@@ -21,6 +21,9 @@ const slidingAnimation = keyframes`
   }
 `;
 
+export const MOBILE_MAP_BOTTOM = '200px';
+export const DESKTOP_MAP_LEFT = '400px';
+
 const Layout = ({ children, showMap }: LayoutProps) => (
   <Box h="full" bgGradient="var(--chakra-colors-gradient-bg)">
     <Box pos="fixed" w="full" h="full" overflow="hidden">
@@ -33,12 +36,12 @@ const Layout = ({ children, showMap }: LayoutProps) => (
         animation={`${slidingAnimation} 60s linear infinite alternate`}
       />
     </Box>
-    {/* TODO: fix these constants */}
     <Box
       pos="absolute"
       top="72px"
-      bottom="200px"
-      w="full"
+      bottom={[MOBILE_MAP_BOTTOM, 0]}
+      left={[0, DESKTOP_MAP_LEFT]}
+      right="0"
       opacity={showMap ? 1 : 0}
     >
       <Map />

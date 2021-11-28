@@ -18,7 +18,9 @@ const NavBarItems = ({ display, citySlug }: NavBarItemsProps) => {
 
   return (
     <>
-      <LogoIcon display={display} maxH="34px" />
+      <RouteLink href="/">
+        <LogoIcon display={display} maxH="34px" />
+      </RouteLink>
       <HStack display={display} spacing={6} fontSize="xl">
         <RouteLink
           href={`/city/${citySlug}`}

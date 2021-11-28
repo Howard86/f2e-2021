@@ -51,7 +51,10 @@ import background from '@/background-small.png';
 import bus from '@/bus.png';
 import BusRouteInfoModal from '@/components/BusRouteInfoModal';
 import Image from '@/components/Image';
+import { DESKTOP_MAP_LEFT } from '@/components/Layout';
 import { useMap } from '@/components/MapContextProvider';
+import NavBarItems from '@/components/NavBarItems';
+import { DESKTOP_DISPLAY, MOBILE_DISPLAY } from '@/constants/style';
 import {
   busEstimationSelector,
   useGetBusEstimationQuery,
@@ -78,6 +81,7 @@ enum ZoomLevel {
 }
 
 const INITIAL_ID = '';
+const STOP_LIST_MAX_HEIGHT = 'calc(100vh - 144px)';
 
 const BusRoutePage = ({
   citySlug,
@@ -202,7 +206,7 @@ const BusRoutePage = ({
           px="4"
           cursor="pointer"
           onClick={async () => {
-            if (!mapContextRef.current.map) {
+            if (!mapContextRef.current.map || !isLoaded) {
               return;
             }
 
@@ -398,15 +402,22 @@ const BusRoutePage = ({
   return (
     <>
       <Flex pos="relative" flexDir="column" h="full" color="white">
-        <Flex p="4" bg="primary.800" justify="space-between" align="center">
+        <Flex
+          p={[4, 5]}
+          bg="primary.800"
+          justify="space-between"
+          align="center"
+        >
           <IconButton
+            display={MOBILE_DISPLAY}
             aria-label="back to previous page"
             variant="ghost"
             fontSize="4xl"
             onClick={onArrowClick}
             icon={<BiChevronLeft />}
           />
-          <HStack spacing={1}>
+          <NavBarItems citySlug={citySlug} display={DESKTOP_DISPLAY} />
+          <HStack spacing={1} display={MOBILE_DISPLAY}>
             <IconButton
               aria-label="show more detail"
               variant="ghost"
@@ -424,42 +435,55 @@ const BusRoutePage = ({
             />
           </HStack>
         </Flex>
-        <Box flexGrow={1} overflowY="auto" />
-
-        <Tabs
-          index={selectedDirection}
-          onChange={onSwitchTab}
-          variant="solid-rounded"
-          zIndex="sticky"
-        >
-          <TabList pos="relative" bg="primary.600" p="4">
-            <IconButton
-              pos="absolute"
-              top="0"
-              left="30%"
-              w="40%"
-              aria-label="extend to top"
-              h="4px"
-              onClick={extendDisclosure.onToggle}
-            />
-            <Heading as="h1" alignSelf="center" noOfLines={1}>
-              {route.RouteName.Zh_tw}
-            </Heading>
-            <Box flexGrow={1} />
-            <Tab whiteSpace="nowrap">{route.DepartureStopNameZh}</Tab>
-            <Tab whiteSpace="nowrap">{route.DestinationStopNameZh}</Tab>
-          </TabList>
-          <TabPanels
-            bg="primary.800"
-            h={extendDisclosure.isOpen ? 'calc(100vh - 144px)' : 128}
-            transition="ease-in-out"
-            transitionDuration="0.35s"
-            overflowX="hidden"
+        <Flex flexDir={['column', 'row-reverse']} flexGrow={1}>
+          <Box flexGrow={1} overflowY="auto" />
+          <Tabs
+            w={['auto', DESKTOP_MAP_LEFT]}
+            index={selectedDirection}
+            onChange={onSwitchTab}
+            variant="solid-rounded"
+            zIndex="sticky"
+            isFitted
           >
-            <TabPanel p="0">{renderRouteStops(forward)}</TabPanel>
-            <TabPanel p="0">{renderRouteStops(backward)}</TabPanel>
-          </TabPanels>
-        </Tabs>
+            <TabList pos="relative" bg="primary.600" p="4">
+              <IconButton
+                display={MOBILE_DISPLAY}
+                pos="absolute"
+                top="0"
+                left="30%"
+                w="40%"
+                aria-label="extend to top"
+                h="4px"
+                onClick={extendDisclosure.onToggle}
+              />
+              <Heading
+                display={MOBILE_DISPLAY}
+                as="h1"
+                alignSelf="center"
+                noOfLines={1}
+              >
+                {route.RouteName.Zh_tw}
+              </Heading>
+              <Box display={MOBILE_DISPLAY} flexGrow={1} />
+              <Tab whiteSpace="nowrap">{route.DepartureStopNameZh}</Tab>
+              <Tab whiteSpace="nowrap">{route.DestinationStopNameZh}</Tab>
+            </TabList>
+            <TabPanels
+              bg="secondary.900"
+              maxW={DESKTOP_MAP_LEFT}
+              h={[
+                extendDisclosure.isOpen ? STOP_LIST_MAX_HEIGHT : 128,
+                STOP_LIST_MAX_HEIGHT,
+              ]}
+              transition="ease-in-out"
+              transitionDuration="0.35s"
+              overflowX="hidden"
+            >
+              <TabPanel p="0">{renderRouteStops(forward)}</TabPanel>
+              <TabPanel p="0">{renderRouteStops(backward)}</TabPanel>
+            </TabPanels>
+          </Tabs>
+        </Flex>
       </Flex>
       <BusRouteInfoModal isOpen={isOpen} onClose={onClose} route={route} />
       {selectedStop && (
