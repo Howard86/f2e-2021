@@ -38,7 +38,7 @@ const Layout = ({ children, showMap }: LayoutProps) => (
     </Box>
     <Box
       pos="absolute"
-      top="72px"
+      top={[72, 66]}
       bottom={[MOBILE_MAP_BOTTOM, 0]}
       left={[0, DESKTOP_MAP_LEFT]}
       right="0"

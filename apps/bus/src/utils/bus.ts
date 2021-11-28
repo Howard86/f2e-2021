@@ -1,6 +1,5 @@
 import type { BusRoute } from '@f2e/ptx';
 
-// eslint-disable-next-line import/prefer-default-export
 export const getBusRouteDestinations = (busRoute: BusRoute): string => {
   if (!busRoute.DepartureStopNameZh) {
     return busRoute.DestinationStopNameZh;
@@ -16,3 +15,8 @@ export const getBusRouteDestinations = (busRoute: BusRoute): string => {
 
   return `${busRoute.DepartureStopNameZh}-${busRoute.DestinationStopNameZh}`;
 };
+
+export const getSubRouteTime = (
+  firstTime?: string,
+  lastTime?: string,
+): string => (firstTime && lastTime ? `${firstTime}-${lastTime}` : '無標註');

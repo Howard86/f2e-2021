@@ -12,6 +12,7 @@ import {
   Heading,
   HStack,
   IconButton,
+  Stack,
   Tab,
   TabList,
   TabPanel,
@@ -99,6 +100,7 @@ const BusRoutePage = ({
     base: { variant: 'solid-rounded' },
     md: { isFitted: true, variant: 'line' },
   });
+  const buttonVariant = useBreakpointValue({ base: 'ghost', md: 'solid' });
   const [selectedDirection, setSelectedDirection] = useState<BusDirection>(
     BusDirection.去程,
   );
@@ -317,12 +319,7 @@ const BusRoutePage = ({
   return (
     <>
       <Flex pos="relative" flexDir="column" h="full" color="white">
-        <Flex
-          p={[4, 5]}
-          bg="primary.800"
-          justify="space-between"
-          align="center"
-        >
+        <Flex p={4} bg="primary.800" justify="space-between" align="center">
           <IconButton
             display={MOBILE_DISPLAY}
             aria-label="back to previous page"
@@ -332,10 +329,17 @@ const BusRoutePage = ({
             icon={<BiChevronLeft />}
           />
           <NavBarItems citySlug={citySlug} display={DESKTOP_DISPLAY} />
-          <HStack spacing={1} display={MOBILE_DISPLAY}>
+          <Stack
+            direction={['row', 'column-reverse']}
+            pos={['static', 'fixed']}
+            spacing={[1, 4]}
+            zIndex="overlay"
+            right={[0, 4]}
+            bottom={[0, 106]}
+          >
             <IconButton
               aria-label="show more detail"
-              variant="ghost"
+              variant={buttonVariant}
               fontSize="2xl"
               rounded="full"
               icon={<BsInfoCircle />}
@@ -343,12 +347,13 @@ const BusRoutePage = ({
             />
             <IconButton
               aria-label="move back to home"
-              variant="ghost"
+              variant={buttonVariant}
               fontSize="2xl"
+              rounded="full"
               icon={<IoHome />}
               onClick={onHomeClick}
             />
-          </HStack>
+          </Stack>
         </Flex>
         <Flex flexDir={['column', 'row-reverse']} flexGrow={1}>
           <Box flexGrow={1} overflowY="auto" />
