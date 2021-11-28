@@ -181,7 +181,7 @@ const BusPage = ({ citySlug, busRoutes }: BusPageProps) => {
 
   return (
     <Flex pos="relative" flexDir="column" h="full" color="white">
-      <Flex py="4" pl="2" pr="4" bg="primary.800">
+      <Flex p="4" bg="primary.800">
         <IconButton
           aria-label="back to previous page"
           variant="ghost"
@@ -190,7 +190,7 @@ const BusPage = ({ citySlug, busRoutes }: BusPageProps) => {
           icon={<BiChevronLeft />}
         />
         <Select
-          defaultValue={citySlug}
+          value={citySlug}
           maxW="110px"
           onChange={onSelectCity}
           roundedRight="none"
