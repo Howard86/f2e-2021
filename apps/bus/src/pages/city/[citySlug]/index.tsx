@@ -2,7 +2,6 @@ import React, { ChangeEvent, useMemo, useState } from 'react';
 
 import {
   Box,
-  Button,
   Center,
   Circle,
   Flex,
@@ -11,7 +10,7 @@ import {
   keyframes,
   LinkBox,
   LinkOverlay,
-  SimpleGrid,
+  Square,
   Text,
 } from '@chakra-ui/react';
 import {
@@ -28,15 +27,14 @@ import type {
 } from 'next';
 import { useRouter } from 'next/router';
 import { BiChevronLeft } from 'react-icons/bi';
-import { FiDelete } from 'react-icons/fi';
 
 import bus from '@/bus.png';
 import BusSearchInput from '@/components/BusSearchInput';
 import Image from '@/components/Image';
 import NavBarItems from '@/components/NavBarItems';
+import RouteKeyBoard from '@/components/RouteKeyBoard';
 import RouteLink from '@/components/RouteLink';
 import { DESKTOP_DISPLAY, MOBILE_DISPLAY } from '@/constants/style';
-import background from '@/map.jpg';
 import station from '@/station.png';
 
 interface BusPageProps {
@@ -69,28 +67,6 @@ const roadAnimation = keyframes`
   }
 `;
 
-const BUTTON_TEXTS = [
-  '紅',
-  '藍',
-  '1',
-  '2',
-  '3',
-  '綠',
-  '棕',
-  '4',
-  '5',
-  '6',
-  '黃',
-  '小',
-  '7',
-  '8',
-  '9',
-  '幹線',
-  '市民',
-  '重設',
-  '0',
-] as const;
-
 const BusPage = ({ citySlug, busRoutes }: BusPageProps) => {
   const [searchString, setSearchString] = useState(DEFAULT_SEARCH_STRING);
   const router = useRouter();
@@ -107,38 +83,6 @@ const BusPage = ({ citySlug, busRoutes }: BusPageProps) => {
       busRoute.RouteName.Zh_tw.includes(searchString),
     );
   }, [busRoutes, hasNotSearched, searchString]);
-
-  const onClickArray = useMemo(
-    () =>
-      BUTTON_TEXTS.map((text) => {
-        switch (text) {
-          case '1':
-          case '2':
-          case '3':
-          case '4':
-          case '5':
-          case '6':
-          case '7':
-          case '8':
-          case '9':
-          case '0':
-            return () => setSearchString((existedText) => existedText + text);
-
-          case '重設':
-            return () => setSearchString(DEFAULT_SEARCH_STRING);
-
-          default:
-            return () => setSearchString(text);
-        }
-      }),
-    [],
-  );
-
-  const onDeleteText = () => {
-    setSearchString((existedText) =>
-      existedText.slice(0, existedText.length - 1),
-    );
-  };
 
   // TODO: add lodash.debounce
   const onSearch = (event: ChangeEvent<HTMLInputElement>) => {
@@ -225,51 +169,69 @@ const BusPage = ({ citySlug, busRoutes }: BusPageProps) => {
           onSearch={onSearch}
         />
       </Flex>
-      <Flex flexGrow={1} overflowY="auto">
-        <Flex flexDir="column" flexShrink={0}>
-          <Flex
-            flexGrow={1}
-            flexDir="column"
-            m={[0, 4]}
-            rounded={['none', '3xl']}
-            borderColor="primary.800"
-            borderWidth={[0, '16px']}
-            overflowY="auto"
-          >
-            <Flex display={['none', 'flex']} p="4" bg="primary.700">
-              <BusSearchInput
-                citySlug={citySlug}
-                onSelectCity={onSelectCity}
-                searchString={searchString}
-                onSearch={onSearch}
-              />
-            </Flex>
-            <Box flexGrow={1} overflowY="auto">
-              {renderContent()}
-            </Box>
-            <SimpleGrid
-              flexShrink={0}
-              bg="primary.800"
-              h={[200, 'auto']}
-              columns={5}
-              spacing={[2, 3]}
-              pt={[2, 3]}
-              pb={[2, 1]}
-              px={[2, 0]}
-            >
-              {BUTTON_TEXTS.map((text, index) => (
-                <Button variant="neon" key={text} onClick={onClickArray[index]}>
-                  {text}
-                </Button>
-              ))}
-              <IconButton
-                variant="neon"
-                aria-label="delete one character"
-                onClick={onDeleteText}
-                icon={<FiDelete />}
-              />
-            </SimpleGrid>
+      <Flex
+        flexDir={['column', 'row-reverse']}
+        flexGrow={1}
+        overflowY="auto"
+        maxW="100vw"
+      >
+        <Flex
+          flexGrow={1}
+          flexDir="column"
+          mx={[0, 12]}
+          mt={[0, 16]}
+          mb={[0, 4]}
+          rounded={['none', '3xl']}
+          borderColor="secondary.900"
+          borderWidth={[0, '12px']}
+          overflowY="auto"
+        >
+          <Flex display={['none', 'flex']} p="4" bg="primary.700">
+            <BusSearchInput
+              citySlug={citySlug}
+              onSelectCity={onSelectCity}
+              searchString={searchString}
+              onSearch={onSearch}
+            />
           </Flex>
+          <Box flexGrow={1} overflowY="auto">
+            {renderContent()}
+          </Box>
+        </Flex>
+        <Flex flexDir="column" flexShrink={0}>
+          <Box flexGrow={4} />
+          <Box
+            pos="relative"
+            mx={[0, 12]}
+            p={[0, 4]}
+            bg="primary.800"
+            borderTopRadius="3xl"
+            shadow="xl"
+          >
+            <Box
+              display={DESKTOP_DISPLAY}
+              pos="absolute"
+              left="0"
+              right="0"
+              top="-12"
+            >
+              <Square
+                w="120px"
+                bg="secondary.800"
+                p="4"
+                mx="auto"
+                fontWeight="bold"
+                roundedTop="2xl"
+                zIndex="docked"
+                border="2px"
+                borderColor="secondary.400"
+              >
+                快速搜尋
+              </Square>
+            </Box>
+            <RouteKeyBoard setSearchString={setSearchString} />
+          </Box>
+          <Box flexGrow={1} />
           <Box pos="relative" ml="16" p="8" display={DESKTOP_DISPLAY}>
             <Image src={bus} animation={`${busAnimation} 3s ease infinite`} />
             <Circle
@@ -283,14 +245,6 @@ const BusPage = ({ citySlug, busRoutes }: BusPageProps) => {
             />
           </Box>
         </Flex>
-        <Box pos="relative" flexGrow={1} display={DESKTOP_DISPLAY}>
-          <Image
-            src={background}
-            layout="fill"
-            objectFit="cover"
-            objectPosition="center"
-          />
-        </Box>
       </Flex>
     </Flex>
   );
