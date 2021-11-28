@@ -12,17 +12,15 @@ import {
   Heading,
   HStack,
   IconButton,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalHeader,
-  ModalOverlay,
+  Stack,
   Tab,
   TabList,
   TabPanel,
   TabPanels,
   Tabs,
+  TabsProps,
   Text,
+  useBreakpointValue,
   useDisclosure,
   useTheme,
   VStack,
@@ -54,25 +52,26 @@ import { GeoJSONLineString, parse } from 'wellknown';
 
 import background from '@/background-small.png';
 import bus from '@/bus.png';
-import ExternalLink from '@/components/ExternalLink';
+import BusRouteInfoModal from '@/components/BusRouteInfoModal';
 import Image from '@/components/Image';
+import { DESKTOP_MAP_LEFT } from '@/components/Layout';
 import { useMap } from '@/components/MapContextProvider';
+import NavBarItems from '@/components/NavBarItems';
+import { DESKTOP_DISPLAY, MOBILE_DISPLAY } from '@/constants/style';
 import {
   busEstimationSelector,
   useGetBusEstimationQuery,
 } from '@/services/local';
-import { getMiddleElement } from '@/utils/array';
+import { getLastElement, getMiddleElement } from '@/utils/array';
 import { getTwoDigitString } from '@/utils/string';
-
-type Nullable<T> = T | null;
 
 interface BusRoutePageProps {
   citySlug: CitySlug;
   routeName: string;
   geoJson: GeoJSONLineString;
   route: BusRouteDetail;
-  forward: Nullable<RouteStop>;
-  backward: Nullable<RouteStop>;
+  directions: BusDirection[];
+  routeStopEntity: RouteStopEntity;
 }
 
 enum ZoomLevel {
@@ -82,18 +81,26 @@ enum ZoomLevel {
   City = 12,
 }
 
+type RouteStopEntity = Record<BusDirection, RouteStop>;
+
 const INITIAL_ID = '';
+const STOP_LIST_MAX_HEIGHT = 'calc(100vh - 144px)';
 
 const BusRoutePage = ({
   citySlug,
   routeName,
   route,
-  forward,
-  backward,
   geoJson,
+  directions,
+  routeStopEntity,
 }: BusRoutePageProps) => {
   const theme = useTheme();
   const router = useRouter();
+  const tabsProps = useBreakpointValue<Omit<TabsProps, 'children'>>({
+    base: { variant: 'solid-rounded' },
+    md: { isFitted: true, variant: 'line' },
+  });
+  const buttonVariant = useBreakpointValue({ base: 'ghost', md: 'solid' });
   const [selectedDirection, setSelectedDirection] = useState<BusDirection>(
     BusDirection.去程,
   );
@@ -116,6 +123,10 @@ const BusRoutePage = ({
     },
   );
 
+  // as bus direction might only be 迴圈
+  const selectedBusRoute =
+    routeStopEntity?.[selectedDirection] || routeStopEntity?.[directions[0]];
+
   const onDrawerClose = () => {
     stopDisclosure.onClose();
     extendDisclosure.onOpen();
@@ -133,56 +144,14 @@ const BusRoutePage = ({
     router.push('/');
   };
 
-  const onNextStopClick = async () => {
-    let nextStop =
-      selectedDirection === BusDirection.去程
-        ? forward.Stops[
-            forward.Stops.findIndex((stop) => stop.StopUID === selectedStopId) +
-              1
-          ]
-        : backward.Stops[
-            backward.Stops.findIndex(
-              (stop) => stop.StopUID === selectedStopId,
-            ) + 1
-          ];
+  const handleRouteStopClick = async (step: 1 | -1) => {
+    const currentStops = selectedBusRoute.Stops;
 
-    // could reach the end of the index
-    if (!nextStop && selectedDirection === BusDirection.去程) {
-      [nextStop] = backward.Stops;
+    const previousStop =
+      currentStops[
+        currentStops.findIndex((stop) => stop.StopUID === selectedStopId) + step
+      ];
 
-      setSelectedDirection(BusDirection.返程);
-    }
-
-    setSelectedStopId(nextStop.StopUID);
-
-    const { getPosition } = await import('@/services/mapbox');
-    mapContextRef.current.map.flyTo(
-      getPosition(
-        nextStop.StopPosition.PositionLat,
-        nextStop.StopPosition.PositionLon,
-        ZoomLevel.Stop,
-      ),
-    );
-  };
-
-  const onPreviousStopClick = async () => {
-    let previousStop =
-      selectedDirection === BusDirection.去程
-        ? forward.Stops[
-            forward.Stops.findIndex((stop) => stop.StopUID === selectedStopId) -
-              1
-          ]
-        : backward.Stops[
-            backward.Stops.findIndex(
-              (stop) => stop.StopUID === selectedStopId,
-            ) - 1
-          ];
-
-    // could reach the end of the index
-    if (!previousStop && selectedDirection === BusDirection.返程) {
-      previousStop = forward.Stops[forward.Stops.length - 1];
-      setSelectedDirection(BusDirection.去程);
-    }
     setSelectedStopId(previousStop.StopUID);
 
     const { getPosition } = await import('@/services/mapbox');
@@ -195,64 +164,13 @@ const BusRoutePage = ({
     );
   };
 
-  const renderRouteStops = (routeStop: RouteStop | undefined) =>
-    routeStop?.Stops.map((stop) => {
-      const busEstimation = data?.entities[stop.StopUID];
+  const onPreviousStopClick = async () => {
+    await handleRouteStopClick(-1);
+  };
 
-      return (
-        <Flex
-          key={`${stop.StopUID}-${stop.StopSequence}`}
-          align="center"
-          justify="space-between"
-          px="4"
-          cursor="pointer"
-          onClick={async () => {
-            if (!mapContextRef.current.map) {
-              return;
-            }
-
-            const { getPosition } = await import('@/services/mapbox');
-
-            setSelectedStopId(stop.StopUID);
-            stopDisclosure.onOpen();
-            extendDisclosure.onClose();
-            mapContextRef.current.map.flyTo(
-              getPosition(
-                stop.StopPosition.PositionLat,
-                stop.StopPosition.PositionLon,
-                ZoomLevel.Stop,
-              ),
-            );
-          }}
-        >
-          <Text>
-            {/* TODO: add stop status util to better support different scenario */}
-            {busEstimation?.StopStatus === BusStopStatus.正常
-              ? `${
-                  busEstimation?.EstimateTime
-                    ? `${Math.floor(busEstimation?.EstimateTime / 60)}分`
-                    : '進站中'
-                }`
-              : '今日未營運'}{' '}
-            {stop.StopName.Zh_tw}
-          </Text>
-          <VStack spacing={0}>
-            <Box h="20px" borderLeft="2px" borderColor="primary.200" />
-            <Circle
-              size="20px"
-              fontSize="9px"
-              fontWeight="bold"
-              borderWidth="2px"
-              borderColor="primary.200"
-              rounded="full"
-            >
-              {getTwoDigitString(stop.StopSequence)}
-            </Circle>
-            <Box h="20px" borderLeft="2px" borderColor="primary.200" />
-          </VStack>
-        </Flex>
-      );
-    });
+  const onNextStopClick = async () => {
+    await handleRouteStopClick(1);
+  };
 
   useEffect(() => {
     if (isLoaded || router.isFallback) {
@@ -262,7 +180,7 @@ const BusRoutePage = ({
     const handleInitialise = async () => {
       const { initialize, getPosition } = await import('@/services/mapbox');
 
-      const middleStop = getMiddleElement(forward.Stops);
+      const middleStop = getMiddleElement(selectedBusRoute.Stops);
 
       mapContextRef.current.map = initialize(
         divRef.current,
@@ -282,10 +200,10 @@ const BusRoutePage = ({
     handleInitialise();
   }, [
     divRef,
-    forward?.Stops,
     isLoaded,
     mapContextRef,
     router.isFallback,
+    selectedBusRoute?.Stops,
     setLoaded,
   ]);
 
@@ -305,41 +223,40 @@ const BusRoutePage = ({
         }
       }
 
-      mapContextRef.current.markers = [...forward.Stops, ...backward.Stops].map(
-        (stop) =>
-          createJSXMarker(
-            <VStack
-              spacing={0}
-              cursor="pointer"
-              onClick={async () => {
-                const { getPosition } = await import('@/services/mapbox');
-                mapContextRef.current.map.flyTo(
-                  getPosition(
-                    stop.StopPosition.PositionLat,
-                    stop.StopPosition.PositionLon,
-                    ZoomLevel.Stops,
-                  ),
-                );
-              }}
+      mapContextRef.current.markers = selectedBusRoute.Stops.map((stop) =>
+        createJSXMarker(
+          <VStack
+            spacing={0}
+            cursor="pointer"
+            onClick={async () => {
+              const { getPosition } = await import('@/services/mapbox');
+              mapContextRef.current.map.flyTo(
+                getPosition(
+                  stop.StopPosition.PositionLat,
+                  stop.StopPosition.PositionLon,
+                  ZoomLevel.Stops,
+                ),
+              );
+            }}
+          >
+            <Circle
+              borderWidth="1px"
+              size="28px"
+              borderColor="var(--chakra-colors-secondary-200)"
+              bgColor="var(--chakra-colors-secondary-100)"
+              color="var(--chakra-colors-secondary-800)"
             >
-              <Circle
-                borderWidth="1px"
-                size="28px"
-                borderColor="var(--chakra-colors-secondary-200)"
-                bgColor="var(--chakra-colors-secondary-100)"
-                color="var(--chakra-colors-secondary-800)"
-              >
-                {getTwoDigitString(stop.StopSequence)}
-              </Circle>
-              <Box
-                h="12px"
-                borderLeftWidth="2px"
-                borderColor="var(--chakra-colors-secondary-200)"
-              />
-            </VStack>,
-            [stop.StopPosition.PositionLon, stop.StopPosition.PositionLat],
-            { offset: [0, -12] },
-          ),
+              {getTwoDigitString(stop.StopSequence)}
+            </Circle>
+            <Box
+              h="12px"
+              borderLeftWidth="2px"
+              borderColor="var(--chakra-colors-secondary-200)"
+            />
+          </VStack>,
+          [stop.StopPosition.PositionLon, stop.StopPosition.PositionLat],
+          { offset: [0, -12] },
+        ),
       );
 
       if (mapContextRef.current.map.getLayer(mapContextRef.current.layerId)) {
@@ -360,14 +277,13 @@ const BusRoutePage = ({
 
     handleAttachStops();
   }, [
-    backward?.Stops,
-    forward?.Stops,
     route?.RouteUID,
     geoJson,
     isLoaded,
     mapContextRef,
     router.isFallback,
     theme.colors.primary,
+    selectedBusRoute?.Stops,
   ]);
 
   useEffect(() => {
@@ -403,18 +319,27 @@ const BusRoutePage = ({
   return (
     <>
       <Flex pos="relative" flexDir="column" h="full" color="white">
-        <Flex p="4" bg="primary.800" justify="space-between" align="center">
+        <Flex p={4} bg="primary.800" justify="space-between" align="center">
           <IconButton
+            display={MOBILE_DISPLAY}
             aria-label="back to previous page"
             variant="ghost"
             fontSize="4xl"
             onClick={onArrowClick}
             icon={<BiChevronLeft />}
           />
-          <HStack spacing={1}>
+          <NavBarItems citySlug={citySlug} display={DESKTOP_DISPLAY} />
+          <Stack
+            direction={['row', 'column-reverse']}
+            pos={['static', 'fixed']}
+            spacing={[1, 4]}
+            zIndex="overlay"
+            right={[0, 4]}
+            bottom={[0, 106]}
+          >
             <IconButton
               aria-label="show more detail"
-              variant="ghost"
+              variant={buttonVariant}
               fontSize="2xl"
               rounded="full"
               icon={<BsInfoCircle />}
@@ -422,121 +347,150 @@ const BusRoutePage = ({
             />
             <IconButton
               aria-label="move back to home"
-              variant="ghost"
+              variant={buttonVariant}
               fontSize="2xl"
+              rounded="full"
               icon={<IoHome />}
               onClick={onHomeClick}
             />
-          </HStack>
+          </Stack>
         </Flex>
-        <Box flexGrow={1} overflowY="auto" />
-
-        <Tabs
-          index={selectedDirection}
-          onChange={onSwitchTab}
-          variant="solid-rounded"
-          zIndex="sticky"
-        >
-          <TabList pos="relative" bg="primary.600" p="4">
-            <IconButton
-              pos="absolute"
-              top="0"
-              left="30%"
-              w="40%"
-              aria-label="extend to top"
-              h="4px"
-              onClick={extendDisclosure.onToggle}
-            />
-            <Heading as="h1" alignSelf="center" noOfLines={1}>
-              {route.RouteName.Zh_tw}
-            </Heading>
-            <Box flexGrow={1} />
-            <Tab whiteSpace="nowrap">{route.DepartureStopNameZh}</Tab>
-            <Tab whiteSpace="nowrap">{route.DestinationStopNameZh}</Tab>
-          </TabList>
-          <TabPanels
-            bg="primary.800"
-            h={extendDisclosure.isOpen ? 'calc(100vh - 144px)' : 128}
-            transition="ease-in-out"
-            transitionDuration="0.35s"
-            overflowX="hidden"
+        <Flex flexDir={['column', 'row-reverse']} flexGrow={1}>
+          <Box flexGrow={1} overflowY="auto" />
+          <Tabs
+            w={['auto', DESKTOP_MAP_LEFT]}
+            index={selectedDirection}
+            onChange={onSwitchTab}
+            zIndex="sticky"
+            {...tabsProps}
           >
-            <TabPanel p="0">{renderRouteStops(forward)}</TabPanel>
-            <TabPanel p="0">{renderRouteStops(backward)}</TabPanel>
-          </TabPanels>
-        </Tabs>
-      </Flex>
-      <Modal
-        isOpen={isOpen}
-        onClose={onClose}
-        size="full"
-        motionPreset="slideInRight"
-        colorScheme="primary"
-        scrollBehavior="inside"
-        isCentered
-      >
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader textAlign="center" bg="primary.400">
-            {route.RouteName.Zh_tw}
-          </ModalHeader>
-          <IconButton
-            pos="absolute"
-            right="4"
-            top="5"
-            rounded="full"
-            size="xs"
-            color="primary.600"
-            bgColor="primary.50"
-            aria-label="close modal"
-            fontSize="xl"
-            icon={<MdClose />}
-            onClick={onClose}
-          />
-          <ModalBody textAlign="center" p="0" bg="gradient.bg">
-            <Heading p="4" fontSize="lg">
-              Start:{route.DepartureStopNameZh}-{route.DestinationStopNameZh}
-            </Heading>
-            <Tabs isFitted>
-              <TabList>
-                {route.SubRoutes.map((subRoute) => (
-                  <Tab key={subRoute.SubRouteUID}>
-                    {subRoute.SubRouteName.Zh_tw.replace(
-                      route.RouteName.Zh_tw,
-                      '',
-                    )}
-                    {subRoute.Direction}
-                  </Tab>
-                ))}
-              </TabList>
-              <TabPanels>
-                {route.SubRoutes.map((subRoute) => (
-                  <TabPanel key={subRoute.SubRouteUID}>
-                    <Text>
-                      {subRoute.FirstBusTime}-{subRoute.LastBusTime}
-                    </Text>
-                    <Text>
-                      {subRoute.HolidayFirstBusTime}-
-                      {subRoute.HolidayLastBusTime}
-                    </Text>
-                  </TabPanel>
-                ))}
-              </TabPanels>
-              <Text>{route.TicketPriceDescriptionZh}</Text>
-              <Text>{route.FareBufferZoneDescriptionZh}</Text>
-              {route.Operators.map((operator) => (
-                <Text key={operator.OperatorID}>
-                  {/* TODO: add operator details */}
-                  {operator.OperatorName.Zh_tw}
-                </Text>
+            <TabList
+              sx={{
+                pos: 'relative',
+                p: 4,
+                bg: 'primary.600',
+                button: {
+                  whiteSpace: 'noWrap',
+                },
+              }}
+            >
+              <IconButton
+                display={MOBILE_DISPLAY}
+                pos="absolute"
+                top="0"
+                left="30%"
+                w="40%"
+                aria-label="extend to top"
+                h="4px"
+                onClick={extendDisclosure.onToggle}
+              />
+              <Heading
+                display={MOBILE_DISPLAY}
+                as="h1"
+                alignSelf="center"
+                noOfLines={1}
+              >
+                {route.RouteName.Zh_tw}
+              </Heading>
+              <Box display={MOBILE_DISPLAY} flexGrow={1} />
+              {directions.length > 1 ? (
+                <>
+                  <Tab>{route.DestinationStopNameZh}</Tab>
+                  <Tab>{route.DepartureStopNameZh}</Tab>
+                </>
+              ) : (
+                <Tab>
+                  {routeStopEntity[directions[0]].Stops[0].StopName.Zh_tw}
+                </Tab>
+              )}
+            </TabList>
+            <TabPanels
+              bg="secondary.900"
+              maxW={DESKTOP_MAP_LEFT}
+              h={[
+                extendDisclosure.isOpen ? STOP_LIST_MAX_HEIGHT : 128,
+                STOP_LIST_MAX_HEIGHT,
+              ]}
+              transition="ease-in-out"
+              transitionDuration="0.35s"
+              overflowX="hidden"
+            >
+              {directions.map((busDirection) => (
+                <TabPanel key={busDirection} p="0">
+                  {routeStopEntity[busDirection].Stops.map((stop) => (
+                    <Flex
+                      key={`${busDirection}-${stop.StopUID}-${stop.StopSequence}`}
+                      align="center"
+                      justify="space-between"
+                      px="4"
+                      cursor="pointer"
+                      onClick={async () => {
+                        if (!mapContextRef.current.map || !isLoaded) {
+                          return;
+                        }
+
+                        const { getPosition } = await import(
+                          '@/services/mapbox'
+                        );
+
+                        setSelectedStopId(stop.StopUID);
+                        stopDisclosure.onOpen();
+                        extendDisclosure.onClose();
+                        mapContextRef.current.map.flyTo(
+                          getPosition(
+                            stop.StopPosition.PositionLat,
+                            stop.StopPosition.PositionLon,
+                            ZoomLevel.Stop,
+                          ),
+                        );
+                      }}
+                    >
+                      <Text>
+                        {/* TODO: add stop status util to better support different scenario */}
+                        {data?.entities[stop.StopUID].StopStatus ===
+                        BusStopStatus.正常
+                          ? `${
+                              data?.entities[stop.StopUID].EstimateTime
+                                ? `${Math.floor(
+                                    data?.entities[stop.StopUID].EstimateTime /
+                                      60,
+                                  )}分`
+                                : '進站中'
+                            }`
+                          : '今日未營運'}{' '}
+                        {stop.StopName.Zh_tw}
+                      </Text>
+                      <VStack spacing={0}>
+                        <Box
+                          h="20px"
+                          borderLeft="2px"
+                          borderColor="primary.200"
+                        />
+                        <Circle
+                          size="20px"
+                          fontSize="9px"
+                          fontWeight="bold"
+                          borderWidth="2px"
+                          borderColor="primary.200"
+                          rounded="full"
+                        >
+                          {getTwoDigitString(stop.StopSequence)}
+                        </Circle>
+                        <Box
+                          h="20px"
+                          borderLeft="2px"
+                          borderColor="primary.200"
+                        />
+                      </VStack>
+                    </Flex>
+                  ))}
+                </TabPanel>
               ))}
-              <ExternalLink href={route.RouteMapImageUrl}>
-                More Info
-              </ExternalLink>
-            </Tabs>
-          </ModalBody>
-        </ModalContent>
-      </Modal>
+            </TabPanels>
+          </Tabs>
+        </Flex>
+      </Flex>
+      <BusRouteInfoModal isOpen={isOpen} onClose={onClose} route={route} />
       {selectedStop && (
         <Drawer
           isOpen={stopDisclosure.isOpen}
@@ -592,7 +546,9 @@ const BusRoutePage = ({
                   variant="ghost"
                   size="sm"
                   leftIcon={<BiChevronLeft />}
-                  isDisabled={forward.Stops[0].StopUID === selectedStopId}
+                  isDisabled={
+                    selectedBusRoute.Stops[0].StopUID === selectedStopId
+                  }
                   onClick={onPreviousStopClick}
                 >
                   上一站
@@ -612,7 +568,7 @@ const BusRoutePage = ({
                   rightIcon={<BiChevronRight />}
                   size="sm"
                   isDisabled={
-                    backward.Stops[backward.Stops.length - 1].StopUID ===
+                    getLastElement(selectedBusRoute.Stops).StopUID ===
                     selectedStopId
                   }
                   onClick={onNextStopClick}
@@ -691,20 +647,25 @@ export const getStaticProps = async (
     CitySlugMap[citySlug],
   );
 
+  const directions: BusDirection[] = [];
+  const routeStopEntity = {} as RouteStopEntity;
+
+  for (const routeStop of routeStops) {
+    // TODO: might have routes that have multiple directions
+    if (!directions.includes(routeStop.Direction)) {
+      directions.push(routeStop.Direction);
+      routeStopEntity[routeStop.Direction] = routeStop;
+    }
+  }
+
   return {
     props: {
       citySlug,
       routeName,
       route,
       geoJson: parse(routeShape.Geometry) as GeoJSONLineString,
-      forward:
-        routeStops.find(
-          (routeStop) => routeStop.Direction === BusDirection.去程,
-        ) || null,
-      backward:
-        routeStops.find(
-          (routeStop) => routeStop.Direction === BusDirection.返程,
-        ) || null,
+      directions,
+      routeStopEntity,
     },
   };
 };

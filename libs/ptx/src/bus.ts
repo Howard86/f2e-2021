@@ -71,6 +71,7 @@ export interface SubRoute {
   Direction: number;
   FirstBusTime: string;
   LastBusTime: string;
+  Headsign?: string;
   HolidayFirstBusTime?: string;
   HolidayLastBusTime?: string;
 }

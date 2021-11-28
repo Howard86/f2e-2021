@@ -26,6 +26,9 @@ const colors = {
   gradient: {
     bg: 'linear-gradient(180deg, #200337 0%, rgba(51, 61, 113, 0.82) 49.48%, #443B68 100%)',
   },
+  shadow: {
+    text: '0 0 4px var(--chakra-colors-secondary-400),0 0 8px var(--chakra-colors-secondary-300)',
+  },
 };
 
 export default colors;

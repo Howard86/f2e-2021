@@ -6,11 +6,14 @@ import {
   Center,
   Heading,
   keyframes,
-  VStack,
+  Stack,
+  useBreakpointValue,
 } from '@chakra-ui/react';
+import { BiCurrentLocation } from 'react-icons/bi';
+import { FaBusAlt } from 'react-icons/fa';
 
 import bus from '@/bus.png';
-import LogoIcon from '@/components/icons/Logo';
+import PinkLogoIcon from '@/components/icons/PinkLogo';
 import Image from '@/components/Image';
 import RouteLink from '@/components/RouteLink';
 import human from '@/human.png';
@@ -18,16 +21,19 @@ import station from '@/station.png';
 
 const busAnimation = keyframes`
   0% {
-    left: -100%;
+    right: 150%;
   }
   45% {
-    left: 32%;
+    right: 32%;
+  }
+  60% {
+    right: calc(32% - 2px);
   }
   65% {
-    left: 32%;
+    right: 32%;
   }
   100% {
-    left: 150%;
+    right: -100%;
   }
 `;
 
@@ -49,53 +55,97 @@ const humanAnimation = keyframes`
   }
 `;
 
-const HomePage = () => (
-  <>
+const HomePage = () => {
+  const size = useBreakpointValue({ base: 'md', md: 'lg' });
+
+  return (
     <Center
       pos="relative"
       color="white"
       flexDir="column"
       h="full"
       zIndex="docked"
-      mx="8"
+      px="8"
+      overflowX="hidden"
     >
-      <LogoIcon minW="145px" width="50%" />
-      <Heading as="h1" mb="8" fontSize="xl" textAlign="center">
+      <PinkLogoIcon minW="146" maxW="217.5" h="auto" w="50%" />
+      <Heading
+        as="h1"
+        my="8"
+        fontSize={['xl', '2xl']}
+        textAlign="center"
+        maxW="344"
+      >
         提供最即時的公車動態，讓您輕鬆掌握資訊，現在就開始規劃您的路線吧！
       </Heading>
-      <VStack spacing={4}>
-        {/* TODO: add local storage helper */}
-        <Button as={RouteLink} href="/city/taipei/bus">
+      <Stack direction={['column', 'row']} spacing={[4, 8]}>
+        <Button
+          as={RouteLink}
+          href="/city"
+          leftIcon={<FaBusAlt />}
+          variant="neon"
+          size={size}
+        >
           市區公車
         </Button>
-        <Button as={RouteLink} href="/coach">
-          公路客運
+        <Button
+          as={RouteLink}
+          href="/coach"
+          leftIcon={<BiCurrentLocation />}
+          variant="neon"
+          size={size}
+        >
+          附近站牌
         </Button>
-        <Button as={RouteLink} href="/">
-          乘車規劃
-        </Button>
-      </VStack>
-    </Center>
-    <Box pos="fixed" left="60%" bottom="5.5%" w="full">
-      <Image alt="station" src={station} placeholder="blur" />
-    </Box>
-    <Box pos="fixed" left="70%" bottom="4.8%" w="full">
-      <Image
-        alt="human"
-        src={human}
-        placeholder="blur"
+      </Stack>
+      <Box
+        pos="absolute"
+        bottom="5.6%"
+        right="30%"
+        w={[117, 234]}
+        h={[70, 140]}
+      >
+        <Image
+          alt="station"
+          src={station}
+          placeholder="blur"
+          width={234}
+          height={140}
+        />
+      </Box>
+      <Box
+        pos="absolute"
+        bottom="4.9%"
+        right="35%"
+        w={[25, 50]}
+        h={[55, 110]}
         animation={`${humanAnimation} 20s ease-in-out infinite`}
-      />
-    </Box>
-    <Box
-      pos="fixed"
-      bottom="4.5%"
-      w="full"
-      animation={`${busAnimation} 10s ease-in-out infinite`}
-    >
-      <Image alt="bus" src={bus} placeholder="blur" />
-    </Box>
-  </>
-);
+      >
+        <Image
+          alt="human"
+          src={human}
+          placeholder="blur"
+          width={50}
+          height={110}
+        />
+      </Box>
+      <Box
+        pos="absolute"
+        bottom="4.5%"
+        w={[203, 406]}
+        h={['60px', 120]}
+        animation={`${busAnimation} 10s ease-in-out infinite`}
+      >
+        <Image
+          alt="bus"
+          src={bus}
+          placeholder="blur"
+          width={406}
+          height={120}
+        />
+      </Box>
+    </Center>
+  );
+};
 
 export default HomePage;
