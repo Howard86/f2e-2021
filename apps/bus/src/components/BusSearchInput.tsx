@@ -3,7 +3,8 @@ import React, { ChangeEventHandler, memo } from 'react';
 import { Input, InputProps, Select } from '@chakra-ui/react';
 import { CITIES, CityMap, CitySlug } from '@f2e/ptx';
 
-interface BusSearchInputProps extends InputProps {
+interface BusSearchInputProps {
+  display?: InputProps['display'];
   citySlug: CitySlug;
   onSelectCity: ChangeEventHandler<HTMLSelectElement>;
   searchString: string;
@@ -11,6 +12,7 @@ interface BusSearchInputProps extends InputProps {
 }
 
 const BusSearchInput = ({
+  display,
   searchString,
   onSearch,
   citySlug,
@@ -18,6 +20,7 @@ const BusSearchInput = ({
 }: BusSearchInputProps) => (
   <>
     <Select
+      display={display}
       value={citySlug}
       maxW="110px"
       onChange={onSelectCity}
@@ -30,6 +33,7 @@ const BusSearchInput = ({
       ))}
     </Select>
     <Input
+      display={display}
       value={searchString}
       onChange={onSearch}
       placeholder="請輸入公車路線編號"

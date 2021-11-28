@@ -4,9 +4,11 @@ import {
   Box,
   Button,
   Center,
+  Circle,
   Flex,
   Heading,
   IconButton,
+  keyframes,
   LinkBox,
   LinkOverlay,
   SimpleGrid,
@@ -31,7 +33,10 @@ import { FiDelete } from 'react-icons/fi';
 import bus from '@/bus.png';
 import BusSearchInput from '@/components/BusSearchInput';
 import Image from '@/components/Image';
+import NavBarItems from '@/components/NavBarItems';
 import RouteLink from '@/components/RouteLink';
+import { DESKTOP_DISPLAY, MOBILE_DISPLAY } from '@/constants/style';
+import background from '@/map.jpg';
 import station from '@/station.png';
 
 interface BusPageProps {
@@ -40,6 +45,29 @@ interface BusPageProps {
 }
 
 const DEFAULT_SEARCH_STRING = '';
+
+const busAnimation = keyframes`
+  0% {
+    top: 8px;
+  }
+  10% {
+    top: 0;
+  }
+`;
+
+const roadAnimation = keyframes`
+  0% {
+    left: 100%;
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    left: 0;
+    opacity: 0;
+  }
+`;
 
 const BUTTON_TEXTS = [
   '紅',
@@ -179,8 +207,10 @@ const BusPage = ({ citySlug, busRoutes }: BusPageProps) => {
 
   return (
     <Flex pos="relative" flexDir="column" h="full" color="white">
-      <Flex p="4" bg="primary.800">
+      <Flex p="4" bg="primary.800" align="center" justify="space-between">
+        <NavBarItems display={DESKTOP_DISPLAY} citySlug={citySlug} />
         <IconButton
+          display={MOBILE_DISPLAY}
           aria-label="back to previous page"
           variant="ghost"
           fontSize="4xl"
@@ -188,35 +218,80 @@ const BusPage = ({ citySlug, busRoutes }: BusPageProps) => {
           icon={<BiChevronLeft />}
         />
         <BusSearchInput
+          display={MOBILE_DISPLAY}
           citySlug={citySlug}
           onSelectCity={onSelectCity}
           searchString={searchString}
           onSearch={onSearch}
         />
       </Flex>
-      <Box flexGrow={1} overflowY="auto">
-        {renderContent()}
-      </Box>
-      <SimpleGrid
-        flexShrink={0}
-        bg="primary.800"
-        h="200px"
-        columns={5}
-        spacing={2}
-        p="2"
-      >
-        {BUTTON_TEXTS.map((text, index) => (
-          <Button variant="outline" key={text} onClick={onClickArray[index]}>
-            {text}
-          </Button>
-        ))}
-        <IconButton
-          variant="outline"
-          aria-label="delete one character"
-          onClick={onDeleteText}
-          icon={<FiDelete />}
-        />
-      </SimpleGrid>
+      <Flex flexGrow={1} overflowY="auto">
+        <Flex flexDir="column" flexShrink={0}>
+          <Flex
+            flexGrow={1}
+            flexDir="column"
+            m={[0, 4]}
+            rounded={['none', '3xl']}
+            borderColor="primary.800"
+            borderWidth={[0, '16px']}
+            overflowY="auto"
+          >
+            <Flex display={['none', 'flex']} p="4" bg="primary.700">
+              <BusSearchInput
+                citySlug={citySlug}
+                onSelectCity={onSelectCity}
+                searchString={searchString}
+                onSearch={onSearch}
+              />
+            </Flex>
+            <Box flexGrow={1} overflowY="auto">
+              {renderContent()}
+            </Box>
+            <SimpleGrid
+              flexShrink={0}
+              bg="primary.800"
+              h={[200, 'auto']}
+              columns={5}
+              spacing={[2, 3]}
+              pt={[2, 3]}
+              pb={[2, 1]}
+              px={[2, 0]}
+            >
+              {BUTTON_TEXTS.map((text, index) => (
+                <Button variant="neon" key={text} onClick={onClickArray[index]}>
+                  {text}
+                </Button>
+              ))}
+              <IconButton
+                variant="neon"
+                aria-label="delete one character"
+                onClick={onDeleteText}
+                icon={<FiDelete />}
+              />
+            </SimpleGrid>
+          </Flex>
+          <Box pos="relative" ml="16" p="8" display={DESKTOP_DISPLAY}>
+            <Image src={bus} animation={`${busAnimation} 3s ease infinite`} />
+            <Circle
+              pos="absolute"
+              h="1"
+              w="20"
+              bgGradient="linear(to-r, #172E5E 0, whiteAlpha.600 50%, #172E5E)"
+              zIndex=""
+              bottom="6"
+              animation={`${roadAnimation} 6s ease-out infinite`}
+            />
+          </Box>
+        </Flex>
+        <Box pos="relative" flexGrow={1} display={DESKTOP_DISPLAY}>
+          <Image
+            src={background}
+            layout="fill"
+            objectFit="cover"
+            objectPosition="center"
+          />
+        </Box>
+      </Flex>
     </Flex>
   );
 };
