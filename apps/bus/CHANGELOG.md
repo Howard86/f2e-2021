@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.4.0](https://github.com/Howard86/f2e-2011/compare/@f2e/bus@0.3.0...@f2e/bus@0.4.0) (2021-11-28)
+
+### Bug Fixes
+
+- **route:** fix BusRoute has only one routes ([f7e5fa4](https://github.com/Howard86/f2e-2011/commit/f7e5fa444a34c5bb305189b460d59ead58448e28))
+
+### Features
+
+- **bus:** add desktop layout ([94a91ea](https://github.com/Howard86/f2e-2011/commit/94a91eae07f7540d9ad6ae6acadd456bc682240a))
+- **bus:** update Bus page styling ([a30aca6](https://github.com/Howard86/f2e-2011/commit/a30aca6e469fc7a9c89dbb10f118ce6021d4e4eb))
+- **main:** add auto redirect with local storage helper ([8dcca08](https://github.com/Howard86/f2e-2011/commit/8dcca083ae21d1c58be3b0276babdd75c78400d0))
+- **main:** update HomePage with better animation & buttons ([f0bb38a](https://github.com/Howard86/f2e-2011/commit/f0bb38a7518d8b1f618b5e214c56ee3990cef3a2))
+- **route:** add BusRoutePage desktop ui ([c4cd1dc](https://github.com/Howard86/f2e-2011/commit/c4cd1dc138d69d228c456ad9c19d98906b6867b3))
+
+### Performance Improvements
+
+- **route:** add replace hard coded condition with routeStopEntity ([9c26f63](https://github.com/Howard86/f2e-2011/commit/9c26f63d6e6115a09ece7f3aa2a78c164335655a))
+
 # [0.3.0](https://github.com/Howard86/f2e-2011/compare/@f2e/bus@0.2.0...@f2e/bus@0.3.0) (2021-11-28)
 
 ### Bug Fixes
