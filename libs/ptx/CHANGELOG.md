@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.5.0](https://github.com/Howard86/f2e-2021/compare/@f2e/ptx@0.4.0...@f2e/ptx@0.5.0) (2021-11-28)
+
+### Bug Fixes
+
+- **ptx:** support unescaped characters in fetch ([146b9c3](https://github.com/Howard86/f2e-2021/commit/146b9c3b446b4326fc186991774d196066f1a442))
+
+### Features
+
+- **route:** add Route geoJson to map ([e2015b3](https://github.com/Howard86/f2e-2021/commit/e2015b3a76300e5d87f8ff26703f0456b115fc46))
+
 # [0.4.0](https://github.com/Howard86/f2e-2021/compare/@f2e/ptx@0.3.1...@f2e/ptx@0.4.0) (2021-11-23)
 
 ### Features
