@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.5.0](https://github.com/Howard86/f2e-2011/compare/@f2e/bus@0.4.0...@f2e/bus@0.5.0) (2021-11-29)
+
+### Features
+
+- **asset:** add brand assets ([37cbff3](https://github.com/Howard86/f2e-2011/commit/37cbff3f798fd89a9a54d00546bf28e1b75b64ca))
+- **nearby:** add nearby page ([92aaedd](https://github.com/Howard86/f2e-2011/commit/92aaeddeb1279bf7eff808a73cdc07be7cb7206d))
+- **ptx:** add nearby bus station service ([1012071](https://github.com/Howard86/f2e-2011/commit/1012071a8602ad276510452d150e312196aed45c))
+- **route:** add 30sec polling ([7b30cd9](https://github.com/Howard86/f2e-2011/commit/7b30cd93f391c82a6de85c5d1a8c201573dfd2af))
+- **route:** update bus estimation status ([cc6d705](https://github.com/Howard86/f2e-2011/commit/cc6d7059b78490e88d7baf645b4a845c407a7927))
+- **seo:** add title & description on each page ([cb8e464](https://github.com/Howard86/f2e-2011/commit/cb8e4649cefb8a286aa3c1896d88f2c75b4e69a5))
+
+### Performance Improvements
+
+- **api:** update data fetching cache logic ([a32d4fb](https://github.com/Howard86/f2e-2011/commit/a32d4fbaa0c7538ce4362022e1e513cb7b63e10d))
+- **ptx:** remove unused fields to save data transfer ([b4c5a39](https://github.com/Howard86/f2e-2011/commit/b4c5a39b0190026648abc24be517edf367b3ac8d))
+
 # [0.4.0](https://github.com/Howard86/f2e-2011/compare/@f2e/bus@0.3.0...@f2e/bus@0.4.0) (2021-11-28)
 
 ### Bug Fixes
