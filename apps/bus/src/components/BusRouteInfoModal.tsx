@@ -15,7 +15,7 @@ import {
   useBreakpointValue,
   VStack,
 } from '@chakra-ui/react';
-import { BusRouteDetail } from '@f2e/ptx';
+import type { BusRouteDetailInfo } from '@f2e/ptx';
 import { MdClose } from 'react-icons/md';
 
 import ExternalLink from './ExternalLink';
@@ -23,7 +23,7 @@ import ExternalLink from './ExternalLink';
 import { getBusRouteDestinations, getSubRouteTime } from '@/utils/bus';
 
 interface BusRouteInfoModalProps extends Omit<ModalProps, 'children'> {
-  route: BusRouteDetail;
+  route: BusRouteDetailInfo;
 }
 
 const BusRouteInfoModal = ({

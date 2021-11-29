@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.6.0](https://github.com/Howard86/f2e-2021/compare/@f2e/ptx@0.5.1...@f2e/ptx@0.6.0) (2021-11-29)
+
+### Features
+
+- **ptx:** add nearby bus station service ([1012071](https://github.com/Howard86/f2e-2021/commit/1012071a8602ad276510452d150e312196aed45c))
+- **route:** update bus estimation status ([cc6d705](https://github.com/Howard86/f2e-2021/commit/cc6d7059b78490e88d7baf645b4a845c407a7927))
+
+### Performance Improvements
+
+- **ptx:** remove unused fields to save data transfer ([b4c5a39](https://github.com/Howard86/f2e-2021/commit/b4c5a39b0190026648abc24be517edf367b3ac8d))
+
 ## [0.5.1](https://github.com/Howard86/f2e-2021/compare/@f2e/ptx@0.5.0...@f2e/ptx@0.5.1) (2021-11-28)
 
 **Note:** Version bump only for package @f2e/ptx

@@ -90,7 +90,7 @@ const HomePage = () => {
         </Button>
         <Button
           as={RouteLink}
-          href="/coach"
+          href="/nearby"
           leftIcon={<BiCurrentLocation />}
           variant="neon"
           size={size}

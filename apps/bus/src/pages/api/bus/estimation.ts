@@ -1,9 +1,9 @@
 import {
-  BusRoute,
+  BusEstimationInfo,
   CITIES,
   CitySlug,
   CitySlugMap,
-  getBusRoutesByCity,
+  getBusEstimationsByRouteAndCity,
 } from '@f2e/ptx';
 import {
   BadRequestException,
@@ -14,14 +14,17 @@ import {
 
 const router = new RouterBuilder();
 
-export interface BusRouteParam {
+export interface BusEstimationParam {
+  route: string;
   city: CitySlug;
 }
 
-router.get<BusRoute[]>(
-  (req: NextApiRequestWithQuery<Partial<BusRouteParam>>) => {
-    if (!req.query.city) {
-      throw new BadRequestException(`missing query 'city'`);
+router.get<BusEstimationInfo[]>(
+  (req: NextApiRequestWithQuery<Partial<BusEstimationParam>>) => {
+    if (!req.query.city || !req.query.route) {
+      throw new BadRequestException(
+        `missing query ${JSON.stringify(req.query)}`,
+      );
     }
 
     const city = CitySlugMap[req.query.city];
@@ -30,7 +33,7 @@ router.get<BusRoute[]>(
       throw new NotFoundException(`city ${req.query.city} does not exist`);
     }
 
-    return getBusRoutesByCity(city, 99999);
+    return getBusEstimationsByRouteAndCity(req.query.route, city);
   },
 );
 

@@ -22,7 +22,16 @@ const App = ({ Component, pageProps }: AppProps): JSX.Element => {
 
   return (
     <>
-      <NextHeadSeo title="bus" />
+      <NextHeadSeo
+        title="Iro Bus"
+        description="設計理念的取名來自於公車與捷運都會以顏色做為路線的區分，能有助於乘客辨別搭乘路線，節省時間，因而取名為Iro Bus，Iro為日文顏色的意思。Iro Bus整體色系偏暗色，營造科技感，帶給乘客能自由的創新自己的公車路線，穿梭全台各地，輕鬆掌握全台的公車訊息。"
+        og={{
+          title: 'Iro Bus',
+          description:
+            '設計理念的取名來自於公車與捷運都會以顏色做為路線的區分，能有助於乘客辨別搭乘路線，節省時間',
+          image: '/preview.jpg',
+        }}
+      />
       <ReduxProvider store={store}>
         <ChakraProvider resetCSS theme={theme}>
           <MapContextProvider>

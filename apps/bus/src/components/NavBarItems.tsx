@@ -9,7 +9,7 @@ import RouteLink from './RouteLink';
 
 interface NavBarItemsProps {
   display?: StackProps['display'];
-  citySlug: CitySlug;
+  citySlug: CitySlug | '';
 }
 
 const NavBarItems = ({ display, citySlug }: NavBarItemsProps) => {
