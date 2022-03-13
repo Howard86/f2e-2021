@@ -2,7 +2,7 @@ import type { Activity, Hotel, Restaurant, Scene } from '..';
 
 const SCENE_KEYWORDS: (keyof Scene)[] = [
   'Description',
-  'Name',
+  'ScenicSpotName',
   'DescriptionDetail',
   'Keyword',
   'Remarks',
@@ -15,7 +15,7 @@ const SCENE_KEYWORDS: (keyof Scene)[] = [
 ];
 
 const RESTAURANT_KEYWORDS: (keyof Restaurant)[] = [
-  'Name',
+  'RestaurantName',
   'Description',
   'Address',
   'OpenTime',
@@ -30,14 +30,14 @@ const HOTEL_KEYWORDS: (keyof Hotel)[] = [
   'Class',
   'Description',
   'Grade',
-  'Name',
+  'HotelName',
   'ParkingInfo',
   'ServiceInfo',
   'Spec',
 ];
 
 const ACTIVITY_KEYWORDS: (keyof Activity)[] = [
-  'Name',
+  'ActivityName',
   'Description',
   'Particpation',
   'Address',

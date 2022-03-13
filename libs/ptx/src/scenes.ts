@@ -4,8 +4,8 @@ import { City, Picture, Position } from './lib/shared-types';
 import { constructScenesSearch } from './lib/utils';
 
 export interface SceneCard {
-  ID: string;
-  Name: string;
+  ScenicSpotID: string;
+  ScenicSpotName: string;
   City: string;
   Picture: {
     PictureUrl1: string;
@@ -13,8 +13,8 @@ export interface SceneCard {
 }
 
 export interface SceneRemark {
-  ID: string;
-  Name: string;
+  ScenicSpotID: string;
+  ScenicSpotName: string;
   City: string;
   Remarks: string;
   Picture: {
@@ -23,7 +23,7 @@ export interface SceneRemark {
 }
 
 export interface SceneTheme {
-  ID: string;
+  ScenicSpotID: string;
   City: string;
   Class: SceneClass;
   Picture: {
@@ -32,7 +32,7 @@ export interface SceneTheme {
 }
 
 export interface RawSceneTheme {
-  ID: string;
+  ScenicSpotID: string;
   City: string;
   Class1?: SceneClass;
   Class2?: SceneClass;
@@ -43,8 +43,8 @@ export interface RawSceneTheme {
 }
 
 export interface Scene {
-  ID: string;
-  Name: string;
+  ScenicSpotID: string;
+  ScenicSpotName: string;
   City?: string;
   DescriptionDetail: string;
   Description?: string;
@@ -94,7 +94,7 @@ export type SceneClass =
 export const getSceneCards = (count = 30): Promise<SceneCard[]> =>
   apiGet('Tourism/ScenicSpot', {
     $top: count.toString(),
-    $select: 'ID,City,Name,Picture',
+    $select: 'ScenicSpotID,ScenicSpotName,City,Picture',
     $filter: 'Picture/PictureUrl1 ne null and City ne null',
     $orderBy: 'TicketInfo desc',
   });
@@ -104,7 +104,7 @@ export const getScenesWithRemarks = async (
 ): Promise<SceneRemark[]> => {
   const results = await apiGet<SceneRemark[]>('Tourism/ScenicSpot', {
     $top: (count * 5).toString(),
-    $select: 'ID,Name,City,Remarks,Picture',
+    $select: 'ScenicSpotID,ScenicSpotName,City,Remarks,Picture',
     $filter: 'Picture/PictureUrl1 ne null and Remarks ne null and City ne null',
     $orderBy: 'Remarks desc, UpdateTime desc',
   });
@@ -117,7 +117,7 @@ export const getScenesWithRemarks = async (
 export const getSceneTheme = async (count = 30): Promise<SceneTheme[]> => {
   const rawResults = await apiGet<RawSceneTheme[]>('Tourism/ScenicSpot', {
     $top: (count * 10).toString(),
-    $select: 'ID,City,Class1,Class2,Class3,Picture',
+    $select: 'ScenicSpotID,City,Class1,Class2,Class3,Picture',
     $filter: 'Picture/PictureUrl1 ne null and City ne null and Class1 ne null',
     $orderBy: 'UpdateTime desc',
   });
@@ -131,7 +131,7 @@ export const getSceneTheme = async (count = 30): Promise<SceneTheme[]> => {
       classSet.add(result.Class1);
       results.push({
         Class: result.Class1,
-        ID: result.ID,
+        ScenicSpotID: result.ScenicSpotID,
         Picture: result.Picture,
         City: result.City,
       });
@@ -139,7 +139,7 @@ export const getSceneTheme = async (count = 30): Promise<SceneTheme[]> => {
       classSet.add(result.Class2);
       results.push({
         Class: result.Class2,
-        ID: result.ID,
+        ScenicSpotID: result.ScenicSpotID,
         Picture: result.Picture,
         City: result.City,
       });
@@ -147,7 +147,7 @@ export const getSceneTheme = async (count = 30): Promise<SceneTheme[]> => {
       classSet.add(result.Class3);
       results.push({
         Class: result.Class3,
-        ID: result.ID,
+        ScenicSpotID: result.ScenicSpotID,
         Picture: result.Picture,
         City: result.City,
       });
@@ -165,7 +165,7 @@ export const getSceneCardsByCity = async (
     `Tourism/ScenicSpot/${PTXCityMap[city]}`,
     {
       $top: count.toString(),
-      $select: 'ID,Name,Picture',
+      $select: 'ScenicSpotID,ScenicSpotName,Picture',
       $filter: 'Picture/PictureUrl1 ne null',
       $orderBy: 'TicketInfo desc',
     },
@@ -180,7 +180,7 @@ export const getSceneCardsByThemeClass = async (
 ): Promise<SceneCard[]> =>
   apiGet<SceneCard[]>(`Tourism/ScenicSpot`, {
     $top: count.toString(),
-    $select: 'ID,City,Name,Picture',
+    $select: 'ScenicSpotID,ScenicSpotName,City,Picture',
     $filter: `Picture/PictureUrl1 ne null and City ne null and (Class1 eq '${theme}' or Class2 eq '${theme}' or Class3 eq '${theme}')`,
     $orderBy: 'TicketInfo desc',
   });
@@ -193,7 +193,7 @@ export const getScenesWithRemarksByCity = async (
     `Tourism/ScenicSpot/${PTXCityMap[city]}`,
     {
       $top: (count * 5).toString(),
-      $select: 'ID,Name,City,Remarks,Picture',
+      $select: 'ScenicSpotID,ScenicSpotName,City,Remarks,Picture',
       $filter: 'Picture/PictureUrl1 ne null and Remarks ne null',
       $orderBy: 'Remarks desc, UpdateTime desc',
     },
@@ -210,7 +210,7 @@ export const getScenesWithRemarksByThemeClass = async (
 ): Promise<SceneRemark[]> => {
   const results = await apiGet<SceneRemark[]>('Tourism/ScenicSpot', {
     $top: (count * 5).toString(),
-    $select: 'ID,Name,City,Remarks,Picture',
+    $select: 'ScenicSpotID,ScenicSpotName,City,Remarks,Picture',
     $filter: `Picture/PictureUrl1 ne null and Remarks ne null and City ne null and (Class1 eq '${theme}' or Class2 eq '${theme}' or Class3 eq '${theme}')`,
     $orderBy: 'Remarks desc, UpdateTime desc',
   });
@@ -223,7 +223,7 @@ export const getScenesWithRemarksByThemeClass = async (
 export const getSceneById = async (id: string): Promise<Scene | undefined> => {
   const result = await apiGet<Scene[]>('Tourism/ScenicSpot', {
     $top: '1',
-    $filter: `ID eq '${id}'`,
+    $filter: `ScenicSpotID eq '${id}'`,
   });
 
   return result[0];
@@ -235,7 +235,7 @@ export const searchScenesByKeyword = async (
 ): Promise<SceneCard[]> =>
   apiGet('Tourism/ScenicSpot', {
     $top: count.toString(),
-    $select: 'ID,City,Name,Picture',
+    $select: 'ScenicSpotID,ScenicSpotName,City,Picture',
     $filter: `Picture/PictureUrl1 ne null and City ne null and (${constructScenesSearch(
       keyword,
     )})`,
@@ -248,7 +248,7 @@ export const searchScenesByKeywordAndCity = async (
 ): Promise<SceneCard[]> =>
   apiGet(`Tourism/ScenicSpot/${PTXCityMap[city]}`, {
     $top: count.toString(),
-    $select: 'ID,City,Name,Picture',
+    $select: 'ScenicSpotID,ScenicSpotName,City,Picture',
     $filter: `Picture/PictureUrl1 ne null and (${constructScenesSearch(
       keyword,
     )})`,
@@ -261,7 +261,7 @@ export const searchScenesByKeywordAndTheme = async (
 ): Promise<SceneCard[]> =>
   apiGet('Tourism/ScenicSpot', {
     $top: count.toString(),
-    $select: 'ID,City,Name,Picture',
+    $select: 'ScenicSpotID,ScenicSpotName,City,Picture',
     $filter: `Picture/PictureUrl1 ne null and City ne null and (Class1 eq '${theme}' or Class2 eq '${theme}' or Class3 eq '${theme}') and (${constructScenesSearch(
       keyword,
     )})`,
