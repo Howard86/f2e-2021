@@ -122,150 +122,168 @@ const CategoryPage = ({
         <Heading as="h1" textAlign="center" mb="4">
           {city}
         </Heading>
-        <Banner
-          title="熱門景點"
-          mainColor="scenes.main"
-          href="/scenes"
-          hideButton
-        />
-        <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
-          {scenes
-            .slice(
-              scenePage * DEFAULT_CARD_NUMBER,
-              scenePage * DEFAULT_CARD_NUMBER + DEFAULT_CARD_NUMBER,
-            )
-            .map((scene) => (
-              <SceneCard
-                key={scene.ScenicSpotID}
-                id={scene.ScenicSpotID}
-                name={scene.ScenicSpotName}
-                city={scene.City}
-                image={scene.Picture.PictureUrl1}
+        {scenes.length > 0 && (
+          <>
+            <Banner
+              title="熱門景點"
+              mainColor="scenes.main"
+              href="/scenes"
+              hideButton
+            />
+            <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
+              {scenes
+                .slice(
+                  scenePage * DEFAULT_CARD_NUMBER,
+                  scenePage * DEFAULT_CARD_NUMBER + DEFAULT_CARD_NUMBER,
+                )
+                .map((scene) => (
+                  <SceneCard
+                    key={scene.ScenicSpotID}
+                    id={scene.ScenicSpotID}
+                    name={scene.ScenicSpotName}
+                    city={scene.City}
+                    image={scene.Picture.PictureUrl1}
+                  />
+                ))}
+            </SimpleGrid>
+            <Center mt="8">
+              <Pagination
+                colorTheme="scenes"
+                page={scenePage}
+                total={Math.ceil(scenes.length / DEFAULT_CARD_NUMBER)}
+                onPageChange={setScenePage}
               />
-            ))}
-        </SimpleGrid>
-        <Center mt="8">
-          <Pagination
-            colorTheme="scenes"
-            page={scenePage}
-            total={Math.ceil(scenes.length / DEFAULT_CARD_NUMBER)}
-            onPageChange={setScenePage}
-          />
-        </Center>
-        <Banner
-          title="最新活動"
-          mainColor="activities.main"
-          href="/scenes"
-          hideButton
-        />
-        <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
-          {activities
-            .slice(
-              DEFAULT_CARD_NUMBER * activityPage,
-              DEFAULT_CARD_NUMBER * activityPage + DEFAULT_CARD_NUMBER,
-            )
-            .map((activity) => (
-              <PlaceCard
-                key={activity.ActivityID}
-                id={activity.ActivityID}
-                name={activity.ActivityName}
-                city={activity.City}
-                image={activity.Picture.PictureUrl1}
-                address={activity.Address}
-                contactNumber={activity.Phone}
-                href={`/cities/${CityMap[activity.City]}/activity/${
-                  activity.ActivityID
-                }`}
-                openingHours={
-                  activity.StartTime &&
-                  activity.EndTime &&
-                  `${new Date(
-                    activity.StartTime,
-                  ).toLocaleDateString()}~${new Date(
-                    activity.EndTime,
-                  ).toLocaleDateString()}`
-                }
+            </Center>
+          </>
+        )}
+        {activities.length > 0 && (
+          <>
+            <Banner
+              title="最新活動"
+              mainColor="activities.main"
+              href="/scenes"
+              hideButton
+            />
+            <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
+              {activities
+                .slice(
+                  DEFAULT_CARD_NUMBER * activityPage,
+                  DEFAULT_CARD_NUMBER * activityPage + DEFAULT_CARD_NUMBER,
+                )
+                .map((activity) => (
+                  <PlaceCard
+                    key={activity.ActivityID}
+                    id={activity.ActivityID}
+                    name={activity.ActivityName}
+                    city={activity.City}
+                    image={activity.Picture.PictureUrl1}
+                    address={activity.Address}
+                    contactNumber={activity.Phone}
+                    href={`/cities/${CityMap[activity.City]}/activity/${
+                      activity.ActivityID
+                    }`}
+                    openingHours={
+                      activity.StartTime &&
+                      activity.EndTime &&
+                      `${new Date(
+                        activity.StartTime,
+                      ).toLocaleDateString()}~${new Date(
+                        activity.EndTime,
+                      ).toLocaleDateString()}`
+                    }
+                  />
+                ))}
+            </SimpleGrid>
+            <Center mt="8">
+              <Pagination
+                colorTheme="activities"
+                page={activityPage}
+                total={Math.ceil(activities.length / DEFAULT_CARD_NUMBER)}
+                onPageChange={setActivityPage}
               />
-            ))}
-        </SimpleGrid>
-        <Center mt="8">
-          <Pagination
-            colorTheme="activities"
-            page={activityPage}
-            total={Math.ceil(activities.length / DEFAULT_CARD_NUMBER)}
-            onPageChange={setActivityPage}
-          />
-        </Center>
-        <Banner
-          title="熱門美食"
-          mainColor="restaurants.main"
-          href="/scenes"
-          hideButton
-        />
-        <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
-          {restaurants
-            .slice(
-              DEFAULT_CARD_NUMBER * restaurantPage,
-              DEFAULT_CARD_NUMBER * restaurantPage + DEFAULT_CARD_NUMBER,
-            )
-            .map((restaurant) => (
-              <PlaceCard
-                key={restaurant.RestaurantID}
-                id={restaurant.RestaurantID}
-                name={restaurant.RestaurantName}
-                city={restaurant.City}
-                image={restaurant.Picture.PictureUrl1}
-                address={restaurant.Address}
-                contactNumber={restaurant.Phone}
-                openingHours={restaurant.OpenTime}
-                href={`/cities/${CityMap[restaurant.City]}/restaurant/${
-                  restaurant.RestaurantID
-                }`}
+            </Center>
+          </>
+        )}
+        {restaurants.length > 0 && (
+          <>
+            <Banner
+              title="熱門美食"
+              mainColor="restaurants.main"
+              href="/scenes"
+              hideButton
+            />
+            <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
+              {restaurants
+                .slice(
+                  DEFAULT_CARD_NUMBER * restaurantPage,
+                  DEFAULT_CARD_NUMBER * restaurantPage + DEFAULT_CARD_NUMBER,
+                )
+                .map((restaurant) => (
+                  <PlaceCard
+                    key={restaurant.RestaurantID}
+                    id={restaurant.RestaurantID}
+                    name={restaurant.RestaurantName}
+                    city={restaurant.City}
+                    image={restaurant.Picture.PictureUrl1}
+                    address={restaurant.Address}
+                    contactNumber={restaurant.Phone}
+                    openingHours={restaurant.OpenTime}
+                    href={`/cities/${CityMap[restaurant.City]}/restaurant/${
+                      restaurant.RestaurantID
+                    }`}
+                  />
+                ))}
+            </SimpleGrid>
+            <Center mt="8">
+              <Pagination
+                colorTheme="restaurants"
+                page={restaurantPage}
+                total={Math.ceil(restaurants.length / DEFAULT_CARD_NUMBER)}
+                onPageChange={setRestaurantPage}
               />
-            ))}
-        </SimpleGrid>
-        <Center mt="8">
-          <Pagination
-            colorTheme="restaurants"
-            page={restaurantPage}
-            total={Math.ceil(restaurants.length / DEFAULT_CARD_NUMBER)}
-            onPageChange={setRestaurantPage}
-          />
-        </Center>
-        <Banner
-          title="住宿推薦"
-          mainColor="hotels.main"
-          href="/scenes"
-          hideButton
-        />
-        <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
-          {hotels
-            .slice(
-              DEFAULT_CARD_NUMBER * hotelPage,
-              DEFAULT_CARD_NUMBER * hotelPage + DEFAULT_CARD_NUMBER,
-            )
-            .map((hotel) => (
-              <PlaceCard
-                key={hotel.HotelID}
-                id={hotel.HotelID}
-                name={hotel.HotelName}
-                city={hotel.City}
-                image={hotel.Picture.PictureUrl1}
-                address={hotel.Address}
-                contactNumber={hotel.Phone}
-                serviceInfo={hotel.ServiceInfo}
-                href={`/cities/${CityMap[hotel.City]}/hotel/${hotel.HotelID}`}
+            </Center>
+          </>
+        )}
+        {hotels.length > 0 && (
+          <>
+            <Banner
+              title="住宿推薦"
+              mainColor="hotels.main"
+              href="/scenes"
+              hideButton
+            />
+            <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
+              {hotels
+                .slice(
+                  DEFAULT_CARD_NUMBER * hotelPage,
+                  DEFAULT_CARD_NUMBER * hotelPage + DEFAULT_CARD_NUMBER,
+                )
+                .map((hotel) => (
+                  <PlaceCard
+                    key={hotel.HotelID}
+                    id={hotel.HotelID}
+                    name={hotel.HotelName}
+                    city={hotel.City}
+                    image={hotel.Picture.PictureUrl1}
+                    address={hotel.Address}
+                    contactNumber={hotel.Phone}
+                    serviceInfo={hotel.ServiceInfo}
+                    href={`/cities/${CityMap[hotel.City]}/hotel/${
+                      hotel.HotelID
+                    }`}
+                  />
+                ))}
+            </SimpleGrid>
+            <Center mt="8">
+              <Pagination
+                colorTheme="hotels"
+                page={hotelPage}
+                total={Math.ceil(hotels.length / DEFAULT_CARD_NUMBER)}
+                onPageChange={setHotelPage}
               />
-            ))}
-        </SimpleGrid>
-        <Center mt="8">
-          <Pagination
-            colorTheme="hotels"
-            page={hotelPage}
-            total={Math.ceil(hotels.length / DEFAULT_CARD_NUMBER)}
-            onPageChange={setHotelPage}
-          />
-        </Center>
+            </Center>
+          </>
+        )}
       </Flex>
     </>
   );
