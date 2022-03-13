@@ -203,8 +203,8 @@ const HotelPage = ({ hotel, remarks }: HotelPageProps): JSX.Element => {
               <SceneDetailBox
                 label="更新時間"
                 info={
-                  hotel.UpdateTime &&
-                  new Date(hotel.UpdateTime).toLocaleDateString()
+                  hotel.SrcUpdateTime &&
+                  new Date(hotel.SrcUpdateTime).toLocaleDateString()
                 }
                 icon={BiSync}
               />

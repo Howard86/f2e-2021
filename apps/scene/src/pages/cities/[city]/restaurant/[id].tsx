@@ -206,8 +206,8 @@ const RestaurantPage = ({
               <SceneDetailBox
                 label="更新時間"
                 info={
-                  restaurant.UpdateTime &&
-                  new Date(restaurant.UpdateTime).toLocaleDateString()
+                  restaurant.SrcUpdateTime &&
+                  new Date(restaurant.SrcUpdateTime).toLocaleDateString()
                 }
                 icon={BiSync}
               />

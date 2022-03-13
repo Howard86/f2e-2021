@@ -243,8 +243,8 @@ const ActivityPage = ({
               <SceneDetailBox
                 label="更新時間"
                 info={
-                  activity.UpdateTime &&
-                  new Date(activity.UpdateTime).toLocaleDateString()
+                  activity.SrcUpdateTime &&
+                  new Date(activity.SrcUpdateTime).toLocaleDateString()
                 }
                 icon={BiSync}
               />

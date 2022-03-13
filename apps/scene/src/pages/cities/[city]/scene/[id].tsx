@@ -237,8 +237,8 @@ const ScenePage = ({ scene, remarks }: ScenePageProps): JSX.Element => {
               <SceneDetailBox
                 label="更新時間"
                 info={
-                  scene.UpdateTime &&
-                  new Date(scene.UpdateTime).toLocaleDateString()
+                  scene.SrcUpdateTime &&
+                  new Date(scene.SrcUpdateTime).toLocaleDateString()
                 }
                 icon={BiSync}
               />
