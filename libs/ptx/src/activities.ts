@@ -80,7 +80,7 @@ export const getActivityWithRemarksByCity = async (
     $top: count.toString(),
     $select: 'ActivityID,ActivityName,Description,City,Address,Picture',
     $filter: 'Picture/PictureUrl1 ne null and Address ne null',
-    $orderBy: 'TravelInfo desc, UpdateTime desc',
+    $orderBy: 'SrcUpdateTime desc, TravelInfo desc',
   });
 
 export const searchActivitiesByKeyword = async (
@@ -94,4 +94,5 @@ export const searchActivitiesByKeyword = async (
     $filter: `Picture/PictureUrl1 ne null and City ne null and (${constructActivitiesSearch(
       keyword,
     )})`,
+    $orderBy: 'SrcUpdateTime desc, TravelInfo desc',
   });

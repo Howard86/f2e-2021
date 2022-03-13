@@ -59,7 +59,7 @@ export const getHotelCards = async (count = 30): Promise<HotelCard[]> =>
     $top: count.toString(),
     $select: 'HotelID,HotelName,City,Address,ServiceInfo,Phone,Picture',
     $filter: 'Picture/PictureUrl1 ne null and Address ne null and City ne null',
-    $orderBy: 'ServiceInfo desc',
+    $orderBy: 'SrcUpdateTime desc, ServiceInfo desc',
   });
 
 export const getHotelCardsByCity = async (
@@ -70,7 +70,7 @@ export const getHotelCardsByCity = async (
     $top: count.toString(),
     $select: 'HotelID,HotelName,City,Address,ServiceInfo,Phone,Picture',
     $filter: 'Picture/PictureUrl1 ne null and Address ne null',
-    $orderBy: 'ServiceInfo desc',
+    $orderBy: 'SrcUpdateTime desc, ServiceInfo desc',
   });
 
 export const getHotelWithRemarksByCity = async (
@@ -81,7 +81,7 @@ export const getHotelWithRemarksByCity = async (
     $top: count.toString(),
     $select: 'HotelID,HotelName,Description,City,Address,Picture',
     $filter: 'Picture/PictureUrl1 ne null and Address ne null',
-    $orderBy: 'ServiceInfo desc, UpdateTime desc',
+    $orderBy: 'SrcUpdateTime desc, ServiceInfo desc',
   });
 
 export const getHotelCountWithCity = async (
@@ -92,6 +92,7 @@ export const getHotelCountWithCity = async (
     $top: count.toString(),
     $select: 'HotelID',
     $filter: 'Picture/PictureUrl1 ne null and Address ne null',
+    $orderBy: 'SrcUpdateTime desc, ServiceInfo desc',
   });
 
 export const searchHotelsByKeyword = async (
@@ -104,4 +105,5 @@ export const searchHotelsByKeyword = async (
     $filter: `Picture/PictureUrl1 ne null and City ne null and (${constructHotelsSearch(
       keyword,
     )})`,
+    $orderBy: 'SrcUpdateTime desc, ServiceInfo desc',
   });

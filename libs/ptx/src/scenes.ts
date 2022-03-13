@@ -96,7 +96,7 @@ export const getSceneCards = (count = 30): Promise<SceneCard[]> =>
     $top: count.toString(),
     $select: 'ScenicSpotID,ScenicSpotName,City,Picture',
     $filter: 'Picture/PictureUrl1 ne null and City ne null',
-    $orderBy: 'TicketInfo desc',
+    $orderBy: 'SrcUpdateTime desc, TicketInfo desc',
   });
 
 export const getScenesWithRemarks = async (
@@ -106,7 +106,7 @@ export const getScenesWithRemarks = async (
     $top: (count * 5).toString(),
     $select: 'ScenicSpotID,ScenicSpotName,City,Remarks,Picture',
     $filter: 'Picture/PictureUrl1 ne null and Remarks ne null and City ne null',
-    $orderBy: 'Remarks desc, UpdateTime desc',
+    $orderBy: 'SrcUpdateTime desc, Remarks desc',
   });
 
   return results
@@ -119,7 +119,7 @@ export const getSceneTheme = async (count = 30): Promise<SceneTheme[]> => {
     $top: (count * 10).toString(),
     $select: 'ScenicSpotID,City,Class1,Class2,Class3,Picture',
     $filter: 'Picture/PictureUrl1 ne null and City ne null and Class1 ne null',
-    $orderBy: 'UpdateTime desc',
+    $orderBy: 'SrcUpdateTime desc, Remarks desc',
   });
 
   const classSet = new Set<SceneClass>();
@@ -167,7 +167,7 @@ export const getSceneCardsByCity = async (
       $top: count.toString(),
       $select: 'ScenicSpotID,ScenicSpotName,Picture',
       $filter: 'Picture/PictureUrl1 ne null',
-      $orderBy: 'TicketInfo desc',
+      $orderBy: 'SrcUpdateTime desc, TicketInfo desc',
     },
   );
   return results.map((result) => ({ ...result, City: city }));
@@ -182,7 +182,7 @@ export const getSceneCardsByThemeClass = async (
     $top: count.toString(),
     $select: 'ScenicSpotID,ScenicSpotName,City,Picture',
     $filter: `Picture/PictureUrl1 ne null and City ne null and (Class1 eq '${theme}' or Class2 eq '${theme}' or Class3 eq '${theme}')`,
-    $orderBy: 'TicketInfo desc',
+    $orderBy: 'SrcUpdateTime desc, TicketInfo desc',
   });
 
 export const getScenesWithRemarksByCity = async (
@@ -195,7 +195,7 @@ export const getScenesWithRemarksByCity = async (
       $top: (count * 5).toString(),
       $select: 'ScenicSpotID,ScenicSpotName,City,Remarks,Picture',
       $filter: 'Picture/PictureUrl1 ne null and Remarks ne null',
-      $orderBy: 'Remarks desc, UpdateTime desc',
+      $orderBy: 'SrcUpdateTime desc, Remarks desc',
     },
   );
 
@@ -212,7 +212,7 @@ export const getScenesWithRemarksByThemeClass = async (
     $top: (count * 5).toString(),
     $select: 'ScenicSpotID,ScenicSpotName,City,Remarks,Picture',
     $filter: `Picture/PictureUrl1 ne null and Remarks ne null and City ne null and (Class1 eq '${theme}' or Class2 eq '${theme}' or Class3 eq '${theme}')`,
-    $orderBy: 'Remarks desc, UpdateTime desc',
+    $orderBy: 'SrcUpdateTime desc, Remarks desc',
   });
 
   return results
@@ -239,6 +239,7 @@ export const searchScenesByKeyword = async (
     $filter: `Picture/PictureUrl1 ne null and City ne null and (${constructScenesSearch(
       keyword,
     )})`,
+    $orderBy: 'SrcUpdateTime desc, Remarks desc',
   });
 
 export const searchScenesByKeywordAndCity = async (
@@ -252,6 +253,7 @@ export const searchScenesByKeywordAndCity = async (
     $filter: `Picture/PictureUrl1 ne null and (${constructScenesSearch(
       keyword,
     )})`,
+    $orderBy: 'SrcUpdateTime desc, Remarks desc',
   });
 
 export const searchScenesByKeywordAndTheme = async (
@@ -265,4 +267,5 @@ export const searchScenesByKeywordAndTheme = async (
     $filter: `Picture/PictureUrl1 ne null and City ne null and (Class1 eq '${theme}' or Class2 eq '${theme}' or Class3 eq '${theme}') and (${constructScenesSearch(
       keyword,
     )})`,
+    $orderBy: 'SrcUpdateTime desc, Remarks desc',
   });

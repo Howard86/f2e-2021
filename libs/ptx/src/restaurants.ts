@@ -69,7 +69,7 @@ export const getRestaurantCards = async (
     $top: count.toString(),
     $select: 'RestaurantID,RestaurantName,City,Address,OpenTime,Phone,Picture',
     $filter: 'Picture/PictureUrl1 ne null and Address ne null and City ne null',
-    $orderBy: 'UpdateTime desc',
+    $orderBy: 'SrcUpdateTime desc, Description desc',
   });
 
 export const getRestaurantCardsByCity = async (
@@ -80,7 +80,7 @@ export const getRestaurantCardsByCity = async (
     $top: count.toString(),
     $select: 'RestaurantID,RestaurantName,City,Address,OpenTime,Phone,Picture',
     $filter: 'Picture/PictureUrl1 ne null and Address ne null',
-    $orderBy: 'UpdateTime desc',
+    $orderBy: 'SrcUpdateTime desc, Description desc',
   });
 
 export const getRestaurantWithRemarks = async (
@@ -90,7 +90,7 @@ export const getRestaurantWithRemarks = async (
     $top: count.toString(),
     $select: 'RestaurantID,RestaurantName,Description,City,Address,Picture',
     $filter: 'Picture/PictureUrl1 ne null and Address ne null and City ne null',
-    $orderBy: 'Description desc, UpdateTime desc',
+    $orderBy: 'SrcUpdateTime desc, Description desc',
   });
 
 export const getRestaurantWithRemarksByCity = async (
@@ -101,7 +101,7 @@ export const getRestaurantWithRemarksByCity = async (
     $top: count.toString(),
     $select: 'RestaurantID,RestaurantName,Description,City,Address,Picture',
     $filter: 'Picture/PictureUrl1 ne null and Address ne null',
-    $orderBy: 'Description desc, UpdateTime desc',
+    $orderBy: 'SrcUpdateTime desc, Description desc',
   });
 
 export const searchRestaurantsByKeyword = async (
@@ -114,4 +114,5 @@ export const searchRestaurantsByKeyword = async (
     $filter: `Picture/PictureUrl1 ne null and City ne null and (${constructRestaurantsSearch(
       keyword,
     )})`,
+    $orderBy: 'SrcUpdateTime desc, Description desc',
   });
