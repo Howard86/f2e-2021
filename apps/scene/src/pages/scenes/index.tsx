@@ -152,9 +152,9 @@ const ScenesPage = ({
               <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
                 {data.data.map((scene) => (
                   <SceneCard
-                    key={scene.ID}
-                    id={scene.ID}
-                    name={scene.Name}
+                    key={scene.ScenicSpotID}
+                    id={scene.ScenicSpotID}
+                    name={scene.ScenicSpotName}
                     city={scene.City}
                     image={scene.Picture.PictureUrl1}
                   />
@@ -173,9 +173,9 @@ const ScenesPage = ({
         <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
           {scenes.map((scene) => (
             <SceneCard
-              key={scene.ID}
-              id={scene.ID}
-              name={scene.Name}
+              key={scene.ScenicSpotID}
+              id={scene.ScenicSpotID}
+              name={scene.ScenicSpotName}
               city={scene.City}
               image={scene.Picture.PictureUrl1}
             />
@@ -191,13 +191,15 @@ const ScenesPage = ({
         <SimpleGrid columns={[1, 2, 3]} spacing={6} spacingY={12} mx="8" mt="4">
           {remarks.map((remark) => (
             <FanCard
-              id={remark.ID}
-              key={remark.ID}
-              name={remark.Name}
+              id={remark.ScenicSpotID}
+              key={remark.ScenicSpotID}
+              name={remark.ScenicSpotName}
               city={remark.City}
               description={remark.Remarks}
               image={remark.Picture.PictureUrl1}
-              href={`/cities/${CityMap[remark.City]}/scene/${remark.ID}`}
+              href={`/cities/${CityMap[remark.City]}/scene/${
+                remark.ScenicSpotID
+              }`}
             />
           ))}
         </SimpleGrid>
@@ -210,8 +212,8 @@ const ScenesPage = ({
         <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
           {themes.map((theme) => (
             <ThemeCard
-              id={theme.ID}
-              key={theme.ID}
+              id={theme.ScenicSpotID}
+              key={theme.ScenicSpotID}
               theme={theme.Class}
               image={theme.Picture.PictureUrl1}
             />

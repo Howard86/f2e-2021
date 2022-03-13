@@ -228,15 +228,17 @@ const HotelsPage = ({
               <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
                 {data.data.map((hotel) => (
                   <PlaceCard
-                    key={hotel.ID}
-                    id={hotel.ID}
-                    name={hotel.Name}
+                    key={hotel.HotelID}
+                    id={hotel.HotelID}
+                    name={hotel.HotelName}
                     city={hotel.City}
                     image={hotel.Picture.PictureUrl1}
                     address={hotel.Address}
                     contactNumber={hotel.Phone}
                     serviceInfo={hotel.ServiceInfo}
-                    href={`/cities/${CityMap[hotel.City]}/hotel/${hotel.ID}`}
+                    href={`/cities/${CityMap[hotel.City]}/hotel/${
+                      hotel.HotelID
+                    }`}
                   />
                 ))}
               </SimpleGrid>
@@ -257,15 +259,15 @@ const HotelsPage = ({
             )
             .map((hotel) => (
               <PlaceCard
-                key={hotel.ID}
-                id={hotel.ID}
-                name={hotel.Name}
+                key={hotel.HotelID}
+                id={hotel.HotelID}
+                name={hotel.HotelName}
                 city={hotel.City}
                 image={hotel.Picture.PictureUrl1}
                 address={hotel.Address}
                 contactNumber={hotel.Phone}
                 serviceInfo={hotel.ServiceInfo}
-                href={`/cities/${CityMap[hotel.City]}/hotel/${hotel.ID}`}
+                href={`/cities/${CityMap[hotel.City]}/hotel/${hotel.HotelID}`}
               />
             ))}
         </SimpleGrid>

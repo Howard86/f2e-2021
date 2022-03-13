@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.8](https://github.com/Howard86/f2e-2011/compare/@f2e/scene@0.2.7...@f2e/scene@0.2.8) (2022-03-13)
+
+### Bug Fixes
+
+- **scene:** remove banners when no items are found ([0eeaf75](https://github.com/Howard86/f2e-2011/commit/0eeaf7508edc72add55a2664a0206dba5b507d71))
+
 ## [0.2.7](https://github.com/Howard86/f2e-2011/compare/@f2e/scene@0.2.6...@f2e/scene@0.2.7) (2021-11-29)
 
 **Note:** Version bump only for package @f2e/scene

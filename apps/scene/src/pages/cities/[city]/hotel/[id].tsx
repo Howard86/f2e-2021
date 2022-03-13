@@ -22,7 +22,7 @@ import {
   getHotelById,
   getHotelWithRemarksByCity,
   Hotel,
-  RestaurantRemark,
+  HotelRemark,
 } from '@f2e/ptx';
 import {
   GetStaticPathsResult,
@@ -51,7 +51,7 @@ import { ONE_DAY_IN_SECONDS } from '@/constants/time';
 
 interface HotelPageProps {
   hotel: Hotel;
-  remarks: RestaurantRemark[];
+  remarks: HotelRemark[];
 }
 
 const getGoogleMapURL = (lat?: number, lng?: number) =>
@@ -76,11 +76,11 @@ const HotelPage = ({ hotel, remarks }: HotelPageProps): JSX.Element => {
   return (
     <>
       <NextHeadSeo
-        title={`台灣旅遊導覽網 | ${hotel.Name}`}
+        title={`台灣旅遊導覽網 | ${hotel.HotelName}`}
         description={hotel.Description}
         og={{
           type: 'article',
-          title: hotel.Name,
+          title: hotel.HotelName,
           description: hotel.Picture.PictureDescription1,
           image: hotel.Picture.PictureUrl1,
         }}
@@ -110,10 +110,10 @@ const HotelPage = ({ hotel, remarks }: HotelPageProps): JSX.Element => {
           </BreadcrumbItem>
           <BreadcrumbItem fontWeight="bold" isCurrentPage>
             <RouteLink
-              href={`/cities/${CityMap[hotel.City]}/hotel/${hotel.ID}`}
+              href={`/cities/${CityMap[hotel.City]}/hotel/${hotel.HotelID}`}
               as={BreadcrumbLink}
             >
-              {hotel.Name}
+              {hotel.HotelName}
             </RouteLink>
           </BreadcrumbItem>
         </Breadcrumb>
@@ -131,7 +131,7 @@ const HotelPage = ({ hotel, remarks }: HotelPageProps): JSX.Element => {
               color={saved ? 'red.600' : 'blackAlpha.600'}
             />
             <Image
-              alt={hotel.Picture?.PictureDescription1 || hotel.Name}
+              alt={hotel.Picture?.PictureDescription1 || hotel.HotelName}
               src={hotel.Picture?.PictureUrl1}
               align="center"
               fit="cover"
@@ -143,7 +143,7 @@ const HotelPage = ({ hotel, remarks }: HotelPageProps): JSX.Element => {
           </Box>
           <Box flexGrow={1} flexShrink={3} lineHeight="7" sx={{ p: { my: 2 } }}>
             <Heading textAlign="center" mb="4">
-              {hotel.Name}
+              {hotel.HotelName}
             </Heading>
             {hotel.Description && (
               <Text noOfLines={10}>{hotel.Description}</Text>
@@ -203,8 +203,8 @@ const HotelPage = ({ hotel, remarks }: HotelPageProps): JSX.Element => {
               <SceneDetailBox
                 label="更新時間"
                 info={
-                  hotel.UpdateTime &&
-                  new Date(hotel.UpdateTime).toLocaleDateString()
+                  hotel.SrcUpdateTime &&
+                  new Date(hotel.SrcUpdateTime).toLocaleDateString()
                 }
                 icon={BiSync}
               />
@@ -226,13 +226,13 @@ const HotelPage = ({ hotel, remarks }: HotelPageProps): JSX.Element => {
         <SimpleGrid columns={[1, 2, 3]} spacingX={8} spacingY={12} mx="8">
           {remarks.map((remark) => (
             <FanCard
-              id={remark.ID}
-              key={remark.ID}
-              name={remark.Name}
+              id={remark.HotelID}
+              key={remark.HotelID}
+              name={remark.HotelName}
               city={remark.City}
               description={remark.Description}
               image={remark.Picture.PictureUrl1}
-              href={`/cities/${CityMap[remark.City]}/hotel/${remark.ID}`}
+              href={`/cities/${CityMap[remark.City]}/hotel/${remark.HotelID}`}
             />
           ))}
         </SimpleGrid>

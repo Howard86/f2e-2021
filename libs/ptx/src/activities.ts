@@ -4,8 +4,8 @@ import { City, Picture, Position } from './lib/shared-types';
 import { constructActivitiesSearch } from './lib/utils';
 
 export interface Activity {
-  ID: string;
-  Name: string;
+  ActivityID: string;
+  ActivityName: string;
   Description: string;
   Particpation?: string;
   Location?: string;
@@ -30,8 +30,8 @@ export interface Activity {
 }
 
 export interface ActivityCard {
-  ID: string;
-  Name: string;
+  ActivityID: string;
+  ActivityName: string;
   City: string;
   Address: string;
   Phone: string;
@@ -41,8 +41,8 @@ export interface ActivityCard {
 }
 
 export interface ActivityRemark {
-  ID: string;
-  Name: string;
+  ActivityID: string;
+  ActivityName: string;
   Description: string;
   City: string;
   Address: string;
@@ -54,7 +54,7 @@ export const getActivityById = async (
 ): Promise<Activity | undefined> => {
   const result = await apiGet<Activity[]>('Tourism/Activity', {
     $top: '1',
-    $filter: `ID eq '${id}'`,
+    $filter: `ActivityID eq '${id}'`,
   });
 
   return result[0];
@@ -66,7 +66,8 @@ export const getActivityCardsByCity = async (
 ): Promise<ActivityCard[]> =>
   apiGet(`Tourism/Activity/${PTXCityMap[city]}`, {
     $top: count.toString(),
-    $select: 'ID,Name,City,Address,StartTime,EndTime,Phone,Picture',
+    $select:
+      'ActivityID,ActivityName,City,Address,StartTime,EndTime,Phone,Picture',
     $filter: 'Picture/PictureUrl1 ne null and Address ne null',
     $orderBy: 'StartTime desc',
   });
@@ -77,9 +78,9 @@ export const getActivityWithRemarksByCity = async (
 ): Promise<ActivityRemark[]> =>
   apiGet(`Tourism/Activity/${PTXCityMap[city]}`, {
     $top: count.toString(),
-    $select: 'ID,Name,Description,City,Address,Picture',
+    $select: 'ActivityID,ActivityName,Description,City,Address,Picture',
     $filter: 'Picture/PictureUrl1 ne null and Address ne null',
-    $orderBy: 'TravelInfo desc, UpdateTime desc',
+    $orderBy: 'SrcUpdateTime desc, TravelInfo desc',
   });
 
 export const searchActivitiesByKeyword = async (
@@ -88,8 +89,10 @@ export const searchActivitiesByKeyword = async (
 ): Promise<ActivityCard[]> =>
   apiGet('Tourism/Activity', {
     $top: count.toString(),
-    $select: 'ID,Name,City,Address,StartTime,EndTime,Phone,Picture',
+    $select:
+      'ActivityID,ActivityName,City,Address,StartTime,EndTime,Phone,Picture',
     $filter: `Picture/PictureUrl1 ne null and City ne null and (${constructActivitiesSearch(
       keyword,
     )})`,
+    $orderBy: 'SrcUpdateTime desc, TravelInfo desc',
   });

@@ -4,8 +4,8 @@ import { City, Picture, Position } from './lib/shared-types';
 import { constructRestaurantsSearch } from './lib/utils';
 
 export interface Restaurant {
-  ID: string;
-  Name: string;
+  RestaurantID: string;
+  RestaurantName: string;
   Description: string;
   Address: string;
   ZipCode?: string;
@@ -33,8 +33,8 @@ export type RestaurantClass =
   | '素食';
 
 export interface RestaurantCard {
-  ID: string;
-  Name: string;
+  RestaurantID: string;
+  RestaurantName: string;
   City: string;
   Address: string;
   OpenTime?: string;
@@ -43,8 +43,8 @@ export interface RestaurantCard {
 }
 
 export interface RestaurantRemark {
-  ID: string;
-  Name: string;
+  RestaurantID: string;
+  RestaurantName: string;
   Description: string;
   City: string;
   Address: string;
@@ -56,7 +56,7 @@ export const getRestaurantById = async (
 ): Promise<Restaurant | undefined> => {
   const result = await apiGet<Restaurant[]>('Tourism/Restaurant', {
     $top: '1',
-    $filter: `ID eq '${id}'`,
+    $filter: `RestaurantID eq '${id}'`,
   });
 
   return result[0];
@@ -67,9 +67,9 @@ export const getRestaurantCards = async (
 ): Promise<RestaurantCard[]> =>
   apiGet('Tourism/Restaurant', {
     $top: count.toString(),
-    $select: 'ID,Name,City,Address,OpenTime,Phone,Picture',
+    $select: 'RestaurantID,RestaurantName,City,Address,OpenTime,Phone,Picture',
     $filter: 'Picture/PictureUrl1 ne null and Address ne null and City ne null',
-    $orderBy: 'UpdateTime desc',
+    $orderBy: 'SrcUpdateTime desc, Description desc',
   });
 
 export const getRestaurantCardsByCity = async (
@@ -78,9 +78,9 @@ export const getRestaurantCardsByCity = async (
 ): Promise<RestaurantCard[]> =>
   apiGet(`Tourism/Restaurant/${PTXCityMap[city]}`, {
     $top: count.toString(),
-    $select: 'ID,Name,City,Address,OpenTime,Phone,Picture',
+    $select: 'RestaurantID,RestaurantName,City,Address,OpenTime,Phone,Picture',
     $filter: 'Picture/PictureUrl1 ne null and Address ne null',
-    $orderBy: 'UpdateTime desc',
+    $orderBy: 'SrcUpdateTime desc, Description desc',
   });
 
 export const getRestaurantWithRemarks = async (
@@ -88,9 +88,9 @@ export const getRestaurantWithRemarks = async (
 ): Promise<RestaurantRemark[]> =>
   apiGet('Tourism/Restaurant', {
     $top: count.toString(),
-    $select: 'ID,Name,Description,City,Address,Picture',
+    $select: 'RestaurantID,RestaurantName,Description,City,Address,Picture',
     $filter: 'Picture/PictureUrl1 ne null and Address ne null and City ne null',
-    $orderBy: 'Description desc, UpdateTime desc',
+    $orderBy: 'SrcUpdateTime desc, Description desc',
   });
 
 export const getRestaurantWithRemarksByCity = async (
@@ -99,9 +99,9 @@ export const getRestaurantWithRemarksByCity = async (
 ): Promise<RestaurantRemark[]> =>
   apiGet(`Tourism/Restaurant/${PTXCityMap[city]}`, {
     $top: count.toString(),
-    $select: 'ID,Name,Description,City,Address,Picture',
+    $select: 'RestaurantID,RestaurantName,Description,City,Address,Picture',
     $filter: 'Picture/PictureUrl1 ne null and Address ne null',
-    $orderBy: 'Description desc, UpdateTime desc',
+    $orderBy: 'SrcUpdateTime desc, Description desc',
   });
 
 export const searchRestaurantsByKeyword = async (
@@ -110,8 +110,9 @@ export const searchRestaurantsByKeyword = async (
 ): Promise<RestaurantCard[]> =>
   apiGet('Tourism/Restaurant', {
     $top: count.toString(),
-    $select: 'ID,Name,City,Address,OpenTime,Phone,Picture',
+    $select: 'RestaurantID,RestaurantName,City,Address,OpenTime,Phone,Picture',
     $filter: `Picture/PictureUrl1 ne null and City ne null and (${constructRestaurantsSearch(
       keyword,
     )})`,
+    $orderBy: 'SrcUpdateTime desc, Description desc',
   });

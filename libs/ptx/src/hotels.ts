@@ -4,8 +4,8 @@ import { City, Picture, Position } from './lib/shared-types';
 import { constructHotelsSearch } from './lib/utils';
 
 export interface Hotel {
-  ID: string;
-  Name: string;
+  HotelID: string;
+  HotelName: string;
   Description?: string;
   Address: string;
   ZipCode?: string;
@@ -27,8 +27,8 @@ export interface Hotel {
 export type HotelClass = '一般旅館' | '一般觀光旅館' | '國際觀光旅館' | '民宿';
 
 export interface HotelCard {
-  ID: string;
-  Name: string;
+  HotelID: string;
+  HotelName: string;
   City: string;
   Address: string;
   ServiceInfo?: string;
@@ -37,8 +37,8 @@ export interface HotelCard {
 }
 
 export interface HotelRemark {
-  ID: string;
-  Name: string;
+  HotelID: string;
+  HotelName: string;
   Description: string;
   City: string;
   Address: string;
@@ -48,7 +48,7 @@ export interface HotelRemark {
 export const getHotelById = async (id: string): Promise<Hotel | undefined> => {
   const result = await apiGet<Hotel[]>('Tourism/Hotel', {
     $top: '1',
-    $filter: `ID eq '${id}'`,
+    $filter: `HotelID eq '${id}'`,
   });
 
   return result[0];
@@ -57,9 +57,9 @@ export const getHotelById = async (id: string): Promise<Hotel | undefined> => {
 export const getHotelCards = async (count = 30): Promise<HotelCard[]> =>
   apiGet('Tourism/Hotel', {
     $top: count.toString(),
-    $select: 'ID,Name,City,Address,ServiceInfo,Phone,Picture',
+    $select: 'HotelID,HotelName,City,Address,ServiceInfo,Phone,Picture',
     $filter: 'Picture/PictureUrl1 ne null and Address ne null and City ne null',
-    $orderBy: 'ServiceInfo desc',
+    $orderBy: 'SrcUpdateTime desc, ServiceInfo desc',
   });
 
 export const getHotelCardsByCity = async (
@@ -68,9 +68,9 @@ export const getHotelCardsByCity = async (
 ): Promise<HotelCard[]> =>
   apiGet(`Tourism/Hotel/${PTXCityMap[city]}`, {
     $top: count.toString(),
-    $select: 'ID,Name,City,Address,ServiceInfo,Phone,Picture',
+    $select: 'HotelID,HotelName,City,Address,ServiceInfo,Phone,Picture',
     $filter: 'Picture/PictureUrl1 ne null and Address ne null',
-    $orderBy: 'ServiceInfo desc',
+    $orderBy: 'SrcUpdateTime desc, ServiceInfo desc',
   });
 
 export const getHotelWithRemarksByCity = async (
@@ -79,9 +79,9 @@ export const getHotelWithRemarksByCity = async (
 ): Promise<HotelRemark[]> =>
   apiGet(`Tourism/Hotel/${PTXCityMap[city]}`, {
     $top: count.toString(),
-    $select: 'ID,Name,Description,City,Address,Picture',
+    $select: 'HotelID,HotelName,Description,City,Address,Picture',
     $filter: 'Picture/PictureUrl1 ne null and Address ne null',
-    $orderBy: 'ServiceInfo desc, UpdateTime desc',
+    $orderBy: 'SrcUpdateTime desc, ServiceInfo desc',
   });
 
 export const getHotelCountWithCity = async (
@@ -90,8 +90,9 @@ export const getHotelCountWithCity = async (
 ): Promise<HotelRemark[]> =>
   apiGet(`Tourism/Hotel/${PTXCityMap[city]}`, {
     $top: count.toString(),
-    $select: 'ID',
+    $select: 'HotelID',
     $filter: 'Picture/PictureUrl1 ne null and Address ne null',
+    $orderBy: 'SrcUpdateTime desc, ServiceInfo desc',
   });
 
 export const searchHotelsByKeyword = async (
@@ -100,8 +101,9 @@ export const searchHotelsByKeyword = async (
 ): Promise<HotelCard[]> =>
   apiGet('Tourism/Hotel', {
     $top: count.toString(),
-    $select: 'ID,Name,City,Address,ServiceInfo,Phone,Picture',
+    $select: 'HotelID,HotelName,City,Address,ServiceInfo,Phone,Picture',
     $filter: `Picture/PictureUrl1 ne null and City ne null and (${constructHotelsSearch(
       keyword,
     )})`,
+    $orderBy: 'SrcUpdateTime desc, ServiceInfo desc',
   });

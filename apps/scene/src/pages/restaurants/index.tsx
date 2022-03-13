@@ -155,16 +155,16 @@ const RestaurantsPage = ({
               <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
                 {data.data.map((restaurant) => (
                   <PlaceCard
-                    key={restaurant.ID}
-                    id={restaurant.ID}
-                    name={restaurant.Name}
+                    key={restaurant.RestaurantID}
+                    id={restaurant.RestaurantID}
+                    name={restaurant.RestaurantName}
                     city={restaurant.City}
                     image={restaurant.Picture.PictureUrl1}
                     address={restaurant.Address}
                     contactNumber={restaurant.Phone}
                     openingHours={restaurant.OpenTime}
                     href={`/cities/${CityMap[restaurant.City]}/restaurant/${
-                      restaurant.ID
+                      restaurant.RestaurantID
                     }`}
                   />
                 ))}
@@ -186,16 +186,16 @@ const RestaurantsPage = ({
             )
             .map((restaurant) => (
               <PlaceCard
-                key={restaurant.ID}
-                id={restaurant.ID}
-                name={restaurant.Name}
+                key={restaurant.RestaurantID}
+                id={restaurant.RestaurantID}
+                name={restaurant.RestaurantName}
                 city={restaurant.City}
                 image={restaurant.Picture.PictureUrl1}
                 address={restaurant.Address}
                 contactNumber={restaurant.Phone}
                 openingHours={restaurant.OpenTime}
                 href={`/cities/${CityMap[restaurant.City]}/restaurant/${
-                  restaurant.ID
+                  restaurant.RestaurantID
                 }`}
               />
             ))}
@@ -218,13 +218,15 @@ const RestaurantsPage = ({
         <SimpleGrid columns={[1, 2, 3]} spacingX={8} spacingY={12} mx="8">
           {remarks.map((remark) => (
             <FanCard
-              id={remark.ID}
-              key={remark.ID}
-              name={remark.Name}
+              id={remark.RestaurantID}
+              key={remark.RestaurantID}
+              name={remark.RestaurantName}
               city={remark.City}
               description={remark.Description}
               image={remark.Picture.PictureUrl1}
-              href={`/cities/${CityMap[remark.City]}/restaurant/${remark.ID}`}
+              href={`/cities/${CityMap[remark.City]}/restaurant/${
+                remark.RestaurantID
+              }`}
             />
           ))}
         </SimpleGrid>
