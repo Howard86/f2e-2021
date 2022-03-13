@@ -85,11 +85,11 @@ const ScenePage = ({ scene, remarks }: ScenePageProps): JSX.Element => {
   return (
     <>
       <NextHeadSeo
-        title={`台灣旅遊導覽網 | ${scene.Name}`}
+        title={`台灣旅遊導覽網 | ${scene.ScenicSpotName}`}
         description={scene.Description}
         og={{
           type: 'article',
-          title: scene.Name,
+          title: scene.ScenicSpotName,
           description: scene.Picture.PictureDescription1,
           image: scene.Picture.PictureUrl1,
         }}
@@ -119,10 +119,12 @@ const ScenePage = ({ scene, remarks }: ScenePageProps): JSX.Element => {
           </BreadcrumbItem>
           <BreadcrumbItem fontWeight="bold" isCurrentPage>
             <RouteLink
-              href={`/cities/${CityMap[scene.City]}/scene/${scene.ID}`}
+              href={`/cities/${CityMap[scene.City]}/scene/${
+                scene.ScenicSpotID
+              }`}
               as={BreadcrumbLink}
             >
-              {scene.Name}
+              {scene.ScenicSpotName}
             </RouteLink>
           </BreadcrumbItem>
         </Breadcrumb>
@@ -140,7 +142,7 @@ const ScenePage = ({ scene, remarks }: ScenePageProps): JSX.Element => {
               color={saved ? 'red.600' : 'blackAlpha.600'}
             />
             <Image
-              alt={scene.Picture?.PictureDescription1 || scene.Name}
+              alt={scene.Picture?.PictureDescription1 || scene.ScenicSpotName}
               src={scene.Picture?.PictureUrl1}
               align="center"
               fit="cover"
@@ -152,7 +154,7 @@ const ScenePage = ({ scene, remarks }: ScenePageProps): JSX.Element => {
           </Box>
           <Box flexGrow={1} flexShrink={3} lineHeight="7" sx={{ p: { my: 2 } }}>
             <Heading textAlign="center" mb="4">
-              {scene.Name}
+              {scene.ScenicSpotName}
             </Heading>
             {scene.Description && (
               <Text noOfLines={10}>{scene.Description}</Text>
@@ -258,13 +260,15 @@ const ScenePage = ({ scene, remarks }: ScenePageProps): JSX.Element => {
         <SimpleGrid columns={[1, 2, 3]} spacingX={8} spacingY={12} mx="8">
           {remarks.map((remark) => (
             <FanCard
-              id={remark.ID}
-              key={remark.ID}
-              name={remark.Name}
+              id={remark.ScenicSpotID}
+              key={remark.ScenicSpotID}
+              name={remark.ScenicSpotName}
               city={remark.City}
               description={remark.Remarks}
               image={remark.Picture.PictureUrl1}
-              href={`/cities/${CityMap[remark.City]}/scene/${remark.ID}`}
+              href={`/cities/${CityMap[remark.City]}/scene/${
+                remark.ScenicSpotID
+              }`}
             />
           ))}
         </SimpleGrid>

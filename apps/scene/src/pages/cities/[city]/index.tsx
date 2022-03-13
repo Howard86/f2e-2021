@@ -136,9 +136,9 @@ const CategoryPage = ({
             )
             .map((scene) => (
               <SceneCard
-                key={scene.ID}
-                id={scene.ID}
-                name={scene.Name}
+                key={scene.ScenicSpotID}
+                id={scene.ScenicSpotID}
+                name={scene.ScenicSpotName}
                 city={scene.City}
                 image={scene.Picture.PictureUrl1}
               />
@@ -166,15 +166,15 @@ const CategoryPage = ({
             )
             .map((activity) => (
               <PlaceCard
-                key={activity.ID}
-                id={activity.ID}
-                name={activity.Name}
+                key={activity.ActivityID}
+                id={activity.ActivityID}
+                name={activity.ActivityName}
                 city={activity.City}
                 image={activity.Picture.PictureUrl1}
                 address={activity.Address}
                 contactNumber={activity.Phone}
                 href={`/cities/${CityMap[activity.City]}/activity/${
-                  activity.ID
+                  activity.ActivityID
                 }`}
                 openingHours={
                   activity.StartTime &&
@@ -210,16 +210,16 @@ const CategoryPage = ({
             )
             .map((restaurant) => (
               <PlaceCard
-                key={restaurant.ID}
-                id={restaurant.ID}
-                name={restaurant.Name}
+                key={restaurant.RestaurantID}
+                id={restaurant.RestaurantID}
+                name={restaurant.RestaurantName}
                 city={restaurant.City}
                 image={restaurant.Picture.PictureUrl1}
                 address={restaurant.Address}
                 contactNumber={restaurant.Phone}
                 openingHours={restaurant.OpenTime}
                 href={`/cities/${CityMap[restaurant.City]}/restaurant/${
-                  restaurant.ID
+                  restaurant.RestaurantID
                 }`}
               />
             ))}
@@ -246,15 +246,15 @@ const CategoryPage = ({
             )
             .map((hotel) => (
               <PlaceCard
-                key={hotel.ID}
-                id={hotel.ID}
-                name={hotel.Name}
+                key={hotel.HotelID}
+                id={hotel.HotelID}
+                name={hotel.HotelName}
                 city={hotel.City}
                 image={hotel.Picture.PictureUrl1}
                 address={hotel.Address}
                 contactNumber={hotel.Phone}
                 serviceInfo={hotel.ServiceInfo}
-                href={`/cities/${CityMap[hotel.City]}/hotel/${hotel.ID}`}
+                href={`/cities/${CityMap[hotel.City]}/hotel/${hotel.HotelID}`}
               />
             ))}
         </SimpleGrid>

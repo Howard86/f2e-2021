@@ -86,11 +86,11 @@ const ActivityPage = ({
   return (
     <>
       <NextHeadSeo
-        title={`台灣旅遊導覽網 | ${activity.Name}`}
+        title={`台灣旅遊導覽網 | ${activity.ActivityName}`}
         description={activity.Description}
         og={{
           type: 'article',
-          title: activity.Name,
+          title: activity.ActivityName,
           description: activity.Picture.PictureDescription1,
           image: activity.Picture.PictureUrl1,
         }}
@@ -120,10 +120,12 @@ const ActivityPage = ({
           </BreadcrumbItem>
           <BreadcrumbItem fontWeight="bold" isCurrentPage>
             <RouteLink
-              href={`/cities/${CityMap[activity.City]}/activity/${activity.ID}`}
+              href={`/cities/${CityMap[activity.City]}/activity/${
+                activity.ActivityID
+              }`}
               as={BreadcrumbLink}
             >
-              {activity.Name}
+              {activity.ActivityName}
             </RouteLink>
           </BreadcrumbItem>
         </Breadcrumb>
@@ -141,7 +143,9 @@ const ActivityPage = ({
               color={saved ? 'red.600' : 'blackAlpha.600'}
             />
             <Image
-              alt={activity.Picture?.PictureDescription1 || activity.Name}
+              alt={
+                activity.Picture?.PictureDescription1 || activity.ActivityName
+              }
               src={activity.Picture?.PictureUrl1}
               align="center"
               fit="cover"
@@ -153,7 +157,7 @@ const ActivityPage = ({
           </Box>
           <Box flexGrow={1} flexShrink={3} lineHeight="7" sx={{ p: { my: 2 } }}>
             <Heading textAlign="center" mb="4">
-              {activity.Name}
+              {activity.ActivityName}
             </Heading>
             {activity.Description && (
               <Text noOfLines={10}>{activity.Description}</Text>
@@ -263,13 +267,15 @@ const ActivityPage = ({
         <SimpleGrid columns={[1, 2, 3]} spacingX={8} spacingY={12} mx="8">
           {remarks.map((remark) => (
             <FanCard
-              id={remark.ID}
-              key={remark.ID}
-              name={remark.Name}
+              id={remark.ActivityID}
+              key={remark.ActivityID}
+              name={remark.ActivityName}
               city={remark.City}
               description={remark.Description}
               image={remark.Picture.PictureUrl1}
-              href={`/cities/${CityMap[remark.City]}/activity/${remark.ID}`}
+              href={`/cities/${CityMap[remark.City]}/activity/${
+                remark.ActivityID
+              }`}
             />
           ))}
         </SimpleGrid>

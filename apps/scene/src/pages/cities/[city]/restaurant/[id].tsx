@@ -77,10 +77,10 @@ const RestaurantPage = ({
   return (
     <>
       <NextHeadSeo
-        title={`台灣旅遊導覽網 | ${restaurant.Name}`}
+        title={`台灣旅遊導覽網 | ${restaurant.RestaurantName}`}
         description={restaurant.Description}
         og={{
-          title: restaurant.Name,
+          title: restaurant.RestaurantName,
           description: restaurant.Picture.PictureDescription1,
           image: restaurant.Picture.PictureUrl1,
         }}
@@ -111,11 +111,11 @@ const RestaurantPage = ({
           <BreadcrumbItem fontWeight="bold" isCurrentPage>
             <RouteLink
               href={`/cities/${CityMap[restaurant.City]}/restaurant/${
-                restaurant.ID
+                restaurant.RestaurantID
               }`}
               as={BreadcrumbLink}
             >
-              {restaurant.Name}
+              {restaurant.RestaurantName}
             </RouteLink>
           </BreadcrumbItem>
         </Breadcrumb>
@@ -133,7 +133,10 @@ const RestaurantPage = ({
               color={saved ? 'red.600' : 'blackAlpha.600'}
             />
             <Image
-              alt={restaurant.Picture?.PictureDescription1 || restaurant.Name}
+              alt={
+                restaurant.Picture?.PictureDescription1 ||
+                restaurant.RestaurantName
+              }
               src={restaurant.Picture?.PictureUrl1}
               align="center"
               fit="cover"
@@ -145,7 +148,7 @@ const RestaurantPage = ({
           </Box>
           <Box flexGrow={1} flexShrink={3} lineHeight="7" sx={{ p: { my: 2 } }}>
             <Heading textAlign="center" mb="4">
-              {restaurant.Name}
+              {restaurant.RestaurantName}
             </Heading>
             {restaurant.Description && (
               <Text noOfLines={10}>{restaurant.Description}</Text>
@@ -227,13 +230,15 @@ const RestaurantPage = ({
         <SimpleGrid columns={[1, 2, 3]} spacingX={8} spacingY={12} mx="8">
           {remarks.map((remark) => (
             <FanCard
-              id={remark.ID}
-              key={remark.ID}
-              name={remark.Name}
+              id={remark.RestaurantID}
+              key={remark.RestaurantID}
+              name={remark.RestaurantName}
               city={remark.City}
               description={remark.Description}
               image={remark.Picture.PictureUrl1}
-              href={`/cities/${CityMap[remark.City]}/restaurant/${remark.ID}`}
+              href={`/cities/${CityMap[remark.City]}/restaurant/${
+                remark.RestaurantID
+              }`}
             />
           ))}
         </SimpleGrid>

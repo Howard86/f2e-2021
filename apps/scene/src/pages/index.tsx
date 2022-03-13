@@ -97,9 +97,9 @@ const HomePage = ({ weathers, scenes, restaurants, hotels }: HomePageProps) => (
       <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
         {scenes.map((scene) => (
           <SceneCard
-            key={scene.ID}
-            id={scene.ID}
-            name={scene.Name}
+            key={scene.ScenicSpotID}
+            id={scene.ScenicSpotID}
+            name={scene.ScenicSpotName}
             city={scene.City}
             image={scene.Picture?.PictureUrl1}
           />
@@ -114,16 +114,16 @@ const HomePage = ({ weathers, scenes, restaurants, hotels }: HomePageProps) => (
       <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
         {restaurants.map((restaurant) => (
           <PlaceCard
-            key={restaurant.ID}
-            id={restaurant.ID}
-            name={restaurant.Name}
+            key={restaurant.RestaurantID}
+            id={restaurant.RestaurantID}
+            name={restaurant.RestaurantName}
             city={restaurant.City}
             image={restaurant.Picture.PictureUrl1}
             address={restaurant.Address}
             contactNumber={restaurant.Phone}
             openingHours={restaurant.OpenTime}
             href={`/cities/${CityMap[restaurant.City]}/restaurant/${
-              restaurant.ID
+              restaurant.RestaurantID
             }`}
           />
         ))}
@@ -133,15 +133,15 @@ const HomePage = ({ weathers, scenes, restaurants, hotels }: HomePageProps) => (
       <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
         {hotels.map((hotel) => (
           <PlaceCard
-            key={hotel.ID}
-            id={hotel.ID}
-            name={hotel.Name}
+            key={hotel.HotelID}
+            id={hotel.HotelID}
+            name={hotel.HotelName}
             city={hotel.City}
             image={hotel.Picture.PictureUrl1}
             address={hotel.Address}
             contactNumber={hotel.Phone}
             serviceInfo={hotel.ServiceInfo}
-            href={`/cities/${CityMap[hotel.City]}/hotel/${hotel.ID}`}
+            href={`/cities/${CityMap[hotel.City]}/hotel/${hotel.HotelID}`}
           />
         ))}
       </SimpleGrid>
