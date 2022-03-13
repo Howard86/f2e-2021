@@ -7,7 +7,6 @@ import {
 } from '@f2e/ptx';
 import {
   BadRequestException,
-  NextApiRequestWithQuery,
   NotFoundException,
   RouterBuilder,
 } from 'next-api-handler';
@@ -26,29 +25,27 @@ export interface CyclingQueryParam {
 
 const router = new RouterBuilder();
 
-router.get<BikeCyclingWithGeoJson[]>(
-  async (req: NextApiRequestWithQuery<Partial<CyclingQueryParam>>) => {
-    if (!req.query.city) {
-      throw new BadRequestException(`Missing city=${req.query.city}`);
-    }
+router.get<BikeCyclingWithGeoJson[]>(async (req) => {
+  if (typeof req.query.city !== 'string') {
+    throw new BadRequestException(`Missing city=${req.query.city}`);
+  }
 
-    const city = CitySlugMap[req.query.city];
+  const city = CitySlugMap[req.query.city];
 
-    if (!BIKE_CITIES.includes(city)) {
-      throw new NotFoundException(`City=${city} is not in the BIKE_LISTS`);
-    }
+  if (!BIKE_CITIES.includes(city)) {
+    throw new NotFoundException(`City=${city} is not in the BIKE_LISTS`);
+  }
 
-    if (process.env.NODE_ENV !== 'production') {
-      return mock as unknown as BikeCyclingWithGeoJson[];
-    }
+  if (process.env.NODE_ENV !== 'production') {
+    return mock as unknown as BikeCyclingWithGeoJson[];
+  }
 
-    const results = await getCyclingShapeByCity(city);
+  const results = await getCyclingShapeByCity(city);
 
-    return results.map(({ Geometry, ...rest }) => ({
-      ...rest,
-      geoJson: parse(Geometry) as GeoJSONMultiLineString,
-    }));
-  },
-);
+  return results.map(({ Geometry, ...rest }) => ({
+    ...rest,
+    geoJson: parse(Geometry) as GeoJSONMultiLineString,
+  }));
+});
 
 export default router.build();

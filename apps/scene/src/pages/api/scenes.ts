@@ -1,6 +1,8 @@
 import {
   CITIES,
+  City,
   SceneCard,
+  SceneClass,
   searchScenesByKeyword,
   searchScenesByKeywordAndCity,
   searchScenesByKeywordAndTheme,
@@ -8,51 +10,46 @@ import {
 } from '@f2e/ptx';
 import {
   BadRequestException,
-  NextApiRequestWithQuery,
   NotFoundException,
   RouterBuilder,
 } from 'next-api-handler';
 
-import { Local } from '@/types/local';
-
 const router = new RouterBuilder();
-router.get(
-  async (req: NextApiRequestWithQuery<Partial<Local.SearchScenesQuery>>) => {
-    if (!req.query.keyword) {
-      throw new BadRequestException('keyword not found');
+router.get(async (req) => {
+  if (typeof req.query.keyword !== 'string') {
+    throw new BadRequestException('keyword not found');
+  }
+
+  let results: SceneCard[];
+
+  // TODO: refactor logic
+  if (typeof req.query.city === 'string') {
+    if (!CITIES.includes(req.query.city as City)) {
+      throw new NotFoundException('city not found');
     }
 
-    let results: SceneCard[];
-
-    // TODO: refactor logic
-    if (req.query.city) {
-      if (!CITIES.includes(req.query.city)) {
-        throw new NotFoundException('city not found');
-      }
-
-      results = await searchScenesByKeywordAndCity(
-        req.query.keyword,
-        req.query.city,
-      );
-    } else if (req.query.theme) {
-      if (!THEMES.includes(req.query.theme)) {
-        throw new NotFoundException('theme not found');
-      }
-
-      results = await searchScenesByKeywordAndTheme(
-        req.query.keyword,
-        req.query.theme,
-      );
-    } else {
-      results = await searchScenesByKeyword(req.query.keyword);
+    results = await searchScenesByKeywordAndCity(
+      req.query.keyword,
+      req.query.city as City,
+    );
+  } else if (typeof req.query.theme === 'string') {
+    if (!THEMES.includes(req.query.theme as SceneClass)) {
+      throw new NotFoundException('theme not found');
     }
 
-    if (results.length === 0) {
-      throw new NotFoundException('not results are found');
-    }
+    results = await searchScenesByKeywordAndTheme(
+      req.query.keyword,
+      req.query.theme as SceneClass,
+    );
+  } else {
+    results = await searchScenesByKeyword(req.query.keyword);
+  }
 
-    return results;
-  },
-);
+  if (results.length === 0) {
+    throw new NotFoundException('not results are found');
+  }
+
+  return results;
+});
 
 export default router.build();
