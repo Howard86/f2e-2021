@@ -33,9 +33,9 @@ const getWeatherIcon = (weather: OpenData.Weather) => {
     case '晴':
       return SunIcon;
 
-    default:
     case '多雲時晴':
     case '晴時多雲':
+    default:
       return SunWithCloudIcon;
   }
 };

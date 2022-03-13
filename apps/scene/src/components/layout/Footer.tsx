@@ -103,8 +103,8 @@ const Footer = ({ mainColor, gradientColor, ...props }: FooterProps) => {
         <SimpleGrid
           mx="auto"
           display={['none', 'none', 'grid']}
-          justify="center"
-          align="start"
+          justifyContent="center"
+          alignItems="start"
           maxW="container.md"
           columns={footerConfig.length}
         >

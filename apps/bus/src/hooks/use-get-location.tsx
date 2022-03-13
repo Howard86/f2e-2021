@@ -68,7 +68,6 @@ const useGetLocation = () => {
           h="40px"
           w="40px"
           bgImage="url(/current.png)"
-          pointer="cursor"
           onClick={flyToCurrent}
           zIndex="modal"
         />,

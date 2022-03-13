@@ -3,14 +3,12 @@ import React, { ChangeEvent, useMemo, useState } from 'react';
 import {
   Box,
   Center,
-  Circle,
   Flex,
   Heading,
   IconButton,
   keyframes,
   LinkBox,
   LinkOverlay,
-  Square,
   Text,
 } from '@chakra-ui/react';
 import {
@@ -222,11 +220,12 @@ const BusPage = ({ citySlug, busRoutes }: BusPageProps) => {
                 right="0"
                 top="-12"
               >
-                <Square
+                <Box
                   w="120px"
                   bg="secondary.800"
                   p="4"
                   mx="auto"
+                  textAlign="center"
                   fontWeight="bold"
                   roundedTop="2xl"
                   zIndex="docked"
@@ -234,15 +233,16 @@ const BusPage = ({ citySlug, busRoutes }: BusPageProps) => {
                   borderColor="secondary.400"
                 >
                   快速搜尋
-                </Square>
+                </Box>
               </Box>
               <RouteKeyBoard setSearchString={setSearchString} />
             </Box>
             <Box flexGrow={1} />
             <Box pos="relative" ml="16" p="8" display={DESKTOP_DISPLAY}>
               <Image src={bus} animation={`${busAnimation} 3s ease infinite`} />
-              <Circle
+              <Box
                 pos="absolute"
+                rounded="2xl"
                 h="1"
                 w="20"
                 bgGradient="linear(to-r, #172E5E 0, whiteAlpha.600 50%, #172E5E)"
