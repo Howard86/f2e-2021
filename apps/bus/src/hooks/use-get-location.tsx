@@ -20,8 +20,13 @@ const useGetLocation = () => {
 
     try {
       const geoLocation = await new Promise<GeolocationPosition>(
-        (resolve, reject) =>
-          window.navigator.geolocation.getCurrentPosition(resolve, reject),
+        (resolve, reject) => {
+          window.navigator.geolocation.getCurrentPosition(resolve, reject, {
+            enableHighAccuracy: true,
+            timeout: 5000,
+            maximumAge: 0,
+          });
+        },
       );
 
       toast({ description: '成功獲取定位' });
