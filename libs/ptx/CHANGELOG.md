@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.6.1](https://github.com/Howard86/f2e-2021/compare/@f2e/ptx@0.6.0...@f2e/ptx@0.6.1) (2022-03-13)
+
+### Bug Fixes
+
+- change api call based on changed schema ([8a7c111](https://github.com/Howard86/f2e-2021/commit/8a7c111977d28e56cca39482761ceaaa589ddb84))
+
 # [0.6.0](https://github.com/Howard86/f2e-2021/compare/@f2e/ptx@0.5.1...@f2e/ptx@0.6.0) (2021-11-29)
 
 ### Features

@@ -1,6 +1,6 @@
 {
   "name": "@f2e/ubike",
-  "version": "0.3.4",
+  "version": "0.3.5",
   "description": "Taiwan ubike search powered by PTX API & MapBox",
   "repository": {
     "type": "git",
@@ -43,7 +43,7 @@
     "@chakra-ui/react": "^1.6.12",
     "@emotion/react": "^11.5.0",
     "@emotion/styled": "^11.3.0",
-    "@f2e/ptx": "^0.6.0",
+    "@f2e/ptx": "^0.6.1",
     "@reduxjs/toolkit": "^1.6.2",
     "framer-motion": "^5.2.1",
     "lodash.throttle": "^4.1.1",

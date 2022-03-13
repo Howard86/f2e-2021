@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.5.1](https://github.com/Howard86/f2e-2011/compare/@f2e/bus@0.5.0...@f2e/bus@0.5.1) (2022-03-13)
+
+**Note:** Version bump only for package @f2e/bus
+
 # [0.5.0](https://github.com/Howard86/f2e-2011/compare/@f2e/bus@0.4.0...@f2e/bus@0.5.0) (2021-11-29)
 
 ### Features
