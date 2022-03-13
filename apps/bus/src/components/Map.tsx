@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 
 import { Box, IconButton } from '@chakra-ui/react';
-import Head from 'next/head';
 import Image from 'next/image';
 import { BiCurrentLocation } from 'react-icons/bi';
 
@@ -49,12 +48,6 @@ const Map = ({ hideLocate }: MapProps) => {
 
   return (
     <>
-      <Head>
-        <link
-          href="https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css"
-          rel="stylesheet"
-        />
-      </Head>
       <Box
         pos="absolute"
         ref={divRef}

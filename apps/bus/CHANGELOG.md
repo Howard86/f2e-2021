@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.5.2](https://github.com/Howard86/f2e-2011/compare/@f2e/bus@0.5.1...@f2e/bus@0.5.2) (2022-03-13)
+
+### Bug Fixes
+
+- fix based on new eslint errors ([2a4f3ef](https://github.com/Howard86/f2e-2011/commit/2a4f3ef5221e9be286cf91fa4d69fd8ba7f431ce))
+- improve navigator gelocation api ([48f65bf](https://github.com/Howard86/f2e-2011/commit/48f65bf07710601cbf1b6d9f53b71f0c1fae645e))
+
 ## [0.5.1](https://github.com/Howard86/f2e-2011/compare/@f2e/bus@0.5.0...@f2e/bus@0.5.1) (2022-03-13)
 
 **Note:** Version bump only for package @f2e/bus

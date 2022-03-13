@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.9](https://github.com/Howard86/f2e-2011/compare/@f2e/scene@0.2.8...@f2e/scene@0.2.9) (2022-03-13)
+
+### Bug Fixes
+
+- fix based on new eslint errors ([2a4f3ef](https://github.com/Howard86/f2e-2011/commit/2a4f3ef5221e9be286cf91fa4d69fd8ba7f431ce))
+
 ## [0.2.8](https://github.com/Howard86/f2e-2011/compare/@f2e/scene@0.2.7...@f2e/scene@0.2.8) (2022-03-13)
 
 ### Bug Fixes

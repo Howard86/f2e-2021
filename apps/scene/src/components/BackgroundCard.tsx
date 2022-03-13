@@ -44,7 +44,7 @@ const BackgroundCard = ({
       }}
     >
       <Box flexGrow={1} />
-      <Box
+      <Flex
         bgColor="whiteAlpha.400"
         p="2"
         justify="space-between"
@@ -55,7 +55,7 @@ const BackgroundCard = ({
             {name}
           </LinkOverlay>
         </Text>
-      </Box>
+      </Flex>
     </Flex>
   </LinkBox>
 );

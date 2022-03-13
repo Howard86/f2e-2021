@@ -3,6 +3,7 @@ import {
   MutableRefObject,
   ReactNode,
   useContext,
+  useMemo,
   useRef,
 } from 'react';
 
@@ -29,19 +30,18 @@ const MapContextProvider = ({ children }: MapContextProviderProps) => {
   const positionMarkerRef = useRef<mapboxgl.Marker>(null);
   const layerIdRef = useRef<string>('');
 
-  return (
-    <MapContext.Provider
-      value={{
-        mapRef,
-        markersRef,
-        layerIdRef,
-        positionMarkerRef,
-        stationIdSetRef,
-      }}
-    >
-      {children}
-    </MapContext.Provider>
+  const context = useMemo(
+    () => ({
+      mapRef,
+      markersRef,
+      layerIdRef,
+      positionMarkerRef,
+      stationIdSetRef,
+    }),
+    [],
   );
+
+  return <MapContext.Provider value={context}>{children}</MapContext.Provider>;
 };
 
 export const useMap = () => useContext(MapContext);

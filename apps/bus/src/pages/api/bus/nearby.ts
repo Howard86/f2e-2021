@@ -1,9 +1,5 @@
 import { BusStationInfo, getNearbyBusStations } from '@f2e/ptx';
-import {
-  BadRequestException,
-  NextApiRequestWithQuery,
-  RouterBuilder,
-} from 'next-api-handler';
+import { BadRequestException, RouterBuilder } from 'next-api-handler';
 
 export interface StationQueryParam {
   lat: string;
@@ -12,19 +8,23 @@ export interface StationQueryParam {
 
 const router = new RouterBuilder();
 
-router.get<BusStationInfo[]>(
-  async (req: NextApiRequestWithQuery<Partial<StationQueryParam>>) => {
-    const latitude = Number.parseFloat(req.query.lat);
-    const longitude = Number.parseFloat(req.query.lng);
+router.get<BusStationInfo[]>(async (req) => {
+  if (typeof req.query.lat !== 'string' || typeof req.query.lng !== 'string') {
+    throw new BadRequestException(
+      `Incorrect lat=${req.query.lat} or ${req.query.lng}`,
+    );
+  }
 
-    if (Number.isNaN(latitude) || Number.isNaN(longitude)) {
-      throw new BadRequestException(
-        `Incorrect lat=${req.query.lat} or ${req.query.lng}`,
-      );
-    }
+  const latitude = Number.parseFloat(req.query.lat);
+  const longitude = Number.parseFloat(req.query.lng);
 
-    return getNearbyBusStations(latitude, longitude);
-  },
-);
+  if (Number.isNaN(latitude) || Number.isNaN(longitude)) {
+    throw new BadRequestException(
+      `Incorrect lat=${req.query.lat} or ${req.query.lng}`,
+    );
+  }
+
+  return getNearbyBusStations(latitude, longitude);
+});
 
 export default router.build();

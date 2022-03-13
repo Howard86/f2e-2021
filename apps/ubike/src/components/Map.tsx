@@ -15,7 +15,6 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import type mapboxgl from 'mapbox-gl';
-import Head from 'next/head';
 import Image from 'next/image';
 import { BiMinus, BiPlus } from 'react-icons/bi';
 import { IoLocate } from 'react-icons/io5';
@@ -131,8 +130,13 @@ const Map = () => {
 
     try {
       const geoLocation = await new Promise<GeolocationPosition>(
-        (resolve, reject) =>
-          window.navigator.geolocation.getCurrentPosition(resolve, reject),
+        (resolve, reject) => {
+          window.navigator.geolocation.getCurrentPosition(resolve, reject, {
+            enableHighAccuracy: true,
+            timeout: 5000,
+            maximumAge: 0,
+          });
+        },
       );
 
       toast({ description: '成功獲取定位' });
@@ -175,7 +179,6 @@ const Map = () => {
           h="40px"
           w="40px"
           bgImage="url(/icons/current.png)"
-          pointer="cursor"
           onClick={flyToCurrent}
           zIndex="modal"
         />,
@@ -256,12 +259,6 @@ const Map = () => {
 
   return (
     <>
-      <Head>
-        <link
-          href="https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css"
-          rel="stylesheet"
-        />
-      </Head>
       <Box h="calc(100vh - 128px)" maxW="fill-available">
         <Box
           pos="absolute"
