@@ -97,6 +97,7 @@ const Map = () => {
           id={station.StationUID}
           h="82px"
           w="80px"
+          mb="41px"
           bgImage="url(/icons/marker.png)"
           cursor="pointer"
           onClick={() => {
