@@ -26,7 +26,7 @@ import BikeIcon from '@/components/icons/BikeIcon';
 import DockIcon from '@/components/icons/DockIcon';
 import useAppToast from '@/hooks/use-app-toast';
 import background from '@/map.jpg';
-import { useGetStationsByCoordinateMutation } from '@/services/local';
+import { useLazyGetStationsByCoordinateQuery } from '@/services/local';
 import type { Coordinate } from '@/services/mapbox';
 
 const DEFAULT_ZOOM = 15;
@@ -52,7 +52,7 @@ const Map = () => {
   });
   const divRef = useRef<HTMLDivElement>();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [getStations, { isLoading }] = useGetStationsByCoordinateMutation();
+  const [getStations, { isFetching }] = useLazyGetStationsByCoordinateQuery();
 
   const [loaded, setLoaded] = useState(false);
 
@@ -79,41 +79,44 @@ const Map = () => {
 
     result.data.forEach((station) => {
       if (!stationIdSetRef.current.has(station.StationUID)) {
-        const coordinate = [
-          station.StationPosition.PositionLon,
-          station.StationPosition.PositionLat,
-        ] as Coordinate;
-
         stationIdSetRef.current.add(station.StationUID);
-
-        markersRef.current.push(
-          attachJSXMarker(
-            mapRef.current,
-            <Box
-              id={station.StationUID}
-              h="82px"
-              w="80px"
-              bgImage="url(/icons/marker.png)"
-              cursor="pointer"
-              onClick={() => {
-                setModalProps({
-                  name: station.StationName.Zh_tw,
-                  address: station.StationAddress.Zh_tw,
-                  rentNumber: station.bike.AvailableRentBikes,
-                  returnNumber: station.bike.AvailableReturnBikes,
-                });
-                onOpen();
-                mapRef.current.flyTo({
-                  center: coordinate,
-                  zoom: DEFAULT_ZOOM,
-                });
-              }}
-              zIndex="modal"
-            />,
-            coordinate,
-          ),
-        );
       }
+
+      if (markersRef.current[station.StationUID]) {
+        markersRef.current[station.StationUID].remove();
+      }
+
+      const coordinate = [
+        station.StationPosition.PositionLon,
+        station.StationPosition.PositionLat,
+      ] as Coordinate;
+
+      markersRef.current[station.StationUID] = attachJSXMarker(
+        mapRef.current,
+        <Box
+          id={station.StationUID}
+          h="82px"
+          w="80px"
+          mb="41px"
+          bgImage="url(/icons/marker.png)"
+          cursor="pointer"
+          onClick={() => {
+            setModalProps({
+              name: station.StationName.Zh_tw,
+              address: station.StationAddress.Zh_tw,
+              rentNumber: station.bike.AvailableRentBikes,
+              returnNumber: station.bike.AvailableReturnBikes,
+            });
+            onOpen();
+            mapRef.current.flyTo({
+              center: coordinate,
+              zoom: DEFAULT_ZOOM,
+            });
+          }}
+          zIndex="modal"
+        />,
+        coordinate,
+      );
     });
   };
 
@@ -351,7 +354,7 @@ const Map = () => {
           }}
         >
           <IconButton
-            isLoading={isLoading}
+            isLoading={isFetching}
             aria-label="定位"
             icon={<IoLocate />}
             onClick={onLocate}

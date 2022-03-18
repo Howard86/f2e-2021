@@ -68,18 +68,13 @@ export const addLayerAndSource = (
     },
   });
 
-  const bounds = new mapboxgl.LngLatBounds(
-    geoJson.coordinates[0][0] as Coordinate,
-    geoJson.coordinates[0][0] as Coordinate,
-  );
+  const bounds = new mapboxgl.LngLatBounds();
 
-  // eslint-disable-next-line no-restricted-syntax
   for (const coordinate of geoJson.coordinates[0]) {
-    // eslint-disable-next-line no-restricted-syntax
     bounds.extend(coordinate as Coordinate);
   }
 
-  map.fitBounds(bounds);
+  map.fitBounds(bounds, { padding: 40 });
 
   return sourceName;
 };

@@ -11,7 +11,7 @@ import type mapboxgl from 'mapbox-gl';
 
 interface MapContextState {
   mapRef: MutableRefObject<mapboxgl.Map>;
-  markersRef: MutableRefObject<mapboxgl.Marker[]>;
+  markersRef: MutableRefObject<Record<string, mapboxgl.Marker | undefined>>;
   stationIdSetRef: MutableRefObject<Set<string>>;
   positionMarkerRef: MutableRefObject<mapboxgl.Marker>;
   layerIdRef: MutableRefObject<string>;
@@ -25,7 +25,7 @@ interface MapContextProviderProps {
 
 const MapContextProvider = ({ children }: MapContextProviderProps) => {
   const mapRef = useRef<mapboxgl.Map>(null);
-  const markersRef = useRef<mapboxgl.Marker[]>([]);
+  const markersRef = useRef<Record<string, mapboxgl.Marker | undefined>>({});
   const stationIdSetRef = useRef<Set<string>>(new Set<string>());
   const positionMarkerRef = useRef<mapboxgl.Marker>(null);
   const layerIdRef = useRef<string>('');

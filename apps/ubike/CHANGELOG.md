@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.7](https://github.com/Howard86/f2e-2011/compare/@f2e/ubike@0.3.6...@f2e/ubike@0.3.7) (2022-03-18)
+
+### Bug Fixes
+
+- adjust station marker position ([9bb4e32](https://github.com/Howard86/f2e-2011/commit/9bb4e3283dcb0e5bacc92b96e0a61fa63e1f97ae))
+- fail to update marker by refactoring data structure ([57afac5](https://github.com/Howard86/f2e-2011/commit/57afac574dd508d77c4f3ea24a40d61befceb258))
+- fix map bound ([2d557b3](https://github.com/Howard86/f2e-2011/commit/2d557b388cb7c604f63a00549a8090816c18b363))
+
 ## [0.3.6](https://github.com/Howard86/f2e-2011/compare/@f2e/ubike@0.3.5...@f2e/ubike@0.3.6) (2022-03-13)
 
 ### Bug Fixes

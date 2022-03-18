@@ -73,11 +73,10 @@ const CycleCard = ({
     }
 
     stationIdSetRef.current.clear();
-    // eslint-disable-next-line no-restricted-syntax
-    for (const marker of markersRef.current) {
-      marker.remove();
+    for (const existedStationId of Object.keys(markersRef.current)) {
+      markersRef.current[existedStationId].remove();
     }
-    markersRef.current = [];
+    markersRef.current = {};
 
     layerIdRef.current = addLayerAndSource(
       mapRef.current,
@@ -87,20 +86,18 @@ const CycleCard = ({
     );
     const coordinates = geoJson.coordinates[0] as Coordinate[];
 
-    markersRef.current.push(
-      attachJSXMarker(
-        mapRef.current,
-        <RouteMarker>起點</RouteMarker>,
-        coordinates[0],
-      ),
+    markersRef.current[coordinates[0].toString()] = attachJSXMarker(
+      mapRef.current,
+      <RouteMarker>起點</RouteMarker>,
+      coordinates[0],
     );
-    markersRef.current.push(
+
+    markersRef.current[coordinates[coordinates.length - 1].toString()] =
       attachJSXMarker(
         mapRef.current,
         <RouteMarker>終點</RouteMarker>,
         coordinates[coordinates.length - 1],
-      ),
-    );
+      );
 
     onToggle();
   };
