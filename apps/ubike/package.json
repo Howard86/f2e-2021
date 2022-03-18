@@ -1,6 +1,6 @@
 {
   "name": "@f2e/ubike",
-  "version": "0.3.6",
+  "version": "0.3.7",
   "description": "Taiwan ubike search powered by PTX API & MapBox",
   "repository": {
     "type": "git",
