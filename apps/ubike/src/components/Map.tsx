@@ -79,41 +79,43 @@ const Map = () => {
 
     result.data.forEach((station) => {
       if (!stationIdSetRef.current.has(station.StationUID)) {
-        const coordinate = [
-          station.StationPosition.PositionLon,
-          station.StationPosition.PositionLat,
-        ] as Coordinate;
-
         stationIdSetRef.current.add(station.StationUID);
-
-        markersRef.current.push(
-          attachJSXMarker(
-            mapRef.current,
-            <Box
-              id={station.StationUID}
-              h="82px"
-              w="80px"
-              bgImage="url(/icons/marker.png)"
-              cursor="pointer"
-              onClick={() => {
-                setModalProps({
-                  name: station.StationName.Zh_tw,
-                  address: station.StationAddress.Zh_tw,
-                  rentNumber: station.bike.AvailableRentBikes,
-                  returnNumber: station.bike.AvailableReturnBikes,
-                });
-                onOpen();
-                mapRef.current.flyTo({
-                  center: coordinate,
-                  zoom: DEFAULT_ZOOM,
-                });
-              }}
-              zIndex="modal"
-            />,
-            coordinate,
-          ),
-        );
       }
+
+      if (markersRef.current[station.StationUID]) {
+        markersRef.current[station.StationUID].remove();
+      }
+
+      const coordinate = [
+        station.StationPosition.PositionLon,
+        station.StationPosition.PositionLat,
+      ] as Coordinate;
+
+      markersRef.current[station.StationUID] = attachJSXMarker(
+        mapRef.current,
+        <Box
+          id={station.StationUID}
+          h="82px"
+          w="80px"
+          bgImage="url(/icons/marker.png)"
+          cursor="pointer"
+          onClick={() => {
+            setModalProps({
+              name: station.StationName.Zh_tw,
+              address: station.StationAddress.Zh_tw,
+              rentNumber: station.bike.AvailableRentBikes,
+              returnNumber: station.bike.AvailableReturnBikes,
+            });
+            onOpen();
+            mapRef.current.flyTo({
+              center: coordinate,
+              zoom: DEFAULT_ZOOM,
+            });
+          }}
+          zIndex="modal"
+        />,
+        coordinate,
+      );
     });
   };
 
