@@ -26,7 +26,7 @@ import BikeIcon from '@/components/icons/BikeIcon';
 import DockIcon from '@/components/icons/DockIcon';
 import useAppToast from '@/hooks/use-app-toast';
 import background from '@/map.jpg';
-import { useGetStationsByCoordinateMutation } from '@/services/local';
+import { useLazyGetStationsByCoordinateQuery } from '@/services/local';
 import type { Coordinate } from '@/services/mapbox';
 
 const DEFAULT_ZOOM = 15;
@@ -52,7 +52,7 @@ const Map = () => {
   });
   const divRef = useRef<HTMLDivElement>();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [getStations, { isLoading }] = useGetStationsByCoordinateMutation();
+  const [getStations, { isFetching }] = useLazyGetStationsByCoordinateQuery();
 
   const [loaded, setLoaded] = useState(false);
 
@@ -351,7 +351,7 @@ const Map = () => {
           }}
         >
           <IconButton
-            isLoading={isLoading}
+            isLoading={isFetching}
             aria-label="定位"
             icon={<IoLocate />}
             onClick={onLocate}
