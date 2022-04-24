@@ -8,7 +8,7 @@ import {
   LinkOverlay,
   Text,
 } from '@chakra-ui/react';
-import Image from 'next/image';
+import Image, { StaticImageData } from 'next/image';
 
 import RouteLink from './RouteLink';
 

@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 
 import { Box, Container, ContainerProps, SimpleGrid } from '@chakra-ui/react';
-import Image from 'next/image';
+import Image, { StaticImageData } from 'next/image';
 
 import Logo from './icons/Logo';
 
