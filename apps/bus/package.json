@@ -55,7 +55,7 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-icons": "^4.3.1",
-    "react-redux": "^7.2.8",
+    "react-redux": "^8.0.1",
     "sharp": "^0.30.4",
     "wellknown": "^0.5.0"
   },
