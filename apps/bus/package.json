@@ -61,6 +61,6 @@
   },
   "devDependencies": {
     "@types/mapbox-gl": "^2.7.1",
-    "@types/wellknown": "^0.5.2"
+    "@types/wellknown": "^0.5.3"
   }
 }
