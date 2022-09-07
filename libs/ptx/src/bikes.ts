@@ -108,7 +108,7 @@ export const getNearByAvailableBikes = (query: BikeQueryParam) =>
   });
 
 export const getCyclingShapeByCity = (city: City, count = 100) =>
-  apiGet<BikeCyclingInfo[]>(`Cycling/Shape/${PTXCityMap[city]}`, {
+  apiGet<BikeCyclingInfo[]>(`Cycling/Shape/City/${PTXCityMap[city]}`, {
     $top: count.toString(),
     $select: 'RouteName,City,CyclingLength,Geometry',
     $filter: 'CyclingLength gt 300 and Geometry ne null',
