@@ -31,11 +31,19 @@ export const apiGet = async <T>(
   url: string,
   params?: Partial<ApiParam>,
 ): Promise<T> => {
+  const query = new URLSearchParams();
+  query.append('$format', 'JSON');
+
+  if (params) {
+    Object.keys(params).forEach((key) => {
+      if (params[key]) {
+        query.append(key, params[key]);
+      }
+    });
+  }
+
   const response = await fetch(
-    `${process.env.PTX_BASE_URL}/${encodeURI(url)}?${new URLSearchParams({
-      $format: 'JSON',
-      ...params,
-    }).toString()}`,
+    `${process.env.PTX_BASE_URL}/${encodeURI(url)}?${query.toString()}`,
     {
       headers: getAuthorizationHeader(),
     },
