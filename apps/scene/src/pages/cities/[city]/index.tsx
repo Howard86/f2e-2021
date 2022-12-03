@@ -10,21 +10,7 @@ import {
   Icon,
   SimpleGrid,
 } from '@chakra-ui/react';
-import {
-  ActivityCard,
-  CITIES,
-  City,
-  CityMap,
-  CitySlug,
-  CitySlugMap,
-  getActivityCardsByCity,
-  getHotelCardsByCity,
-  getRestaurantCardsByCity,
-  getSceneCardsByCity,
-  HotelCard,
-  RestaurantCard,
-  SceneCard as TSceneCard,
-} from '@f2e/ptx';
+import { Cities, City, CityMap, CitySet } from '@f2e/tdx';
 import {
   GetStaticPathsResult,
   GetStaticPropsContext,
@@ -40,24 +26,31 @@ import Banner from '@/components/Banner';
 import Layout from '@/components/layout/Layout';
 import LoadingScreen from '@/components/LoadingScreen';
 import Pagination from '@/components/Pagination';
-import PlaceCard from '@/components/PlaceCard';
+import PlaceCard, { PlaceCardProps } from '@/components/PlaceCard';
 import RouteLink from '@/components/RouteLink';
-import SceneCard from '@/components/SceneCard';
+import SceneCard, { SceneCardProps } from '@/components/SceneCard';
 import {
   DEFAULT_CARD_NUMBER,
   DEFAULT_FETCHED_CARD_NUMBER,
 } from '@/constants/pagination';
 import { SIX_HOURS_IN_SECONDS } from '@/constants/time';
+import {
+  mapActivityToPlaceCard,
+  mapHotelToPlaceCard,
+  mapRestaurantToPlaceCard,
+  mapScenicSpotToSceneCard,
+  tourismService,
+} from '@/services/tdx';
 import background from '@/static/background/scenes.png';
 import wordOne from '@/static/background/scenes-1.png';
 import wordTwo from '@/static/background/scenes-2.png';
 
 interface CityPageProps {
   city: City;
-  scenes: TSceneCard[];
-  restaurants: RestaurantCard[];
-  hotels: HotelCard[];
-  activities: ActivityCard[];
+  scenes: SceneCardProps[];
+  restaurants: PlaceCardProps[];
+  hotels: PlaceCardProps[];
+  activities: PlaceCardProps[];
 }
 
 const PAGE_PROPS = { mainColor: 'scenes.main', gradientColor: 'scenes.light' };
@@ -114,48 +107,14 @@ const CategoryPage = ({
             </RouteLink>
           </BreadcrumbItem> */}
           <BreadcrumbItem fontWeight="bold" isCurrentPage>
-            <RouteLink href={`/cities/${CityMap[city]}`} as={BreadcrumbLink}>
-              {city}
+            <RouteLink href={`/cities/${city}`} as={BreadcrumbLink}>
+              {CityMap[city]}
             </RouteLink>
           </BreadcrumbItem>
         </Breadcrumb>
         <Heading as="h1" textAlign="center" mb="4">
-          {city}
+          {CityMap[city]}
         </Heading>
-        {scenes.length > 0 && (
-          <>
-            <Banner
-              title="熱門景點"
-              mainColor="scenes.main"
-              href="/scenes"
-              hideButton
-            />
-            <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
-              {scenes
-                .slice(
-                  scenePage * DEFAULT_CARD_NUMBER,
-                  scenePage * DEFAULT_CARD_NUMBER + DEFAULT_CARD_NUMBER,
-                )
-                .map((scene) => (
-                  <SceneCard
-                    key={scene.ScenicSpotID}
-                    id={scene.ScenicSpotID}
-                    name={scene.ScenicSpotName}
-                    city={scene.City}
-                    image={scene.Picture.PictureUrl1}
-                  />
-                ))}
-            </SimpleGrid>
-            <Center mt="8">
-              <Pagination
-                colorTheme="scenes"
-                page={scenePage}
-                total={Math.ceil(scenes.length / DEFAULT_CARD_NUMBER)}
-                onPageChange={setScenePage}
-              />
-            </Center>
-          </>
-        )}
         {activities.length > 0 && (
           <>
             <Banner
@@ -171,27 +130,7 @@ const CategoryPage = ({
                   DEFAULT_CARD_NUMBER * activityPage + DEFAULT_CARD_NUMBER,
                 )
                 .map((activity) => (
-                  <PlaceCard
-                    key={activity.ActivityID}
-                    id={activity.ActivityID}
-                    name={activity.ActivityName}
-                    city={activity.City}
-                    image={activity.Picture.PictureUrl1}
-                    address={activity.Address}
-                    contactNumber={activity.Phone}
-                    href={`/cities/${CityMap[activity.City]}/activity/${
-                      activity.ActivityID
-                    }`}
-                    openingHours={
-                      activity.StartTime &&
-                      activity.EndTime &&
-                      `${new Date(
-                        activity.StartTime,
-                      ).toLocaleDateString()}~${new Date(
-                        activity.EndTime,
-                      ).toLocaleDateString()}`
-                    }
-                  />
+                  <PlaceCard key={activity.href} {...activity} />
                 ))}
             </SimpleGrid>
             <Center mt="8">
@@ -200,6 +139,34 @@ const CategoryPage = ({
                 page={activityPage}
                 total={Math.ceil(activities.length / DEFAULT_CARD_NUMBER)}
                 onPageChange={setActivityPage}
+              />
+            </Center>
+          </>
+        )}
+        {scenes.length > 0 && (
+          <>
+            <Banner
+              title="熱門景點"
+              mainColor="scenes.main"
+              href="/scenes"
+              hideButton
+            />
+            <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
+              {scenes
+                .slice(
+                  scenePage * DEFAULT_CARD_NUMBER,
+                  scenePage * DEFAULT_CARD_NUMBER + DEFAULT_CARD_NUMBER,
+                )
+                .map((scene) => (
+                  <SceneCard key={scene.href} {...scene} />
+                ))}
+            </SimpleGrid>
+            <Center mt="8">
+              <Pagination
+                colorTheme="scenes"
+                page={scenePage}
+                total={Math.ceil(scenes.length / DEFAULT_CARD_NUMBER)}
+                onPageChange={setScenePage}
               />
             </Center>
           </>
@@ -219,19 +186,7 @@ const CategoryPage = ({
                   DEFAULT_CARD_NUMBER * restaurantPage + DEFAULT_CARD_NUMBER,
                 )
                 .map((restaurant) => (
-                  <PlaceCard
-                    key={restaurant.RestaurantID}
-                    id={restaurant.RestaurantID}
-                    name={restaurant.RestaurantName}
-                    city={restaurant.City}
-                    image={restaurant.Picture.PictureUrl1}
-                    address={restaurant.Address}
-                    contactNumber={restaurant.Phone}
-                    openingHours={restaurant.OpenTime}
-                    href={`/cities/${CityMap[restaurant.City]}/restaurant/${
-                      restaurant.RestaurantID
-                    }`}
-                  />
+                  <PlaceCard key={restaurant.href} {...restaurant} />
                 ))}
             </SimpleGrid>
             <Center mt="8">
@@ -259,19 +214,7 @@ const CategoryPage = ({
                   DEFAULT_CARD_NUMBER * hotelPage + DEFAULT_CARD_NUMBER,
                 )
                 .map((hotel) => (
-                  <PlaceCard
-                    key={hotel.HotelID}
-                    id={hotel.HotelID}
-                    name={hotel.HotelName}
-                    city={hotel.City}
-                    image={hotel.Picture.PictureUrl1}
-                    address={hotel.Address}
-                    contactNumber={hotel.Phone}
-                    serviceInfo={hotel.ServiceInfo}
-                    href={`/cities/${CityMap[hotel.City]}/hotel/${
-                      hotel.HotelID
-                    }`}
-                  />
+                  <PlaceCard key={hotel.href} {...hotel} />
                 ))}
             </SimpleGrid>
             <Center mt="8">
@@ -297,45 +240,55 @@ interface CityPath extends ParsedUrlQuery {
 }
 
 export const getStaticPaths = (): GetStaticPathsResult<CityPath> => ({
-  fallback: true,
-  paths: [],
+  fallback: false,
+  paths: Cities.map((city) => ({ params: { city } })),
 });
 
 export const getStaticProps = async (
   context: GetStaticPropsContext,
 ): Promise<GetStaticPropsResult<CityPageProps>> => {
-  if (typeof context.params.city !== 'string') {
-    return { notFound: true };
-  }
+  const city = context.params.city as City;
 
-  const citySlug = context.params.city as CitySlug;
-  if (citySlug !== citySlug.toLowerCase()) {
-    return {
-      redirect: {
-        destination: `/cities/${citySlug.toLowerCase()}`,
-        permanent: true,
-      },
-    };
-  }
-
-  const city = CitySlugMap[citySlug];
-
-  if (!CITIES.includes(city)) {
-    return {
-      notFound: true,
-    };
-  }
+  if (typeof city !== 'string' || !CitySet.has(city)) return { notFound: true };
 
   try {
     const [scenes, restaurants, hotels, activities] = await Promise.all([
-      getSceneCardsByCity(city, DEFAULT_FETCHED_CARD_NUMBER),
-      getRestaurantCardsByCity(city, DEFAULT_FETCHED_CARD_NUMBER),
-      getHotelCardsByCity(city, DEFAULT_FETCHED_CARD_NUMBER),
-      getActivityCardsByCity(city, DEFAULT_FETCHED_CARD_NUMBER),
+      tourismService.getScenicSpotsByCity(city, {
+        top: DEFAULT_FETCHED_CARD_NUMBER,
+        select: 'ScenicSpotID,ScenicSpotName,City,Picture',
+        filter: 'Picture/PictureUrl1 ne null',
+        orderBy: 'SrcUpdateTime desc, TicketInfo desc',
+      }),
+      tourismService.getRestaurantsByCity(city, {
+        top: DEFAULT_FETCHED_CARD_NUMBER,
+        select:
+          'RestaurantID,RestaurantName,City,Address,OpenTime,Phone,Picture',
+        filter: 'Picture/PictureUrl1 ne null and Address ne null',
+        orderBy: 'SrcUpdateTime desc, Description desc',
+      }),
+      tourismService.getHotelsByCity(city, {
+        top: DEFAULT_FETCHED_CARD_NUMBER,
+        select: 'HotelID,HotelName,City,Address,ServiceInfo,Phone,Picture',
+        filter: 'Picture/PictureUrl1 ne null and Address ne null',
+        orderBy: 'SrcUpdateTime desc, ServiceInfo desc',
+      }),
+      tourismService.getActivitiesByCity(city, {
+        top: DEFAULT_FETCHED_CARD_NUMBER,
+        select:
+          'ActivityID,ActivityName,City,Address,StartTime,EndTime,Phone,Picture',
+        filter: 'Picture/PictureUrl1 ne null and Address ne null',
+        orderBy: 'StartTime desc',
+      }),
     ]);
 
     return {
-      props: { city, scenes, restaurants, hotels, activities },
+      props: {
+        city,
+        scenes: scenes.map(mapScenicSpotToSceneCard),
+        restaurants: restaurants.map(mapRestaurantToPlaceCard),
+        hotels: hotels.map(mapHotelToPlaceCard),
+        activities: activities.map(mapActivityToPlaceCard),
+      },
       revalidate: SIX_HOURS_IN_SECONDS,
     };
   } catch (error) {

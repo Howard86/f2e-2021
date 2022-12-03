@@ -1,4 +1,5 @@
 import { TdxService } from './base';
+import { City } from './constants';
 
 export interface ScenicSpot extends TourismCommonProperty {
   ScenicSpotID: string;
@@ -90,55 +91,6 @@ export type TourismPropertyType =
   | 'Restaurant'
   | 'Hotel'
   | 'Activity';
-
-export type City =
-  | 'Taipei'
-  | 'NewTaipei'
-  | 'Taoyuan'
-  | 'Taichung'
-  | 'Tainan'
-  | 'Kaohsiung'
-  | 'Keelung'
-  | 'Hsinchu'
-  | 'HsinchuCounty'
-  | 'MiaoliCounty'
-  | 'ChanghuaCounty'
-  | 'NantouCounty'
-  | 'YunlinCounty'
-  | 'ChiayiCounty'
-  | 'Chiayi'
-  | 'PingtungCounty'
-  | 'YilanCounty'
-  | 'HualienCounty'
-  | 'TaitungCounty'
-  | 'KinmenCounty'
-  | 'PenghuCounty'
-  | 'LienchiangCounty';
-
-export enum CityMap {
-  '臺北市' = 'Taipei',
-  '新北市' = 'Newtaipei',
-  '桃園市' = 'Taoyuan',
-  '臺中市' = 'Taichung',
-  '臺南市' = 'Tainan',
-  '高雄市' = 'Kaohsiung',
-  '基隆市' = 'Keelung',
-  '新竹市' = 'Hsinchu',
-  '新竹縣' = 'HsinchuCounty',
-  '苗栗縣' = 'MiaoliCounty',
-  '彰化縣' = 'ChanghuaCounty',
-  '南投縣' = 'NantouCounty',
-  '雲林縣' = 'YunlinCounty',
-  '嘉義縣' = 'ChiayiCounty',
-  '嘉義市' = 'Chiayi',
-  '屏東縣' = 'PingtungCounty',
-  '宜蘭縣' = 'YilanCounty',
-  '花蓮縣' = 'HualienCounty',
-  '臺東縣' = 'TaitungCounty',
-  '金門縣' = 'KinmenCounty',
-  '澎湖縣' = 'PenghuCounty',
-  '連江縣' = 'LienchiangCounty',
-}
 
 export class TourismService {
   private BASE_PATH = '/v2/Tourism';

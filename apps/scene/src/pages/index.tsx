@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { Box, Container, Flex, SimpleGrid, Text } from '@chakra-ui/react';
-import { CityMap } from '@f2e/tdx';
 import { GetStaticPropsContext, GetStaticPropsResult } from 'next';
 import Image from 'next/image';
 import NextHeadSeo from 'next-head-seo';
@@ -15,7 +14,12 @@ import SiteCardGrid from '@/components/SiteCardGrid';
 import WeatherCarousel from '@/components/WeatherCarousel';
 import { DEFAULT_FETCHED_REMARK_NUMBER } from '@/constants/pagination';
 import { SIX_HOURS_IN_SECONDS } from '@/constants/time';
-import { tourismService } from '@/services/tdx';
+import {
+  mapHotelToPlaceCard,
+  mapRestaurantToPlaceCard,
+  mapScenicSpotToSceneCard,
+  tourismService,
+} from '@/services/tdx';
 import getWeathers from '@/services/weather';
 import mainBackground from '@/static/background/main.png';
 
@@ -89,7 +93,7 @@ const HomePage = ({ weathers, scenes, restaurants, hotels }: HomePageProps) => (
       />
       <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
         {scenes.map((item) => (
-          <SceneCard key={item.id} {...item} />
+          <SceneCard key={item.href} {...item} />
         ))}
       </SimpleGrid>
       <Banner
@@ -100,14 +104,14 @@ const HomePage = ({ weathers, scenes, restaurants, hotels }: HomePageProps) => (
 
       <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
         {restaurants.map((item) => (
-          <PlaceCard key={item.id} {...item} />
+          <PlaceCard key={item.href} {...item} />
         ))}
       </SimpleGrid>
       <Banner title="住宿推薦" mainColor="hotels.main" href="/hotels" />
 
       <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
         {hotels.map((item) => (
-          <PlaceCard key={item.id} {...item} />
+          <PlaceCard key={item.href} {...item} />
         ))}
       </SimpleGrid>
     </Flex>
@@ -144,30 +148,9 @@ export const getStaticProps = async (
   return {
     props: {
       weathers,
-      scenes: scenes.map((item) => ({
-        name: item.ScenicSpotName,
-        city: item.City,
-        image: item.Picture.PictureUrl1,
-        href: `/cities/${CityMap[item.City]}/scene/${item.ScenicSpotID}`,
-      })),
-      restaurants: restaurants.map((item) => ({
-        name: item.RestaurantName,
-        city: item.City,
-        image: item.Picture.PictureUrl1,
-        address: item.Address,
-        contactNumber: item.Phone,
-        openingHours: item.OpenTime,
-        href: `/cities/${CityMap[item.City]}/restaurant/${item.RestaurantID}`,
-      })),
-      hotels: hotels.map((item) => ({
-        name: item.HotelName,
-        city: item.City,
-        image: item.Picture.PictureUrl1,
-        address: item.Address,
-        contactNumber: item.Phone,
-        openingHours: item.ServiceInfo,
-        href: `/cities/${CityMap[item.City]}/restaurant/${item.HotelID}`,
-      })),
+      scenes: scenes.map(mapScenicSpotToSceneCard),
+      restaurants: restaurants.map(mapRestaurantToPlaceCard),
+      hotels: hotels.map(mapHotelToPlaceCard),
     },
     revalidate: SIX_HOURS_IN_SECONDS,
   };
