@@ -11,13 +11,6 @@ import {
   SimpleGrid,
   useDisclosure,
 } from '@chakra-ui/react';
-import {
-  CityMap,
-  getRestaurantCards,
-  getRestaurantWithRemarks,
-  RestaurantCard,
-  RestaurantRemark,
-} from '@f2e/ptx';
 import { GetStaticPropsContext, GetStaticPropsResult } from 'next';
 import NextHeadSeo from 'next-head-seo';
 import { FiSearch } from 'react-icons/fi';
@@ -25,26 +18,24 @@ import { FiSearch } from 'react-icons/fi';
 import Background from '@/components/Background';
 import BackgroundCard from '@/components/BackgroundCard';
 import Banner from '@/components/Banner';
-import FanCard from '@/components/FanCard';
 import Layout from '@/components/layout/Layout';
 import LoadingScreen from '@/components/LoadingScreen';
 import Pagination from '@/components/Pagination';
-import PlaceCard from '@/components/PlaceCard';
+import PlaceCard, { PlaceCardProps } from '@/components/PlaceCard';
 import {
   DEFAULT_CARD_NUMBER,
   DEFAULT_FETCHED_CARD_NUMBER,
-  DEFAULT_FETCHED_REMARK_NUMBER,
 } from '@/constants/pagination';
 import { SIX_HOURS_IN_SECONDS } from '@/constants/time';
 import useAppToast from '@/hooks/use-app-toast';
 import { useLazyGetRestaurantCardsQuery } from '@/services/local';
+import { mapRestaurantToPlaceCard, tourismService } from '@/services/tdx';
 import background from '@/static/background/restaurants.png';
 import wordOne from '@/static/background/restaurants-1.png';
 import wordTwo from '@/static/background/restaurants-2.png';
 
 interface RestaurantsPageProps {
-  restaurants: RestaurantCard[];
-  remarks: RestaurantRemark[];
+  restaurants: PlaceCardProps[];
 }
 
 const PAGE_PROPS = {
@@ -54,7 +45,6 @@ const PAGE_PROPS = {
 
 const RestaurantsPage = ({
   restaurants,
-  remarks,
 }: RestaurantsPageProps): JSX.Element => {
   const toast = useAppToast();
   const [fetch, { data, isUninitialized, isLoading, isError, originalArgs }] =
@@ -154,19 +144,7 @@ const RestaurantsPage = ({
             {data?.success && (
               <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
                 {data.data.map((restaurant) => (
-                  <PlaceCard
-                    key={restaurant.RestaurantID}
-                    id={restaurant.RestaurantID}
-                    name={restaurant.RestaurantName}
-                    city={restaurant.City}
-                    image={restaurant.Picture.PictureUrl1}
-                    address={restaurant.Address}
-                    contactNumber={restaurant.Phone}
-                    openingHours={restaurant.OpenTime}
-                    href={`/cities/${CityMap[restaurant.City]}/restaurant/${
-                      restaurant.RestaurantID
-                    }`}
-                  />
+                  <PlaceCard key={restaurant.href} {...restaurant} />
                 ))}
               </SimpleGrid>
             )}
@@ -185,19 +163,7 @@ const RestaurantsPage = ({
               DEFAULT_CARD_NUMBER * page + DEFAULT_CARD_NUMBER,
             )
             .map((restaurant) => (
-              <PlaceCard
-                key={restaurant.RestaurantID}
-                id={restaurant.RestaurantID}
-                name={restaurant.RestaurantName}
-                city={restaurant.City}
-                image={restaurant.Picture.PictureUrl1}
-                address={restaurant.Address}
-                contactNumber={restaurant.Phone}
-                openingHours={restaurant.OpenTime}
-                href={`/cities/${CityMap[restaurant.City]}/restaurant/${
-                  restaurant.RestaurantID
-                }`}
-              />
+              <PlaceCard key={restaurant.href} {...restaurant} />
             ))}
         </SimpleGrid>
         <Center mt="8">
@@ -208,28 +174,6 @@ const RestaurantsPage = ({
             onPageChange={setPage}
           />
         </Center>
-        <Banner
-          mb={[10, 10, 20]}
-          title="網紅必推美食"
-          mainColor={PAGE_PROPS.mainColor}
-          href="/scenes"
-          hideButton
-        />
-        <SimpleGrid columns={[1, 2, 3]} spacingX={8} spacingY={12} mx="8">
-          {remarks.map((remark) => (
-            <FanCard
-              id={remark.RestaurantID}
-              key={remark.RestaurantID}
-              name={remark.RestaurantName}
-              city={remark.City}
-              description={remark.Description}
-              image={remark.Picture.PictureUrl1}
-              href={`/cities/${CityMap[remark.City]}/restaurant/${
-                remark.RestaurantID
-              }`}
-            />
-          ))}
-        </SimpleGrid>
       </Flex>
     </>
   );
@@ -241,12 +185,17 @@ RestaurantsPage.layoutProps = PAGE_PROPS;
 export const getStaticProps = async (
   _context: GetStaticPropsContext,
 ): Promise<GetStaticPropsResult<RestaurantsPageProps>> => {
-  const [restaurants, remarks] = await Promise.all([
-    getRestaurantCards(DEFAULT_FETCHED_CARD_NUMBER),
-    getRestaurantWithRemarks(DEFAULT_FETCHED_REMARK_NUMBER),
-  ]);
+  const restaurants = await tourismService.getRestaurants({
+    top: DEFAULT_FETCHED_CARD_NUMBER,
+    select: 'RestaurantID,RestaurantName,City,Address,OpenTime,Phone,Picture',
+    filter: 'Picture/PictureUrl1 ne null and Address ne null and City ne null',
+    orderBy: 'SrcUpdateTime desc, Description desc',
+  });
 
-  return { props: { restaurants, remarks }, revalidate: SIX_HOURS_IN_SECONDS };
+  return {
+    props: { restaurants: restaurants.map(mapRestaurantToPlaceCard) },
+    revalidate: SIX_HOURS_IN_SECONDS,
+  };
 };
 
 export default RestaurantsPage;

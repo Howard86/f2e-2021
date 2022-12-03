@@ -11,51 +11,33 @@ import {
   useBreakpointValue,
   useDisclosure,
 } from '@chakra-ui/react';
-import {
-  CityMap,
-  getSceneCards,
-  getScenesWithRemarks,
-  getSceneTheme,
-  SceneCard as TSceneCard,
-  SceneRemark,
-  SceneTheme,
-} from '@f2e/ptx';
 import { GetStaticPropsContext, GetStaticPropsResult } from 'next';
-import dynamic from 'next/dynamic';
 import NextHeadSeo from 'next-head-seo';
 import { BsGrid3X3GapFill } from 'react-icons/bs';
 import { FiSearch } from 'react-icons/fi';
 
 import Background from '@/components/Background';
 import Banner from '@/components/Banner';
-import FanCard from '@/components/FanCard';
 import Layout from '@/components/layout/Layout';
 import LoadingScreen from '@/components/LoadingScreen';
-import SceneCard from '@/components/SceneCard';
-import ThemeCard from '@/components/ThemeCard';
+import SceneCard, { SceneCardProps } from '@/components/SceneCard';
+import SceneModal from '@/components/SceneModal';
 import { DEFAULT_FETCHED_REMARK_NUMBER } from '@/constants/pagination';
 import { SIX_HOURS_IN_SECONDS } from '@/constants/time';
 import useAppToast from '@/hooks/use-app-toast';
 import { useLazyGetSceneCardsQuery } from '@/services/local';
+import { mapScenicSpotToSceneCard, tourismService } from '@/services/tdx';
 import background from '@/static/background/scenes.png';
 import wordOne from '@/static/background/scenes-1.png';
 import wordTwo from '@/static/background/scenes-2.png';
 
-const DynamicSceneModal = dynamic(() => import('@/components/SceneModal'));
-
 interface ScenesPageProps {
-  scenes: TSceneCard[];
-  remarks: SceneRemark[];
-  themes: SceneTheme[];
+  scenes: SceneCardProps[];
 }
 
 const PAGE_PROPS = { mainColor: 'scenes.main', gradientColor: 'scenes.light' };
 
-const ScenesPage = ({
-  scenes,
-  remarks,
-  themes,
-}: ScenesPageProps): JSX.Element => {
+const ScenesPage = ({ scenes }: ScenesPageProps): JSX.Element => {
   const toast = useAppToast();
   const [
     fetch,
@@ -151,13 +133,7 @@ const ScenesPage = ({
             {data?.success && (
               <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
                 {data.data.map((scene) => (
-                  <SceneCard
-                    key={scene.ScenicSpotID}
-                    id={scene.ScenicSpotID}
-                    name={scene.ScenicSpotName}
-                    city={scene.City}
-                    image={scene.Picture.PictureUrl1}
-                  />
+                  <SceneCard key={scene.href} {...scene} />
                 ))}
               </SimpleGrid>
             )}
@@ -172,55 +148,11 @@ const ScenesPage = ({
         />
         <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
           {scenes.map((scene) => (
-            <SceneCard
-              key={scene.ScenicSpotID}
-              id={scene.ScenicSpotID}
-              name={scene.ScenicSpotName}
-              city={scene.City}
-              image={scene.Picture.PictureUrl1}
-            />
-          ))}
-        </SimpleGrid>
-        <Banner
-          title="網紅攻略"
-          mainColor={PAGE_PROPS.mainColor}
-          mb={{ lg: 16 }}
-          hideButton
-          href="/scenes"
-        />
-        <SimpleGrid columns={[1, 2, 3]} spacing={6} spacingY={12} mx="8" mt="4">
-          {remarks.map((remark) => (
-            <FanCard
-              id={remark.ScenicSpotID}
-              key={remark.ScenicSpotID}
-              name={remark.ScenicSpotName}
-              city={remark.City}
-              description={remark.Remarks}
-              image={remark.Picture.PictureUrl1}
-              href={`/cities/${CityMap[remark.City]}/scene/${
-                remark.ScenicSpotID
-              }`}
-            />
-          ))}
-        </SimpleGrid>
-        <Banner
-          title="主題觀點"
-          mainColor={PAGE_PROPS.mainColor}
-          href="/scenes"
-        />
-
-        <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
-          {themes.map((theme) => (
-            <ThemeCard
-              id={theme.ScenicSpotID}
-              key={theme.ScenicSpotID}
-              theme={theme.Class}
-              image={theme.Picture.PictureUrl1}
-            />
+            <SceneCard key={scene.href} {...scene} />
           ))}
         </SimpleGrid>
       </Flex>
-      <DynamicSceneModal
+      <SceneModal
         isOpen={modal.isOpen}
         onClose={modal.onClose}
         isCentered={isModalCentered}
@@ -236,14 +168,15 @@ export const getStaticProps = async (
   _context: GetStaticPropsContext,
 ): Promise<GetStaticPropsResult<ScenesPageProps>> => {
   try {
-    const [scenes, remarks, themes] = await Promise.all([
-      getSceneCards(DEFAULT_FETCHED_REMARK_NUMBER),
-      getScenesWithRemarks(DEFAULT_FETCHED_REMARK_NUMBER),
-      getSceneTheme(DEFAULT_FETCHED_REMARK_NUMBER),
-    ]);
+    const scenes = await tourismService.getScenicSpots({
+      top: DEFAULT_FETCHED_REMARK_NUMBER,
+      select: 'ScenicSpotID,ScenicSpotName,City,Picture',
+      filter: 'Picture/PictureUrl1 ne null and City ne null',
+      orderBy: 'SrcUpdateTime desc, TicketInfo desc',
+    });
 
     return {
-      props: { scenes, remarks, themes },
+      props: { scenes: scenes.map(mapScenicSpotToSceneCard) },
       revalidate: SIX_HOURS_IN_SECONDS,
     };
   } catch (error) {

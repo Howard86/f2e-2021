@@ -15,6 +15,7 @@ import WeatherCarousel from '@/components/WeatherCarousel';
 import { DEFAULT_FETCHED_REMARK_NUMBER } from '@/constants/pagination';
 import { SIX_HOURS_IN_SECONDS } from '@/constants/time';
 import {
+  mapActivityToPlaceCard,
   mapHotelToPlaceCard,
   mapRestaurantToPlaceCard,
   mapScenicSpotToSceneCard,
@@ -28,11 +29,18 @@ interface HomePageProps {
   scenes: SceneCardProps[];
   restaurants: PlaceCardProps[];
   hotels: PlaceCardProps[];
+  activities: PlaceCardProps[];
 }
 
 const PAGE_PROPS = { mainColor: 'scenes.main', gradientColor: 'scenes.light' };
 
-const HomePage = ({ weathers, scenes, restaurants, hotels }: HomePageProps) => (
+const HomePage = ({
+  weathers,
+  scenes,
+  restaurants,
+  hotels,
+  activities,
+}: HomePageProps) => (
   <>
     <NextHeadSeo
       og={{
@@ -86,6 +94,7 @@ const HomePage = ({ weathers, scenes, restaurants, hotels }: HomePageProps) => (
     </Flex>
     <Flex flexDir="column" bgColor="white">
       <SiteCardGrid maxW="container.lg" mx="auto" />
+
       <Banner
         title="熱門景點"
         mainColor={PAGE_PROPS.mainColor}
@@ -96,6 +105,19 @@ const HomePage = ({ weathers, scenes, restaurants, hotels }: HomePageProps) => (
           <SceneCard key={item.href} {...item} />
         ))}
       </SimpleGrid>
+
+      <Banner
+        title="最新活動"
+        mainColor="activities.main"
+        href="/scenes"
+        hideButton
+      />
+      <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
+        {activities.map((activity) => (
+          <PlaceCard key={activity.href} {...activity} />
+        ))}
+      </SimpleGrid>
+
       <Banner
         title="熱門美食"
         mainColor="restaurants.main"
@@ -121,29 +143,39 @@ const HomePage = ({ weathers, scenes, restaurants, hotels }: HomePageProps) => (
 export const getStaticProps = async (
   _context: GetStaticPropsContext,
 ): Promise<GetStaticPropsResult<HomePageProps>> => {
-  const [weathers, scenes, restaurants, hotels] = await Promise.all([
-    getWeathers(),
-    tourismService.getScenicSpots({
-      top: DEFAULT_FETCHED_REMARK_NUMBER,
-      select: 'ScenicSpotID,ScenicSpotName,City,Picture',
-      filter: 'Picture/PictureUrl1 ne null and City ne null',
-      orderBy: 'SrcUpdateTime desc, TicketInfo desc',
-    }),
-    tourismService.getRestaurants({
-      top: DEFAULT_FETCHED_REMARK_NUMBER,
-      select: 'RestaurantID,RestaurantName,City,Address,OpenTime,Phone,Picture',
-      filter:
-        'Picture/PictureUrl1 ne null and Address ne null and City ne null',
-      orderBy: 'SrcUpdateTime desc, Description desc',
-    }),
-    tourismService.getHotels({
-      top: DEFAULT_FETCHED_REMARK_NUMBER,
-      select: 'HotelID,HotelName,City,Address,ServiceInfo,Phone,Picture',
-      filter:
-        'Picture/PictureUrl1 ne null and Address ne null and City ne null',
-      orderBy: 'SrcUpdateTime desc, ServiceInfo desc',
-    }),
-  ]);
+  const [weathers, scenes, restaurants, hotels, activities] = await Promise.all(
+    [
+      getWeathers(),
+      tourismService.getScenicSpots({
+        top: DEFAULT_FETCHED_REMARK_NUMBER,
+        select: 'ScenicSpotID,ScenicSpotName,City,Picture',
+        filter: 'Picture/PictureUrl1 ne null and City ne null',
+        orderBy: 'SrcUpdateTime desc, TicketInfo desc',
+      }),
+      tourismService.getRestaurants({
+        top: DEFAULT_FETCHED_REMARK_NUMBER,
+        select:
+          'RestaurantID,RestaurantName,City,Address,OpenTime,Phone,Picture',
+        filter:
+          'Picture/PictureUrl1 ne null and Address ne null and City ne null',
+        orderBy: 'SrcUpdateTime desc, Description desc',
+      }),
+      tourismService.getHotels({
+        top: DEFAULT_FETCHED_REMARK_NUMBER,
+        select: 'HotelID,HotelName,City,Address,ServiceInfo,Phone,Picture',
+        filter:
+          'Picture/PictureUrl1 ne null and Address ne null and City ne null',
+        orderBy: 'SrcUpdateTime desc, ServiceInfo desc',
+      }),
+      tourismService.getActivities({
+        top: DEFAULT_FETCHED_REMARK_NUMBER,
+        select:
+          'ActivityID,ActivityName,City,Address,StartTime,EndTime,Phone,Picture',
+        filter: 'Picture/PictureUrl1 ne null and Address ne null',
+        orderBy: 'StartTime desc',
+      }),
+    ],
+  );
 
   return {
     props: {
@@ -151,6 +183,7 @@ export const getStaticProps = async (
       scenes: scenes.map(mapScenicSpotToSceneCard),
       restaurants: restaurants.map(mapRestaurantToPlaceCard),
       hotels: hotels.map(mapHotelToPlaceCard),
+      activities: activities.map(mapActivityToPlaceCard),
     },
     revalidate: SIX_HOURS_IN_SECONDS,
   };

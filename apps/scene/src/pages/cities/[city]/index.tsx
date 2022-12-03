@@ -10,7 +10,7 @@ import {
   Icon,
   SimpleGrid,
 } from '@chakra-ui/react';
-import { Cities, City, CityMap, CitySet } from '@f2e/tdx';
+import { City, CityMap, CitySet } from '@f2e/tdx';
 import {
   GetStaticPathsResult,
   GetStaticPropsContext,
@@ -240,8 +240,8 @@ interface CityPath extends ParsedUrlQuery {
 }
 
 export const getStaticPaths = (): GetStaticPathsResult<CityPath> => ({
-  fallback: false,
-  paths: Cities.map((city) => ({ params: { city } })),
+  fallback: true,
+  paths: [],
 });
 
 export const getStaticProps = async (
