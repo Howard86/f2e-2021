@@ -1,5 +1,8 @@
 {
   "name": "f2e",
+  "engines": {
+    "node": ">= 16"
+  },
   "description": "A collection of unlicensed work for f2e open challenge",
   "repository": {
     "type": "git",
@@ -36,7 +39,7 @@
   "scripts": {
     "build": "lerna run build --parallel",
     "bootstrap": "lerna bootstrap",
-    "check-all": "yarn type-check && yarn lint && yarn format",
+    "check-all": "pnpm type-check && pnpm lint && pnpm format",
     "type-check": "lerna run type-check --stream --parallel",
     "lint": "eslint . --ext .ts,.tsx",
     "format": "prettier --write .",

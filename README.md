@@ -42,7 +42,7 @@ Current running local environment:
 
 - OS: [macOS Monterey 12.0.1](https://www.apple.com/macos/monterey/) Apple chip or [Ubuntu 20.04.2 LTS](https://ubuntu.com)
 - [Node.js](https://nodejs.org/en/): v14.18.1
-- [Yarn](https://yarnpkg.com): v1.22.17
+- [pnpm](https://yarnpkg.com): v7.16.1
 
 Checkout to individual `apps` folder, copy required environmental variables in `.env.sample` into `.env.local` and update required fields
 
@@ -54,8 +54,8 @@ cd apps/bus
 cp .env.sample .env.local
 vi .env.local # update required fields and save
 
-yarn # this will build libs if required
-yarn dev
+pnpm # this will build libs if required
+pnpm dev
 ```
 
 You should be able to visit [localhost:3000](http://localhost:3000) to view the application successfully

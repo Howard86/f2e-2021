@@ -12,6 +12,6 @@
     "lint": "eslint src --ext ts",
     "format": "prettier --write src --ignore-path ../../.prettierignore",
     "build": "tsc",
-    "build:fresh": "yarn clean && yarn build"
+    "build:fresh": "pnpm clean && pnpm build"
   }
 }
