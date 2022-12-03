@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useMemo, useState } from 'react';
+import React, { useState } from 'react';
 
 import {
   BoxProps,
@@ -17,18 +17,9 @@ import {
   ModalHeader,
   ModalOverlay,
   ModalProps,
-  Select,
   SimpleGrid,
-  Stack,
 } from '@chakra-ui/react';
-import {
-  City,
-  CityMap,
-  COUNTIES,
-  MAJOR_CITIES,
-  SceneClass,
-  THEMES,
-} from '@f2e/ptx';
+import { City, CityMap, counties, majorCities } from '@f2e/tdx';
 import { useRouter } from 'next/router';
 import { FiSearch } from 'react-icons/fi';
 
@@ -39,69 +30,18 @@ const DEFAULT_MENU_VALUE = '選擇縣市' as const;
 const SceneModal = ({ onClose, ...props }: Omit<ModalProps, 'children'>) => {
   const router = useRouter();
   const toast = useAppToast();
-  const [themeName, setThemeName] = useState<SceneClass>(undefined);
-  const [cityName, setCityName] = useState<City | typeof DEFAULT_MENU_VALUE>(
-    DEFAULT_MENU_VALUE,
-  );
-
-  const MajorCityButtons = useMemo(
-    () => (
-      <>
-        {MAJOR_CITIES.map((city) => (
-          <MenuItem
-            as={Button}
-            key={city}
-            size="sm"
-            variant="outline"
-            value={city}
-            onClick={() => setCityName(city)}
-          >
-            {city}
-          </MenuItem>
-        ))}
-      </>
-    ),
-    [],
-  );
-
-  const CountyButtons = useMemo(
-    () => (
-      <>
-        {COUNTIES.map((city) => (
-          <MenuItem
-            as={Button}
-            key={city}
-            size="sm"
-            variant="outline"
-            value={city}
-            onClick={() => setCityName(city)}
-          >
-            {city}
-          </MenuItem>
-        ))}
-      </>
-    ),
-    [],
-  );
+  const [selectedCity, setSelectedCity] = useState<
+    City | typeof DEFAULT_MENU_VALUE
+  >(DEFAULT_MENU_VALUE);
 
   const onAdvanceSearch = () => {
-    if (cityName !== DEFAULT_MENU_VALUE) {
+    if (selectedCity !== DEFAULT_MENU_VALUE) {
       onClose();
-      router.push(`/cities/${CityMap[cityName]}`);
-      return;
-    }
-
-    if (themeName) {
-      onClose();
-      router.push(`/scenes/${themeName}`);
+      router.push(`/cities/${selectedCity}`);
       return;
     }
 
     toast({ title: '請選擇主題或縣市', status: 'info' });
-  };
-
-  const onSelectTheme = (event: ChangeEvent<HTMLSelectElement>) => {
-    setThemeName(event.target.value as SceneClass);
   };
 
   const menuGroupStyle: BoxProps = {
@@ -121,52 +61,61 @@ const SceneModal = ({ onClose, ...props }: Omit<ModalProps, 'children'>) => {
         </ModalHeader>
         <ModalCloseButton my="2" color="white" />
         <ModalBody mt="2">
-          <Stack direction={['column', 'row']} spacing={4}>
-            <Select
-              placeholder="選擇主題"
-              value={themeName}
-              onChange={onSelectTheme}
-            >
-              {THEMES.map((theme) => (
-                <option key={theme} value={theme}>
-                  {theme}
-                </option>
-              ))}
-            </Select>
-            <Menu isLazy>
-              {({ onClose: onMenuClose }) => (
-                <>
-                  <MenuButton as={Button} variant="outline" flexShrink={0}>
-                    {cityName}
-                  </MenuButton>
-                  <MenuList
-                    minWidth="240px"
-                    textAlign="center"
-                    zIndex="popover"
-                    pt="0"
-                    overflow="hidden"
-                  >
-                    <MenuGroup title="6直轄市" {...menuGroupStyle}>
-                      <SimpleGrid columns={[4, 5]} gap={2} m="2">
-                        {MajorCityButtons}
-                      </SimpleGrid>
-                    </MenuGroup>
-                    <MenuGroup title="16縣市" {...menuGroupStyle}>
-                      <SimpleGrid columns={[4, 5]} gap={2} m="2">
-                        {CountyButtons}
-                      </SimpleGrid>
-                    </MenuGroup>
-                    <MenuDivider />
-                    <MenuGroup>
-                      <Button variant="scenes" onClick={onMenuClose}>
-                        取消
-                      </Button>
-                    </MenuGroup>
-                  </MenuList>
-                </>
-              )}
-            </Menu>
-          </Stack>
+          <Menu isLazy>
+            {({ onClose: onMenuClose }) => (
+              <>
+                <MenuButton as={Button} variant="outline" flexShrink={0}>
+                  {CityMap[selectedCity] || selectedCity}
+                </MenuButton>
+                <MenuList
+                  minWidth="240px"
+                  textAlign="center"
+                  zIndex="popover"
+                  pt="0"
+                  overflow="hidden"
+                >
+                  <MenuGroup title="6直轄市" {...menuGroupStyle}>
+                    <SimpleGrid columns={[4, 5]} gap={2} m="2">
+                      {majorCities.map((city) => (
+                        <MenuItem
+                          as={Button}
+                          key={city}
+                          size="sm"
+                          variant="outline"
+                          value={city}
+                          onClick={() => setSelectedCity(city)}
+                        >
+                          {CityMap[city]}
+                        </MenuItem>
+                      ))}
+                    </SimpleGrid>
+                  </MenuGroup>
+                  <MenuGroup title="16縣市" {...menuGroupStyle}>
+                    <SimpleGrid columns={[4, 5]} gap={2} m="2">
+                      {counties.map((city) => (
+                        <MenuItem
+                          as={Button}
+                          key={city}
+                          size="sm"
+                          variant="outline"
+                          value={city}
+                          onClick={() => setSelectedCity(city)}
+                        >
+                          {CityMap[city]}
+                        </MenuItem>
+                      ))}
+                    </SimpleGrid>
+                  </MenuGroup>
+                  <MenuDivider />
+                  <MenuGroup>
+                    <Button variant="scenes" onClick={onMenuClose}>
+                      取消
+                    </Button>
+                  </MenuGroup>
+                </MenuList>
+              </>
+            )}
+          </Menu>
         </ModalBody>
         <ModalFooter justifyContent="center">
           <Button

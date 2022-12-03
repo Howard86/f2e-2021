@@ -47,11 +47,39 @@ export const Cities: City[] = [
   'LienchiangCounty',
 ];
 
+export const majorCities: City[] = [
+  'Taipei',
+  'NewTaipei',
+  'Taoyuan',
+  'Taichung',
+  'Tainan',
+  'Kaohsiung',
+];
+
+export const counties: City[] = [
+  'Keelung',
+  'Hsinchu',
+  'HsinchuCounty',
+  'MiaoliCounty',
+  'ChanghuaCounty',
+  'NantouCounty',
+  'YunlinCounty',
+  'ChiayiCounty',
+  'Chiayi',
+  'PingtungCounty',
+  'YilanCounty',
+  'HualienCounty',
+  'TaitungCounty',
+  'KinmenCounty',
+  'PenghuCounty',
+  'LienchiangCounty',
+];
+
 export const CitySet = new Set(Cities);
 
 export const CityMap = {
   臺北市: 'Taipei',
-  新北市: 'Newtaipei',
+  新北市: 'NewTaipei',
   桃園市: 'Taoyuan',
   臺中市: 'Taichung',
   臺南市: 'Tainan',
@@ -74,7 +102,7 @@ export const CityMap = {
   連江縣: 'LienchiangCounty',
 
   Taipei: '臺北市',
-  Newtaipei: '新北市',
+  NewTaipei: '新北市',
   Taoyuan: '桃園市',
   Taichung: '臺中市',
   Tainan: '臺南市',

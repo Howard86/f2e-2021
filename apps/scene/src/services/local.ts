@@ -3,7 +3,6 @@ import { ApiResponse } from 'next-api-handler';
 
 import { PlaceCardProps } from '@/components/PlaceCard';
 import { SceneCardProps } from '@/components/SceneCard';
-import { Local } from '@/types/local';
 
 export const localApi = createApi({
   reducerPath: 'local',
@@ -13,7 +12,7 @@ export const localApi = createApi({
   endpoints: (builder) => ({
     getSceneCards: builder.query<
       ApiResponse<SceneCardProps[]>,
-      { keyword: string } & Partial<Local.SearchScenesQuery>
+      { keyword: string } & Partial<Local.SearchQuery>
     >({
       query: (params) => ({
         url: 'scenes',

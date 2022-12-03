@@ -1,11 +1,5 @@
-import { City, SceneClass } from '@f2e/ptx';
-
 declare namespace Local {
-  interface SearchScenesQuery {
-    keyword: string;
-    city: City;
-    theme: SceneClass;
-  }
+  import { City } from '@f2e/tdx';
 
   interface SearchQuery {
     keyword: string;
