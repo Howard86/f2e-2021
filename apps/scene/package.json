@@ -36,14 +36,13 @@
     "gen:theme-typings": "chakra-cli tokens src/theme/index.ts",
     "dev": "next dev",
     "build": "next build",
-    "postinstall": "yarn workspace @f2e/ptx build",
+    "postinstall": "yarn workspace @f2e/tdx build",
     "start": "next start"
   },
   "dependencies": {
     "@chakra-ui/react": "^1.8.9",
     "@emotion/react": "^11.10.4",
     "@emotion/styled": "^11.10.4",
-    "@f2e/ptx": "^0.6.1",
     "@f2e/tdx": "^0.0.0",
     "@reduxjs/toolkit": "^1.8.5",
     "framer-motion": "^6.5.1",
