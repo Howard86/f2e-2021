@@ -6,5 +6,5 @@
     "noEmit": false,
     "outDir": "build"
   },
-  "include": ["src", "index.ts", "index.ts"]
+  "include": ["*.ts"]
 }
