@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.4.0](https://github.com/Howard86/f2e-2011/compare/@f2e/ubike@0.3.8...@f2e/ubike@0.4.0) (2022-12-03)
+
+### Features
+
+- set up lerna@6 & nx ([6c7266f](https://github.com/Howard86/f2e-2011/commit/6c7266f91199869751c0bddd546183fad608d07b))
+
 ## [0.3.8](https://github.com/Howard86/f2e-2011/compare/@f2e/ubike@0.3.7...@f2e/ubike@0.3.8) (2022-12-03)
 
 **Note:** Version bump only for package @f2e/ubike

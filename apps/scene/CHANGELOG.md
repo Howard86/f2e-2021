@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.3.0](https://github.com/Howard86/f2e-2011/compare/@f2e/scene@0.2.10...@f2e/scene@0.3.0) (2022-12-03)
+
+### Features
+
+- set up lerna@6 & nx ([6c7266f](https://github.com/Howard86/f2e-2011/commit/6c7266f91199869751c0bddd546183fad608d07b))
+
 ## [0.2.10](https://github.com/Howard86/f2e-2011/compare/@f2e/scene@0.2.9...@f2e/scene@0.2.10) (2022-12-03)
 
 **Note:** Version bump only for package @f2e/scene
