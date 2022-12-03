@@ -1,5 +1,8 @@
 {
   "name": "f2e",
+  "engines": {
+    "node": ">= 16"
+  },
   "description": "A collection of unlicensed work for f2e open challenge",
   "repository": {
     "type": "git",
@@ -34,16 +37,23 @@
     ]
   },
   "scripts": {
-    "build": "lerna run build --parallel",
-    "bootstrap": "lerna bootstrap",
-    "check-all": "yarn type-check && yarn lint && yarn format",
-    "type-check": "lerna run type-check --stream --parallel",
+    "build": "lerna run build",
+    "build:scene": "lerna run build --scope=@f2e/scene",
+    "build:ubike": "lerna run build --scope=@f2e/ubike",
+    "build:bus": "lerna run build --scope=@f2e/bus",
+    "dev:scene": "lerna run dev --scope=@f2e/scene",
+    "dev:ubike": "lerna run dev --scope=@f2e/ubike",
+    "dev:bus": "lerna run dev --scope=@f2e/bus",
+    "start:scene": "lerna run start --scope=@f2e/scene",
+    "start:ubike": "lerna run start --scope=@f2e/ubike",
+    "start:bus": "lerna run start --scope=@f2e/bus",
+    "check-all": "pnpm type-check && pnpm lint && pnpm format",
+    "type-check": "lerna run type-check --stream",
     "lint": "eslint . --ext .ts,.tsx",
     "format": "prettier --write .",
     "release": "lerna version --conventional-commits --include-merged-tags",
     "prepare": "husky install"
   },
-  "dependencies": {},
   "devDependencies": {
     "@chakra-ui/cli": "^1.9.0",
     "@commitlint/cli": "^16.3.0",
@@ -66,8 +76,9 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-simple-import-sort": "^7.0.0",
     "husky": "^7.0.4",
-    "lerna": "^4.0.0",
+    "lerna": "^6.1.0",
     "lint-staged": "^12.5.0",
+    "nx": "^15.2.4",
     "prettier": "^2.7.1",
     "typescript": "^4.8.4"
   }

@@ -1,6 +1,6 @@
 {
   "name": "@f2e/scene",
-  "version": "0.2.10",
+  "version": "0.3.0",
   "description": "Taiwan scene search powered by PTX API",
   "repository": {
     "type": "git",
@@ -29,21 +29,20 @@
   },
   "homepage": "https://github.com/Howard86/f2e-2011",
   "scripts": {
-    "check-all": "yarn type-check && yarn lint && yarn format",
+    "check-all": "pnpm type-check && pnpm lint && pnpm format",
     "type-check": "tsc --noEmit",
     "lint": "eslint . --ext .ts,.tsx",
     "format": "prettier --write . --ignore-path ../../.prettierignore",
     "gen:theme-typings": "chakra-cli tokens src/theme/index.ts",
     "dev": "next dev",
     "build": "next build",
-    "postinstall": "yarn workspace @f2e/tdx build",
     "start": "next start"
   },
   "dependencies": {
     "@chakra-ui/react": "^1.8.9",
     "@emotion/react": "^11.10.4",
     "@emotion/styled": "^11.10.4",
-    "@f2e/tdx": "^0.1.0",
+    "@f2e/tdx": "^0.1.1",
     "@reduxjs/toolkit": "^1.8.5",
     "framer-motion": "^6.5.1",
     "jssha": "^3.2.0",
