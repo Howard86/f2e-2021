@@ -42,7 +42,7 @@
     "@chakra-ui/react": "^1.8.9",
     "@emotion/react": "^11.10.4",
     "@emotion/styled": "^11.10.4",
-    "@f2e/tdx": "^0.1.1",
+    "@f2e/tdx": "workspace:^0.1.1",
     "@reduxjs/toolkit": "^1.8.5",
     "framer-motion": "^6.5.1",
     "jssha": "^3.2.0",
