@@ -129,7 +129,7 @@ export class TourismService {
     return async (id: string) => {
       const items = await this.service.get<T[]>(`${this.BASE_PATH}/${type}`, {
         top: 1,
-        filter: `${type}ID eq ${id}`,
+        filter: `${type}ID eq '${id}'`,
       });
 
       return TdxService.checkExistence(items);

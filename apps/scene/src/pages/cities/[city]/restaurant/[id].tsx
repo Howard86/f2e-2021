@@ -14,16 +14,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import {
-  CITIES,
-  CityMap,
-  CitySlug,
-  CitySlugMap,
-  getRestaurantById,
-  getRestaurantWithRemarksByCity,
-  Restaurant,
-  RestaurantRemark,
-} from '@f2e/ptx';
+import { City, CityMap, CitySet, Restaurant } from '@f2e/tdx';
 import {
   GetStaticPathsResult,
   GetStaticPropsContext,
@@ -37,19 +28,16 @@ import { BsBookmarkPlus, BsBookmarkPlusFill } from 'react-icons/bs';
 import { FiClock, FiMapPin, FiPhoneIncoming } from 'react-icons/fi';
 import { MdPhotoAlbum } from 'react-icons/md';
 
-import Banner from '@/components/Banner';
-import FanCard from '@/components/FanCard';
 import GoogleMap from '@/components/GoogleMap';
 import Layout from '@/components/layout/Layout';
 import LoadingScreen from '@/components/LoadingScreen';
 import RouteLink from '@/components/RouteLink';
 import SceneDetailBox from '@/components/SceneDetailText';
-import { DEFAULT_FETCHED_REMARK_NUMBER } from '@/constants/pagination';
 import { ONE_DAY_IN_SECONDS } from '@/constants/time';
+import { tourismService } from '@/services/tdx';
 
 interface RestaurantPageProps {
   restaurant: Restaurant;
-  remarks: RestaurantRemark[];
 }
 
 const getGoogleMapURL = (lat?: number, lng?: number) =>
@@ -61,10 +49,7 @@ const PAGE_PROPS = {
   gradientColor: 'restaurants.light',
 };
 
-const RestaurantPage = ({
-  restaurant,
-  remarks,
-}: RestaurantPageProps): JSX.Element => {
+const RestaurantPage = ({ restaurant }: RestaurantPageProps): JSX.Element => {
   const router = useRouter();
 
   // TODO: add saved info
@@ -222,26 +207,6 @@ const RestaurantPage = ({
               />
             )}
         </SimpleGrid>
-        <Banner
-          title="網紅這樣玩"
-          mainColor={PAGE_PROPS.mainColor}
-          href="/scenes"
-        />
-        <SimpleGrid columns={[1, 2, 3]} spacingX={8} spacingY={12} mx="8">
-          {remarks.map((remark) => (
-            <FanCard
-              id={remark.RestaurantID}
-              key={remark.RestaurantID}
-              name={remark.RestaurantName}
-              city={remark.City}
-              description={remark.Description}
-              image={remark.Picture.PictureUrl1}
-              href={`/cities/${CityMap[remark.City]}/restaurant/${
-                remark.RestaurantID
-              }`}
-            />
-          ))}
-        </SimpleGrid>
       </Flex>
     </>
   );
@@ -265,49 +230,21 @@ export const getStaticProps = async (
   if (
     typeof context.params.id !== 'string' ||
     typeof context.params.city !== 'string'
-  ) {
+  )
     return { notFound: true };
-  }
 
-  const citySlug = context.params.city as CitySlug;
-  if (citySlug !== citySlug.toLowerCase()) {
-    return {
-      redirect: {
-        destination: `/cities/${citySlug.toLowerCase()}/restaurant/${
-          context.params.id
-        }`,
-        permanent: true,
-      },
-    };
-  }
+  const city = context.params.city as City;
 
-  const city = CitySlugMap[citySlug];
+  if (!CitySet.has(city)) return { notFound: true };
 
-  if (!CITIES.includes(city)) {
-    return { notFound: true };
-  }
+  const restaurant = await tourismService.getRestaurantById(context.params.id);
 
-  try {
-    const restaurant = await getRestaurantById(context.params.id);
+  if (!restaurant) return { notFound: true };
 
-    if (!restaurant) {
-      return { notFound: true };
-    }
-
-    const remarks = await getRestaurantWithRemarksByCity(
-      city,
-      DEFAULT_FETCHED_REMARK_NUMBER,
-    );
-
-    return {
-      props: { restaurant, remarks },
-      revalidate: ONE_DAY_IN_SECONDS,
-    };
-  } catch (error) {
-    console.error(error);
-
-    return { notFound: true };
-  }
+  return {
+    props: { restaurant },
+    revalidate: ONE_DAY_IN_SECONDS,
+  };
 };
 
 export default RestaurantPage;

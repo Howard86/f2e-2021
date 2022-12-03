@@ -14,16 +14,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import {
-  CITIES,
-  CityMap,
-  CitySlug,
-  CitySlugMap,
-  getSceneById,
-  getScenesWithRemarksByCity,
-  Scene,
-  SceneRemark,
-} from '@f2e/ptx';
+import { City, CityMap, CitySet, ScenicSpot } from '@f2e/tdx';
 import {
   GetStaticPathsResult,
   GetStaticPropsContext,
@@ -52,18 +43,16 @@ import {
 } from 'react-icons/fi';
 import { MdPhotoAlbum } from 'react-icons/md';
 
-import Banner from '@/components/Banner';
-import FanCard from '@/components/FanCard';
 import GoogleMap from '@/components/GoogleMap';
 import Layout from '@/components/layout/Layout';
 import LoadingScreen from '@/components/LoadingScreen';
 import RouteLink from '@/components/RouteLink';
 import SceneDetailBox from '@/components/SceneDetailText';
-import { DEFAULT_FETCHED_REMARK_NUMBER } from '@/constants/pagination';
+import { ONE_DAY_IN_SECONDS } from '@/constants/time';
+import { tourismService } from '@/services/tdx';
 
 interface ScenePageProps {
-  scene: Scene;
-  remarks: SceneRemark[];
+  scene: ScenicSpot;
 }
 
 const getGoogleMapURL = (lat?: number, lng?: number) =>
@@ -72,7 +61,7 @@ const getGoogleMapURL = (lat?: number, lng?: number) =>
     : undefined;
 const PAGE_PROPS = { mainColor: 'scenes.main', gradientColor: 'scenes.light' };
 
-const ScenePage = ({ scene, remarks }: ScenePageProps): JSX.Element => {
+const ScenePage = ({ scene }: ScenePageProps): JSX.Element => {
   const router = useRouter();
 
   // TODO: add saved info
@@ -252,26 +241,6 @@ const ScenePage = ({ scene, remarks }: ScenePageProps): JSX.Element => {
             />
           )}
         </SimpleGrid>
-        <Banner
-          title="網紅這樣玩"
-          mainColor={PAGE_PROPS.mainColor}
-          href="/scenes"
-        />
-        <SimpleGrid columns={[1, 2, 3]} spacingX={8} spacingY={12} mx="8">
-          {remarks.map((remark) => (
-            <FanCard
-              id={remark.ScenicSpotID}
-              key={remark.ScenicSpotID}
-              name={remark.ScenicSpotName}
-              city={remark.City}
-              description={remark.Remarks}
-              image={remark.Picture.PictureUrl1}
-              href={`/cities/${CityMap[remark.City]}/scene/${
-                remark.ScenicSpotID
-              }`}
-            />
-          ))}
-        </SimpleGrid>
       </Flex>
     </>
   );
@@ -295,48 +264,21 @@ export const getStaticProps = async (
   if (
     typeof context.params.id !== 'string' ||
     typeof context.params.city !== 'string'
-  ) {
+  )
     return { notFound: true };
-  }
 
-  const citySlug = context.params.city as CitySlug;
-  if (citySlug !== citySlug.toLowerCase()) {
-    return {
-      redirect: {
-        destination: `/cities/${citySlug.toLowerCase()}/scene/${
-          context.params.id
-        }`,
-        permanent: true,
-      },
-    };
-  }
+  const city = context.params.city as City;
 
-  const city = CitySlugMap[citySlug];
+  if (!CitySet.has(city)) return { notFound: true };
 
-  if (!CITIES.includes(city)) {
-    return { notFound: true };
-  }
+  const scene = await tourismService.getScenicSpotById(context.params.id);
 
-  try {
-    const scene = await getSceneById(context.params.id);
+  if (!scene) return { notFound: true };
 
-    if (!scene) {
-      return { notFound: true };
-    }
-
-    const remarks = await getScenesWithRemarksByCity(
-      city,
-      DEFAULT_FETCHED_REMARK_NUMBER,
-    );
-
-    return {
-      props: { scene, remarks },
-    };
-  } catch (error) {
-    console.error(error);
-
-    return { notFound: true };
-  }
+  return {
+    props: { scene },
+    revalidate: ONE_DAY_IN_SECONDS,
+  };
 };
 
 export default ScenePage;

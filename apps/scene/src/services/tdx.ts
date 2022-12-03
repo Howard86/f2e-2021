@@ -1,5 +1,6 @@
 import {
   Activity,
+  CityMap,
   Hotel,
   Restaurant,
   ScenicSpot,
@@ -35,7 +36,7 @@ export const mapScenicSpotToSceneCard = (item: ScenicSpot): SceneCardProps =>
     name: item.ScenicSpotName,
     city: item.City,
     image: item.Picture.PictureUrl1,
-    href: `/cities/${item.City}/scene/${item.ScenicSpotID}`,
+    href: `/cities/${CityMap[item.City]}/scene/${item.ScenicSpotID}`,
   });
 
 export const mapRestaurantToPlaceCard = (item: Restaurant): PlaceCardProps =>
@@ -46,7 +47,7 @@ export const mapRestaurantToPlaceCard = (item: Restaurant): PlaceCardProps =>
     address: item.Address,
     contactNumber: item.Phone,
     openingHours: item.OpenTime,
-    href: `/cities/${item.City}/restaurant/${item.RestaurantID}`,
+    href: `/cities/${CityMap[item.City]}/restaurant/${item.RestaurantID}`,
   });
 
 export const mapHotelToPlaceCard = (item: Hotel): PlaceCardProps =>
@@ -57,7 +58,7 @@ export const mapHotelToPlaceCard = (item: Hotel): PlaceCardProps =>
     address: item.Address,
     contactNumber: item.Phone,
     openingHours: item.ServiceInfo,
-    href: `/cities/${item.City}/restaurant/${item.HotelID}`,
+    href: `/cities/${CityMap[item.City]}/hotel/${item.HotelID}`,
   });
 
 export const mapActivityToPlaceCard = (item: Activity): PlaceCardProps =>
@@ -67,7 +68,7 @@ export const mapActivityToPlaceCard = (item: Activity): PlaceCardProps =>
     image: item.Picture.PictureUrl1,
     address: item.Address,
     contactNumber: item.Phone,
-    href: `/cities/${item.City}/activity/${item.ActivityID}`,
+    href: `/cities/${CityMap[item.City]}/activity/${item.ActivityID}`,
     openingHours:
       item.StartTime && item.EndTime
         ? `${new Date(item.StartTime).toLocaleDateString()}~${new Date(
