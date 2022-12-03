@@ -8,5 +8,6 @@
       "ignoreChanges": ["*.md"],
       "message": "chore(release): tag & update changelog"
     }
-  }
+  },
+  "$schema": "node_modules/lerna/schemas/lerna-schema.json"
 }

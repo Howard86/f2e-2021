@@ -1,0 +1,28 @@
+{
+  "tasksRunnerOptions": {
+    "default": {
+      "runner": "nx/tasks-runners/default",
+      "options": {
+        "cacheableOperations": ["type-check", "lint", "format", "build"]
+      }
+    }
+  },
+  "targetDefaults": {
+    "start": {
+      "dependsOn": ["build"]
+    },
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["{projectRoot}/.next", "{projectRoot}/.build"]
+    },
+    "dev": {
+      "dependsOn": ["^build"]
+    },
+    "format": {
+      "outputs": ["{projectRoot}/."]
+    },
+    "build:fresh": {
+      "outputs": ["{projectRoot}/.build"]
+    }
+  }
+}

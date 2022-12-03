@@ -36,7 +36,6 @@
     "gen:theme-typings": "chakra-cli tokens src/theme/index.ts",
     "dev": "next dev",
     "build": "next build",
-    "postinstall": "pnpm workspace @f2e/tdx build",
     "start": "next start"
   },
   "dependencies": {
