@@ -14,7 +14,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { Activity, City, CityMap, CitySet } from '@f2e/tdx';
+import { City, CityMap, CitySet, Hotel } from '@f2e/tdx';
 import {
   GetStaticPathsResult,
   GetStaticPropsContext,
@@ -23,19 +23,12 @@ import {
 import { useRouter } from 'next/router';
 import NextHeadSeo from 'next-head-seo';
 import type { ParsedUrlQuery } from 'querystring';
-import {
-  BiChevronRight,
-  BiLinkExternal,
-  BiMoney,
-  BiSync,
-} from 'react-icons/bi';
-import {
-  BsBookmarkPlus,
-  BsBookmarkPlusFill,
-  BsPeopleFill,
-} from 'react-icons/bs';
-import { FiClock, FiMapPin, FiPhoneIncoming } from 'react-icons/fi';
-import { MdManageAccounts, MdPhotoAlbum } from 'react-icons/md';
+import { AiFillStar } from 'react-icons/ai';
+import { BiChevronRight, BiLinkExternal, BiSync } from 'react-icons/bi';
+import { BsBookmarkPlus, BsBookmarkPlusFill } from 'react-icons/bs';
+import { FaFax } from 'react-icons/fa';
+import { FiMapPin, FiPhoneIncoming } from 'react-icons/fi';
+import { MdPhotoAlbum } from 'react-icons/md';
 
 import GoogleMap from '@/components/GoogleMap';
 import Layout from '@/components/layout/Layout';
@@ -45,8 +38,8 @@ import SceneDetailBox from '@/components/SceneDetailText';
 import { ONE_DAY_IN_SECONDS } from '@/constants/time';
 import { tourismService } from '@/services/tdx';
 
-interface ActivityPageProps {
-  activity: Activity;
+interface HotelPageProps {
+  hotel: Hotel;
 }
 
 const getGoogleMapURL = (lat?: number, lng?: number) =>
@@ -54,11 +47,11 @@ const getGoogleMapURL = (lat?: number, lng?: number) =>
     ? `https://www.google.com/maps/search/?api=1&query=${lat}%2C${lng}`
     : undefined;
 const PAGE_PROPS = {
-  mainColor: 'activities.main',
-  gradientColor: 'activities.light',
+  mainColor: 'hotels.main',
+  gradientColor: 'hotels.light',
 };
 
-const ActivityPage = ({ activity }: ActivityPageProps): JSX.Element => {
+const HotelPage = ({ hotel }: HotelPageProps): JSX.Element => {
   const router = useRouter();
 
   // TODO: add saved info
@@ -71,13 +64,13 @@ const ActivityPage = ({ activity }: ActivityPageProps): JSX.Element => {
   return (
     <>
       <NextHeadSeo
-        title={`台灣旅遊導覽網 | ${activity.ActivityName}`}
-        description={activity.Description}
+        title={`台灣旅遊導覽網 | ${hotel.HotelName}`}
+        description={hotel.Description}
         og={{
           type: 'article',
-          title: activity.ActivityName,
-          description: activity.Picture.PictureDescription1,
-          image: activity.Picture.PictureUrl1,
+          title: hotel.HotelName,
+          description: hotel.Picture.PictureDescription1,
+          image: hotel.Picture.PictureUrl1,
         }}
       />
       <Flex
@@ -91,26 +84,21 @@ const ActivityPage = ({ activity }: ActivityPageProps): JSX.Element => {
           separator={<Icon as={BiChevronRight} />}
         >
           <BreadcrumbItem>
-            <RouteLink href="/" as={BreadcrumbLink}>
-              活動新訊
+            <RouteLink href="/hotels" as={BreadcrumbLink}>
+              住宿
             </RouteLink>
           </BreadcrumbItem>
           <BreadcrumbItem>
-            <RouteLink
-              href={`/cities/${CityMap[activity.City]}`}
-              as={BreadcrumbLink}
-            >
-              {activity.City}
+            <RouteLink href={`/${CityMap[hotel.City]}`} as={BreadcrumbLink}>
+              {hotel.City}
             </RouteLink>
           </BreadcrumbItem>
           <BreadcrumbItem fontWeight="bold" isCurrentPage>
             <RouteLink
-              href={`/cities/${CityMap[activity.City]}/activity/${
-                activity.ActivityID
-              }`}
+              href={`/${CityMap[hotel.City]}/hotel/${hotel.HotelID}`}
               as={BreadcrumbLink}
             >
-              {activity.ActivityName}
+              {hotel.HotelName}
             </RouteLink>
           </BreadcrumbItem>
         </Breadcrumb>
@@ -128,10 +116,8 @@ const ActivityPage = ({ activity }: ActivityPageProps): JSX.Element => {
               color={saved ? 'red.600' : 'blackAlpha.600'}
             />
             <Image
-              alt={
-                activity.Picture?.PictureDescription1 || activity.ActivityName
-              }
-              src={activity.Picture?.PictureUrl1}
+              alt={hotel.Picture?.PictureDescription1 || hotel.HotelName}
+              src={hotel.Picture?.PictureUrl1}
               align="center"
               fit="cover"
               loading="lazy"
@@ -142,16 +128,17 @@ const ActivityPage = ({ activity }: ActivityPageProps): JSX.Element => {
           </Box>
           <Box flexGrow={1} flexShrink={3} lineHeight="7" sx={{ p: { my: 2 } }}>
             <Heading textAlign="center" mb="4">
-              {activity.ActivityName}
+              {hotel.HotelName}
             </Heading>
-            {activity.Description && (
-              <Text noOfLines={10}>{activity.Description}</Text>
+            {hotel.Description && (
+              <Text noOfLines={10}>{hotel.Description}</Text>
             )}
-            {activity.TravelInfo && (
-              <Text noOfLines={10}>{activity.TravelInfo}</Text>
+            {hotel.Spec && <Text noOfLines={10}>{hotel.Spec}</Text>}
+            {hotel.ServiceInfo && (
+              <Text noOfLines={10}>{hotel.ServiceInfo}</Text>
             )}
-            {activity.ParkingInfo && (
-              <Text noOfLines={10}>{activity.ParkingInfo}</Text>
+            {hotel.ParkingInfo && (
+              <Text noOfLines={10}>{hotel.ParkingInfo}</Text>
             )}
           </Box>
         </Flex>
@@ -159,87 +146,60 @@ const ActivityPage = ({ activity }: ActivityPageProps): JSX.Element => {
       <Flex bg="white" flexDir="column">
         <SimpleGrid columns={[1, 1, 2]} gap={[4, 8]} mx="8">
           <Box>
-            <Heading>景點資訊</Heading>
+            <Heading>住宿資訊</Heading>
             <VStack align="flex-start" textAlign="start" mt="8" spacing={4}>
               <SceneDetailBox
                 label="地址"
                 info={
-                  activity.Address ||
-                  (activity.Position?.PositionLat &&
-                    activity.Position?.PositionLon &&
+                  hotel.Address ||
+                  (hotel.Position?.PositionLat &&
+                    hotel.Position?.PositionLon &&
                     '查看地圖')
                 }
-                href={
-                  activity.MapUrl ||
-                  getGoogleMapURL(
-                    activity.Position?.PositionLat,
-                    activity.Position?.PositionLon,
-                  )
-                }
+                href={getGoogleMapURL(
+                  hotel.Position?.PositionLat,
+                  hotel.Position?.PositionLon,
+                )}
                 icon={FiMapPin}
               />
               <SceneDetailBox
                 label="電話"
-                info={activity.Phone}
+                info={hotel.Phone}
                 icon={FiPhoneIncoming}
-                href={`tel:${activity.Phone}`}
+                href={`tel:${hotel.Phone}`}
               />
+              <SceneDetailBox label="傳真" info={hotel.Fax} icon={FaFax} />
               <SceneDetailBox
-                label="費用"
-                info={activity.Charge}
-                icon={BiMoney}
-              />
-              <SceneDetailBox
-                label="活動時間"
-                info={
-                  activity.StartTime &&
-                  activity.EndTime &&
-                  `${new Date(
-                    activity.StartTime,
-                  ).toLocaleDateString()}~${new Date(
-                    activity.EndTime,
-                  ).toLocaleDateString()}`
-                }
-                icon={FiClock}
+                label="星級"
+                info={hotel.Grade}
+                icon={AiFillStar}
               />
               <SceneDetailBox
                 label="相關鏈結"
-                info={activity.WebsiteUrl && '官網'}
-                href={activity.WebsiteUrl}
+                info={hotel.WebsiteUrl && '官網'}
+                href={hotel.WebsiteUrl}
                 icon={BiLinkExternal}
               />
               <SceneDetailBox
-                label="主辦方"
-                info={activity.Organizer}
-                icon={MdManageAccounts}
-              />
-              <SceneDetailBox
-                label="主題"
-                info={[activity.Class1, activity.Class2]
-                  .filter(Boolean)
-                  .join(', ')}
+                label="分類"
+                info={hotel.Class}
                 icon={MdPhotoAlbum}
-              />
-              <SceneDetailBox
-                label="參與對象"
-                info={activity.Particpation}
-                icon={BsPeopleFill}
               />
               <SceneDetailBox
                 label="更新時間"
                 info={
-                  activity.SrcUpdateTime &&
-                  new Date(activity.SrcUpdateTime).toLocaleDateString()
+                  hotel.SrcUpdateTime &&
+                  new Date(hotel.SrcUpdateTime).toLocaleDateString()
                 }
                 icon={BiSync}
               />
             </VStack>
           </Box>
-          {activity.Position?.PositionLat && activity.Position?.PositionLon && (
+          {hotel.Position?.PositionLat && hotel.Position?.PositionLon && (
             <GoogleMap
-              query={activity.Address}
-              lat={activity.Position.PositionLat}
-              lng={activity.Position.PositionLon}
+              query={hotel.Address}
+              lat={hotel.Position.PositionLat}
+              lng={hotel.Position.PositionLon}
             />
           )}
         </SimpleGrid>
@@ -248,8 +208,8 @@ const ActivityPage = ({ activity }: ActivityPageProps): JSX.Element => {
   );
 };
 
-ActivityPage.Layout = Layout;
-ActivityPage.layoutProps = PAGE_PROPS;
+HotelPage.Layout = Layout;
+HotelPage.layoutProps = PAGE_PROPS;
 
 interface CityPath extends ParsedUrlQuery {
   city: string;
@@ -262,7 +222,7 @@ export const getStaticPaths = (): GetStaticPathsResult<CityPath> => ({
 
 export const getStaticProps = async (
   context: GetStaticPropsContext,
-): Promise<GetStaticPropsResult<ActivityPageProps>> => {
+): Promise<GetStaticPropsResult<HotelPageProps>> => {
   if (
     typeof context.params.id !== 'string' ||
     typeof context.params.city !== 'string'
@@ -273,11 +233,14 @@ export const getStaticProps = async (
 
   if (!CitySet.has(city)) return { notFound: true };
 
-  const activity = await tourismService.getActivityById(context.params.id);
+  const hotel = await tourismService.getHotelById(context.params.id);
 
-  if (!activity) return { notFound: true };
+  if (!hotel) return { notFound: true };
 
-  return { props: { activity }, revalidate: ONE_DAY_IN_SECONDS };
+  return {
+    props: { hotel },
+    revalidate: ONE_DAY_IN_SECONDS,
+  };
 };
 
-export default ActivityPage;
+export default HotelPage;

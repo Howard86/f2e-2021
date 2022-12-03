@@ -87,7 +87,7 @@ const RestaurantPage = ({ restaurant }: RestaurantPageProps): JSX.Element => {
           </BreadcrumbItem>
           <BreadcrumbItem>
             <RouteLink
-              href={`/cities/${CityMap[restaurant.City]}`}
+              href={`/${CityMap[restaurant.City]}`}
               as={BreadcrumbLink}
             >
               {restaurant.City}
@@ -95,7 +95,7 @@ const RestaurantPage = ({ restaurant }: RestaurantPageProps): JSX.Element => {
           </BreadcrumbItem>
           <BreadcrumbItem fontWeight="bold" isCurrentPage>
             <RouteLink
-              href={`/cities/${CityMap[restaurant.City]}/restaurant/${
+              href={`/${CityMap[restaurant.City]}/restaurant/${
                 restaurant.RestaurantID
               }`}
               as={BreadcrumbLink}
