@@ -1,7 +1,7 @@
 module.exports = {
   '**/*.{js,json,md}': ['prettier . --write'],
   '**/*.{ts,tsx}': [
-    'prettier . --write',
+    'prettier --write',
     (filenames) => `eslint ${filenames.join(' ')}`,
   ],
 };

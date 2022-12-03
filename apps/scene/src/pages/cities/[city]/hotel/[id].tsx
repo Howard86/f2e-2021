@@ -14,16 +14,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import {
-  CITIES,
-  CityMap,
-  CitySlug,
-  CitySlugMap,
-  getHotelById,
-  getHotelWithRemarksByCity,
-  Hotel,
-  HotelRemark,
-} from '@f2e/ptx';
+import { City, CityMap, CitySet, Hotel } from '@f2e/tdx';
 import {
   GetStaticPathsResult,
   GetStaticPropsContext,
@@ -39,19 +30,16 @@ import { FaFax } from 'react-icons/fa';
 import { FiMapPin, FiPhoneIncoming } from 'react-icons/fi';
 import { MdPhotoAlbum } from 'react-icons/md';
 
-import Banner from '@/components/Banner';
-import FanCard from '@/components/FanCard';
 import GoogleMap from '@/components/GoogleMap';
 import Layout from '@/components/layout/Layout';
 import LoadingScreen from '@/components/LoadingScreen';
 import RouteLink from '@/components/RouteLink';
 import SceneDetailBox from '@/components/SceneDetailText';
-import { DEFAULT_FETCHED_REMARK_NUMBER } from '@/constants/pagination';
 import { ONE_DAY_IN_SECONDS } from '@/constants/time';
+import { tourismService } from '@/services/tdx';
 
 interface HotelPageProps {
   hotel: Hotel;
-  remarks: HotelRemark[];
 }
 
 const getGoogleMapURL = (lat?: number, lng?: number) =>
@@ -63,7 +51,7 @@ const PAGE_PROPS = {
   gradientColor: 'hotels.light',
 };
 
-const HotelPage = ({ hotel, remarks }: HotelPageProps): JSX.Element => {
+const HotelPage = ({ hotel }: HotelPageProps): JSX.Element => {
   const router = useRouter();
 
   // TODO: add saved info
@@ -218,24 +206,6 @@ const HotelPage = ({ hotel, remarks }: HotelPageProps): JSX.Element => {
             />
           )}
         </SimpleGrid>
-        <Banner
-          title="網紅這樣玩"
-          mainColor={PAGE_PROPS.mainColor}
-          href="/scenes"
-        />
-        <SimpleGrid columns={[1, 2, 3]} spacingX={8} spacingY={12} mx="8">
-          {remarks.map((remark) => (
-            <FanCard
-              id={remark.HotelID}
-              key={remark.HotelID}
-              name={remark.HotelName}
-              city={remark.City}
-              description={remark.Description}
-              image={remark.Picture.PictureUrl1}
-              href={`/cities/${CityMap[remark.City]}/hotel/${remark.HotelID}`}
-            />
-          ))}
-        </SimpleGrid>
       </Flex>
     </>
   );
@@ -259,49 +229,21 @@ export const getStaticProps = async (
   if (
     typeof context.params.id !== 'string' ||
     typeof context.params.city !== 'string'
-  ) {
+  )
     return { notFound: true };
-  }
 
-  const citySlug = context.params.city as CitySlug;
-  if (citySlug !== citySlug.toLowerCase()) {
-    return {
-      redirect: {
-        destination: `/cities/${citySlug.toLowerCase()}/hotel/${
-          context.params.id
-        }`,
-        permanent: true,
-      },
-    };
-  }
+  const city = context.params.city as City;
 
-  const city = CitySlugMap[citySlug];
+  if (!CitySet.has(city)) return { notFound: true };
 
-  if (!CITIES.includes(city)) {
-    return { notFound: true };
-  }
+  const hotel = await tourismService.getHotelById(context.params.id);
 
-  try {
-    const hotel = await getHotelById(context.params.id);
+  if (!hotel) return { notFound: true };
 
-    if (!hotel) {
-      return { notFound: true };
-    }
-
-    const remarks = await getHotelWithRemarksByCity(
-      city,
-      DEFAULT_FETCHED_REMARK_NUMBER,
-    );
-
-    return {
-      props: { hotel, remarks },
-      revalidate: ONE_DAY_IN_SECONDS,
-    };
-  } catch (error) {
-    console.error(error);
-
-    return { notFound: true };
-  }
+  return {
+    props: { hotel },
+    revalidate: ONE_DAY_IN_SECONDS,
+  };
 };
 
 export default HotelPage;

@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.8](https://github.com/Howard86/f2e-2011/compare/@f2e/ubike@0.3.7...@f2e/ubike@0.3.8) (2022-12-03)
+
+**Note:** Version bump only for package @f2e/ubike
+
 ## [0.3.7](https://github.com/Howard86/f2e-2011/compare/@f2e/ubike@0.3.6...@f2e/ubike@0.3.7) (2022-03-18)
 
 ### Bug Fixes

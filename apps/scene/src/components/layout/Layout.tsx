@@ -1,11 +1,10 @@
 import React, { ReactNode } from 'react';
 
 import { Box, BoxProps } from '@chakra-ui/react';
-import dynamic from 'next/dynamic';
 
+import Footer from './Footer';
 import Header from './Header';
 
-const DynamicFooter = dynamic(() => import('./Footer'));
 export interface LayoutProps extends BoxProps {
   mainColor: BoxProps['color'];
   gradientColor: BoxProps['color'];
@@ -23,7 +22,7 @@ const Layout = ({
     <Box as="main" minH="100%" {...props}>
       {children}
     </Box>
-    <DynamicFooter mainColor={mainColor} gradientColor={gradientColor} />
+    <Footer mainColor={mainColor} gradientColor={gradientColor} />
   </>
 );
 

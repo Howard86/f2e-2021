@@ -1,15 +1,6 @@
 import React from 'react';
 
 import { Box, Container, Flex, SimpleGrid, Text } from '@chakra-ui/react';
-import {
-  CityMap,
-  getHotelCards,
-  getRestaurantCards,
-  getSceneCards,
-  HotelCard,
-  RestaurantCard,
-  SceneCard as TSceneCard,
-} from '@f2e/ptx';
 import { GetStaticPropsContext, GetStaticPropsResult } from 'next';
 import Image from 'next/image';
 import NextHeadSeo from 'next-head-seo';
@@ -17,25 +8,39 @@ import NextHeadSeo from 'next-head-seo';
 import Banner from '@/components/Banner';
 import Logo from '@/components/icons/Logo';
 import Layout from '@/components/layout/Layout';
-import PlaceCard from '@/components/PlaceCard';
-import SceneCard from '@/components/SceneCard';
+import PlaceCard, { PlaceCardProps } from '@/components/PlaceCard';
+import SceneCard, { SceneCardProps } from '@/components/SceneCard';
 import SiteCardGrid from '@/components/SiteCardGrid';
 import WeatherCarousel from '@/components/WeatherCarousel';
 import { DEFAULT_FETCHED_REMARK_NUMBER } from '@/constants/pagination';
 import { SIX_HOURS_IN_SECONDS } from '@/constants/time';
+import {
+  mapActivityToPlaceCard,
+  mapHotelToPlaceCard,
+  mapRestaurantToPlaceCard,
+  mapScenicSpotToSceneCard,
+  tourismService,
+} from '@/services/tdx';
 import getWeathers from '@/services/weather';
 import mainBackground from '@/static/background/main.png';
 
 interface HomePageProps {
   weathers: OpenData.CityWeather[];
-  scenes: TSceneCard[];
-  restaurants: RestaurantCard[];
-  hotels: HotelCard[];
+  scenes: SceneCardProps[];
+  restaurants: PlaceCardProps[];
+  hotels: PlaceCardProps[];
+  activities: PlaceCardProps[];
 }
 
 const PAGE_PROPS = { mainColor: 'scenes.main', gradientColor: 'scenes.light' };
 
-const HomePage = ({ weathers, scenes, restaurants, hotels }: HomePageProps) => (
+const HomePage = ({
+  weathers,
+  scenes,
+  restaurants,
+  hotels,
+  activities,
+}: HomePageProps) => (
   <>
     <NextHeadSeo
       og={{
@@ -89,22 +94,30 @@ const HomePage = ({ weathers, scenes, restaurants, hotels }: HomePageProps) => (
     </Flex>
     <Flex flexDir="column" bgColor="white">
       <SiteCardGrid maxW="container.lg" mx="auto" />
+
       <Banner
         title="熱門景點"
         mainColor={PAGE_PROPS.mainColor}
         href="/scenes"
       />
       <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
-        {scenes.map((scene) => (
-          <SceneCard
-            key={scene.ScenicSpotID}
-            id={scene.ScenicSpotID}
-            name={scene.ScenicSpotName}
-            city={scene.City}
-            image={scene.Picture?.PictureUrl1}
-          />
+        {scenes.map((item) => (
+          <SceneCard key={item.href} {...item} />
         ))}
       </SimpleGrid>
+
+      <Banner
+        title="最新活動"
+        mainColor="activities.main"
+        href="/scenes"
+        hideButton
+      />
+      <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
+        {activities.map((activity) => (
+          <PlaceCard key={activity.href} {...activity} />
+        ))}
+      </SimpleGrid>
+
       <Banner
         title="熱門美食"
         mainColor="restaurants.main"
@@ -112,37 +125,15 @@ const HomePage = ({ weathers, scenes, restaurants, hotels }: HomePageProps) => (
       />
 
       <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
-        {restaurants.map((restaurant) => (
-          <PlaceCard
-            key={restaurant.RestaurantID}
-            id={restaurant.RestaurantID}
-            name={restaurant.RestaurantName}
-            city={restaurant.City}
-            image={restaurant.Picture.PictureUrl1}
-            address={restaurant.Address}
-            contactNumber={restaurant.Phone}
-            openingHours={restaurant.OpenTime}
-            href={`/cities/${CityMap[restaurant.City]}/restaurant/${
-              restaurant.RestaurantID
-            }`}
-          />
+        {restaurants.map((item) => (
+          <PlaceCard key={item.href} {...item} />
         ))}
       </SimpleGrid>
       <Banner title="住宿推薦" mainColor="hotels.main" href="/hotels" />
 
       <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
-        {hotels.map((hotel) => (
-          <PlaceCard
-            key={hotel.HotelID}
-            id={hotel.HotelID}
-            name={hotel.HotelName}
-            city={hotel.City}
-            image={hotel.Picture.PictureUrl1}
-            address={hotel.Address}
-            contactNumber={hotel.Phone}
-            serviceInfo={hotel.ServiceInfo}
-            href={`/cities/${CityMap[hotel.City]}/hotel/${hotel.HotelID}`}
-          />
+        {hotels.map((item) => (
+          <PlaceCard key={item.href} {...item} />
         ))}
       </SimpleGrid>
     </Flex>
@@ -152,19 +143,47 @@ const HomePage = ({ weathers, scenes, restaurants, hotels }: HomePageProps) => (
 export const getStaticProps = async (
   _context: GetStaticPropsContext,
 ): Promise<GetStaticPropsResult<HomePageProps>> => {
-  const [weathers, scenes, restaurants, hotels] = await Promise.all([
-    getWeathers(),
-    getSceneCards(DEFAULT_FETCHED_REMARK_NUMBER),
-    getRestaurantCards(DEFAULT_FETCHED_REMARK_NUMBER),
-    getHotelCards(DEFAULT_FETCHED_REMARK_NUMBER),
-  ]);
+  const [weathers, scenes, restaurants, hotels, activities] = await Promise.all(
+    [
+      getWeathers(),
+      tourismService.getScenicSpots({
+        top: DEFAULT_FETCHED_REMARK_NUMBER,
+        select: 'ScenicSpotID,ScenicSpotName,City,Picture',
+        filter: 'Picture/PictureUrl1 ne null and City ne null',
+        orderBy: 'SrcUpdateTime desc, TicketInfo desc',
+      }),
+      tourismService.getRestaurants({
+        top: DEFAULT_FETCHED_REMARK_NUMBER,
+        select:
+          'RestaurantID,RestaurantName,City,Address,OpenTime,Phone,Picture',
+        filter:
+          'Picture/PictureUrl1 ne null and Address ne null and City ne null',
+        orderBy: 'SrcUpdateTime desc, Description desc',
+      }),
+      tourismService.getHotels({
+        top: DEFAULT_FETCHED_REMARK_NUMBER,
+        select: 'HotelID,HotelName,City,Address,ServiceInfo,Phone,Picture',
+        filter:
+          'Picture/PictureUrl1 ne null and Address ne null and City ne null',
+        orderBy: 'SrcUpdateTime desc, ServiceInfo desc',
+      }),
+      tourismService.getActivities({
+        top: DEFAULT_FETCHED_REMARK_NUMBER,
+        select:
+          'ActivityID,ActivityName,City,Address,StartTime,EndTime,Phone,Picture',
+        filter: 'Picture/PictureUrl1 ne null and Address ne null',
+        orderBy: 'StartTime desc',
+      }),
+    ],
+  );
 
   return {
     props: {
       weathers,
-      scenes,
-      restaurants,
-      hotels,
+      scenes: scenes.map(mapScenicSpotToSceneCard),
+      restaurants: restaurants.map(mapRestaurantToPlaceCard),
+      hotels: hotels.map(mapHotelToPlaceCard),
+      activities: activities.map(mapActivityToPlaceCard),
     },
     revalidate: SIX_HOURS_IN_SECONDS,
   };

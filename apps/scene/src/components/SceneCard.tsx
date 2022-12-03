@@ -10,20 +10,19 @@ import {
   LinkOverlay,
   Text,
 } from '@chakra-ui/react';
-import { CityMap } from '@f2e/ptx';
 import { FiMapPin } from 'react-icons/fi';
 
 import CardBanner from './CardBanner';
 import RouteLink from './RouteLink';
 
-interface SceneCardProps extends LinkBoxProps {
-  id: string;
+export interface SceneCardProps extends LinkBoxProps {
   name: string;
   city: string;
   image: string;
+  href: string;
 }
 
-const SceneCard = ({ id, name, city, image }: SceneCardProps) => (
+const SceneCard = ({ name, city, image, href }: SceneCardProps) => (
   <LinkBox
     h={['380px', '420px', '420px', '500px']}
     pos="relative"
@@ -65,10 +64,7 @@ const SceneCard = ({ id, name, city, image }: SceneCardProps) => (
         zIndex="docked"
       >
         <Text variant="headline-3">
-          <RouteLink
-            as={LinkOverlay}
-            href={`/cities/${CityMap[city]}/scene/${id}`}
-          >
+          <RouteLink as={LinkOverlay} href={href}>
             {name}
           </RouteLink>
         </Text>

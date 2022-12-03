@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.6.2](https://github.com/Howard86/f2e-2021/compare/@f2e/ptx@0.6.1...@f2e/ptx@0.6.2) (2022-12-03)
+
+### Bug Fixes
+
+- **ptx:** update bike city path ([8267e7d](https://github.com/Howard86/f2e-2021/commit/8267e7d234ca34d8b60d3d9ab67b0f22b1823fd4))
+
 ## [0.6.1](https://github.com/Howard86/f2e-2021/compare/@f2e/ptx@0.6.0...@f2e/ptx@0.6.1) (2022-03-13)
 
 ### Bug Fixes

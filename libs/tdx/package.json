@@ -1,7 +1,7 @@
 {
-  "name": "@f2e/ptx",
-  "version": "0.6.2",
-  "description": "Shared utilities to connect to PTX API",
+  "name": "@f2e/tdx",
+  "version": "0.1.0",
+  "description": "Based utilised to connect to PTX API",
   "main": "build/index.js",
   "typings": "build/index.d.ts",
   "author": "Howard Tai <howard@howardism.dev>",
@@ -13,8 +13,5 @@
     "format": "prettier --write src --ignore-path ../../.prettierignore",
     "build": "tsc",
     "build:fresh": "yarn clean && yarn build"
-  },
-  "dependencies": {
-    "jssha": "^3.2.0"
   }
 }

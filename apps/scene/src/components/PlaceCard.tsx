@@ -14,7 +14,7 @@ import { FiMapPin } from 'react-icons/fi';
 import CardBanner from './CardBanner';
 import RouteLink from './RouteLink';
 
-interface PlaceCardProps extends FlexProps {
+export interface PlaceCardProps extends FlexProps {
   name: string;
   city: string;
   address: string;
