@@ -107,7 +107,7 @@ const CategoryPage = ({
             </RouteLink>
           </BreadcrumbItem> */}
           <BreadcrumbItem fontWeight="bold" isCurrentPage>
-            <RouteLink href={`/cities/${city}`} as={BreadcrumbLink}>
+            <RouteLink href={`/${city}`} as={BreadcrumbLink}>
               {CityMap[city]}
             </RouteLink>
           </BreadcrumbItem>

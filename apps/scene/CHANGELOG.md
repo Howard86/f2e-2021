@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.1](https://github.com/Howard86/f2e-2011/compare/@f2e/scene@0.3.0...@f2e/scene@0.3.1) (2022-12-04)
+
+### Bug Fixes
+
+- add nextjs output tracing for cd ([57f141e](https://github.com/Howard86/f2e-2011/commit/57f141ea333f7b6824248d85f92b9d6c9ea67ff6))
+
 # [0.3.0](https://github.com/Howard86/f2e-2011/compare/@f2e/scene@0.2.10...@f2e/scene@0.3.0) (2022-12-03)
 
 ### Features

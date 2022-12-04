@@ -167,28 +167,28 @@ const HotelsPage = ({ hotels }: HotelsPageProps): JSX.Element => {
             colSpan={1}
             title="台北"
             image="/static/card/hotels-1.png"
-            href={`/cities/${CityMap['臺北市']}`}
+            href={`/${CityMap['臺北市']}`}
           />
           <GridCard
             rowSpan={1}
             colSpan={1}
             title="花蓮"
             image="/static/card/hotels-2.png"
-            href={`/cities/${CityMap['花蓮縣']}`}
+            href={`/${CityMap['花蓮縣']}`}
           />
           <GridCard
             rowSpan={[1, 1, 2]}
             colSpan={1}
             title="台東"
             image="/static/card/hotels-4.png"
-            href={`/cities/${CityMap['臺東縣']}`}
+            href={`/${CityMap['臺東縣']}`}
           />
           <GridCard
             rowSpan={1}
             colSpan={1}
             title="桃園"
             image="/static/card/hotels-3.png"
-            href={`/cities/${CityMap['桃園市']}`}
+            href={`/${CityMap['桃園市']}`}
           />
         </Grid>
       </Background>

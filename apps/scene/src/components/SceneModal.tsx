@@ -37,7 +37,7 @@ const SceneModal = ({ onClose, ...props }: Omit<ModalProps, 'children'>) => {
   const onAdvanceSearch = () => {
     if (selectedCity !== DEFAULT_MENU_VALUE) {
       onClose();
-      router.push(`/cities/${selectedCity}`);
+      router.push(`/${selectedCity}`);
       return;
     }
 
