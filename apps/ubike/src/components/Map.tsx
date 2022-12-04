@@ -57,9 +57,7 @@ const Map = () => {
   const [loaded, setLoaded] = useState(false);
 
   const loadStationMarker = async () => {
-    if (!currentPositionRef.current) {
-      return;
-    }
+    if (!currentPositionRef.current) return;
 
     const { attachJSXMarker } = await import('@/services/mapbox');
 
@@ -68,23 +66,23 @@ const Map = () => {
       r: searchRadius,
     }).unwrap();
 
-    if (result.data.length === 0) {
+    if (result.data.uids.length === 0) {
       toast({ description: '此地區不提供 YouBike 服務！', status: 'warning' });
       return;
     }
 
     toast({
-      description: `方圓${searchRadius}公尺內，共有${result.data.length}個 YouBike 站`,
+      description: `方圓${searchRadius}公尺內，共有${result.data.uids.length}個 YouBike 站`,
     });
 
-    result.data.forEach((station) => {
-      if (!stationIdSetRef.current.has(station.StationUID)) {
-        stationIdSetRef.current.add(station.StationUID);
-      }
+    for (const uid of result.data.uids) {
+      const station = result.data.entities[uid];
 
-      if (markersRef.current[station.StationUID]) {
+      if (!stationIdSetRef.current.has(station.StationUID))
+        stationIdSetRef.current.add(station.StationUID);
+
+      if (markersRef.current[station.StationUID])
         markersRef.current[station.StationUID].remove();
-      }
 
       const coordinate = [
         station.StationPosition.PositionLon,
@@ -104,8 +102,8 @@ const Map = () => {
             setModalProps({
               name: station.StationName.Zh_tw,
               address: station.StationAddress.Zh_tw,
-              rentNumber: station.bike.AvailableRentBikes,
-              returnNumber: station.bike.AvailableReturnBikes,
+              rentNumber: station.AvailableRentBikes,
+              returnNumber: station.AvailableReturnBikes,
             });
             onOpen();
             mapRef.current.flyTo({
@@ -117,7 +115,7 @@ const Map = () => {
         />,
         coordinate,
       );
-    });
+    }
   };
 
   const onLocate = async () => {
@@ -218,25 +216,19 @@ const Map = () => {
   };
 
   const onZoomIn = () => {
-    if (!mapRef.current) {
-      return;
-    }
+    if (!mapRef.current) return;
 
     mapRef.current.zoomIn();
   };
 
   const onZoomOut = () => {
-    if (!mapRef.current) {
-      return;
-    }
+    if (!mapRef.current) return;
 
     mapRef.current.zoomOut();
   };
 
   useEffect(() => {
-    if (!loaded || !mapRef.current) {
-      return;
-    }
+    if (!loaded || !mapRef.current) return;
 
     const handleMapLoad = () => {
       mapRef.current.resize();

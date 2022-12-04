@@ -1,10 +1,4 @@
-import {
-  BIKE_CITIES,
-  BikeCyclingInfo,
-  CitySlug,
-  CitySlugMap,
-  getCyclingShapeByCity,
-} from '@f2e/ptx';
+import { City, CitySet, CyclingShape } from '@f2e/tdx';
 import {
   BadRequestException,
   NotFoundException,
@@ -13,34 +7,32 @@ import {
 import { GeoJSONMultiLineString, parse } from 'wellknown';
 
 import mock from '@/mock-bike.json';
+import { bikeService } from '@/services/tdx';
 
-export interface BikeCyclingWithGeoJson
-  extends Omit<BikeCyclingInfo, 'Geometry'> {
+export interface BikeCyclingWithGeoJson extends Omit<CyclingShape, 'Geometry'> {
   geoJson: GeoJSONMultiLineString;
-}
-
-export interface CyclingQueryParam {
-  city: CitySlug;
 }
 
 const router = new RouterBuilder();
 
 router.get<BikeCyclingWithGeoJson[]>(async (req) => {
-  if (typeof req.query.city !== 'string') {
-    throw new BadRequestException(`Missing city=${req.query.city}`);
-  }
+  const { city } = req.query;
 
-  const city = CitySlugMap[req.query.city];
+  if (typeof city !== 'string')
+    throw new BadRequestException(`Missing city=${city}`);
 
-  if (!BIKE_CITIES.includes(city)) {
+  // TODO: check supported city list
+  if (!CitySet.has(city as City))
     throw new NotFoundException(`City=${city} is not in the BIKE_LISTS`);
-  }
 
-  if (process.env.NODE_ENV !== 'production') {
-    return mock as unknown as BikeCyclingWithGeoJson[];
-  }
+  if (process.env.NODE_ENV !== 'production')
+    return mock as BikeCyclingWithGeoJson[];
 
-  const results = await getCyclingShapeByCity(city);
+  const results = await bikeService.getCyclingShapeByCity(city as City, {
+    top: 200,
+    filter: 'CyclingLength gt 1000 and Geometry ne null',
+    orderBy: 'CyclingLength desc',
+  });
 
   return results.map(({ Geometry, ...rest }) => ({
     ...rest,
