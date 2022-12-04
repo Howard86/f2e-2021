@@ -37,9 +37,9 @@ export class TdxService {
     return items.length > 0 ? items[0] : null;
   }
 
-  async get<T>(
+  async get<T, P extends ApiParam = ApiParam>(
     path: string,
-    params: ApiParam = this.DEFAULT_API_PARAMS,
+    params: P,
   ): Promise<T> {
     if (
       !this.refreshed &&
@@ -63,7 +63,7 @@ export class TdxService {
     query.append('$format', 'JSON');
 
     const response = await fetch(
-      `${this.baseUrl}/api/basic${encodeURI(path)}?${query.toString()}`,
+      `${this.baseUrl}/api${encodeURI(path)}?${query.toString()}`,
       {
         headers: {
           Authorization: `Bearer ${this.accessToken}`,

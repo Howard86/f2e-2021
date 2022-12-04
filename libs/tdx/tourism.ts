@@ -93,7 +93,7 @@ export type TourismPropertyType =
   | 'Activity';
 
 export class TourismService {
-  private BASE_PATH = '/v2/Tourism';
+  private BASE_PATH = '/basic/v2/Tourism';
 
   private service: TdxService;
 
