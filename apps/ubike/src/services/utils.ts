@@ -1,7 +1,7 @@
 export const parseCoordinate = (value: number, fixed: number) =>
   Number.parseFloat(value.toFixed(fixed));
 
-export enum CyclingDificulty {
+export enum CyclingDifficulty {
   'UNKNOWN',
   'EASY',
   'MEDIUM',
@@ -9,22 +9,14 @@ export enum CyclingDificulty {
   'EXPERT',
 }
 
-export const getDifficulty = (meter?: number): CyclingDificulty => {
-  if (!meter) {
-    return CyclingDificulty.UNKNOWN;
-  }
+export const getDifficulty = (meter?: number): CyclingDifficulty => {
+  if (!meter) return CyclingDifficulty.UNKNOWN;
 
-  if (meter < 1_000) {
-    return CyclingDificulty.EASY;
-  }
+  if (meter < 3_000) return CyclingDifficulty.EASY;
 
-  if (meter < 10_000) {
-    return CyclingDificulty.MEDIUM;
-  }
+  if (meter < 8_000) return CyclingDifficulty.MEDIUM;
 
-  if (meter < 30_000) {
-    return CyclingDificulty.HARD;
-  }
+  if (meter < 17_000) return CyclingDifficulty.HARD;
 
-  return CyclingDificulty.EXPERT;
+  return CyclingDifficulty.EXPERT;
 };
