@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.2.0](https://github.com/Howard86/f2e-2021/compare/@f2e/tdx@0.1.1...@f2e/tdx@0.2.0) (2022-12-07)
+
+### Features
+
+- add tdx bike service ([e49b0d8](https://github.com/Howard86/f2e-2021/commit/e49b0d8638d04e24ce1035e175a01f1b9d6ab1b7))
+
 ## [0.1.1](https://github.com/Howard86/f2e-2021/compare/@f2e/tdx@0.1.0...@f2e/tdx@0.1.1) (2022-12-03)
 
 **Note:** Version bump only for package @f2e/tdx
