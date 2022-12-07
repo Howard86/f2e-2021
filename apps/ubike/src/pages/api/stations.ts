@@ -1,17 +1,15 @@
-import {
-  AvailableBikeInfo,
-  BikeQueryParam,
-  getNearByAvailableBikes,
-  getNearByStations,
-  StationInfo,
-} from '@f2e/ptx';
+import { BikeAvailability, BikeStation } from '@f2e/tdx';
 import { BadRequestException, RouterBuilder } from 'next-api-handler';
 
 import mock from '@/mock.json';
+import { bikeService } from '@/services/tdx';
 
-export interface StationWithBike extends StationInfo {
-  bike: AvailableBikeInfo;
+export interface NormalisedBikeStation {
+  uids: string[];
+  entities: Record<string, BikeAvailableStation>;
 }
+
+interface BikeAvailableStation extends BikeStation, BikeAvailability {}
 
 export interface StationQueryParam {
   lat: string;
@@ -21,51 +19,57 @@ export interface StationQueryParam {
 
 const router = new RouterBuilder();
 
-router.get<StationWithBike[]>(async (req) => {
+router.get<NormalisedBikeStation>(async (req) => {
+  const { lat, lng, r } = req.query;
   if (
-    typeof req.query.lat !== 'string' ||
-    typeof req.query.lng !== 'string' ||
-    typeof req.query.r !== 'string'
-  ) {
-    throw new BadRequestException(
-      `Incorrect lat=${req.query.lat} or ${req.query.lng} or r=${req.query.r}`,
-    );
-  }
+    typeof lat !== 'string' ||
+    typeof lng !== 'string' ||
+    typeof r !== 'string'
+  )
+    throw new BadRequestException(`Incorrect lat=${lat} or ${lng} or r=${r}`);
 
-  const latitude = Number.parseFloat(req.query.lat);
-  const longitude = Number.parseFloat(req.query.lng);
-  const radius = Number.parseFloat(req.query.r);
+  const latitude = Number.parseFloat(lat);
+  const longitude = Number.parseFloat(lng);
+  const radius = Number.parseFloat(r);
 
-  if (Number.isNaN(latitude) || Number.isNaN(longitude)) {
+  if (Number.isNaN(latitude) || Number.isNaN(longitude))
     throw new BadRequestException(
       `Incorrect lat=${req.query.lat} or ${req.query.lng}`,
     );
-  }
 
-  if (Number.isNaN(radius) || radius < 500 || radius > 1000) {
-    throw new BadRequestException(`Invalid input of radisu ${radius}`);
-  }
+  if (Number.isNaN(radius) || radius < 500 || radius > 1000)
+    throw new BadRequestException(`Invalid input of radius ${radius}`);
 
-  if (process.env.NODE_ENV !== 'production') {
-    return mock;
-  }
-
-  const defaultQuery: BikeQueryParam = {
-    lat: latitude,
-    lng: longitude,
-    count: 30,
-    meter: radius,
-  };
+  if (process.env.NODE_ENV !== 'production')
+    return mock as unknown as NormalisedBikeStation;
 
   const [stations, bikes] = await Promise.all([
-    getNearByStations(defaultQuery),
-    getNearByAvailableBikes(defaultQuery),
+    bikeService.getNearByBikeStations({
+      top: 30,
+      spatialFilter: `nearby(${latitude}, ${longitude}, ${radius})`,
+    }),
+    bikeService.getNearByBikesAvailability({
+      top: 30,
+      spatialFilter: `nearby(${latitude}, ${longitude}, ${radius})`,
+    }),
   ]);
 
-  return stations.map((station, index) => ({
-    ...station,
-    bike: bikes[index],
-  }));
+  const normalised: NormalisedBikeStation = { uids: [], entities: {} };
+
+  for (let i = 0; i < stations.length; i += 1) {
+    const station = stations[i];
+    const bike = bikes[i];
+
+    if (bike.ServiceStatus === 1) {
+      normalised.uids.push(bike.StationUID);
+      normalised.entities[bike.StationUID] = {
+        ...station,
+        ...bike,
+      };
+    }
+  }
+
+  return normalised;
 });
 
 export default router.build();

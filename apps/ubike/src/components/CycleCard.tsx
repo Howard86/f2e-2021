@@ -9,7 +9,7 @@ import {
   Tooltip,
   useTheme,
 } from '@chakra-ui/react';
-import type { City } from '@f2e/ptx';
+import { City, CityMap } from '@f2e/tdx';
 import { motion, Variants } from 'framer-motion';
 import type { GeoJSONMultiLineString } from 'wellknown';
 
@@ -135,7 +135,7 @@ const CycleCard = ({
         </Flex>
         <Flex>
           <PlaceIcon color="secondary.main" fontSize="2xl" mr="1" />
-          {city}
+          {CityMap[city]}
         </Flex>
       </Flex>
       <HStack>

@@ -1,11 +1,12 @@
+import { City } from '@f2e/tdx';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { SuccessApiResponse } from 'next-api-handler';
 
+import type { BikeCyclingWithGeoJson } from '@/pages/api/cyclings';
 import type {
-  BikeCyclingWithGeoJson,
-  CyclingQueryParam,
-} from '@/pages/api/cyclings';
-import type { StationQueryParam, StationWithBike } from '@/pages/api/stations';
+  NormalisedBikeStation,
+  StationQueryParam,
+} from '@/pages/api/stations';
 
 const ONE_HOUR = 60 * 60;
 
@@ -17,16 +18,16 @@ export const localApi = createApi({
   }),
   endpoints: (builder) => ({
     getStationsByCoordinate: builder.query<
-      SuccessApiResponse<StationWithBike[]>,
+      SuccessApiResponse<NormalisedBikeStation>,
       Record<keyof StationQueryParam, number>
     >({
       query: ({ lat, lng, r }) => `stations?lat=${lat}&lng=${lng}&r=${r}`,
     }),
     getCyclingByCity: builder.query<
       SuccessApiResponse<BikeCyclingWithGeoJson[]>,
-      CyclingQueryParam['city']
+      City
     >({
-      query: (citySlug) => `cyclings?city=${citySlug}`,
+      query: (city) => `cyclings?city=${city}`,
     }),
   }),
 });

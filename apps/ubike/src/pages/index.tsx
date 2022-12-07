@@ -14,7 +14,7 @@ import {
   TabPanels,
   Tabs,
 } from '@chakra-ui/react';
-import { BIKE_CITIES, CityMap } from '@f2e/ptx';
+import { Cities, City, CityMap } from '@f2e/tdx';
 import { motion, Variants } from 'framer-motion';
 import { BsCaretDownFill } from 'react-icons/bs';
 
@@ -24,7 +24,7 @@ import { useGetCyclingByCityQuery } from '@/services/local';
 
 const MotionGrid = motion<SimpleGridProps>(SimpleGrid);
 
-const vairants: Variants = {
+const variants: Variants = {
   hidden: { opacity: 0 },
   show: {
     opacity: 1,
@@ -38,13 +38,13 @@ const vairants: Variants = {
 
 const HomePage = () => {
   const [tabIndex, setTabIndex] = useState(0);
-  const [selectedCity, setSelectedCity] = useState<CityMap>();
+  const [selectedCity, setSelectedCity] = useState<City>();
   const { data, isFetching } = useGetCyclingByCityQuery(selectedCity, {
     skip: tabIndex !== 1 || !selectedCity,
   });
 
   const onSelect = (event: ChangeEvent<HTMLSelectElement>) => {
-    setSelectedCity(event.target.value as CityMap);
+    setSelectedCity(event.target.value as City);
   };
 
   const handleTabsChange = (index: number) => {
@@ -127,9 +127,9 @@ const HomePage = () => {
                   onChange={onSelect}
                   sx={{ div: { color: 'red.100' } }}
                 >
-                  {BIKE_CITIES.map((city) => (
-                    <option key={city} value={CityMap[city]}>
-                      {city}
+                  {Cities.map((city) => (
+                    <option key={city} value={city}>
+                      {CityMap[city]}
                     </option>
                   ))}
                 </Select>
@@ -147,7 +147,7 @@ const HomePage = () => {
                   columns={[1, 2, 4]}
                   spacing={[4, 8]}
                   my={[4, 8]}
-                  variants={vairants}
+                  variants={variants}
                   initial="hidden"
                   animate="show"
                 >
@@ -157,7 +157,7 @@ const HomePage = () => {
                       key={`${path.RouteName}-${path.CyclingLength}-${i}`}
                       name={path.RouteName}
                       length={path.CyclingLength}
-                      city={path.City}
+                      city={CityMap[path.City] as City}
                       onToggle={onToggle}
                       geoJson={path.geoJson}
                     />
