@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { HStack, StackProps, useTheme } from '@chakra-ui/react';
-import type { CitySlug } from '@f2e/ptx';
+import { City } from '@f2e/tdx';
 import { useRouter } from 'next/router';
 
 import LogoIcon from './icons/Logo';
@@ -9,10 +9,10 @@ import RouteLink from './RouteLink';
 
 interface NavBarItemsProps {
   display?: StackProps['display'];
-  citySlug: CitySlug | '';
+  city: City;
 }
 
-const NavBarItems = ({ display, citySlug }: NavBarItemsProps) => {
+const NavBarItems = ({ display, city }: NavBarItemsProps) => {
   const router = useRouter();
   const theme = useTheme();
 
@@ -23,9 +23,9 @@ const NavBarItems = ({ display, citySlug }: NavBarItemsProps) => {
       </RouteLink>
       <HStack display={display} spacing={6} fontSize="xl">
         <RouteLink
-          href={`/city/${citySlug}`}
+          href={`/city/${city}`}
           textShadow={
-            router.pathname === '/city/[citySlug]'
+            router.pathname === '/city/[city]'
               ? theme.colors.shadow.text
               : undefined
           }

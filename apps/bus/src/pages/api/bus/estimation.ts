@@ -1,38 +1,36 @@
-import {
-  BusEstimationInfo,
-  CITIES,
-  CitySlug,
-  CitySlugMap,
-  getBusEstimationsByRouteAndCity,
-} from '@f2e/ptx';
+import { BusEstimation, City, CitySet } from '@f2e/tdx';
 import {
   BadRequestException,
   NotFoundException,
   RouterBuilder,
 } from 'next-api-handler';
 
+import { busService } from '@/services/tdx';
+
 const router = new RouterBuilder();
 
 export interface BusEstimationParam {
   route: string;
-  city: CitySlug;
+  city: City;
 }
 
-router.get<BusEstimationInfo[]>((req) => {
-  if (
-    typeof req.query.city !== 'string' ||
-    typeof req.query.route !== 'string'
-  ) {
+router.get<BusEstimation>(async (req) => {
+  if (typeof req.query.city !== 'string' || typeof req.query.route !== 'string')
     throw new BadRequestException(`missing query ${JSON.stringify(req.query)}`);
-  }
 
-  const city = CitySlugMap[req.query.city];
+  const city = req.query.city as City;
 
-  if (!CITIES.includes(city)) {
-    throw new NotFoundException(`city ${req.query.city} does not exist`);
-  }
+  if (!CitySet.has(city))
+    throw new NotFoundException(`city ${city} does not exist`);
 
-  return getBusEstimationsByRouteAndCity(req.query.route, city);
+  const estimation = await busService.getBusEstimationsByCityAndRouteName(
+    city,
+    req.query.route,
+  );
+
+  if (!estimation) throw new NotFoundException(`estimation not found`);
+
+  return estimation;
 });
 
 export default router.build();

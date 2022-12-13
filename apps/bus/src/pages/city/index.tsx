@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 
 import { useRouter } from 'next/router';
 
-import { CITY_STORAGE_KEY } from './[citySlug]';
+import { CITY_STORAGE_KEY } from './[city]';
 
 import { getFromLocalStorage } from '@/utils/local-storage';
 
@@ -11,7 +11,7 @@ const EmptyCityPage = () => {
   const router = useRouter();
 
   useEffect(() => {
-    router.push(`/city/${getFromLocalStorage(CITY_STORAGE_KEY) || 'taipei'}`);
+    router.push(`/city/${getFromLocalStorage(CITY_STORAGE_KEY) || 'Taipei'}`);
   }, [router]);
 
   return null;

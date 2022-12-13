@@ -1,11 +1,11 @@
 import React, { ChangeEventHandler, memo } from 'react';
 
 import { Input, InputProps, Select } from '@chakra-ui/react';
-import { CITIES, CityMap, CitySlug } from '@f2e/ptx';
+import { Cities, City, CityMap } from '@f2e/tdx';
 
 interface BusSearchInputProps {
   display?: InputProps['display'];
-  citySlug: CitySlug;
+  city: City;
   onSelectCity: ChangeEventHandler<HTMLSelectElement>;
   searchString: string;
   onSearch: ChangeEventHandler<HTMLInputElement>;
@@ -15,20 +15,20 @@ const BusSearchInput = ({
   display,
   searchString,
   onSearch,
-  citySlug,
+  city: defaultCity,
   onSelectCity,
 }: BusSearchInputProps) => (
   <>
     <Select
       display={display}
-      value={citySlug}
+      value={defaultCity}
       maxW="110px"
       onChange={onSelectCity}
       roundedRight="none"
     >
-      {CITIES.map((city) => (
-        <option key={CityMap[city]} value={CityMap[city]}>
-          {city}
+      {Cities.map((city) => (
+        <option key={city} value={city}>
+          {CityMap[city]}
         </option>
       ))}
     </Select>

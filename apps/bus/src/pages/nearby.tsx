@@ -15,7 +15,7 @@ import {
   useBreakpointValue,
   Wrap,
 } from '@chakra-ui/react';
-import { CityCodeSlugMap } from '@f2e/ptx';
+import { CityMap } from '@f2e/tdx';
 import { useRouter } from 'next/router';
 import NextHeadSeo from 'next-head-seo';
 import { IoHome } from 'react-icons/io5';
@@ -86,7 +86,7 @@ const NearByPage = () => {
       <NextHeadSeo title="Iro Bus | 附近站牌" />
       <Flex pos="relative" flexDir="column" h="full" color="white">
         <Flex p={4} bg="primary.800" justify="space-between" align="center">
-          <NavBarItems citySlug="" display={DESKTOP_DISPLAY} />
+          <NavBarItems city="Taipei" display={DESKTOP_DISPLAY} />
           <IconButton
             pos={['static', 'fixed']}
             right={[0, 4]}
@@ -155,9 +155,9 @@ const NearByPage = () => {
                         key={`${busStation.StationUID}-${stop.StopUID}-${stop.RouteUID}`}
                         variant="neon"
                         as={RouteLink}
-                        href={`/city/${
-                          CityCodeSlugMap[busStation.LocationCityCode]
-                        }/${stop.RouteName.Zh_tw}`}
+                        href={`/city/${CityMap[busStation.LocationCityCode]}/${
+                          stop.RouteName.Zh_tw
+                        }`}
                       >
                         {stop.RouteName.Zh_tw}
                       </Button>

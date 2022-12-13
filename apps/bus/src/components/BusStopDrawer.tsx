@@ -15,10 +15,10 @@ import {
 } from '@chakra-ui/react';
 import {
   BusDirection,
-  BusEstimationInfo,
-  BusRouteDetailInfo,
-  RouteStopInfo,
-} from '@f2e/ptx';
+  BusEstimation,
+  BusRoute,
+  BusStopOfRoute,
+} from '@f2e/tdx';
 import { EntityId } from '@reduxjs/toolkit';
 import { BiChevronLeft, BiChevronRight } from 'react-icons/bi';
 import { MdClose } from 'react-icons/md';
@@ -33,10 +33,10 @@ import { getBusEstimationStatus } from '@/utils/bus';
 
 interface BusStopDrawerProps extends Omit<DrawerProps, 'children'> {
   selectedStopId: EntityId;
-  route: BusRouteDetailInfo;
+  busRoute: BusRoute;
   setSelectedStopId: Dispatch<SetStateAction<EntityId>>;
-  busEstimation: BusEstimationInfo;
-  selectedBusRoute: RouteStopInfo;
+  busEstimation: BusEstimation;
+  selectedBusStop: BusStopOfRoute;
 }
 
 export enum ZoomLevel {
@@ -48,16 +48,16 @@ export enum ZoomLevel {
 
 const BusStopDrawer = ({
   onClose,
-  route,
+  busRoute: route,
   selectedStopId,
   setSelectedStopId,
   busEstimation,
-  selectedBusRoute,
+  selectedBusStop,
   ...props
 }: BusStopDrawerProps) => {
   const { mapContextRef } = useMap();
   const handleRouteStopClick = async (step: 1 | -1) => {
-    const currentStops = selectedBusRoute.Stops;
+    const currentStops = selectedBusStop.Stops;
 
     const previousStop =
       currentStops[
@@ -133,7 +133,7 @@ const BusStopDrawer = ({
               variant="ghost"
               size="sm"
               leftIcon={<BiChevronLeft />}
-              isDisabled={selectedBusRoute.Stops[0].StopUID === selectedStopId}
+              isDisabled={selectedBusStop.Stops[0].StopUID === selectedStopId}
               onClick={onPreviousStopClick}
             >
               上一站
@@ -146,8 +146,7 @@ const BusStopDrawer = ({
               rightIcon={<BiChevronRight />}
               size="sm"
               isDisabled={
-                getLastElement(selectedBusRoute.Stops).StopUID ===
-                selectedStopId
+                getLastElement(selectedBusStop.Stops).StopUID === selectedStopId
               }
               onClick={onNextStopClick}
             >

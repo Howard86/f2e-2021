@@ -11,13 +11,7 @@ import {
   LinkOverlay,
   Text,
 } from '@chakra-ui/react';
-import {
-  BusRouteInfo,
-  CITIES,
-  CitySlug,
-  CitySlugMap,
-  getBusRoutesByCity,
-} from '@f2e/ptx';
+import { BusRoute, City, CityMap, CitySet } from '@f2e/tdx';
 import type {
   GetStaticPathsResult,
   GetStaticPropsContext,
@@ -35,13 +29,14 @@ import RouteKeyBoard from '@/components/RouteKeyBoard';
 import RouteLink from '@/components/RouteLink';
 import { DESKTOP_DISPLAY, MOBILE_DISPLAY } from '@/constants/style';
 import { ONE_DAY } from '@/constants/time';
+import { busService } from '@/services/tdx';
 import station from '@/station.png';
 import { getBusRouteDestinations } from '@/utils/bus';
 import { addToLocalStorage } from '@/utils/local-storage';
 
 interface BusPageProps {
-  citySlug: CitySlug;
-  busRoutes: BusRouteInfo[];
+  city: City;
+  busRoutes: BusRoute[];
 }
 
 const DEFAULT_SEARCH_STRING = '';
@@ -71,7 +66,7 @@ const roadAnimation = keyframes`
 
 export const CITY_STORAGE_KEY = 'selected-city';
 
-const BusPage = ({ citySlug, busRoutes }: BusPageProps) => {
+const BusPage = ({ city, busRoutes }: BusPageProps) => {
   const [searchString, setSearchString] = useState(DEFAULT_SEARCH_STRING);
   const router = useRouter();
 
@@ -142,7 +137,7 @@ const BusPage = ({ citySlug, busRoutes }: BusPageProps) => {
         <Heading fontSize="2xl" mb="4">
           <RouteLink
             as={LinkOverlay}
-            href={`/city/${citySlug}/${busRoute.RouteName.Zh_tw}`}
+            href={`/city/${city}/${busRoute.RouteName.Zh_tw}`}
           >
             {busRoute.RouteName.Zh_tw}
           </RouteLink>
@@ -154,10 +149,10 @@ const BusPage = ({ citySlug, busRoutes }: BusPageProps) => {
 
   return (
     <>
-      <NextHeadSeo title={`Iro Bus | ${CitySlugMap[citySlug]}`} />
+      <NextHeadSeo title={`Iro Bus | ${CityMap[city]}`} />
       <Flex pos="relative" flexDir="column" h="full" color="white">
         <Flex p="4" bg="primary.800" align="center" justify="space-between">
-          <NavBarItems display={DESKTOP_DISPLAY} citySlug={citySlug} />
+          <NavBarItems display={DESKTOP_DISPLAY} city={city} />
           <IconButton
             display={MOBILE_DISPLAY}
             aria-label="back to previous page"
@@ -168,7 +163,7 @@ const BusPage = ({ citySlug, busRoutes }: BusPageProps) => {
           />
           <BusSearchInput
             display={MOBILE_DISPLAY}
-            citySlug={citySlug}
+            city={city}
             onSelectCity={onSelectCity}
             searchString={searchString}
             onSearch={onSearch}
@@ -193,7 +188,7 @@ const BusPage = ({ citySlug, busRoutes }: BusPageProps) => {
           >
             <Flex display={['none', 'flex']} p="4" bg="primary.700">
               <BusSearchInput
-                citySlug={citySlug}
+                city={city}
                 onSelectCity={onSelectCity}
                 searchString={searchString}
                 onSearch={onSearch}
@@ -266,21 +261,17 @@ export const getStaticPaths = (): GetStaticPathsResult => ({
 export const getStaticProps = async (
   context: GetStaticPropsContext,
 ): Promise<GetStaticPropsResult<BusPageProps>> => {
-  const citySlug = context.params.citySlug as CitySlug;
+  const city = context.params.city as City;
 
-  if (typeof citySlug !== 'string' || !CITIES.includes(CitySlugMap[citySlug])) {
+  if (typeof city !== 'string' || !CitySet.has(city))
     return {
       notFound: true,
     };
-  }
 
-  const busRoutes = await getBusRoutesByCity(CitySlugMap[citySlug], 1000);
+  const busRoutes = await busService.getBusRoutesByCity(city, { top: 1000 });
 
   return {
-    props: {
-      citySlug,
-      busRoutes,
-    },
+    props: { city, busRoutes },
     revalidate: ONE_DAY,
   };
 };
