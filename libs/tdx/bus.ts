@@ -230,17 +230,6 @@ export class BusService {
     );
   }
 
-  getBusStopOfRoutesByCityAndRouteName(
-    city: City,
-    routeName: string,
-    params: ApiParam = this.service.DEFAULT_API_PARAMS,
-  ) {
-    return this.service.get<BusStopOfRoute[]>(
-      `${this.BASE_PATH}/DisplayStopOfRoute/City/${city}/${routeName}`,
-      params,
-    );
-  }
-
   getBusStationNearBy(params: NearByApiParam) {
     return this.service.get<BusStation[]>(
       '/advance/v2/Bus/Station/NearBy',
@@ -248,29 +237,23 @@ export class BusService {
     );
   }
 
-  getBusShapeByCityAndRouteName =
-    this.generateGetByRouteName<BusShape>('Shape');
+  getBusShapesByCityAndRouteName =
+    this.generateGetByRouteNameAndCity<BusShape>('Shape');
 
-  getBusRouteByCityAndRouteName =
-    this.generateGetByRouteName<BusRoute>('Route');
+  getBusRoutesByCityAndRouteName =
+    this.generateGetByRouteNameAndCity<BusRoute>('Route');
 
   getBusEstimationsByCityAndRouteName =
-    this.generateGetByRouteName<BusEstimation>('EstimatedTimeOfArrival');
+    this.generateGetByRouteNameAndCity<BusEstimation>('EstimatedTimeOfArrival');
 
-  getBusStopOfRouteByCityAndRouteName =
-    this.generateGetByRouteName<BusStopOfRoute>('DisplayStopOfRoute');
+  getBusStopOfRoutesByCityAndRouteName =
+    this.generateGetByRouteNameAndCity<BusStopOfRoute>('DisplayStopOfRoute');
 
-  private generateGetByRouteName<T>(type: BusPropertyType) {
-    return async (city: City, routeName: string) => {
-      const items = await this.service.get<T[]>(
-        `${this.BASE_PATH}/${type}/City/${city}`,
-        {
-          top: 1,
-          filter: `RouteName/Zh_tw eq '${routeName}'`,
-        },
-      );
-
-      return TdxService.checkExistence(items);
-    };
+  private generateGetByRouteNameAndCity<T>(type: BusPropertyType) {
+    return async (city: City, routeName: string, params?: ApiParam) =>
+      this.service.get<T[]>(`${this.BASE_PATH}/${type}/City/${city}`, {
+        filter: `RouteName/Zh_tw eq '${routeName}'`,
+        ...params,
+      });
   }
 }

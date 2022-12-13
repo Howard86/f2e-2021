@@ -488,10 +488,12 @@ export const getStaticProps = async (
       notFound: true,
     };
 
-  const busRoute = await busService.getBusRouteByCityAndRouteName(
+  const busRoutes = await busService.getBusRoutesByCityAndRouteName(
     city,
     routeName,
   );
+
+  const busRoute = busRoutes[0];
 
   if (!busRoute)
     return {
@@ -501,12 +503,14 @@ export const getStaticProps = async (
       },
     };
 
-  const [busShape, busStops] = await Promise.all([
-    busService.getBusShapeByCityAndRouteName(city, routeName),
+  const [busShapes, busStops] = await Promise.all([
+    busService.getBusShapesByCityAndRouteName(city, routeName),
     busService.getBusStopOfRoutesByCityAndRouteName(city, routeName, {
       filter: `RouteName/Zh_tw eq '${routeName}'`,
     }),
   ]);
+
+  const busShape = busShapes[0];
 
   if (!busShape || busStops.length === 0)
     return {
