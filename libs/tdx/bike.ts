@@ -1,4 +1,4 @@
-import { ApiParam, TdxService } from './base';
+import { ApiParam, NearByApiParam, TdxService } from './base';
 import { City } from './constants';
 
 export interface BikeStation {
@@ -55,10 +55,6 @@ export interface CyclingShape {
   Geometry: string;
 }
 
-export interface BikeNearByApiParam extends ApiParam {
-  spatialFilter: string;
-}
-
 export class BikeService {
   private BIKE_BASE_URL = '/advanced/v2/Bike';
 
@@ -68,14 +64,14 @@ export class BikeService {
     this.service = service;
   }
 
-  async getNearByBikeStations(param: BikeNearByApiParam) {
+  async getNearByBikeStations(param: NearByApiParam) {
     return this.service.get<BikeStation[]>(
       `${this.BIKE_BASE_URL}/Station/NearBy`,
       param,
     );
   }
 
-  async getNearByBikesAvailability(param: BikeNearByApiParam) {
+  async getNearByBikesAvailability(param: NearByApiParam) {
     return this.service.get<BikeAvailability[]>(
       `${this.BIKE_BASE_URL}/Availability/NearBy`,
       param,
