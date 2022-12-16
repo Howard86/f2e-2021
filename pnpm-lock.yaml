@@ -68,9 +68,11 @@ importers:
       '@emotion/styled': ^11.10.4
       '@f2e/tdx': workspace:^0.2.0
       '@reduxjs/toolkit': ^1.8.5
+      '@types/lodash.debounce': ^4.0.7
       '@types/mapbox-gl': ^2.7.6
       '@types/wellknown': ^0.5.3
       framer-motion: ^6.5.1
+      lodash.debounce: ^4.0.8
       lodash.throttle: ^4.1.1
       mapbox-gl: ^2.10.0
       next: ^12.3.1
@@ -90,6 +92,7 @@ importers:
       '@f2e/tdx': link:../../libs/tdx
       '@reduxjs/toolkit': 1.9.1_csuupx2mfbspdz76fkecdgkise
       framer-motion: 6.5.1_sfoxds7t5ydpegc3knd667wn6m
+      lodash.debounce: 4.0.8
       lodash.throttle: 4.1.1
       mapbox-gl: 2.11.0
       next: 12.3.4_sfoxds7t5ydpegc3knd667wn6m
@@ -102,6 +105,7 @@ importers:
       sharp: 0.30.7
       wellknown: 0.5.0
     devDependencies:
+      '@types/lodash.debounce': 4.0.7
       '@types/mapbox-gl': 2.7.9
       '@types/wellknown': 0.5.4
 
@@ -2891,6 +2895,12 @@ packages:
     resolution: {integrity: sha512-BQ5aZNSCpj7D6K2ksrRCTmKRLEpnPvWDiLPfoGyhZ++8YtiK9d/3DBKPJgry359X/P1PfruyYwvnvwFjuEiEIg==}
     dependencies:
       '@types/node': 17.0.45
+    dev: true
+
+  /@types/lodash.debounce/4.0.7:
+    resolution: {integrity: sha512-X1T4wMZ+gT000M2/91SYj0d/7JfeNZ9PeeOldSNoE/lunLeQXKvkmIumI29IaKMotU/ln/McOIvgzZcQ/3TrSA==}
+    dependencies:
+      '@types/lodash': 4.14.179
     dev: true
 
   /@types/lodash.mergewith/4.6.6:
@@ -6168,6 +6178,10 @@ packages:
     dependencies:
       p-locate: 5.0.0
     dev: true
+
+  /lodash.debounce/4.0.8:
+    resolution: {integrity: sha512-FT1yDzDYEoYWhnSGnpE/4Kj1fLZkDFyqRb7fNt6FdYOSxlUWAtp42Eh6Wb0rGIv/m9Bgo7x4GhQbm5Ys4SG5ow==}
+    dev: false
 
   /lodash.ismatch/4.4.0:
     resolution: {integrity: sha512-fPMfXjGQEV9Xsq/8MTSgUf255gawYRbjwMyDbcvDhXgV7enSZA0hynz6vMPnpAb5iONEzBHBPsT+0zes5Z301g==}
