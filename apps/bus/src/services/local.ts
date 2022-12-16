@@ -1,4 +1,4 @@
-import { BusEstimation, BusStation } from '@f2e/tdx';
+import { BusEstimation, BusRoute, BusStation, City } from '@f2e/tdx';
 import { createEntityAdapter, EntityState } from '@reduxjs/toolkit';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import type { SuccessApiResponse } from 'next-api-handler';
@@ -36,9 +36,22 @@ export const localApi = createApi({
     >({
       query: ({ lat, lng }) => `bus/nearby?lat=${lat}&lng=${lng}`,
     }),
+    getBusRoutes: builder.query<
+      SuccessApiResponse<BusRoute[]>,
+      { city: City; route: string }
+    >({
+      query: ({ city, route }) => ({
+        url: 'bus/route',
+        params: { city, route },
+      }),
+    }),
   }),
 });
 
 export const busEstimationSelector = busEstimationAdapter.getSelectors();
 
-export const { useGetBusEstimationQuery, useGetNearByBusMutation } = localApi;
+export const {
+  useGetBusEstimationQuery,
+  useGetNearByBusMutation,
+  useLazyGetBusRoutesQuery,
+} = localApi;

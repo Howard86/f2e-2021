@@ -251,9 +251,12 @@ export class BusService {
 
   private generateGetByRouteNameAndCity<T>(type: BusPropertyType) {
     return async (city: City, routeName: string, params?: ApiParam) =>
-      this.service.get<T[]>(`${this.BASE_PATH}/${type}/City/${city}`, {
-        filter: `RouteName/Zh_tw eq '${routeName}'`,
-        ...params,
-      });
+      this.service.get<T[]>(
+        `${this.BASE_PATH}/${type}/City/${city}/${routeName}`,
+        {
+          filter: `RouteName/Zh_tw eq '${routeName}'`,
+          ...params,
+        },
+      );
   }
 }
