@@ -22,15 +22,12 @@ import {
 } from '@chakra-ui/react';
 import {
   BusDirection,
-  BusRouteDetailInfo,
-  CITIES,
-  CitySlug,
-  CitySlugMap,
-  getBusRouteDetailByCityAndRouteName,
-  getBusRouteShapeByCityAndRouteName,
-  getRouteStopsByCityAndRouteName,
-  RouteStopInfo,
-} from '@f2e/ptx';
+  BusRoute,
+  BusStopOfRoute,
+  City,
+  CityMap,
+  CitySet,
+} from '@f2e/tdx';
 import type { EntityId } from '@reduxjs/toolkit';
 import type {
   GetStaticPathsResult,
@@ -55,31 +52,32 @@ import {
   busEstimationSelector,
   useGetBusEstimationQuery,
 } from '@/services/local';
+import { busService } from '@/services/tdx';
 import { getMiddleElement } from '@/utils/array';
 import { getBusEstimationStatus } from '@/utils/bus';
 import { getTwoDigitString } from '@/utils/string';
 
 interface BusRoutePageProps {
-  citySlug: CitySlug;
+  city: City;
   routeName: string;
   geoJson: GeoJSONLineString;
-  route: BusRouteDetailInfo;
+  busRoute: BusRoute;
   directions: BusDirection[];
-  routeStopEntity: RouteStopEntity;
+  busStopEntity: RouteStopEntity;
 }
 
-type RouteStopEntity = Record<BusDirection, RouteStopInfo>;
+type RouteStopEntity = Record<BusDirection, BusStopOfRoute>;
 
 const INITIAL_ID = '';
 const STOP_LIST_MAX_HEIGHT = 'calc(100vh - 144px)';
 
 const BusRoutePage = ({
-  citySlug,
+  city,
   routeName,
-  route,
+  busRoute: route,
   geoJson,
   directions,
-  routeStopEntity,
+  busStopEntity: routeStopEntity,
 }: BusRoutePageProps) => {
   const theme = useTheme();
   const router = useRouter();
@@ -98,7 +96,7 @@ const BusRoutePage = ({
   const { isOpen, onClose, onOpen } = useDisclosure();
   const stopDisclosure = useDisclosure();
   const { data, selectedBusEstimation } = useGetBusEstimationQuery(
-    { city: citySlug, route: routeName },
+    { city, route: routeName },
     {
       skip: router.isFallback,
       selectFromResult: (res) => ({
@@ -278,7 +276,7 @@ const BusRoutePage = ({
 
   return (
     <>
-      <NextHeadSeo title={`Iro Bus | ${routeName}-${CitySlugMap[citySlug]}`} />
+      <NextHeadSeo title={`Iro Bus | ${routeName}-${CityMap[city]}`} />
       <Flex pos="relative" flexDir="column" h="full" color="white">
         <Flex p={4} bg="primary.800" justify="space-between" align="center">
           <IconButton
@@ -289,7 +287,7 @@ const BusRoutePage = ({
             onClick={onArrowClick}
             icon={<BiChevronLeft />}
           />
-          <NavBarItems citySlug={citySlug} display={DESKTOP_DISPLAY} />
+          <NavBarItems display={DESKTOP_DISPLAY} />
           <Stack
             direction={['row', 'column-reverse']}
             pos={['static', 'fixed']}
@@ -459,9 +457,9 @@ const BusRoutePage = ({
         <BusStopDrawer
           selectedStopId={selectedStopId}
           setSelectedStopId={setSelectedStopId}
-          route={route}
+          busRoute={route}
           busEstimation={selectedBusEstimation}
-          selectedBusRoute={selectedBusRoute}
+          selectedBusStop={selectedBusRoute}
           onClose={onDrawerClose}
           isOpen={stopDisclosure.isOpen}
         />
@@ -479,55 +477,53 @@ export const getStaticProps = async (
   context: GetStaticPropsContext,
 ): Promise<GetStaticPropsResult<BusRoutePageProps>> => {
   const { routeName } = context.params;
-  const citySlug = context.params.citySlug as CitySlug;
+  const city = context.params.city as City;
 
   if (
     typeof routeName !== 'string' ||
-    typeof citySlug !== 'string' ||
-    !CITIES.includes(CitySlugMap[citySlug])
-  ) {
+    typeof city !== 'string' ||
+    !CitySet.has(city)
+  )
     return {
       notFound: true,
     };
-  }
 
-  const route = await getBusRouteDetailByCityAndRouteName(
+  const busRoutes = await busService.getBusRoutesByCityAndRouteName(
+    city,
     routeName,
-    CitySlugMap[citySlug],
   );
 
-  if (!route) {
+  const busRoute = busRoutes[0];
+
+  if (!busRoute)
     return {
       redirect: {
-        destination: `/city/${citySlug}`,
+        destination: '/city',
         permanent: false,
       },
     };
-  }
 
-  const routeShape = await getBusRouteShapeByCityAndRouteName(
-    routeName,
-    CitySlugMap[citySlug],
-  );
+  const [busShapes, busStops] = await Promise.all([
+    busService.getBusShapesByCityAndRouteName(city, routeName),
+    busService.getBusStopOfRoutesByCityAndRouteName(city, routeName, {
+      filter: `RouteName/Zh_tw eq '${routeName}'`,
+    }),
+  ]);
 
-  if (!routeShape) {
+  const busShape = busShapes[0];
+
+  if (!busShape || busStops.length === 0)
     return {
       redirect: {
-        destination: `/city/${citySlug}`,
+        destination: '/city',
         permanent: false,
       },
     };
-  }
-
-  const routeStops = await getRouteStopsByCityAndRouteName(
-    routeName,
-    CitySlugMap[citySlug],
-  );
 
   const directions: BusDirection[] = [];
   const routeStopEntity = {} as RouteStopEntity;
 
-  for (const routeStop of routeStops) {
+  for (const routeStop of busStops) {
     // TODO: might have routes that have multiple directions
     if (!directions.includes(routeStop.Direction)) {
       directions.push(routeStop.Direction);
@@ -537,12 +533,12 @@ export const getStaticProps = async (
 
   return {
     props: {
-      citySlug,
+      city,
       routeName,
-      route,
-      geoJson: parse(routeShape.Geometry) as GeoJSONLineString,
+      busRoute,
+      geoJson: parse(busShape.Geometry) as GeoJSONLineString,
       directions,
-      routeStopEntity,
+      busStopEntity: routeStopEntity,
     },
     revalidate: ONE_DAY,
   };

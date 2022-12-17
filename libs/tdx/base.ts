@@ -1,3 +1,7 @@
+export interface NearByApiParam extends ApiParam {
+  spatialFilter: string;
+}
+
 export interface ApiParam {
   select?: string;
   filter?: string;
@@ -74,7 +78,7 @@ export class TdxService {
 
     const json = await response.json();
 
-    if (!response.ok) throw new Error(json);
+    if (!response.ok) throw new Error(JSON.stringify(json));
 
     this.refreshed = false;
 
