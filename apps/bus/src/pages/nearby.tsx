@@ -86,7 +86,7 @@ const NearByPage = () => {
       <NextHeadSeo title="Iro Bus | 附近站牌" />
       <Flex pos="relative" flexDir="column" h="full" color="white">
         <Flex p={4} bg="primary.800" justify="space-between" align="center">
-          <NavBarItems city="Taipei" display={DESKTOP_DISPLAY} />
+          <NavBarItems display={DESKTOP_DISPLAY} />
           <IconButton
             pos={['static', 'fixed']}
             right={[0, 4]}

@@ -95,7 +95,7 @@ const CityPage = () => {
       <NextHeadSeo title={`Iro Bus | ${CityMap[city]}`} />
       <Flex pos="relative" flexDir="column" h="full" color="white">
         <Flex p="4" bg="primary.800" align="center" justify="space-between">
-          <NavBarItems display={DESKTOP_DISPLAY} city={city} />
+          <NavBarItems display={DESKTOP_DISPLAY} />
           <IconButton
             display={MOBILE_DISPLAY}
             aria-label="back to previous page"

@@ -287,7 +287,7 @@ const BusRoutePage = ({
             onClick={onArrowClick}
             icon={<BiChevronLeft />}
           />
-          <NavBarItems city={city} display={DESKTOP_DISPLAY} />
+          <NavBarItems display={DESKTOP_DISPLAY} />
           <Stack
             direction={['row', 'column-reverse']}
             pos={['static', 'fixed']}
@@ -498,7 +498,7 @@ export const getStaticProps = async (
   if (!busRoute)
     return {
       redirect: {
-        destination: `/city/${city}`,
+        destination: '/city',
         permanent: false,
       },
     };
@@ -515,7 +515,7 @@ export const getStaticProps = async (
   if (!busShape || busStops.length === 0)
     return {
       redirect: {
-        destination: `/city/${city}`,
+        destination: '/city',
         permanent: false,
       },
     };

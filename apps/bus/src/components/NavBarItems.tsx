@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { HStack, StackProps, useTheme } from '@chakra-ui/react';
-import { City } from '@f2e/tdx';
 import { useRouter } from 'next/router';
 
 import LogoIcon from './icons/Logo';
@@ -9,10 +8,9 @@ import RouteLink from './RouteLink';
 
 interface NavBarItemsProps {
   display?: StackProps['display'];
-  city: City;
 }
 
-const NavBarItems = ({ display, city }: NavBarItemsProps) => {
+const NavBarItems = ({ display }: NavBarItemsProps) => {
   const router = useRouter();
   const theme = useTheme();
 
@@ -23,11 +21,9 @@ const NavBarItems = ({ display, city }: NavBarItemsProps) => {
       </RouteLink>
       <HStack display={display} spacing={6} fontSize="xl">
         <RouteLink
-          href={`/city/${city}`}
+          href="/city"
           textShadow={
-            router.pathname === '/city/[city]'
-              ? theme.colors.shadow.text
-              : undefined
+            router.pathname === '/city' ? theme.colors.shadow.text : undefined
           }
         >
           公車定位
