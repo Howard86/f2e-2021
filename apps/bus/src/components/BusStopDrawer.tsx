@@ -156,6 +156,7 @@ const BusStopDrawer = ({
           <Box pos="absolute" bottom="1" left="0" right="0">
             <Image
               src={bus}
+              alt="bus"
               placeholder="blur"
               width={200}
               height={60}

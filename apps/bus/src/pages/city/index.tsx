@@ -224,7 +224,11 @@ const CityPage = () => {
             </Box>
             <Box flexGrow={1} />
             <Box pos="relative" ml="16" p="8" display={DESKTOP_DISPLAY}>
-              <Image src={bus} animation={`${busAnimation} 3s ease infinite`} />
+              <Image
+                alt="bus"
+                src={bus}
+                animation={`${busAnimation} 3s ease infinite`}
+              />
               <Box
                 pos="absolute"
                 rounded="2xl"
