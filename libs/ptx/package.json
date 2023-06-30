@@ -15,6 +15,6 @@
     "build:fresh": "pnpm clean && pnpm build"
   },
   "dependencies": {
-    "jssha": "^3.2.0"
+    "jssha": "^3.3.0"
   }
 }
