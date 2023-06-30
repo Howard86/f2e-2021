@@ -62,10 +62,13 @@ const HomePage = ({
         <Image
           alt="首頁背景"
           src={mainBackground}
-          layout="fill"
-          objectFit="cover"
-          objectPosition="50% bottom"
           quality={100}
+          fill
+          sizes="100vw"
+          style={{
+            objectFit: 'cover',
+            objectPosition: '50% bottom',
+          }}
         />
       </Box>
       <Logo

@@ -24,8 +24,12 @@ const SiteCard = ({ title, href, image, ...props }: SiteCardProps) => (
       alt={title}
       src={image}
       placeholder="blur"
-      objectFit="cover"
-      objectPosition="center"
+      style={{
+        maxWidth: '100%',
+        height: 'auto',
+        objectFit: 'cover',
+        objectPosition: 'center',
+      }}
     />
     <Flex
       rounded="2xl"

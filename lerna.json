@@ -1,13 +1,12 @@
 {
+  "$schema": "node_modules/lerna/schemas/lerna-schema.json",
   "packages": ["apps/*", "libs/*"],
   "version": "independent",
   "npmClient": "pnpm",
-  "useWorkspaces": true,
   "command": {
     "version": {
       "ignoreChanges": ["*.md"],
       "message": "chore(release): tag & update changelog"
     }
-  },
-  "$schema": "node_modules/lerna/schemas/lerna-schema.json"
+  }
 }

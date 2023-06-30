@@ -268,9 +268,12 @@ const Map = () => {
           <Image
             alt="背景"
             src={background}
-            layout="fill"
-            objectFit="cover"
-            objectPosition="center"
+            fill
+            sizes="100vw"
+            style={{
+              objectFit: 'cover',
+              objectPosition: 'center',
+            }}
           />
         </Box>
         <VStack
