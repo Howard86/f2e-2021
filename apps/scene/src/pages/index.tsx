@@ -62,7 +62,7 @@ const HomePage = ({
         <Image
           alt="首頁背景"
           src={mainBackground}
-          quality={100}
+          placeholder="blur"
           fill
           sizes="100vw"
           style={{

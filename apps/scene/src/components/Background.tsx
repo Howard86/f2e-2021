@@ -48,9 +48,9 @@ const Background = ({
       <Image
         alt={`${name}背景`}
         src={image}
-        quality={100}
         priority
         fill
+        placeholder="blur"
         sizes="100vw"
         style={{
           objectFit: 'cover',
@@ -70,6 +70,7 @@ const Background = ({
       <Image
         alt={wordOneAlt}
         src={wordOne}
+        placeholder="blur"
         priority
         style={{
           maxWidth: '100%',
@@ -80,6 +81,7 @@ const Background = ({
         alt={wordTwoAlt}
         src={wordTwo}
         priority
+        placeholder="blur"
         style={{
           maxWidth: '100%',
           height: 'auto',

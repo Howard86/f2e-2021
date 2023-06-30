@@ -32,7 +32,7 @@ const SiteCard = ({ title, href, image, ...props }: SiteCardProps) => (
       }}
     />
     <Flex
-      rounded="2xl"
+      rounded="3xl"
       flexDir="column"
       zIndex="docked"
       align="flex-end"
@@ -40,7 +40,7 @@ const SiteCard = ({ title, href, image, ...props }: SiteCardProps) => (
       top="0"
       left="0"
       right="0"
-      bottom="1.5"
+      bottom="0"
       transition="ease-out"
       transitionDuration="0.2s"
       _hover={{
