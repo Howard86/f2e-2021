@@ -113,10 +113,11 @@ const CityPage = () => {
           />
         </Flex>
         <Flex
-          flexDir={['column', 'row-reverse']}
+          flexDir={['column', 'column', 'column', 'row-reverse']}
           flexGrow={1}
           overflowY="auto"
           maxW="100vw"
+          gap={[0, 12, 12, 0]}
         >
           <Flex
             flexGrow={1}
@@ -124,6 +125,7 @@ const CityPage = () => {
             mx={[0, 12]}
             mt={[0, 16]}
             mb={[0, 4]}
+            minH={400}
             rounded={['none', '3xl']}
             borderColor="secondary.900"
             borderWidth={[0, '12px']}
@@ -137,7 +139,7 @@ const CityPage = () => {
                 onSearch={onSearch}
               />
             </Flex>
-            <Box flexGrow={1} overflowY="auto">
+            <Box flex={1} overflowY="auto">
               {/* eslint-disable-next-line no-nested-ternary */}
               {isSuccess ? (
                 data && data.data.length > 0 ? (

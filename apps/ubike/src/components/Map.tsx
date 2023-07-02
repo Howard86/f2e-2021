@@ -268,9 +268,12 @@ const Map = () => {
           <Image
             alt="背景"
             src={background}
-            layout="fill"
-            objectFit="cover"
-            objectPosition="center"
+            fill
+            sizes="100vw"
+            style={{
+              objectFit: 'cover',
+              objectPosition: 'center',
+            }}
           />
         </Box>
         <VStack
@@ -296,10 +299,16 @@ const Map = () => {
           }}
           spacing={4}
         >
-          <IconButton aria-label="放大" icon={<BiPlus />} onClick={onZoomIn} />
+          <IconButton
+            aria-label="放大"
+            icon={<BiPlus />}
+            onClick={onZoomIn}
+            color={isFetching ? 'gray.500' : 'white'}
+          />
           <IconButton
             aria-label="縮小"
             icon={<BiMinus />}
+            color={isFetching ? 'gray.500' : 'white'}
             onClick={onZoomOut}
           />
         </VStack>
@@ -349,6 +358,7 @@ const Map = () => {
             isLoading={isFetching}
             aria-label="定位"
             icon={<IoLocate />}
+            color={isFetching ? 'gray.500' : 'white'}
             onClick={onLocate}
           />
         </Box>

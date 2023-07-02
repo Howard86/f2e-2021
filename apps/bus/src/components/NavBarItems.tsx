@@ -19,12 +19,13 @@ const NavBarItems = ({ display }: NavBarItemsProps) => {
       <RouteLink href="/">
         <LogoIcon display={display} maxH="34px" />
       </RouteLink>
-      <HStack display={display} spacing={6} fontSize="xl">
+      <HStack display={display} fontSize="xl">
         <RouteLink
           href="/city"
           textShadow={
             router.pathname === '/city' ? theme.colors.shadow.text : undefined
           }
+          mr={6}
         >
           公車定位
         </RouteLink>

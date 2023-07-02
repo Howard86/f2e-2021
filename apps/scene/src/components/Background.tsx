@@ -48,11 +48,14 @@ const Background = ({
       <Image
         alt={`${name}背景`}
         src={image}
-        layout="fill"
-        objectFit="cover"
-        objectPosition="20% 100%"
-        quality={100}
         priority
+        fill
+        placeholder="blur"
+        sizes="100vw"
+        style={{
+          objectFit: 'cover',
+          objectPosition: '20% 100%',
+        }}
       />
     </Box>
     <Logo
@@ -64,8 +67,26 @@ const Background = ({
       maxH="117"
     />
     <SimpleGrid mx="10%" spacing={[2, 4, 8]} columns={2}>
-      <Image alt={wordOneAlt} src={wordOne} priority />
-      <Image alt={wordTwoAlt} src={wordTwo} priority />
+      <Image
+        alt={wordOneAlt}
+        src={wordOne}
+        placeholder="blur"
+        priority
+        style={{
+          maxWidth: '100%',
+          height: 'auto',
+        }}
+      />
+      <Image
+        alt={wordTwoAlt}
+        src={wordTwo}
+        priority
+        placeholder="blur"
+        style={{
+          maxWidth: '100%',
+          height: 'auto',
+        }}
+      />
     </SimpleGrid>
     {children}
   </Container>

@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { forwardRef, ReactNode } from 'react';
 
 import { Link, LinkProps } from '@chakra-ui/react';
 import NextLink from 'next/link';
@@ -8,14 +8,8 @@ interface RouteLinkProps extends LinkProps {
   children: ReactNode;
 }
 
-const RouteLink = ({
-  href,
-  children,
-  ...props
-}: RouteLinkProps): JSX.Element => (
-  <NextLink href={href} passHref>
-    <Link {...props}>{children}</Link>
-  </NextLink>
+const RouteLink = forwardRef<HTMLAnchorElement, RouteLinkProps>(
+  (props, ref) => <Link as={NextLink} ref={ref} {...props} />,
 );
 
 export default RouteLink;
