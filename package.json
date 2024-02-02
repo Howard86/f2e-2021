@@ -58,7 +58,7 @@
     "@chakra-ui/cli": "^2.4.1",
     "@commitlint/cli": "^18.0.0",
     "@commitlint/config-conventional": "^18.0.0",
-    "@nrwl/nx-cloud": "^16.0.5",
+    "@nrwl/nx-cloud": "^18.0.0",
     "@types/lodash.throttle": "^4.1.7",
     "@types/node": "^20.3.2",
     "@types/react": "^18.2.14",

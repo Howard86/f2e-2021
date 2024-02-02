@@ -18,8 +18,8 @@ importers:
         specifier: ^18.0.0
         version: 18.0.0
       '@nrwl/nx-cloud':
-        specifier: ^16.0.5
-        version: 16.0.5
+        specifier: ^18.0.0
+        version: 18.0.0
       '@types/lodash.throttle':
         specifier: ^4.1.7
         version: 4.1.7
@@ -2496,10 +2496,10 @@ packages:
       - nx
     dev: true
 
-  /@nrwl/nx-cloud@16.0.5:
-    resolution: {integrity: sha512-1p82ym8WE9ziejwgPslstn19iV/VkHfHfKr/5YOnfCHQS+NxUf92ogcYhHXtqWLblVZ9Zs4W4pkSXK4e04wCmQ==}
+  /@nrwl/nx-cloud@18.0.0:
+    resolution: {integrity: sha512-rjjcJgzDmKwFD1QVIMs5O3X4SoMQIk0bzh3pL90ZP/B5YJUlTySv7+R0JoGQ6ROGwVQHjPFMVKKLB09zl5perA==}
     dependencies:
-      nx-cloud: 16.0.5
+      nx-cloud: 18.0.0
     transitivePeerDependencies:
       - debug
     dev: true
@@ -7311,11 +7311,11 @@ packages:
       set-blocking: 2.0.0
     dev: true
 
-  /nx-cloud@16.0.5:
-    resolution: {integrity: sha512-13P7r0aKikjBtmdZrNorwXzVPeVIV4MLEwqGY+DEG6doLBtI5KqEQk/d5B5l2dCF2BEi/LXEmLYCmf9gwbOJ+Q==}
+  /nx-cloud@18.0.0:
+    resolution: {integrity: sha512-VpPywcHmFIU3GSWb3KV3nQ+TAMLc06DTO39vTFsM+HreB6qRloDxbADRvfM5eHAbY26TNmwflT7wxd0fluv2+A==}
     hasBin: true
     dependencies:
-      '@nrwl/nx-cloud': 16.0.5
+      '@nrwl/nx-cloud': 18.0.0
       axios: 1.1.3
       chalk: 4.1.2
       dotenv: 10.0.0
