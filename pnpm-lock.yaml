@@ -161,7 +161,7 @@ importers:
         version: 2.7.21
       '@types/wellknown':
         specifier: ^0.5.4
-        version: 0.5.4
+        version: 0.5.8
 
   apps/scene:
     dependencies:
@@ -274,7 +274,7 @@ importers:
         version: 2.7.21
       '@types/wellknown':
         specifier: ^0.5.4
-        version: 0.5.4
+        version: 0.5.8
 
   libs/ptx:
     dependencies:
@@ -2960,8 +2960,8 @@ packages:
     resolution: {integrity: sha512-EwmlvuaxPNej9+T4v5AuBPJa2x2UOJVdjCtDHgcDqitUeOtjnJKJ+apYjVcAoBEMjKW1VVFGZLUb5+qqa09XFA==}
     dev: false
 
-  /@types/wellknown@0.5.4:
-    resolution: {integrity: sha512-zcsf4oHeEcvpvWhDOB1+qNK04oFJtsmv7Otb1Vy8w8GAqQkgRrVkI/C76PdwtpiT216aM1SbhkKgKWzGLhHKng==}
+  /@types/wellknown@0.5.8:
+    resolution: {integrity: sha512-/tXv+IfentaS3F0VplScdl+pwP7biW4RBnOxCTtoWlpNiulFBQWqA8rA7r/knavu9SELsFcNVtdGo6YNIElMdw==}
     dev: true
 
   /@typescript-eslint/eslint-plugin@6.0.0(@typescript-eslint/parser@6.0.0)(eslint@8.43.0)(typescript@5.1.6):
