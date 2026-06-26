@@ -185,7 +185,7 @@ importers:
         version: 10.12.18(react-dom@18.2.0)(react@18.2.0)
       jssha:
         specifier: ^3.3.0
-        version: 3.3.0
+        version: 3.3.2
       lodash.throttle:
         specifier: ^4.1.1
         version: 4.1.1
@@ -280,7 +280,7 @@ importers:
     dependencies:
       jssha:
         specifier: ^3.3.0
-        version: 3.3.0
+        version: 3.3.2
 
   libs/tdx: {}
 
@@ -6373,8 +6373,8 @@ packages:
     engines: {'0': node >= 0.2.0}
     dev: true
 
-  /jssha@3.3.0:
-    resolution: {integrity: sha512-w9OtT4ALL+fbbwG3gw7erAO0jvS5nfvrukGPMWIAoea359B26ALXGpzy4YJSp9yGnpUvuvOw1nSjSoHDfWSr1w==}
+  /jssha@3.3.2:
+    resolution: {integrity: sha512-0RhFxzijV4W0qTXa97D5b6twAWXX7SEOpw8qzAZyZ+oeGOP9e84PnDSLjl7SBB1vBQ+chSUwsZR06i1AzA+nEA==}
     dev: false
 
   /jsx-ast-utils@3.3.4:
