@@ -1,13 +1,12 @@
-import { useCallback } from 'react';
-
 import {
+  type CreateToasterProps,
   createToaster,
   Portal,
   Stack,
   Toast,
   Toaster,
-  type CreateToasterProps,
 } from '@chakra-ui/react';
+import { useCallback } from 'react';
 
 type AppToastOptions = Parameters<
   ReturnType<typeof createToaster>['create']
@@ -18,8 +17,8 @@ type AppToastOptions = Parameters<
 };
 
 const DEFAULT_OPTIONS: AppToastOptions = {
-  status: 'success',
   closable: true,
+  status: 'success',
 };
 
 const toaster = createToaster({
@@ -32,13 +31,13 @@ export const AppToaster = () => (
       {(toast) => (
         <Toast.Root>
           <Toast.Indicator />
-          <Stack gap="1" flex="1" maxW="full">
-            {toast.title && <Toast.Title>{toast.title}</Toast.Title>}
-            {toast.description && (
+          <Stack flex="1" gap="1" maxW="full">
+            {Boolean(toast.title) && <Toast.Title>{toast.title}</Toast.Title>}
+            {Boolean(toast.description) && (
               <Toast.Description>{toast.description}</Toast.Description>
             )}
           </Stack>
-          {toast.closable && <Toast.CloseTrigger />}
+          {Boolean(toast.closable) && <Toast.CloseTrigger />}
         </Toast.Root>
       )}
     </Toaster>

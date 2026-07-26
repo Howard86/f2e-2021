@@ -1,18 +1,20 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
-
-import reducer from './reducer';
-
+import {
+  type TypedUseSelectorHook,
+  useDispatch,
+  useSelector,
+} from 'react-redux';
 import { localApi } from '@/services/local';
+import reducer from './reducer';
 
 const isDev = process.env.NODE_ENV !== 'production';
 
 const configureAppStore = () => {
   const store = configureStore({
-    reducer,
     devTools: isDev,
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware().concat(localApi.middleware),
+    reducer,
   });
 
   return store;

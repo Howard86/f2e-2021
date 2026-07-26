@@ -1,5 +1,4 @@
-import React from 'react';
-
+import type { ParsedUrlQuery } from 'node:querystring';
 import {
   Box,
   Breadcrumb,
@@ -11,25 +10,25 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { City, CityMap, CitySet, Restaurant } from '@f2e/tdx';
-import {
+import { type City, CityMap, CitySet, type Restaurant } from '@f2e/tdx';
+import type {
   GetStaticPathsResult,
   GetStaticPropsContext,
   GetStaticPropsResult,
 } from 'next';
 import { useRouter } from 'next/router';
 import NextHeadSeo from 'next-head-seo';
-import type { ParsedUrlQuery } from 'querystring';
+import type React from 'react';
 import { BiChevronRight, BiLinkExternal, BiSync } from 'react-icons/bi';
-import { BsBookmarkPlus, BsBookmarkPlusFill } from 'react-icons/bs';
+import { BsBookmarkPlus } from 'react-icons/bs';
 import { FiClock, FiMapPin, FiPhoneIncoming } from 'react-icons/fi';
 import { MdPhotoAlbum } from 'react-icons/md';
 
-import GoogleMap from '@/components/GoogleMap';
-import Layout from '@/components/layout/Layout';
-import LoadingScreen from '@/components/LoadingScreen';
-import RouteLink from '@/components/RouteLink';
-import SceneDetailBox from '@/components/SceneDetailText';
+import GoogleMap from '@/components/google-map';
+import Layout from '@/components/layout/layout';
+import LoadingScreen from '@/components/loading-screen';
+import RouteLink from '@/components/route-link';
+import SceneDetailBox from '@/components/scene-detail-text';
 import { ONE_DAY_IN_SECONDS } from '@/constants/time';
 import { tourismService } from '@/services/tdx';
 
@@ -42,8 +41,8 @@ const getGoogleMapURL = (lat?: number, lng?: number) =>
     ? `https://www.google.com/maps/search/?api=1&query=${lat}%2C${lng}`
     : undefined;
 const PAGE_PROPS = {
-  mainColor: 'restaurants.main',
   gradientColor: 'restaurants.light',
+  mainColor: 'restaurants.main',
 };
 
 const RestaurantPage = ({
@@ -51,35 +50,32 @@ const RestaurantPage = ({
 }: RestaurantPageProps): React.ReactElement => {
   const router = useRouter();
 
-  // TODO: add saved info
-  const saved = false;
-
   if (router.isFallback) {
-    return <LoadingScreen minH="400px" mainColor={PAGE_PROPS.mainColor} />;
+    return <LoadingScreen mainColor={PAGE_PROPS.mainColor} minH="400px" />;
   }
 
   return (
     <>
       <NextHeadSeo
-        title={`台灣旅遊導覽網 | ${restaurant.RestaurantName}`}
         description={restaurant.Description}
         og={{
+          description: restaurant.Picture?.PictureDescription1,
+          image: restaurant.Picture?.PictureUrl1,
           title: restaurant.RestaurantName,
-          description: restaurant.Picture.PictureDescription1,
-          image: restaurant.Picture.PictureUrl1,
         }}
+        title={`台灣旅遊導覽網 | ${restaurant.RestaurantName}`}
       />
       <Flex
-        flexDir="column"
-        pt="16"
         bgGradient="to-b"
+        flexDir="column"
         gradientFrom="restaurants.light"
         gradientTo="white"
+        pt="16"
       >
-        <Breadcrumb.Root mx="8" color="blackAlpha.700">
+        <Breadcrumb.Root color="blackAlpha.700" mx="8">
           <Breadcrumb.List>
             <Breadcrumb.Item>
-              <RouteLink href="/restaurants" as={Breadcrumb.Link}>
+              <RouteLink as={Breadcrumb.Link} href="/restaurants">
                 美食
               </RouteLink>
             </Breadcrumb.Item>
@@ -88,8 +84,8 @@ const RestaurantPage = ({
             </Breadcrumb.Separator>
             <Breadcrumb.Item>
               <RouteLink
-                href={`/${CityMap[restaurant.City]}`}
                 as={Breadcrumb.Link}
+                href={`/${CityMap[restaurant.City]}`}
               >
                 {restaurant.City}
               </RouteLink>
@@ -99,11 +95,11 @@ const RestaurantPage = ({
             </Breadcrumb.Separator>
             <Breadcrumb.Item fontWeight="bold">
               <RouteLink
+                aria-current="page"
+                as={Breadcrumb.Link}
                 href={`/${CityMap[restaurant.City]}/restaurant/${
                   restaurant.RestaurantID
                 }`}
-                as={Breadcrumb.Link}
-                aria-current="page"
               >
                 {restaurant.RestaurantName}
               </RouteLink>
@@ -111,48 +107,49 @@ const RestaurantPage = ({
           </Breadcrumb.List>
         </Breadcrumb.Root>
         <Flex flexDir={{ base: 'column', lg: 'row' }} m={[4, 8]}>
-          <Box pos="relative" flexGrow={1} flexShrink={1} m="2">
+          <Box flexGrow={1} flexShrink={1} m="2" pos="relative">
             <IconButton
-              top="0"
-              right="0"
-              m="4"
               aria-label="save to favorite"
+              color="blackAlpha.600"
+              m="4"
               pos="absolute"
-              size="lg"
+              right="0"
               rounded="full"
-              color={saved ? 'red.600' : 'blackAlpha.600'}
+              size="lg"
+              top="0"
             >
-              {saved ? <BsBookmarkPlusFill /> : <BsBookmarkPlus />}
+              <BsBookmarkPlus />
             </IconButton>
             <Image
+              align="center"
               alt={
                 restaurant.Picture?.PictureDescription1 ||
                 restaurant.RestaurantName
               }
-              src={restaurant.Picture?.PictureUrl1}
-              align="center"
               fit="cover"
+              height={[400, 600]}
               loading="lazy"
+              // biome-ignore lint/performance/noJsxPropsBind: callback needs local render state or the current event target.
               onError={(event) => {
                 event.currentTarget.src = '/static/fallback-lg.jpg';
               }}
+              src={restaurant.Picture?.PictureUrl1}
               width={[600, 900]}
-              height={[400, 600]}
             />
           </Box>
           <Box
+            css={{ '& p': { my: 2 } }}
             flexGrow={1}
             flexShrink={3}
             lineHeight="7"
-            css={{ '& p': { my: 2 } }}
           >
-            <Heading textAlign="center" mb="4">
+            <Heading mb="4" textAlign="center">
               {restaurant.RestaurantName}
             </Heading>
-            {restaurant.Description && (
+            {Boolean(restaurant.Description) && (
               <Text lineClamp={10}>{restaurant.Description}</Text>
             )}
-            {restaurant.ParkingInfo && (
+            {Boolean(restaurant.ParkingInfo) && (
               <Text lineClamp={10}>{restaurant.ParkingInfo}</Text>
             )}
           </Box>
@@ -162,15 +159,8 @@ const RestaurantPage = ({
         <SimpleGrid columns={[1, 1, 2]} gap={[4, 8]} mx="8">
           <Box>
             <Heading>餐廳資訊</Heading>
-            <VStack align="flex-start" textAlign="start" mt="8" gap={4}>
+            <VStack align="flex-start" gap={4} mt="8" textAlign="start">
               <SceneDetailBox
-                label="地址"
-                info={
-                  restaurant.Address ||
-                  (restaurant.Position?.PositionLat &&
-                    restaurant.Position?.PositionLon &&
-                    '查看地圖')
-                }
                 href={
                   restaurant.MapUrl ||
                   getGoogleMapURL(
@@ -179,47 +169,56 @@ const RestaurantPage = ({
                   )
                 }
                 icon={FiMapPin}
+                info={
+                  restaurant.Address ||
+                  (restaurant.Position?.PositionLat &&
+                    restaurant.Position?.PositionLon &&
+                    '查看地圖')
+                }
+                label="地址"
               />
               <SceneDetailBox
-                label="電話"
-                info={restaurant.Phone}
-                icon={FiPhoneIncoming}
                 href={`tel:${restaurant.Phone}`}
+                icon={FiPhoneIncoming}
+                info={restaurant.Phone}
+                label="電話"
               />
               <SceneDetailBox
-                label="開放時間"
-                info={restaurant.OpenTime}
                 icon={FiClock}
+                info={restaurant.OpenTime}
+                label="開放時間"
               />
               <SceneDetailBox
-                label="相關鏈結"
-                info={restaurant.WebsiteUrl && '官網'}
                 href={restaurant.WebsiteUrl}
                 icon={BiLinkExternal}
+                info={restaurant.WebsiteUrl && '官網'}
+                label="相關鏈結"
               />
               <SceneDetailBox
-                label="分類"
-                info={restaurant.Class}
                 icon={MdPhotoAlbum}
+                info={restaurant.Class}
+                label="分類"
               />
               <SceneDetailBox
-                label="更新時間"
+                icon={BiSync}
                 info={
                   restaurant.SrcUpdateTime &&
                   new Date(restaurant.SrcUpdateTime).toLocaleDateString()
                 }
-                icon={BiSync}
+                label="更新時間"
               />
             </VStack>
           </Box>
-          {restaurant.Position?.PositionLat &&
-            restaurant.Position?.PositionLon && (
-              <GoogleMap
-                query={restaurant.Address}
-                lat={restaurant.Position.PositionLat}
-                lng={restaurant.Position.PositionLon}
-              />
-            )}
+          {Boolean(
+            restaurant.Position?.PositionLat &&
+              restaurant.Position?.PositionLon,
+          ) && (
+            <GoogleMap
+              lat={restaurant.Position.PositionLat}
+              lng={restaurant.Position.PositionLon}
+              query={restaurant.Address}
+            />
+          )}
         </SimpleGrid>
       </Flex>
     </>
@@ -244,16 +243,21 @@ export const getStaticProps = async (
   if (
     typeof context.params.id !== 'string' ||
     typeof context.params.city !== 'string'
-  )
+  ) {
     return { notFound: true };
+  }
 
   const city = context.params.city as City;
 
-  if (!CitySet.has(city)) return { notFound: true };
+  if (!CitySet.has(city)) {
+    return { notFound: true };
+  }
 
   const restaurant = await tourismService.getRestaurantById(context.params.id);
 
-  if (!restaurant) return { notFound: true };
+  if (!restaurant) {
+    return { notFound: true };
+  }
 
   return {
     props: { restaurant },

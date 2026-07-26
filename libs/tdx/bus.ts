@@ -1,9 +1,17 @@
-import { ApiParam, NearByApiParam, TdxService } from './base';
-import { City } from './constants';
+import type { ApiParam, NearByApiParam, TdxService } from './base';
+import type { City } from './constants';
 
 export interface BusRoute {
-  RouteUID: string;
-  RouteID: string;
+  AuthorityID: string;
+  BusRouteType: number;
+  City: string;
+  CityCode: string;
+  DepartureStopNameEn: string;
+  DepartureStopNameZh: string;
+  DestinationStopNameEn: string;
+  DestinationStopNameZh: string;
+  FareBufferZoneDescriptionEn: string;
+  FareBufferZoneDescriptionZh: string;
   HasSubRoutes: boolean;
   Operators: [
     {
@@ -16,8 +24,14 @@ export interface BusRoute {
       OperatorNo: string;
     },
   ];
-  AuthorityID: string;
   ProviderID: string;
+  RouteID: string;
+  RouteMapImageUrl: string;
+  RouteName: {
+    Zh_tw: string;
+    En: string;
+  };
+  RouteUID: string;
   SubRoutes: [
     {
       SubRouteUID: string;
@@ -36,56 +50,17 @@ export interface BusRoute {
       HolidayLastBusTime: string;
     },
   ];
-  BusRouteType: number;
-  RouteName: {
-    Zh_tw: string;
-    En: string;
-  };
-  DepartureStopNameZh: string;
-  DepartureStopNameEn: string;
-  DestinationStopNameZh: string;
-  DestinationStopNameEn: string;
-  TicketPriceDescriptionZh: string;
   TicketPriceDescriptionEn: string;
-  FareBufferZoneDescriptionZh: string;
-  FareBufferZoneDescriptionEn: string;
-  RouteMapImageUrl: string;
-  City: string;
-  CityCode: string;
+  TicketPriceDescriptionZh: string;
   UpdateTime: string;
   VersionID: number;
 }
 
 export interface BusEstimation {
-  PlateNumb: string;
-  StopUID: string;
-  StopID: string;
-  StopName: {
-    Zh_tw: string;
-    En: string;
-  };
-  RouteUID: string;
-  RouteID: string;
-  RouteName: {
-    Zh_tw: string;
-    En: string;
-  };
-  SubRouteUID: string;
-  SubRouteID: string;
-  SubRouteName: {
-    Zh_tw: string;
-    En: string;
-  };
-  Direction: number;
-  EstimateTime: number;
-  StopCountDown: number;
   CurrentStop: string;
+  DataTime: string;
   DestinationStop: string;
-  StopSequence: number;
-  StopStatus: number;
-  MessageType: number;
-  NextBusTime: string;
-  IsLastBus: boolean;
+  Direction: number;
   Estimates: [
     {
       PlateNumb: string;
@@ -94,22 +69,47 @@ export interface BusEstimation {
       VehicleStopStatus: number;
     },
   ];
-  DataTime: string;
-  TransTime: string;
-  SrcRecTime: string;
-  SrcTransTime: string;
-  SrcUpdateTime: string;
-  UpdateTime: string;
-}
-
-export interface BusStopOfRoute {
-  RouteUID: string;
+  EstimateTime: number;
+  IsLastBus: boolean;
+  MessageType: number;
+  NextBusTime: string;
+  PlateNumb: string;
   RouteID: string;
   RouteName: {
     Zh_tw: string;
     En: string;
   };
-  Direction: number;
+  RouteUID: string;
+  SrcRecTime: string;
+  SrcTransTime: string;
+  SrcUpdateTime: string;
+  StopCountDown: number;
+  StopID: string;
+  StopName: {
+    Zh_tw: string;
+    En: string;
+  };
+  StopSequence: number;
+  StopStatus: number;
+  StopUID: string;
+  SubRouteID: string;
+  SubRouteName: {
+    Zh_tw: string;
+    En: string;
+  };
+  SubRouteUID: string;
+  TransTime: string;
+  UpdateTime: string;
+}
+
+export interface BusStopOfRoute {
+  Direction: BusDirection;
+  RouteID: string;
+  RouteName: {
+    Zh_tw: string;
+    En: string;
+  };
+  RouteUID: string;
   Stops: [
     {
       StopUID: string;
@@ -135,7 +135,10 @@ export interface BusStopOfRoute {
 }
 
 export interface BusStation {
-  StationUID: string;
+  Bearing: string;
+  LocationCityCode: string;
+  StationAddress: string;
+  StationGroupID: string;
   StationID: string;
   StationName: {
     Zh_tw: string;
@@ -146,8 +149,7 @@ export interface BusStation {
     PositionLat: number;
     GeoHash: string;
   };
-  StationAddress: string;
-  StationGroupID: string;
+  StationUID: string;
   Stops: [
     {
       StopUID: string;
@@ -164,28 +166,26 @@ export interface BusStation {
       };
     },
   ];
-  LocationCityCode: string;
-  Bearing: string;
   UpdateTime: string;
   VersionID: number;
 }
 
 export interface BusShape {
-  RouteUID: string;
+  Direction: number;
+  EncodedPolyline: string;
+  Geometry: string;
   RouteID: string;
   RouteName: {
     Zh_tw: string;
     En: string;
   };
-  SubRouteUID: string;
+  RouteUID: string;
   SubRouteID: string;
   SubRouteName: {
     Zh_tw: string;
     En: string;
   };
-  Direction: number;
-  Geometry: string;
-  EncodedPolyline: string;
+  SubRouteUID: string;
   UpdateTime: string;
   VersionID: number;
 }
@@ -196,25 +196,29 @@ type BusPropertyType =
   | 'DisplayStopOfRoute'
   | 'Shape';
 
-export enum BusDirection {
-  '去程' = 0,
-  '返程' = 1,
-  '迴圈' = 2,
-  '未知' = 255,
-}
+export const BusDirection = {
+  去程: 0,
+  未知: 255,
+  返程: 1,
+  迴圈: 2,
+} as const;
 
-export enum BusStopStatus {
-  '正常' = 0,
-  '尚未發車' = 1,
-  '交管不停靠' = 2,
-  '末班車已過' = 3,
-  '今日未營運' = 4,
-}
+export type BusDirection = (typeof BusDirection)[keyof typeof BusDirection];
+
+export const BusStopStatus = {
+  交管不停靠: 2,
+  今日未營運: 4,
+  尚未發車: 1,
+  末班車已過: 3,
+  正常: 0,
+} as const;
+
+export type BusStopStatus = (typeof BusStopStatus)[keyof typeof BusStopStatus];
 
 export class BusService {
-  private BASE_PATH = '/basic/v2/Bus';
+  private readonly BASE_PATH = '/basic/v2/Bus';
 
-  private service: TdxService;
+  private readonly service: TdxService;
 
   constructor(service: TdxService) {
     this.service = service;

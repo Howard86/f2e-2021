@@ -1,12 +1,12 @@
 import JsSHA1 from 'jssha/dist/sha1';
 
 export interface ApiParam {
-  $top: string;
-  $skip: string;
-  $orderBy: string;
   $filter: string;
+  $orderBy: string;
   $select: string;
+  $skip: string;
   $spatialFilter: string;
+  $top: string;
 }
 
 export const getAuthorizationHeader = () => {
@@ -20,10 +20,10 @@ export const getAuthorizationHeader = () => {
   const HMAC = ShaObj.getHMAC('B64');
 
   return {
-    'Content-Type': 'application/json',
-    Authorization: `hmac username="${AppID}", algorithm="hmac-sha1", headers="x-date", signature="${HMAC}"`,
-    'X-Date': GMTString,
     'Accept-Encoding': 'gzip, deflate',
+    Authorization: `hmac username="${AppID}", algorithm="hmac-sha1", headers="x-date", signature="${HMAC}"`,
+    'Content-Type': 'application/json',
+    'X-Date': GMTString,
   };
 };
 
@@ -35,11 +35,11 @@ export const apiGet = async <T>(
   query.append('$format', 'JSON');
 
   if (params) {
-    Object.keys(params).forEach((key) => {
+    for (const key of Object.keys(params)) {
       if (params[key]) {
         query.append(key, params[key]);
       }
-    });
+    }
   }
 
   const response = await fetch(

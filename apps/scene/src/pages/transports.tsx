@@ -1,20 +1,19 @@
-import React from 'react';
-
 import { Box, Flex, Grid, SimpleGrid } from '@chakra-ui/react';
 import NextHeadSeo from 'next-head-seo';
+import type React from 'react';
 
-import Background from '@/components/Background';
-import Banner from '@/components/Banner';
-import GridCard from '@/components/GridCard';
-import Layout from '@/components/layout/Layout';
-import ThemeCard from '@/components/ThemeCard';
+import Background from '@/components/background';
+import Banner from '@/components/banner';
+import GridCard from '@/components/grid-card';
+import Layout from '@/components/layout/layout';
+import ThemeCard from '@/components/theme-card';
 import background from '@/static/background/transports.png';
 import wordOne from '@/static/background/transports-1.png';
 import wordTwo from '@/static/background/transports-2.png';
 
 const PAGE_PROPS = {
-  mainColor: 'transports.main',
   gradientColor: 'transports.light',
+  mainColor: 'transports.main',
 };
 
 const TransportsPage = (): React.ReactElement => (
@@ -26,113 +25,113 @@ const TransportsPage = (): React.ReactElement => (
       }}
     />
     <Background
-      name="交通"
-      image={background}
-      wordOneAlt="交"
-      wordOne={wordOne}
-      wordTwoAlt="通"
-      wordTwo={wordTwo}
       bgColor={PAGE_PROPS.gradientColor}
+      image={background}
+      name="交通"
+      wordOne={wordOne}
+      wordOneAlt="交"
+      wordTwo={wordTwo}
+      wordTwoAlt="通"
     >
       <Grid
-        mt={[20, 24, 28]}
-        h={['300px', '380px']}
-        templateRows="repeat(2, 1fr)"
-        templateColumns={['repeat(2, 1fr)', 'repeat(2, 1fr)', 'repeat(3, 1fr)']}
         gap={[4, 6]}
+        h={['300px', '380px']}
+        mt={[20, 24, 28]}
+        templateColumns={['repeat(2, 1fr)', 'repeat(2, 1fr)', 'repeat(3, 1fr)']}
+        templateRows="repeat(2, 1fr)"
       >
         <GridCard
-          rowSpan={[1, 1, 2]}
           colSpan={1}
-          title="火車"
-          image="/static/card/transports-1.png"
           href="https://www.railway.gov.tw/"
+          image="/static/card/transports-1.png"
           isExternal
-        />
-        <GridCard
-          rowSpan={1}
-          colSpan={1}
-          title="高鐵"
-          image="/static/card/transports-2.png"
-          href="https://www.thsrc.com.tw"
-          isExternal
-        />
-        <GridCard
           rowSpan={[1, 1, 2]}
-          colSpan={1}
-          title="捷運"
-          image="/static/card/transports-4.png"
-          href="https://www.metro.taipei"
-          isExternal
+          title="火車"
         />
         <GridCard
-          rowSpan={1}
           colSpan={1}
-          title="公車"
-          image="/static/card/transports-3.png"
-          href="https://ebus.gov.taipei"
+          href="https://www.thsrc.com.tw"
+          image="/static/card/transports-2.png"
           isExternal
+          rowSpan={1}
+          title="高鐵"
+        />
+        <GridCard
+          colSpan={1}
+          href="https://www.metro.taipei"
+          image="/static/card/transports-4.png"
+          isExternal
+          rowSpan={[1, 1, 2]}
+          title="捷運"
+        />
+        <GridCard
+          colSpan={1}
+          href="https://ebus.gov.taipei"
+          image="/static/card/transports-3.png"
+          isExternal
+          rowSpan={1}
+          title="公車"
         />
       </Grid>
     </Background>
     <Box
-      h={['90px', '280px', '360px']}
       bgGradient="to-b"
       gradientFrom={PAGE_PROPS.gradientColor}
       gradientTo="white"
+      h={['90px', '280px', '360px']}
     />
-    <Flex flexDir="column" bg="white">
+    <Flex bg="white" flexDir="column">
       <Banner
-        title="高速公路"
-        mainColor={PAGE_PROPS.mainColor}
-        href="/scenes"
         hideButton
+        href="/scenes"
+        mainColor={PAGE_PROPS.mainColor}
+        title="高速公路"
       />
       <SimpleGrid columns={[1, 2, 3]} gap={6} mx="8">
         <ThemeCard
-          id="省道"
-          theme="省道即時交通資訊"
-          image="/static/card/transports-5.png"
           href="https://168.thb.gov.tw/"
+          id="省道"
+          image="/static/card/transports-5.png"
+          theme="省道即時交通資訊"
         />
         <ThemeCard
-          id="路況"
-          theme="即時路況資訊"
-          image="/static/card/transports-6.png"
           href="https://1968.freeway.gov.tw/"
+          id="路況"
+          image="/static/card/transports-6.png"
+          theme="即時路況資訊"
         />
         <ThemeCard
-          id="公路"
-          theme="公路客運乘車資訊"
-          image="/static/card/transports-7.png"
           href="https://www.taiwanbus.tw/"
+          id="公路"
+          image="/static/card/transports-7.png"
+          theme="公路客運乘車資訊"
         />
       </SimpleGrid>
       <Banner
-        title="交通租賃"
-        mainColor={PAGE_PROPS.mainColor}
-        href="/scenes"
         hideButton
+        href="/scenes"
+        mainColor={PAGE_PROPS.mainColor}
+        title="交通租賃"
       />
 
       <SimpleGrid columns={[1, 2, 3]} gap={6} mx="8">
         <ThemeCard
-          id="汽車"
-          theme="汽車"
-          image="/static/card/transports-8.png"
           href="https://gogoout.com/blog/irent-zipcar-gogoout/"
+          id="汽車"
+          image="/static/card/transports-8.png"
+          theme="汽車"
         />
         <ThemeCard
-          id="摩托車"
-          theme="摩特車"
-          image="/static/card/transports-9.png"
           href="https://technews.tw/2019/12/21/three-shared-locomotive-services-comparability/"
+          id="摩托車"
+          image="/static/card/transports-9.png"
+          theme="摩特車"
         />
         <ThemeCard
-          id="自行車"
-          theme="自行車"
-          image="/static/card/transports-10.png"
           href="https://www.dot.gov.taipei/News.aspx?n=76E4ACA9285DDACA&sms=022299092584F3D9"
+          id="自行車"
+          image="/static/card/transports-10.png"
+          theme="自行車"
         />
       </SimpleGrid>
     </Flex>

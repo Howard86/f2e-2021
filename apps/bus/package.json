@@ -18,8 +18,6 @@
     "redux",
     "redux-toolkit",
     "rtk-query",
-    "eslint",
-    "prettier",
     "lint-staged",
     "husky",
     "commitlint"
@@ -29,10 +27,7 @@
   },
   "homepage": "https://github.com/Howard86/f2e-2011",
   "scripts": {
-    "check-all": "bun run typecheck && bun run lint && bun run format",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint . --ext .ts,.tsx",
-    "format": "prettier --write . --ignore-path ../../.prettierignore",
     "dev": "bun --bun next dev",
     "build": "bun --bun next build",
     "start": "bun --bun next start"

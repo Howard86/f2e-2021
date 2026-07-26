@@ -1,10 +1,16 @@
-import { ApiParam, NearByApiParam, TdxService } from './base';
-import { City } from './constants';
+import type { ApiParam, NearByApiParam, TdxService } from './base';
+import type { City } from './constants';
 
 export interface BikeStation {
-  StationUID: string;
-  StationID: string;
   AuthorityID: string;
+  BikesCapacity: number;
+  ServiceType: number;
+  SrcUpdateTime: string;
+  StationAddress: {
+    Zh_tw: string;
+    En: string;
+  };
+  StationID: string;
   StationName: {
     Zh_tw: string;
     En: string;
@@ -14,71 +20,65 @@ export interface BikeStation {
     PositionLat: number;
     GeoHash: string;
   };
-  StationAddress: {
-    Zh_tw: string;
-    En: string;
-  };
+  StationUID: string;
   StopDescription: string;
-  BikesCapacity: number;
-  ServiceType: number;
-  SrcUpdateTime: string;
   UpdateTime: string;
 }
 
 export interface BikeAvailability {
-  StationUID: string;
-  StationID: string;
-  ServiceStatus: number;
-  ServiceType: number;
   AvailableRentBikes: number;
-  AvailableReturnBikes: number;
-  SrcUpdateTime: string;
-  UpdateTime: string;
   AvailableRentBikesDetail: {
     GeneralBikes: number;
     ElectricBikes: number;
   };
+  AvailableReturnBikes: number;
+  ServiceStatus: number;
+  ServiceType: number;
+  SrcUpdateTime: string;
+  StationID: string;
+  StationUID: string;
+  UpdateTime: string;
 }
 
 export interface CyclingShape {
-  RouteName: string;
   AuthorityName: string;
-  CityCode: string;
   City: string;
-  Town: string;
-  RoadSectionStart: string;
-  RoadSectionEnd: string;
-  Direction: string;
+  CityCode: string;
   CyclingLength: number;
+  Direction: string;
   FinishedTime: string;
-  UpdateTime: string;
   Geometry: string;
+  RoadSectionEnd: string;
+  RoadSectionStart: string;
+  RouteName: string;
+  Town: string;
+  UpdateTime: string;
 }
 
 export class BikeService {
-  private BIKE_BASE_URL = '/advanced/v2/Bike';
+  private readonly BIKE_BASE_URL = '/advanced/v2/Bike';
 
-  private service: TdxService;
+  private readonly service: TdxService;
 
   constructor(service: TdxService) {
     this.service = service;
   }
 
-  async getNearByBikeStations(param: NearByApiParam) {
+  getNearByBikeStations(param: NearByApiParam) {
     return this.service.get<BikeStation[]>(
       `${this.BIKE_BASE_URL}/Station/NearBy`,
       param,
     );
   }
 
-  async getNearByBikesAvailability(param: NearByApiParam) {
+  getNearByBikesAvailability(param: NearByApiParam) {
     return this.service.get<BikeAvailability[]>(
       `${this.BIKE_BASE_URL}/Availability/NearBy`,
       param,
     );
   }
 
-  async getCyclingShapeByCity(city: City, param: ApiParam) {
+  getCyclingShapeByCity(city: City, param: ApiParam) {
     return this.service.get<CyclingShape[]>(
       `/basic/v2/Cycling/Shape/City/${city}`,
       param,

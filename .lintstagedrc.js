@@ -1,7 +1,3 @@
 module.exports = {
-  '**/*.{js,json,md}': ['prettier --write'],
-  '**/*.{ts,tsx}': [
-    'prettier --write',
-    (filenames) => `eslint ${filenames.join(' ')}`,
-  ],
+  '**/*.{js,jsx,ts,tsx,json,jsonc,css}': 'bunx ultracite fix',
 };

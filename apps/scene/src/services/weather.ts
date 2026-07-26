@@ -8,10 +8,10 @@ const apiGet = async <T>(
   const { elementName, ...rest } = params;
 
   const searchParam = new URLSearchParams({
-    format: 'JSON',
-    elementName: handleArrayParam(elementName),
-    sort: 'startTime',
     Authorization: process.env.OPEN_DATA_CWB_API_KEY,
+    elementName: handleArrayParam(elementName),
+    format: 'JSON',
+    sort: 'startTime',
     ...rest,
   });
 
@@ -19,8 +19,8 @@ const apiGet = async <T>(
     `${process.env.OPEN_DATA_CWB_BASE_URL}/${url}?${searchParam.toString()}`,
     {
       headers: {
-        'Content-Type': 'application/json',
         'Accept-Encoding': 'gzip, deflate',
+        'Content-Type': 'application/json',
       },
     },
   );
@@ -57,12 +57,12 @@ const getWeathers = async (): Promise<OpenData.CityWeather[]> => {
     );
 
     return {
-      id: location.locationName,
       city: location.locationName,
-      weather: weatherName?.time[0]?.parameter
-        .parameterName as OpenData.Weather,
+      id: location.locationName,
       maxT: maxT?.time[0]?.parameter.parameterName,
       minT: minT?.time[0]?.parameter.parameterName,
+      weather: weatherName?.time[0]?.parameter
+        .parameterName as OpenData.Weather,
     };
   });
 };

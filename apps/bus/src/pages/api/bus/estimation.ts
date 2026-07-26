@@ -1,4 +1,4 @@
-import { BusEstimation, City, CitySet } from '@f2e/tdx';
+import { type BusEstimation, type City, CitySet } from '@f2e/tdx';
 import {
   BadRequestException,
   NotFoundException,
@@ -10,18 +10,23 @@ import { busService } from '@/services/tdx';
 const router = new RouterBuilder();
 
 export interface BusEstimationParam {
-  route: string;
   city: City;
+  route: string;
 }
 
-router.get<BusEstimation[]>(async (req) => {
-  if (typeof req.query.city !== 'string' || typeof req.query.route !== 'string')
+router.get<BusEstimation[]>((req) => {
+  if (
+    typeof req.query.city !== 'string' ||
+    typeof req.query.route !== 'string'
+  ) {
     throw new BadRequestException(`missing query ${JSON.stringify(req.query)}`);
+  }
 
   const city = req.query.city as City;
 
-  if (!CitySet.has(city))
+  if (!CitySet.has(city)) {
     throw new NotFoundException(`city ${city} does not exist`);
+  }
 
   return busService.getBusEstimationsByCityAndRouteName(city, req.query.route);
 });

@@ -1,15 +1,15 @@
 const styles = {
-  html: {
-    colorPalette: 'primary',
+  '#__next': {
     h: 'full',
-    scrollBehavior: 'smooth',
   },
   body: {
     fontFamily: 'Noto Sans TC, sans-serif',
     h: 'full',
   },
-  '#__next': {
+  html: {
+    colorPalette: 'primary',
     h: 'full',
+    scrollBehavior: 'smooth',
   },
 };
 

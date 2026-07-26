@@ -1,5 +1,5 @@
-import { BusEstimation, BusRoute, BusStation, City } from '@f2e/tdx';
-import { createEntityAdapter, EntityState } from '@reduxjs/toolkit';
+import type { BusEstimation, BusRoute, BusStation, City } from '@f2e/tdx';
+import { createEntityAdapter, type EntityState } from '@reduxjs/toolkit';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import type { SuccessApiResponse } from 'next-api-handler';
 
@@ -11,7 +11,6 @@ const busEstimationAdapter = createEntityAdapter<BusEstimation, string>({
 });
 
 export const localApi = createApi({
-  reducerPath: 'local',
   baseQuery: fetchBaseQuery({
     baseUrl: '/api',
   }),
@@ -21,8 +20,8 @@ export const localApi = createApi({
       BusEstimationParam
     >({
       query: (params) => ({
-        url: 'bus/estimation',
         params,
+        url: 'bus/estimation',
       }),
       transformResponse: (res: SuccessApiResponse<BusEstimation[]>) =>
         busEstimationAdapter.addMany(
@@ -30,22 +29,23 @@ export const localApi = createApi({
           res.data,
         ),
     }),
+    getBusRoutes: builder.query<
+      SuccessApiResponse<BusRoute[]>,
+      { city: City; route: string }
+    >({
+      query: ({ city, route }) => ({
+        params: { city, route },
+        url: 'bus/route',
+      }),
+    }),
     getNearByBus: builder.mutation<
       SuccessApiResponse<BusStation[]>,
       Record<keyof StationQueryParam, number>
     >({
       query: ({ lat, lng }) => `bus/nearby?lat=${lat}&lng=${lng}`,
     }),
-    getBusRoutes: builder.query<
-      SuccessApiResponse<BusRoute[]>,
-      { city: City; route: string }
-    >({
-      query: ({ city, route }) => ({
-        url: 'bus/route',
-        params: { city, route },
-      }),
-    }),
   }),
+  reducerPath: 'local',
 });
 
 export const busEstimationSelector = busEstimationAdapter.getSelectors();

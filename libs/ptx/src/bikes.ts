@@ -1,73 +1,73 @@
-import { apiGet, ApiParam } from './lib/api';
-import { City, PTXCityMap } from './lib';
+import { type City, PTXCityMap } from './lib';
+import { type ApiParam, apiGet } from './lib/api';
 
 export interface Station {
-  StationUID: string;
-  StationID: string;
   AuthorityID: string;
-  StationName: StationName;
-  StationPosition: StationPosition;
-  StationAddress: StationAddress;
   BikesCapacity: number;
   ServiceType: number;
   SrcUpdateTime: string;
+  StationAddress: StationAddress;
+  StationID: string;
+  StationName: StationName;
+  StationPosition: StationPosition;
+  StationUID: string;
   UpdateTime: string;
 }
 
 export interface StationName {
-  Zh_tw: string;
   En: string;
+  Zh_tw: string;
 }
 
 export interface StationPosition {
-  PositionLon: number;
-  PositionLat: number;
   GeoHash: string;
+  PositionLat: number;
+  PositionLon: number;
 }
 
 export interface StationAddress {
-  Zh_tw: string;
   En: string;
+  Zh_tw: string;
 }
 
 export interface AvailableBike {
-  StationUID: string;
-  StationID: string;
-  ServiceStatus: number;
-  ServiceType: number;
   AvailableRentBikes: number;
   AvailableReturnBikes: number;
+  ServiceStatus: number;
+  ServiceType: number;
   SrcUpdateTime: string;
+  StationID: string;
+  StationUID: string;
   UpdateTime: string;
 }
 
 export interface BikeQueryParam {
+  count: number;
   lat: number;
   lng: number;
   meter: number;
-  count: number;
 }
 
 export interface BikeCycling {
-  RouteName: string;
   AuthorityName?: string;
-  CityCode: string;
   City: City;
-  Town?: string;
-  RoadSectionStart?: string;
-  RoadSectionEnd?: string;
-  Direction?: string;
+  CityCode: string;
   CyclingLength?: number;
-  UpdateTime: string;
-  Geometry: string;
+  Direction?: string;
   FinishedTime?: string;
+  Geometry: string;
+  RoadSectionEnd?: string;
+  RoadSectionStart?: string;
+  RouteName: string;
+  Town?: string;
+  UpdateTime: string;
 }
 
 export interface StationInfo {
-  StationUID: string;
+  StationAddress: StationAddress;
   StationName: StationName;
   StationPosition: StationPosition;
-  StationAddress: StationAddress;
+  StationUID: string;
 }
 
 export interface AvailableBikeInfo {
@@ -76,10 +76,10 @@ export interface AvailableBikeInfo {
 }
 
 export interface BikeCyclingInfo {
-  RouteName: string;
   City: City;
   CyclingLength?: number;
   Geometry: string;
+  RouteName: string;
 }
 
 const mapToPTXParam = ({
@@ -88,28 +88,28 @@ const mapToPTXParam = ({
   count,
   meter,
 }: BikeQueryParam): Partial<ApiParam> => ({
-  $top: count.toString(),
-  $spatialFilter: `nearby(${lat}, ${lng}, ${meter})`,
   $orderBy: 'StationUID',
+  $spatialFilter: `nearby(${lat}, ${lng}, ${meter})`,
+  $top: count.toString(),
 });
 
 export const getNearByStations = (query: BikeQueryParam) =>
   apiGet<StationInfo[]>('Bike/Station/NearBy', {
     ...mapToPTXParam(query),
-    $select: 'StationUID,StationName,StationPosition,StationAddress',
     $filter: 'ServiceType eq 2',
+    $select: 'StationUID,StationName,StationPosition,StationAddress',
   });
 
 export const getNearByAvailableBikes = (query: BikeQueryParam) =>
   apiGet<AvailableBikeInfo[]>('Bike/Availability/NearBy', {
     ...mapToPTXParam(query),
-    $select: 'StationUID,AvailableRentBikes,AvailableReturnBikes',
     $filter: 'ServiceType eq 2',
+    $select: 'StationUID,AvailableRentBikes,AvailableReturnBikes',
   });
 
 export const getCyclingShapeByCity = (city: City, count = 100) =>
   apiGet<BikeCyclingInfo[]>(`Cycling/Shape/City/${PTXCityMap[city]}`, {
-    $top: count.toString(),
-    $select: 'RouteName,City,CyclingLength,Geometry',
     $filter: 'CyclingLength gt 300 and Geometry ne null',
+    $select: 'RouteName,City,CyclingLength,Geometry',
+    $top: count.toString(),
   });

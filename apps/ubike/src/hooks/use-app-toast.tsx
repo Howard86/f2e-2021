@@ -1,22 +1,21 @@
-import { useCallback } from 'react';
-
 import {
   createToaster,
   Portal,
   Stack,
   Toast,
   Toaster,
-  ToastOptions,
+  type ToastOptions,
 } from '@chakra-ui/react';
+import { useCallback } from 'react';
 
 interface AppToastOptions extends Omit<ToastOptions, 'type'> {
-  status?: ToastOptions['type'];
   isClosable?: boolean;
+  status?: ToastOptions['type'];
 }
 
 const DEFAULT_OPTIONS: AppToastOptions = {
-  status: 'success',
   isClosable: true,
+  status: 'success',
 };
 
 const toaster = createToaster({ placement: 'bottom' });
@@ -27,13 +26,13 @@ export const AppToaster = () => (
       {(toast) => (
         <Toast.Root borderLeftWidth="4px">
           <Toast.Indicator />
-          <Stack gap="1" flex="1">
-            {toast.title && <Toast.Title>{toast.title}</Toast.Title>}
-            {toast.description && (
+          <Stack flex="1" gap="1">
+            {Boolean(toast.title) && <Toast.Title>{toast.title}</Toast.Title>}
+            {Boolean(toast.description) && (
               <Toast.Description>{toast.description}</Toast.Description>
             )}
           </Stack>
-          {toast.closable && <Toast.CloseTrigger />}
+          {Boolean(toast.closable) && <Toast.CloseTrigger />}
         </Toast.Root>
       )}
     </Toaster>
@@ -50,8 +49,8 @@ const useAppToast = (options: AppToastOptions = DEFAULT_OPTIONS) =>
 
       return toaster.create({
         ...toastOptions,
-        type: status,
         closable: isClosable,
+        type: status,
       });
     },
     [options],

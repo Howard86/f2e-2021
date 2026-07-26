@@ -1,4 +1,4 @@
-import { Activity, Hotel, Restaurant, ScenicSpot } from './tourism';
+import type { Activity, Hotel, Restaurant, ScenicSpot } from './tourism';
 
 const SCENE_KEYWORDS: (keyof ScenicSpot)[] = [
   'Description',

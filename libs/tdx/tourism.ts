@@ -1,72 +1,75 @@
 import { TdxService } from './base';
-import { City } from './constants';
+import type { City } from './constants';
 
 export interface ScenicSpot extends TourismCommonProperty {
-  ScenicSpotID: string;
-  ScenicSpotName: string;
-  DescriptionDetail: string;
-  ZipCode: string;
-  TravelInfo: string;
-  OpenTime: string;
   Class1: string;
   Class2: string;
   Class3: string;
+  DescriptionDetail?: string;
+  Keyword: string;
   Level: string;
+  OpenTime: string;
   ParkingPosition: Partial<{
     PositionLon: number;
     PositionLat: number;
     GeoHash: string;
   }>;
-  TicketInfo: string;
   Remarks: string;
-  Keyword: string;
+  ScenicSpotID: string;
+  ScenicSpotName: string;
+  TicketInfo: string;
+  TravelInfo?: string;
+  ZipCode: string;
 }
 
 export interface Restaurant extends TourismCommonProperty {
+  Class: string;
+  OpenTime: string;
   RestaurantID: string;
   RestaurantName: string;
   ZipCode: string;
-  OpenTime: string;
-  Class: string;
 }
 
 export interface Hotel extends TourismCommonProperty {
+  Class: string;
+  Fax: string;
+  Grade: string;
   HotelID: string;
   HotelName: string;
+  ServiceInfo?: string;
+  Spec?: string;
   ZipCode: string;
-  Grade: string;
-  Fax: string;
-  Class: string;
-  Spec: string;
-  ServiceInfo: string;
 }
 
 export interface Activity extends TourismCommonProperty {
   ActivityID: string;
   ActivityName: string;
-  Particpation: string;
-  Location: string;
-  Organizer: string;
-  StartTime: string;
-  EndTime: string;
-  Cycle: string;
-  NonCycle: string;
+  Charge: string;
   Class1: string;
   Class2: string;
-  TravelInfo: string;
+  Cycle: string;
+  EndTime?: string;
+  Location: string;
+  NonCycle: string;
+  Organizer: string;
   ParkingInfo: string;
-  Charge: string;
+  Particpation: string;
   Remarks: string;
   SrcUpdateTime: string;
+  StartTime?: string;
+  TravelInfo?: string;
   UpdateTime: string;
 }
 
 export interface TourismCommonProperty {
-  Description: string;
-  Address: string;
-  Phone: string;
-  WebsiteUrl: string;
-  Picture: {
+  // TDX omits these fields from otherwise valid records at runtime.
+  Address?: string;
+  City: string;
+  Description?: string;
+  MapUrl?: string;
+  ParkingInfo?: string;
+  Phone?: string;
+  Picture?: {
     PictureUrl1: string;
     PictureDescription1?: string;
     PictureUrl2?: string;
@@ -74,16 +77,14 @@ export interface TourismCommonProperty {
     PictureUrl3?: string;
     PictureDescription3?: string;
   };
-  Position: Partial<{
+  Position?: Partial<{
     PositionLon: number;
     PositionLat: number;
     GeoHash: string;
   }>;
-  MapUrl: string;
-  ParkingInfo: string;
-  City: string;
-  SrcUpdateTime: string;
+  SrcUpdateTime?: string;
   UpdateTime: string;
+  WebsiteUrl?: string;
 }
 
 export type TourismPropertyType =
@@ -93,9 +94,9 @@ export type TourismPropertyType =
   | 'Activity';
 
 export class TourismService {
-  private BASE_PATH = '/basic/v2/Tourism';
+  private readonly BASE_PATH = '/basic/v2/Tourism';
 
-  private service: TdxService;
+  private readonly service: TdxService;
 
   constructor(service: TdxService) {
     this.service = service;
@@ -128,8 +129,8 @@ export class TourismService {
   private generateGetById<T>(type: TourismPropertyType) {
     return async (id: string) => {
       const items = await this.service.get<T[]>(`${this.BASE_PATH}/${type}`, {
-        top: 1,
         filter: `${type}ID eq '${id}'`,
+        top: 1,
       });
 
       return TdxService.checkExistence(items);

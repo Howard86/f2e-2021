@@ -1,27 +1,11 @@
 import { createSystem, defaultConfig, defineConfig } from '@chakra-ui/react';
-
-import Button from './components/button';
 import colors from './colors';
+import Button from './components/button';
 import styles from './styles';
 
 const config = defineConfig({
   globalCss: styles,
   theme: {
-    tokens: {
-      colors,
-      gradients: {
-        background: {
-          value:
-            'linear-gradient(180deg, #200337 0%, rgba(51, 61, 113, 0.82) 49.48%, #443B68 100%)',
-        },
-      },
-      shadows: {
-        text: {
-          value:
-            '0 0 4px var(--chakra-colors-secondary-400),0 0 8px var(--chakra-colors-secondary-300)',
-        },
-      },
-    },
     keyframes: {
       backgroundSlide: {
         from: { objectPosition: '0 50%' },
@@ -53,6 +37,21 @@ const config = defineConfig({
     },
     recipes: {
       button: Button,
+    },
+    tokens: {
+      colors,
+      gradients: {
+        background: {
+          value:
+            'linear-gradient(180deg, #200337 0%, rgba(51, 61, 113, 0.82) 49.48%, #443B68 100%)',
+        },
+      },
+      shadows: {
+        text: {
+          value:
+            '0 0 4px var(--chakra-colors-secondary-400),0 0 8px var(--chakra-colors-secondary-300)',
+        },
+      },
     },
   },
 });

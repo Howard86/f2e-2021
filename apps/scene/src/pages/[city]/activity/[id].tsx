@@ -1,5 +1,4 @@
-import React from 'react';
-
+import type { ParsedUrlQuery } from 'node:querystring';
 import {
   Box,
   Breadcrumb,
@@ -11,34 +10,30 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { Activity, City, CityMap, CitySet } from '@f2e/tdx';
-import {
+import { type Activity, type City, CityMap, CitySet } from '@f2e/tdx';
+import type {
   GetStaticPathsResult,
   GetStaticPropsContext,
   GetStaticPropsResult,
 } from 'next';
 import { useRouter } from 'next/router';
 import NextHeadSeo from 'next-head-seo';
-import type { ParsedUrlQuery } from 'querystring';
+import type React from 'react';
 import {
   BiChevronRight,
   BiLinkExternal,
   BiMoney,
   BiSync,
 } from 'react-icons/bi';
-import {
-  BsBookmarkPlus,
-  BsBookmarkPlusFill,
-  BsPeopleFill,
-} from 'react-icons/bs';
+import { BsBookmarkPlusFill, BsPeopleFill } from 'react-icons/bs';
 import { FiClock, FiMapPin, FiPhoneIncoming } from 'react-icons/fi';
 import { MdManageAccounts, MdPhotoAlbum } from 'react-icons/md';
 
-import GoogleMap from '@/components/GoogleMap';
-import Layout from '@/components/layout/Layout';
-import LoadingScreen from '@/components/LoadingScreen';
-import RouteLink from '@/components/RouteLink';
-import SceneDetailBox from '@/components/SceneDetailText';
+import GoogleMap from '@/components/google-map';
+import Layout from '@/components/layout/layout';
+import LoadingScreen from '@/components/loading-screen';
+import RouteLink from '@/components/route-link';
+import SceneDetailBox from '@/components/scene-detail-text';
 import { ONE_DAY_IN_SECONDS } from '@/constants/time';
 import { tourismService } from '@/services/tdx';
 
@@ -51,43 +46,40 @@ const getGoogleMapURL = (lat?: number, lng?: number) =>
     ? `https://www.google.com/maps/search/?api=1&query=${lat}%2C${lng}`
     : undefined;
 const PAGE_PROPS = {
-  mainColor: 'activities.main',
   gradientColor: 'activities.light',
+  mainColor: 'activities.main',
 };
 
 const ActivityPage = ({ activity }: ActivityPageProps): React.ReactElement => {
   const router = useRouter();
 
-  // TODO: add saved info
-  const saved = true;
-
   if (router.isFallback) {
-    return <LoadingScreen minH="400px" mainColor={PAGE_PROPS.mainColor} />;
+    return <LoadingScreen mainColor={PAGE_PROPS.mainColor} minH="400px" />;
   }
 
   return (
     <>
       <NextHeadSeo
-        title={`台灣旅遊導覽網 | ${activity.ActivityName}`}
         description={activity.Description}
         og={{
-          type: 'article',
+          description: activity.Picture?.PictureDescription1,
+          image: activity.Picture?.PictureUrl1,
           title: activity.ActivityName,
-          description: activity.Picture.PictureDescription1,
-          image: activity.Picture.PictureUrl1,
+          type: 'article',
         }}
+        title={`台灣旅遊導覽網 | ${activity.ActivityName}`}
       />
       <Flex
-        flexDir="column"
-        pt="16"
         bgGradient="to-b"
+        flexDir="column"
         gradientFrom="restaurants.light"
         gradientTo="white"
+        pt="16"
       >
-        <Breadcrumb.Root mx="8" color="blackAlpha.700">
+        <Breadcrumb.Root color="blackAlpha.700" mx="8">
           <Breadcrumb.List>
             <Breadcrumb.Item>
-              <RouteLink href="/" as={Breadcrumb.Link}>
+              <RouteLink as={Breadcrumb.Link} href="/">
                 活動新訊
               </RouteLink>
             </Breadcrumb.Item>
@@ -96,8 +88,8 @@ const ActivityPage = ({ activity }: ActivityPageProps): React.ReactElement => {
             </Breadcrumb.Separator>
             <Breadcrumb.Item>
               <RouteLink
-                href={`/${CityMap[activity.City]}`}
                 as={Breadcrumb.Link}
+                href={`/${CityMap[activity.City]}`}
               >
                 {activity.City}
               </RouteLink>
@@ -107,11 +99,11 @@ const ActivityPage = ({ activity }: ActivityPageProps): React.ReactElement => {
             </Breadcrumb.Separator>
             <Breadcrumb.Item fontWeight="bold">
               <RouteLink
+                aria-current="page"
+                as={Breadcrumb.Link}
                 href={`/${CityMap[activity.City]}/activity/${
                   activity.ActivityID
                 }`}
-                as={Breadcrumb.Link}
-                aria-current="page"
               >
                 {activity.ActivityName}
               </RouteLink>
@@ -119,50 +111,51 @@ const ActivityPage = ({ activity }: ActivityPageProps): React.ReactElement => {
           </Breadcrumb.List>
         </Breadcrumb.Root>
         <Flex flexDir={{ base: 'column', lg: 'row' }} m={[4, 8]}>
-          <Box pos="relative" flexGrow={1} flexShrink={1} m="2">
+          <Box flexGrow={1} flexShrink={1} m="2" pos="relative">
             <IconButton
-              top="0"
-              right="0"
-              m="4"
               aria-label="save to favorite"
+              color="red.600"
+              m="4"
               pos="absolute"
-              size="lg"
+              right="0"
               rounded="full"
-              color={saved ? 'red.600' : 'blackAlpha.600'}
+              size="lg"
+              top="0"
             >
-              {saved ? <BsBookmarkPlusFill /> : <BsBookmarkPlus />}
+              <BsBookmarkPlusFill />
             </IconButton>
             <Image
+              align="center"
               alt={
                 activity.Picture?.PictureDescription1 || activity.ActivityName
               }
-              src={activity.Picture?.PictureUrl1}
-              align="center"
               fit="cover"
+              height={[400, 600]}
               loading="lazy"
+              // biome-ignore lint/performance/noJsxPropsBind: callback needs local render state or the current event target.
               onError={(event) => {
                 event.currentTarget.src = '/static/fallback-lg.jpg';
               }}
+              src={activity.Picture?.PictureUrl1}
               width={[600, 900]}
-              height={[400, 600]}
             />
           </Box>
           <Box
+            css={{ '& p': { my: 2 } }}
             flexGrow={1}
             flexShrink={3}
             lineHeight="7"
-            css={{ '& p': { my: 2 } }}
           >
-            <Heading textAlign="center" mb="4">
+            <Heading mb="4" textAlign="center">
               {activity.ActivityName}
             </Heading>
-            {activity.Description && (
+            {Boolean(activity.Description) && (
               <Text lineClamp={10}>{activity.Description}</Text>
             )}
-            {activity.TravelInfo && (
+            {Boolean(activity.TravelInfo) && (
               <Text lineClamp={10}>{activity.TravelInfo}</Text>
             )}
-            {activity.ParkingInfo && (
+            {Boolean(activity.ParkingInfo) && (
               <Text lineClamp={10}>{activity.ParkingInfo}</Text>
             )}
           </Box>
@@ -172,15 +165,8 @@ const ActivityPage = ({ activity }: ActivityPageProps): React.ReactElement => {
         <SimpleGrid columns={[1, 1, 2]} gap={[4, 8]} mx="8">
           <Box>
             <Heading>景點資訊</Heading>
-            <VStack align="flex-start" textAlign="start" mt="8" gap={4}>
+            <VStack align="flex-start" gap={4} mt="8" textAlign="start">
               <SceneDetailBox
-                label="地址"
-                info={
-                  activity.Address ||
-                  (activity.Position?.PositionLat &&
-                    activity.Position?.PositionLon &&
-                    '查看地圖')
-                }
                 href={
                   activity.MapUrl ||
                   getGoogleMapURL(
@@ -189,20 +175,27 @@ const ActivityPage = ({ activity }: ActivityPageProps): React.ReactElement => {
                   )
                 }
                 icon={FiMapPin}
+                info={
+                  activity.Address ||
+                  (activity.Position?.PositionLat &&
+                    activity.Position?.PositionLon &&
+                    '查看地圖')
+                }
+                label="地址"
               />
               <SceneDetailBox
-                label="電話"
-                info={activity.Phone}
-                icon={FiPhoneIncoming}
                 href={`tel:${activity.Phone}`}
+                icon={FiPhoneIncoming}
+                info={activity.Phone}
+                label="電話"
               />
               <SceneDetailBox
-                label="費用"
-                info={activity.Charge}
                 icon={BiMoney}
+                info={activity.Charge}
+                label="費用"
               />
               <SceneDetailBox
-                label="活動時間"
+                icon={FiClock}
                 info={
                   activity.StartTime &&
                   activity.EndTime &&
@@ -212,46 +205,48 @@ const ActivityPage = ({ activity }: ActivityPageProps): React.ReactElement => {
                     activity.EndTime,
                   ).toLocaleDateString()}`
                 }
-                icon={FiClock}
+                label="活動時間"
               />
               <SceneDetailBox
-                label="相關鏈結"
-                info={activity.WebsiteUrl && '官網'}
                 href={activity.WebsiteUrl}
                 icon={BiLinkExternal}
+                info={activity.WebsiteUrl && '官網'}
+                label="相關鏈結"
               />
               <SceneDetailBox
-                label="主辦方"
-                info={activity.Organizer}
                 icon={MdManageAccounts}
+                info={activity.Organizer}
+                label="主辦方"
               />
               <SceneDetailBox
-                label="主題"
+                icon={MdPhotoAlbum}
                 info={[activity.Class1, activity.Class2]
                   .filter(Boolean)
                   .join(', ')}
-                icon={MdPhotoAlbum}
+                label="主題"
               />
               <SceneDetailBox
-                label="參與對象"
-                info={activity.Particpation}
                 icon={BsPeopleFill}
+                info={activity.Particpation}
+                label="參與對象"
               />
               <SceneDetailBox
-                label="更新時間"
+                icon={BiSync}
                 info={
                   activity.SrcUpdateTime &&
                   new Date(activity.SrcUpdateTime).toLocaleDateString()
                 }
-                icon={BiSync}
+                label="更新時間"
               />
             </VStack>
           </Box>
-          {activity.Position?.PositionLat && activity.Position?.PositionLon && (
+          {Boolean(
+            activity.Position?.PositionLat && activity.Position?.PositionLon,
+          ) && (
             <GoogleMap
-              query={activity.Address}
               lat={activity.Position.PositionLat}
               lng={activity.Position.PositionLon}
+              query={activity.Address}
             />
           )}
         </SimpleGrid>
@@ -278,16 +273,21 @@ export const getStaticProps = async (
   if (
     typeof context.params.id !== 'string' ||
     typeof context.params.city !== 'string'
-  )
+  ) {
     return { notFound: true };
+  }
 
   const city = context.params.city as City;
 
-  if (!CitySet.has(city)) return { notFound: true };
+  if (!CitySet.has(city)) {
+    return { notFound: true };
+  }
 
   const activity = await tourismService.getActivityById(context.params.id);
 
-  if (!activity) return { notFound: true };
+  if (!activity) {
+    return { notFound: true };
+  }
 
   return { props: { activity }, revalidate: ONE_DAY_IN_SECONDS };
 };

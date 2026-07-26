@@ -1,9 +1,7 @@
-import React from 'react';
-
 import {
   Box,
   Button,
-  ButtonProps,
+  type ButtonProps,
   Center,
   Heading,
   Stack,
@@ -13,9 +11,9 @@ import { BiCurrentLocation } from 'react-icons/bi';
 import { FaBusAlt } from 'react-icons/fa';
 
 import bus from '@/bus.png';
-import PinkLogoIcon from '@/components/icons/PinkLogo';
-import Image from '@/components/Image';
-import RouteLink from '@/components/RouteLink';
+import PinkLogoIcon from '@/components/icons/pink-logo';
+import Image from '@/components/image';
+import RouteLink from '@/components/route-link';
 import human from '@/human.png';
 import station from '@/station.png';
 
@@ -27,32 +25,32 @@ const HomePage = () => {
 
   return (
     <Center
-      pos="relative"
       color="white"
       flexDir="column"
       h="full"
-      zIndex="docked"
-      px="8"
       overflowX="hidden"
+      pos="relative"
+      px="8"
+      zIndex="docked"
     >
-      <PinkLogoIcon minW="146" maxW="217.5" h="auto" w="50%" />
+      <PinkLogoIcon h="auto" maxW="217.5" minW="146" w="50%" />
       <Heading
         as="h1"
-        my="8"
         fontSize={['xl', '2xl']}
-        textAlign="center"
         maxW="344"
+        my="8"
+        textAlign="center"
       >
         提供最即時的公車動態，讓您輕鬆掌握資訊，現在就開始規劃您的路線吧！
       </Heading>
       <Stack direction={['column', 'row']} gap={[4, 8]}>
-        <Button asChild variant="outline" size={size}>
+        <Button asChild size={size} variant="outline">
           <RouteLink href="/city">
             <FaBusAlt />
             市區公車
           </RouteLink>
         </Button>
-        <Button asChild variant="outline" size={size}>
+        <Button asChild size={size} variant="outline">
           <RouteLink href="/nearby">
             <BiCurrentLocation />
             附近站牌
@@ -60,49 +58,49 @@ const HomePage = () => {
         </Button>
       </Stack>
       <Box
-        pos="absolute"
         bottom="5.6%"
+        h={[70, 140]}
+        pos="absolute"
         right="30%"
         w={[117, 234]}
-        h={[70, 140]}
       >
         <Image
           alt="station"
-          src={station}
-          placeholder="blur"
-          width={234}
           height={140}
+          placeholder="blur"
+          src={station}
+          width={234}
         />
       </Box>
       <Box
-        pos="absolute"
+        animation="humanFade 20s ease-in-out infinite"
         bottom="4.9%"
+        h={[55, 110]}
+        pos="absolute"
         right="35%"
         w={[25, 50]}
-        h={[55, 110]}
-        animation="humanFade 20s ease-in-out infinite"
       >
         <Image
           alt="human"
-          src={human}
-          placeholder="blur"
-          width={50}
           height={110}
+          placeholder="blur"
+          src={human}
+          width={50}
         />
       </Box>
       <Box
-        pos="absolute"
-        bottom="4.5%"
-        w={[203, 406]}
-        h={['60px', 120]}
         animation="busTravel 10s ease-in-out infinite"
+        bottom="4.5%"
+        h={['60px', 120]}
+        pos="absolute"
+        w={[203, 406]}
       >
         <Image
           alt="bus"
-          src={bus}
-          placeholder="blur"
-          width={406}
           height={120}
+          placeholder="blur"
+          src={bus}
+          width={406}
         />
       </Box>
     </Center>

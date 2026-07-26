@@ -26,8 +26,8 @@ export const initialize = (
 
   return new mapboxgl.Map({
     container,
-    style: 'mapbox://styles/mapbox/dark-v10',
     localIdeographFontFamily: "'Roboto', sans-serif",
+    style: 'mapbox://styles/mapbox/dark-v10',
     ...options,
   });
 };
@@ -59,23 +59,23 @@ export const addLayerAndSource = (
   color: string,
 ) => {
   map.addSource(sourceName, {
-    type: 'geojson',
     data: {
-      type: 'Feature',
       geometry: geoJson,
       properties: {},
+      type: 'Feature',
     },
+    type: 'geojson',
   });
 
   map.addLayer({
     id: sourceName,
-    type: 'line',
-    source: sourceName,
     layout: {},
     paint: {
       'line-color': color,
       'line-width': 3,
     },
+    source: sourceName,
+    type: 'line',
   });
 
   const bounds = new mapboxgl.LngLatBounds(

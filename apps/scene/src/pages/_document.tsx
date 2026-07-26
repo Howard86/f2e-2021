@@ -1,19 +1,18 @@
-import type { ReactElement } from 'react';
-
 import NextDocument, { Head, Html, Main, NextScript } from 'next/document';
+import type { ReactElement } from 'react';
 
 export default class Document extends NextDocument {
   render(): ReactElement {
     return (
       <Html>
         <Head>
-          <link rel="manifest" href="/manifest.json" />
-          <link rel="shortcut icon" href="/favicon.ico" />
-          <link rel="preconnect" href="https://fonts.googleapis.com" />
+          <link href="/manifest.json" rel="manifest" />
+          <link href="/favicon.ico" rel="shortcut icon" />
+          <link href="https://fonts.googleapis.com" rel="preconnect" />
           <link
-            rel="preconnect"
-            href="https://fonts.gstatic.com"
             crossOrigin=""
+            href="https://fonts.gstatic.com"
+            rel="preconnect"
           />
           <link
             href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap"

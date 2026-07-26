@@ -1,12 +1,10 @@
-import React, { useEffect, useState } from 'react';
-
 import {
   Box,
   Circle,
   Flex,
   Heading,
   IconButton,
-  IconButtonProps,
+  type IconButtonProps,
   Stack,
   Tabs,
   Tag,
@@ -17,9 +15,9 @@ import {
 } from '@chakra-ui/react';
 import {
   BusDirection,
-  BusRoute,
-  BusStopOfRoute,
-  City,
+  type BusRoute,
+  type BusStopOfRoute,
+  type City,
   CityMap,
   CitySet,
 } from '@f2e/tdx';
@@ -30,16 +28,17 @@ import type {
 } from 'next';
 import { useRouter } from 'next/router';
 import NextHeadSeo from 'next-head-seo';
+import { useEffect, useState } from 'react';
 import { BiChevronLeft } from 'react-icons/bi';
 import { BsInfoCircle } from 'react-icons/bs';
 import { IoHome } from 'react-icons/io5';
-import { GeoJSONLineString, parse } from 'wellknown';
+import { type GeoJSONLineString, parse } from 'wellknown';
 
-import BusRouteInfoModal from '@/components/BusRouteInfoModal';
-import BusStopDrawer, { ZoomLevel } from '@/components/BusStopDrawer';
-import { DESKTOP_MAP_LEFT } from '@/components/Layout';
-import { useMap } from '@/components/MapContextProvider';
-import NavBarItems from '@/components/NavBarItems';
+import BusRouteInfoModal from '@/components/bus-route-info-modal';
+import BusStopDrawer, { ZoomLevel } from '@/components/bus-stop-drawer';
+import { DESKTOP_MAP_LEFT } from '@/components/layout';
+import { useMap } from '@/components/map-context-provider';
+import NavBarItems from '@/components/nav-bar-items';
 import { DESKTOP_DISPLAY, MOBILE_DISPLAY } from '@/constants/style';
 import { ONE_DAY, THIRTY_SEC_IN_MS } from '@/constants/time';
 import {
@@ -53,12 +52,12 @@ import { getBusEstimationStatus } from '@/utils/bus';
 import { getTwoDigitString } from '@/utils/string';
 
 interface BusRoutePageProps {
-  city: City;
-  routeName: string;
-  geoJson: GeoJSONLineString;
   busRoute: BusRoute;
-  directions: BusDirection[];
   busStopEntity: RouteStopEntity;
+  city: City;
+  directions: BusDirection[];
+  geoJson: GeoJSONLineString;
+  routeName: string;
 }
 
 type RouteStopEntity = Record<BusDirection, BusStopOfRoute>;
@@ -97,19 +96,20 @@ const BusRoutePage = ({
   const { data, selectedBusEstimation } = useGetBusEstimationQuery(
     { city, route: routeName },
     {
-      skip: router.isFallback,
+      pollingInterval: THIRTY_SEC_IN_MS,
       selectFromResult: (res) => ({
         ...res,
         selectedBusEstimation:
           res.data &&
           busEstimationSelector.selectById(res.data, selectedStopId),
       }),
-      pollingInterval: THIRTY_SEC_IN_MS,
+      skip: router.isFallback,
     },
   );
 
   // as bus direction might only be 迴圈
   const selectedBusRoute =
+    // biome-ignore lint/suspicious/noUnnecessaryConditions: TDX can omit direction data at runtime.
     routeStopEntity?.[selectedDirection] || routeStopEntity?.[directions[0]];
 
   const onDrawerClose = () => {
@@ -119,6 +119,16 @@ const BusRoutePage = ({
 
   const onSwitchTab = (value: string) => {
     setSelectedDirection(Number(value) as BusDirection);
+  };
+
+  const getDirectionName = (direction: BusDirection) => {
+    if (directions.length === 1) {
+      return routeStopEntity[direction].Stops[0].StopName.Zh_tw;
+    }
+
+    return direction === BusDirection.去程
+      ? route.DestinationStopNameZh
+      : route.DepartureStopNameZh;
   };
 
   const onArrowClick = () => {
@@ -181,8 +191,9 @@ const BusRoutePage = ({
       mapContextRef.current.markers = selectedBusRoute.Stops.map((stop) =>
         createJSXMarker(
           <VStack
-            gap={0}
             cursor="pointer"
+            gap={0}
+            // biome-ignore lint/performance/noJsxPropsBind: callback needs local render state or the current event target.
             onClick={async () => {
               const { getPosition } = await import('@/services/mapbox');
               mapContextRef.current.map.flyTo(
@@ -195,18 +206,18 @@ const BusRoutePage = ({
             }}
           >
             <Circle
-              borderWidth="1px"
-              size="28px"
-              borderColor="var(--chakra-colors-secondary-200)"
               bgColor="var(--chakra-colors-secondary-100)"
+              borderColor="var(--chakra-colors-secondary-200)"
+              borderWidth="1px"
               color="var(--chakra-colors-secondary-800)"
+              size="28px"
             >
               {getTwoDigitString(stop.StopSequence)}
             </Circle>
             <Box
-              h="12px"
-              borderLeftWidth="2px"
               borderColor="var(--chakra-colors-secondary-200)"
+              borderLeftWidth="2px"
+              h="12px"
             />
           </VStack>,
           [stop.StopPosition.PositionLon, stop.StopPosition.PositionLat],
@@ -232,6 +243,7 @@ const BusRoutePage = ({
 
     handleAttachStops();
   }, [
+    // biome-ignore lint/suspicious/noUnnecessaryConditions: route is absent during fallback rendering.
     route?.RouteUID,
     geoJson,
     isLoaded,
@@ -273,41 +285,41 @@ const BusRoutePage = ({
   return (
     <>
       <NextHeadSeo title={`Iro Bus | ${routeName}-${CityMap[city]}`} />
-      <Flex pos="relative" flexDir="column" h="full" color="white">
-        <Flex p={4} bg="primary.800" justify="space-between" align="center">
+      <Flex color="white" flexDir="column" h="full" pos="relative">
+        <Flex align="center" bg="primary.800" justify="space-between" p={4}>
           <IconButton
-            display={MOBILE_DISPLAY}
             aria-label="back to previous page"
-            variant="ghost"
+            display={MOBILE_DISPLAY}
             fontSize="4xl"
             onClick={onArrowClick}
+            variant="ghost"
           >
             <BiChevronLeft />
           </IconButton>
           <NavBarItems display={DESKTOP_DISPLAY} />
           <Stack
-            direction={['row', 'column-reverse']}
-            pos={['static', 'fixed']}
-            gap={[1, 4]}
-            zIndex="overlay"
-            right={[0, 4]}
             bottom={[0, '72px']}
+            direction={['row', 'column-reverse']}
+            gap={[1, 4]}
+            pos={['static', 'fixed']}
+            right={[0, 4]}
+            zIndex="overlay"
           >
             <IconButton
               aria-label="show more detail"
-              variant={buttonVariant}
               fontSize="2xl"
-              rounded="full"
               onClick={onOpen}
+              rounded="full"
+              variant={buttonVariant}
             >
               <BsInfoCircle />
             </IconButton>
             <IconButton
               aria-label="move back to home"
-              variant={buttonVariant}
               fontSize="2xl"
-              rounded="full"
               onClick={onHomeClick}
+              rounded="full"
+              variant={buttonVariant}
             >
               <IoHome />
             </IconButton>
@@ -316,36 +328,37 @@ const BusRoutePage = ({
         <Flex flexDir={['column', 'row-reverse']} flexGrow={1}>
           <Box flexGrow={1} overflowY="auto" />
           <Tabs.Root
-            w={['auto', DESKTOP_MAP_LEFT]}
-            value={String(selectedDirection)}
+            // biome-ignore lint/performance/noJsxPropsBind: callback needs local render state or the current event target.
             onValueChange={({ value }) => onSwitchTab(value)}
+            value={String(selectedDirection)}
+            w={['auto', DESKTOP_MAP_LEFT]}
             zIndex="sticky"
             {...tabsProps}
           >
             <Tabs.List
               css={{
-                pos: 'relative',
-                p: 4,
-                bg: 'primary.600',
                 '& button': {
                   whiteSpace: 'noWrap',
                 },
+                bg: 'primary.600',
+                p: 4,
+                pos: 'relative',
               }}
             >
               <IconButton
+                aria-label="extend to top"
                 display={MOBILE_DISPLAY}
+                h="4px"
+                left="30%"
+                onClick={extendDisclosure.onToggle}
                 pos="absolute"
                 top="0"
-                left="30%"
                 w="40%"
-                aria-label="extend to top"
-                h="4px"
-                onClick={extendDisclosure.onToggle}
               />
               <Heading
-                display={MOBILE_DISPLAY}
-                as="h1"
                 alignSelf="center"
+                as="h1"
+                display={MOBILE_DISPLAY}
                 lineClamp={1}
               >
                 {route.RouteName.Zh_tw}
@@ -353,30 +366,26 @@ const BusRoutePage = ({
               <Box display={MOBILE_DISPLAY} flexGrow={1} />
               {directions.map((direction) => (
                 <Tabs.Trigger key={direction} value={String(direction)}>
-                  {directions.length > 1
-                    ? direction === BusDirection.去程
-                      ? route.DestinationStopNameZh
-                      : route.DepartureStopNameZh
-                    : routeStopEntity[direction].Stops[0].StopName.Zh_tw}
+                  {getDirectionName(direction)}
                 </Tabs.Trigger>
               ))}
             </Tabs.List>
             <Box
               bg="secondary.900"
-              maxW={DESKTOP_MAP_LEFT}
               h={[
                 extendDisclosure.open ? STOP_LIST_MAX_HEIGHT : 128,
                 STOP_LIST_MAX_HEIGHT,
               ]}
+              maxW={DESKTOP_MAP_LEFT}
+              overflowX="hidden"
               transition="ease-in-out"
               transitionDuration="0.35s"
-              overflowX="hidden"
             >
               {directions.map((busDirection) => (
                 <Tabs.Content
                   key={busDirection}
-                  value={String(busDirection)}
                   p="0"
+                  value={String(busDirection)}
                 >
                   {routeStopEntity[busDirection].Stops.map((stop) => {
                     const status = getBusEstimationStatus(
@@ -386,12 +395,12 @@ const BusRoutePage = ({
                     const isComing = status === '進站中';
                     return (
                       <Flex
-                        key={`${busDirection}-${stop.StopUID}-${stop.StopSequence}`}
                         align="center"
-                        px="4"
                         cursor="pointer"
+                        key={`${busDirection}-${stop.StopUID}-${stop.StopSequence}`}
+                        // biome-ignore lint/performance/noJsxPropsBind: callback needs local render state or the current event target.
                         onClick={async () => {
-                          if (!mapContextRef.current.map || !isLoaded) {
+                          if (!(mapContextRef.current.map && isLoaded)) {
                             return;
                           }
 
@@ -410,6 +419,7 @@ const BusRoutePage = ({
                             ),
                           );
                         }}
+                        px="4"
                       >
                         <Text>{stop.StopName.Zh_tw}</Text>
                         <Tag.Root colorPalette="secondary" ml="2">
@@ -418,31 +428,31 @@ const BusRoutePage = ({
                         <Box flexGrow={1} />
                         <VStack gap={0}>
                           <Box
-                            h="20px"
-                            borderLeft="2px"
                             borderColor="primary.200"
+                            borderLeft="2px"
+                            h="20px"
                           />
                           <Circle
-                            size="20px"
-                            fontSize="9px"
-                            fontWeight="bold"
-                            borderWidth="2px"
-                            borderColor="primary.200"
                             bg={isComing ? 'primary.200' : 'transparent'}
-                            color={isComing ? 'secondary.700' : 'white'}
+                            borderColor="primary.200"
+                            borderWidth="2px"
                             boxShadow={
                               isComing
                                 ? '0 0 5px var(--chakra-colors-secondary-200),0 0 10px var(--chakra-colors-secondary-300),0 0 15px var(--chakra-colors-secondary-400)'
                                 : 'none'
                             }
+                            color={isComing ? 'secondary.700' : 'white'}
+                            fontSize="9px"
+                            fontWeight="bold"
                             rounded="full"
+                            size="20px"
                           >
                             {getTwoDigitString(stop.StopSequence)}
                           </Circle>
                           <Box
-                            h="20px"
-                            borderLeft="2px"
                             borderColor="primary.200"
+                            borderLeft="2px"
+                            h="20px"
                           />
                         </VStack>
                       </Flex>
@@ -455,15 +465,15 @@ const BusRoutePage = ({
         </Flex>
       </Flex>
       <BusRouteInfoModal isOpen={isOpen} onClose={onClose} route={route} />
-      {selectedBusEstimation && (
+      {Boolean(selectedBusEstimation) && (
         <BusStopDrawer
+          busEstimation={selectedBusEstimation}
+          busRoute={route}
+          isOpen={stopDisclosure.open}
+          onClose={onDrawerClose}
+          selectedBusStop={selectedBusRoute}
           selectedStopId={selectedStopId}
           setSelectedStopId={setSelectedStopId}
-          busRoute={route}
-          busEstimation={selectedBusEstimation}
-          selectedBusStop={selectedBusRoute}
-          onClose={onDrawerClose}
-          isOpen={stopDisclosure.open}
         />
       )}
     </>
@@ -485,25 +495,27 @@ export const getStaticProps = async (
     typeof routeName !== 'string' ||
     typeof city !== 'string' ||
     !CitySet.has(city)
-  )
+  ) {
     return {
       notFound: true,
     };
+  }
 
   const busRoutes = await busService.getBusRoutesByCityAndRouteName(
     city,
     routeName,
   );
 
-  const busRoute = busRoutes[0];
+  const [busRoute] = busRoutes;
 
-  if (!busRoute)
+  if (!busRoute) {
     return {
       redirect: {
         destination: '/city',
         permanent: false,
       },
     };
+  }
 
   const [busShapes, busStops] = await Promise.all([
     busService.getBusShapesByCityAndRouteName(city, routeName),
@@ -512,15 +524,16 @@ export const getStaticProps = async (
     }),
   ]);
 
-  const busShape = busShapes[0];
+  const [busShape] = busShapes;
 
-  if (!busShape || busStops.length === 0)
+  if (!busShape || busStops.length === 0) {
     return {
       redirect: {
         destination: '/city',
         permanent: false,
       },
     };
+  }
 
   const directions: BusDirection[] = [];
   const routeStopEntity = {} as RouteStopEntity;
@@ -535,12 +548,12 @@ export const getStaticProps = async (
 
   return {
     props: {
-      city,
-      routeName,
       busRoute,
-      geoJson: parse(busShape.Geometry) as GeoJSONLineString,
-      directions,
       busStopEntity: routeStopEntity,
+      city,
+      directions,
+      geoJson: parse(busShape.Geometry) as GeoJSONLineString,
+      routeName,
     },
     revalidate: ONE_DAY,
   };

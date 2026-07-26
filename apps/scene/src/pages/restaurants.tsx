@@ -1,5 +1,3 @@
-import React, { ChangeEvent, useEffect, useState } from 'react';
-
 import {
   Box,
   Center,
@@ -10,17 +8,19 @@ import {
   SimpleGrid,
   useDisclosure,
 } from '@chakra-ui/react';
-import { GetStaticPropsContext, GetStaticPropsResult } from 'next';
+import type { GetStaticPropsContext, GetStaticPropsResult } from 'next';
 import NextHeadSeo from 'next-head-seo';
+import type React from 'react';
+import { type ChangeEvent, useEffect, useState } from 'react';
 import { FiSearch } from 'react-icons/fi';
 
-import Background from '@/components/Background';
-import BackgroundCard from '@/components/BackgroundCard';
-import Banner from '@/components/Banner';
-import Layout from '@/components/layout/Layout';
-import LoadingScreen from '@/components/LoadingScreen';
-import Pagination from '@/components/Pagination';
-import PlaceCard, { PlaceCardProps } from '@/components/PlaceCard';
+import Background from '@/components/background';
+import BackgroundCard from '@/components/background-card';
+import Banner from '@/components/banner';
+import Layout from '@/components/layout/layout';
+import LoadingScreen from '@/components/loading-screen';
+import Pagination from '@/components/pagination';
+import PlaceCard, { type PlaceCardProps } from '@/components/place-card';
 import {
   DEFAULT_CARD_NUMBER,
   DEFAULT_FETCHED_CARD_NUMBER,
@@ -38,8 +38,8 @@ interface RestaurantsPageProps {
 }
 
 const PAGE_PROPS = {
-  mainColor: 'restaurants.main',
   gradientColor: 'restaurants.light',
+  mainColor: 'restaurants.main',
 };
 
 const RestaurantsPage = ({
@@ -81,74 +81,76 @@ const RestaurantsPage = ({
         }}
       />
       <Background
-        name="美食"
-        image={background}
-        wordOneAlt="美"
-        wordOne={wordOne}
-        wordTwoAlt="食"
-        wordTwo={wordTwo}
         bgColor={PAGE_PROPS.gradientColor}
+        image={background}
+        name="美食"
+        wordOne={wordOne}
+        wordOneAlt="美"
+        wordTwo={wordTwo}
+        wordTwoAlt="食"
       >
         <InputGroup
-          my="8"
-          maxW="container.md"
           endElement={
             <IconButton
-              variant="ghost"
-              rounded="full"
               aria-label="search"
               onClick={onSearch}
+              rounded="full"
+              variant="ghost"
             >
               <FiSearch />
             </IconButton>
           }
           endElementProps={{ pointerEvents: 'auto' }}
+          maxW="container.md"
+          my="8"
         >
           <Input
-            size="lg"
-            rounded="2xl"
-            value={keyword}
-            onChange={handleOnType}
             bg="white"
+            onChange={handleOnType}
             placeholder="請輸入關鍵字"
+            rounded="2xl"
+            size="lg"
+            value={keyword}
           />
         </InputGroup>
-        <SimpleGrid h={['160px', '220px']} columns={3} gap={[2, 0]}>
+        <SimpleGrid columns={3} gap={[2, 0]} h={['160px', '220px']}>
           <BackgroundCard
-            name="台灣文化"
             image="/static/card/restaurants-1.png"
+            name="台灣文化"
             roundedRight="none"
           />
           <BackgroundCard
-            name="台灣小吃"
             image="/static/card/restaurants-2.png"
+            name="台灣小吃"
             rounded="none"
           />
           <BackgroundCard
-            name="台灣各地特色"
             image="/static/card/restaurants-3.png"
+            name="台灣各地特色"
             roundedLeft="none"
           />
         </SimpleGrid>
       </Background>
       <Box
-        h={['40px', '120px', '220px']}
         bgGradient="to-b"
         gradientFrom={PAGE_PROPS.gradientColor}
         gradientTo="white"
+        h={['40px', '120px', '220px']}
       />
-      <Flex flexDir="column" bg="white">
-        {!isUninitialized && !isError && (
+      <Flex bg="white" flexDir="column">
+        {!(isUninitialized || isError) && (
           <>
             <Banner
-              title={`搜尋『${originalArgs?.keyword}』的結果...`}
-              mainColor={PAGE_PROPS.mainColor}
-              href="/scenes"
-              mt="0"
               hideButton
+              href="/scenes"
+              mainColor={PAGE_PROPS.mainColor}
+              mt="0"
+              title={`搜尋『${originalArgs?.keyword}』的結果...`}
             />
-            {isLoading && <LoadingScreen mainColor={PAGE_PROPS.mainColor} />}
-            {data?.success && (
+            {Boolean(isLoading) && (
+              <LoadingScreen mainColor={PAGE_PROPS.mainColor} />
+            )}
+            {data?.success === true && (
               <SimpleGrid columns={[1, 2, 3]} gap={6} mx="8">
                 {data.data.map((restaurant) => (
                   <PlaceCard key={restaurant.href} {...restaurant} />
@@ -158,12 +160,12 @@ const RestaurantsPage = ({
           </>
         )}
         <Banner
-          title="熱門美食"
-          mainColor={PAGE_PROPS.mainColor}
-          href="/scenes"
           hideButton
+          href="/scenes"
+          mainColor={PAGE_PROPS.mainColor}
+          title="熱門美食"
         />
-        <SimpleGrid columns={[1, 2, 3]} columnGap={8} rowGap={12} mx="8">
+        <SimpleGrid columnGap={8} columns={[1, 2, 3]} mx="8" rowGap={12}>
           {restaurants
             .slice(
               DEFAULT_CARD_NUMBER * page,
@@ -176,9 +178,9 @@ const RestaurantsPage = ({
         <Center mt="8">
           <Pagination
             colorTheme="restaurants"
+            onPageChange={setPage}
             page={page}
             total={Math.ceil(restaurants.length / DEFAULT_CARD_NUMBER)}
-            onPageChange={setPage}
           />
         </Center>
       </Flex>
@@ -193,10 +195,10 @@ export const getStaticProps = async (
   _context: GetStaticPropsContext,
 ): Promise<GetStaticPropsResult<RestaurantsPageProps>> => {
   const restaurants = await tourismService.getRestaurants({
-    top: DEFAULT_FETCHED_CARD_NUMBER,
-    select: 'RestaurantID,RestaurantName,City,Address,OpenTime,Phone,Picture',
     filter: 'Picture/PictureUrl1 ne null and Address ne null and City ne null',
     orderBy: 'SrcUpdateTime desc, Description desc',
+    select: 'RestaurantID,RestaurantName,City,Address,OpenTime,Phone,Picture',
+    top: DEFAULT_FETCHED_CARD_NUMBER,
   });
 
   return {

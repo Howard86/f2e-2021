@@ -1,5 +1,3 @@
-import React, { ChangeEvent, useState } from 'react';
-
 import {
   Box,
   Container,
@@ -9,11 +7,12 @@ import {
   Spinner,
   Tabs,
 } from '@chakra-ui/react';
-import { Cities, City, CityMap } from '@f2e/tdx';
-import { motion, Variants } from 'framer-motion';
+import { Cities, type City, CityMap } from '@f2e/tdx';
+import { motion, type Variants } from 'framer-motion';
+import { type ChangeEvent, useState } from 'react';
 
-import CycleCard from '@/components/CycleCard';
-import Map from '@/components/Map';
+import CycleCard from '@/components/cycle-card';
+import MapView from '@/components/map';
 import { useGetCyclingByCityQuery } from '@/services/local';
 
 const MotionGrid = motion.create(SimpleGrid);
@@ -23,9 +22,9 @@ const variants: Variants = {
   show: {
     opacity: 1,
     transition: {
-      type: 'spring',
-      stiffness: 120,
       staggerChildren: 0.125,
+      stiffness: 120,
+      type: 'spring',
     },
   },
 };
@@ -50,74 +49,75 @@ const HomePage = () => {
   };
 
   return (
-    <Box h="full" color="white">
+    <Box color="white" h="full">
       <Tabs.Root
         id="tab"
-        variant="plain"
-        value={String(tabIndex)}
+        // biome-ignore lint/performance/noJsxPropsBind: callback needs local render state or the current event target.
         onValueChange={({ value }) => handleTabsChange(value)}
+        value={String(tabIndex)}
+        variant="plain"
       >
         <Tabs.List
           css={{
-            display: 'inline-flex',
-            pos: 'relative',
-            rounded: 'full',
-            bg: 'whiteAlpha.200',
-            zIndex: 'docked',
-            mx: 8,
-            mt: 8,
             '& button': {
-              px: 5,
-              py: 3,
-              rounded: 'full',
-              fontWeight: 'bold',
-              _selected: {
-                _before: {
-                  content: '""',
-                  bg: 'whiteAlpha.100',
-                  h: 'full',
-                  w: '50%',
-                  pos: 'absolute',
-                  rounded: 'full',
-                },
-                bg: 'primary.main',
-                _hover: {
-                  bg: 'primary.dark',
-                },
-                _focus: {
-                  bg: 'primary.dark',
-                },
+              _first: {
+                mr: -2.5,
               },
               _hover: {
                 bg: 'whiteAlpha.200',
               },
-              _first: {
-                mr: -2.5,
+              _selected: {
+                _before: {
+                  bg: 'whiteAlpha.100',
+                  content: '""',
+                  h: 'full',
+                  pos: 'absolute',
+                  rounded: 'full',
+                  w: '50%',
+                },
+                _focus: {
+                  bg: 'primary.dark',
+                },
+                _hover: {
+                  bg: 'primary.dark',
+                },
+                bg: 'primary.main',
               },
+              fontWeight: 'bold',
+              px: 5,
+              py: 3,
+              rounded: 'full',
               transition: 'all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1)',
             },
+            bg: 'whiteAlpha.200',
+            display: 'inline-flex',
+            mt: 8,
+            mx: 8,
+            pos: 'relative',
+            rounded: 'full',
             transition: 'all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1)',
+            zIndex: 'docked',
           }}
         >
           <Tabs.Trigger value="0">租車/還車</Tabs.Trigger>
           <Tabs.Trigger value="1">騎乘路線</Tabs.Trigger>
         </Tabs.List>
         <Tabs.Content value="0">
-          <Map />
+          <MapView />
         </Tabs.Content>
         <Tabs.Content value="1">
           <Container maxW="container.lg">
-            <Flex justify="space-between" align="center">
+            <Flex align="center" justify="space-between">
               <NativeSelect.Root w="120px">
                 <NativeSelect.Field
-                  rounded="full"
-                  fontWeight="bold"
                   bg="whiteAlpha.200"
                   border="none"
-                  value={selectedCity ?? ''}
+                  fontWeight="bold"
                   onChange={onSelect}
+                  rounded="full"
+                  value={selectedCity ?? ''}
                 >
-                  <option value="" disabled>
+                  <option disabled value="">
                     選擇地區
                   </option>
                   {Cities.map((city) => (
@@ -129,32 +129,31 @@ const HomePage = () => {
                 <NativeSelect.Indicator />
               </NativeSelect.Root>
               <Spinner
-                display={isFetching ? 'block' : 'none'}
-                borderWidth="3px"
                 animationDuration="0.65s"
                 borderColor="gray.200"
                 borderTopColor="secondary.main"
+                borderWidth="3px"
+                display={isFetching ? 'block' : 'none'}
                 size="lg"
               />
             </Flex>
-            {data && data.success && !isFetching && (
+            {data?.success && !isFetching && (
               <MotionGrid
+                animate="show"
                 columns={[1, 2, 4]}
                 gap={[4, 8]}
+                initial="hidden"
                 my={[4, 8]}
                 variants={variants}
-                initial="hidden"
-                animate="show"
               >
-                {data.data.map((path, i) => (
+                {data.data.map((path) => (
                   <CycleCard
-                    // eslint-disable-next-line react/no-array-index-key
-                    key={`${path.RouteName}-${path.CyclingLength}-${i}`}
-                    name={path.RouteName}
-                    length={path.CyclingLength}
                     city={CityMap[path.City] as City}
-                    onToggle={onToggle}
                     geoJson={path.geoJson}
+                    key={`${path.CityCode}-${path.Town}-${path.RouteName}-${path.RoadSectionStart}-${path.RoadSectionEnd}`}
+                    length={path.CyclingLength}
+                    name={path.RouteName}
+                    onToggle={onToggle}
                   />
                 ))}
               </MotionGrid>

@@ -3,25 +3,38 @@ export interface NearByApiParam extends ApiParam {
 }
 
 export interface ApiParam {
-  select?: string;
   filter?: string;
   orderBy?: string;
-  top?: string | number;
+  select?: string;
   skip?: string | number;
+  top?: string | number;
 }
 
-export type TdxServiceParams = {
+export interface TdxServiceParams {
+  baseUrl: string;
   clientId: string;
   clientSecret: string;
-  baseUrl: string;
+}
+
+const getRequiredParam = (
+  params: Partial<TdxServiceParams>,
+  key: keyof TdxServiceParams,
+) => {
+  const value = params[key];
+
+  if (!value) {
+    throw new Error(`Missing env ${key}`);
+  }
+
+  return value;
 };
 
 export class TdxService {
-  private clientId: string;
+  private readonly clientId: string;
 
-  private clientSecret: string;
+  private readonly clientSecret: string;
 
-  private baseUrl: string;
+  private readonly baseUrl: string;
 
   private accessToken: string | undefined;
 
@@ -29,12 +42,12 @@ export class TdxService {
 
   private refreshed = false;
 
-  public DEFAULT_API_PARAMS: ApiParam = { top: 20 };
+  DEFAULT_API_PARAMS: ApiParam = { top: 20 };
 
   constructor(params: Partial<TdxServiceParams>) {
-    this.setPrivateVariable(params, 'clientId');
-    this.setPrivateVariable(params, 'clientSecret');
-    this.setPrivateVariable(params, 'baseUrl');
+    this.clientId = getRequiredParam(params, 'clientId');
+    this.clientSecret = getRequiredParam(params, 'clientSecret');
+    this.baseUrl = getRequiredParam(params, 'baseUrl');
   }
 
   static checkExistence<T>(items: T[]): T | null {
@@ -46,15 +59,17 @@ export class TdxService {
     params: P,
   ): Promise<T> {
     if (
+      // biome-ignore lint/suspicious/noUnnecessaryConditions: tracks concurrent token refreshes across async calls.
       !this.refreshed &&
-      (!this.accessToken ||
-        !this.expirationTimestamp ||
+      (!(this.accessToken && this.expirationTimestamp) ||
         this.expirationTimestamp >= Date.now())
     ) {
       await this.refreshToken();
     }
 
-    if (!this.accessToken) throw new Error('Already refreshed existed token');
+    if (!this.accessToken) {
+      throw new Error('Already refreshed existed token');
+    }
 
     const query = new URLSearchParams();
 
@@ -70,15 +85,17 @@ export class TdxService {
       `${this.baseUrl}/api${encodeURI(path)}?${query.toString()}`,
       {
         headers: {
-          Authorization: `Bearer ${this.accessToken}`,
           Accept: 'application/json',
+          Authorization: `Bearer ${this.accessToken}`,
         },
       },
     );
 
     const json = await response.json();
 
-    if (!response.ok) throw new Error(JSON.stringify(json));
+    if (!response.ok) {
+      throw new Error(JSON.stringify(json));
+    }
 
     this.refreshed = false;
 
@@ -89,19 +106,21 @@ export class TdxService {
     const response = await fetch(
       `${this.baseUrl}/auth/realms/TDXConnect/protocol/openid-connect/token`,
       {
-        method: 'POST',
+        body: new URLSearchParams({
+          client_id: this.clientId,
+          client_secret: this.clientSecret,
+          grant_type: 'client_credentials',
+        }),
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
         },
-        body: new URLSearchParams({
-          grant_type: 'client_credentials',
-          client_id: this.clientId,
-          client_secret: this.clientSecret,
-        }),
+        method: 'POST',
       },
     );
 
-    if (!response.ok) throw new Error(JSON.stringify(response));
+    if (!response.ok) {
+      throw new Error(JSON.stringify(response));
+    }
 
     const json = (await response.json()) as {
       access_token: string;
@@ -112,14 +131,5 @@ export class TdxService {
     this.refreshed = true;
     this.accessToken = json.access_token;
     this.expirationTimestamp = json.expires_in + Date.now();
-  }
-
-  private setPrivateVariable(
-    params: Partial<TdxServiceParams>,
-    key: keyof TdxServiceParams,
-  ) {
-    if (!params[key]) throw new Error(`Missing env ${key}`);
-
-    this[key] = params[key];
   }
 }

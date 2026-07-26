@@ -1,30 +1,30 @@
 import { apiGet } from './lib/api';
 import { PTXCityMap } from './lib/category';
-import { City } from './lib/shared-types';
+import type { City } from './lib/shared-types';
 
 export interface BusRoute {
-  RouteUID: string;
-  RouteID: string;
-  HasSubRoutes: boolean;
-  Operators: Operator[];
   AuthorityID: string;
-  ProviderID: string;
-  SubRoutes: SubRoute[];
   BusRouteType: number;
-  RouteName: NameType;
-  DepartureStopNameZh: string;
-  DepartureStopNameEn: string;
-  DestinationStopNameZh: string;
-  DestinationStopNameEn: string;
-  TicketPriceDescriptionZh: TicketPriceDescriptionZh;
-  TicketPriceDescriptionEn: TicketPriceDescriptionEn;
-  RouteMapImageUrl: string;
   City: PTXCityMap;
   CityCode: string;
+  DepartureStopNameEn: string;
+  DepartureStopNameZh: string;
+  DestinationStopNameEn: string;
+  DestinationStopNameZh: string;
+  FareBufferZoneDescriptionEn?: string;
+  FareBufferZoneDescriptionZh?: string;
+  HasSubRoutes: boolean;
+  Operators: Operator[];
+  ProviderID: string;
+  RouteID: string;
+  RouteMapImageUrl: string;
+  RouteName: NameType;
+  RouteUID: string;
+  SubRoutes: SubRoute[];
+  TicketPriceDescriptionEn: TicketPriceDescriptionEn;
+  TicketPriceDescriptionZh: TicketPriceDescriptionZh;
   UpdateTime: string; // as Date
   VersionID: number;
-  FareBufferZoneDescriptionZh?: string;
-  FareBufferZoneDescriptionEn?: string;
 }
 
 export type TicketPriceDescriptionZh =
@@ -52,162 +52,166 @@ export type TicketPriceDescriptionEn =
   | 'Fare:1X';
 
 export interface Operator {
+  OperatorCode: string;
   OperatorID: string;
   OperatorName: NameType;
-  OperatorCode: string;
   OperatorNo: string;
 }
 
 export interface NameType {
-  Zh_tw: string;
   En: string;
+  Zh_tw: string;
 }
 
 export interface SubRoute {
-  SubRouteUID: string;
-  SubRouteID: string;
-  OperatorIDs: string[];
-  SubRouteName: NameType;
   Direction: number;
   FirstBusTime: string;
-  LastBusTime: string;
   Headsign?: string;
   HolidayFirstBusTime?: string;
   HolidayLastBusTime?: string;
+  LastBusTime: string;
+  OperatorIDs: string[];
+  SubRouteID: string;
+  SubRouteName: NameType;
+  SubRouteUID: string;
 }
 
 export interface BusEstimation {
-  PlateNumb?: string;
-  StopUID: string;
-  StopID: string;
-  StopName: NameType;
-  RouteUID: string;
-  RouteID: string;
-  RouteName: NameType;
-  SubRouteUID: string;
-  SubRouteID: string;
-  SubRouteName: NameType;
   Direction: BusDirection;
-  StopSequence: number;
-  StopStatus: BusStopStatus;
-  SrcUpdateTime: string;
-  UpdateTime: string;
+  Estimates?: Estimate[]; // only for BUS_ESTIMATED_CITIES
   EstimateTime?: number; // only when BusStopStatus = 0
   NextBusTime?: string;
-  Estimates?: Estimate[]; // only for BUS_ESTIMATED_CITIES
+  PlateNumb?: string;
+  RouteID: string;
+  RouteName: NameType;
+  RouteUID: string;
+  SrcUpdateTime: string;
+  StopID: string;
+  StopName: NameType;
+  StopSequence: number;
+  StopStatus: BusStopStatus;
+  StopUID: string;
+  SubRouteID: string;
+  SubRouteName: NameType;
+  SubRouteUID: string;
+  UpdateTime: string;
 }
 
 export interface Estimate {
-  PlateNumb: string;
   EstimateTime: number;
   IsLastBus: boolean;
+  PlateNumb: string;
   VehicleStopStatus?: number;
 }
 
-export enum BusDirection {
-  '去程',
-  '返程',
-  '迴圈',
-  '未知' = 255,
-}
+export const BusDirection = {
+  去程: 0,
+  未知: 255,
+  返程: 1,
+  迴圈: 2,
+} as const;
 
-export enum BusStopStatus {
-  '正常',
-  '尚未發車',
-  '交管不停靠',
-  '末班車已過',
-  '今日未營運',
-}
+export type BusDirection = (typeof BusDirection)[keyof typeof BusDirection];
+
+export const BusStopStatus = {
+  交管不停靠: 2,
+  今日未營運: 4,
+  尚未發車: 1,
+  末班車已過: 3,
+  正常: 0,
+} as const;
+
+export type BusStopStatus = (typeof BusStopStatus)[keyof typeof BusStopStatus];
 
 export interface RouteStop {
-  RouteUID: string;
-  RouteID: string;
-  RouteName: NameType;
-  Operators: Operator[];
-  SubRouteUID: string;
-  SubRouteID: string;
-  SubRouteName: NameType;
-  Direction: number;
   City: PTXCityMap;
   CityCode: string;
+  Direction: number;
+  Operators: Operator[];
+  RouteID: string;
+  RouteName: NameType;
+  RouteUID: string;
   Stops: Stop[];
+  SubRouteID: string;
+  SubRouteName: NameType;
+  SubRouteUID: string;
   UpdateTime: string;
   VersionID: number;
 }
 
 export interface Stop {
-  StopUID: string;
+  LocationCityCode: LocationCityCode;
+  StationID: string;
+  StopBoarding: number;
   StopID: string;
   StopName: NameType;
-  StopBoarding: number;
-  StopSequence: number;
   StopPosition: StopPosition;
-  StationID: string;
-  LocationCityCode: LocationCityCode;
+  StopSequence: number;
+  StopUID: string;
 }
 
 export interface StopPosition {
-  PositionLon: number;
-  PositionLat: number;
   GeoHash: string;
+  PositionLat: number;
+  PositionLon: number;
 }
 
 export interface BusRouteDetail {
-  RouteUID: string;
-  RouteID: string;
-  HasSubRoutes: boolean;
-  Operators: Operator[];
   AuthorityID: string;
-  ProviderID: string;
-  SubRoutes: SubRoute[];
   BusRouteType: number;
-  RouteName: NameType;
-  DepartureStopNameZh: string;
-  DepartureStopNameEn: string;
-  DestinationStopNameZh: string;
-  DestinationStopNameEn: string;
-  TicketPriceDescriptionZh: TicketPriceDescriptionZh;
-  TicketPriceDescriptionEn: TicketPriceDescriptionEn;
-  FareBufferZoneDescriptionZh: string;
-  FareBufferZoneDescriptionEn: string;
-  RouteMapImageUrl: string;
   City: PTXCityMap;
   CityCode: string;
+  DepartureStopNameEn: string;
+  DepartureStopNameZh: string;
+  DestinationStopNameEn: string;
+  DestinationStopNameZh: string;
+  FareBufferZoneDescriptionEn: string;
+  FareBufferZoneDescriptionZh: string;
+  HasSubRoutes: boolean;
+  Operators: Operator[];
+  ProviderID: string;
+  RouteID: string;
+  RouteMapImageUrl: string;
+  RouteName: NameType;
+  RouteUID: string;
+  SubRoutes: SubRoute[];
+  TicketPriceDescriptionEn: TicketPriceDescriptionEn;
+  TicketPriceDescriptionZh: TicketPriceDescriptionZh;
   UpdateTime: string;
   VersionID: number;
 }
 
 export interface BusRouteShape {
-  RouteUID: string;
+  EncodedPolyline: string;
+  Geometry: string;
   RouteID: string;
   RouteName: NameType;
+  RouteUID: string;
   SubRouteName: Record<string, unknown>;
-  Geometry: string;
-  EncodedPolyline: string;
   UpdateTime: string;
   VersionID: number;
 }
 
 export interface BusStation {
-  StationUID: string;
+  Bearing: string;
+  LocationCityCode: LocationCityCode;
+  StationAddress: string;
   StationID: string;
   StationName: NameType;
   StationPosition: StopPosition;
-  StationAddress: string;
+  StationUID: string;
   Stops: BusStationStop[];
-  LocationCityCode: LocationCityCode;
-  Bearing: string;
   UpdateTime: string;
   VersionID: number;
 }
 
 export interface BusStationStop {
-  StopUID: string;
-  StopID: string;
-  StopName: NameType;
-  RouteUID: string;
   RouteID: string;
   RouteName: NameType;
+  RouteUID: string;
+  StopID: string;
+  StopName: NameType;
+  StopUID: string;
 }
 
 type LocationCityCode =
@@ -235,10 +239,10 @@ type LocationCityCode =
   | 'TXG';
 
 export interface BusRouteInfo {
-  RouteUID: string;
-  RouteName: NameType;
   DepartureStopNameZh?: string;
   DestinationStopNameZh?: string;
+  RouteName: NameType;
+  RouteUID: string;
 }
 
 export const getBusRoutesByCity = (city: City, count = 30) =>
@@ -248,13 +252,13 @@ export const getBusRoutesByCity = (city: City, count = 30) =>
   });
 
 export interface BusEstimationInfo {
-  StopUID: string;
-  StopName: NameType;
-  RouteUID: string;
-  RouteName: NameType;
   Direction: BusDirection;
-  StopStatus: BusStopStatus;
   EstimateTime?: number; // only when BusStopStatus = 0
+  RouteName: NameType;
+  RouteUID: string;
+  StopName: NameType;
+  StopStatus: BusStopStatus;
+  StopUID: string;
 }
 
 export const getBusEstimationsByRouteAndCity = (route: string, city: City) =>
@@ -267,8 +271,8 @@ export const getBusEstimationsByRouteAndCity = (route: string, city: City) =>
   );
 
 export interface RouteStopInfo {
-  RouteUID: string;
   Direction: BusDirection;
+  RouteUID: string;
   Stops: Stop[];
 }
 
@@ -278,16 +282,16 @@ export const getRouteStopsByCityAndRouteName = (route: string, city: City) =>
   });
 
 export interface BusRouteDetailInfo {
-  RouteUID: string;
-  HasSubRoutes: boolean;
-  Operators: Operator[];
-  SubRoutes: SubRoute[];
-  RouteName: NameType;
   DepartureStopNameZh: string;
   DestinationStopNameZh: string;
-  TicketPriceDescriptionZh: TicketPriceDescriptionZh;
   FareBufferZoneDescriptionZh: string;
+  HasSubRoutes: boolean;
+  Operators: Operator[];
   RouteMapImageUrl: string;
+  RouteName: NameType;
+  RouteUID: string;
+  SubRoutes: SubRoute[];
+  TicketPriceDescriptionZh: TicketPriceDescriptionZh;
 }
 
 export const getBusRouteDetailByCityAndRouteName = async (
@@ -322,11 +326,11 @@ export const getBusRouteShapeByCityAndRouteName = async (
 };
 
 export interface BusStationInfo {
-  StationUID: string;
+  LocationCityCode: LocationCityCode;
   StationName: NameType;
   StationPosition: StopPosition;
+  StationUID: string;
   Stops: BusStationStop[];
-  LocationCityCode: LocationCityCode;
 }
 
 export const getNearbyBusStations = (
@@ -335,7 +339,7 @@ export const getNearbyBusStations = (
   radius = 1000,
   count = 100,
 ) =>
-  apiGet<BusStationInfo[]>(`Bus/Station/NearBy`, {
+  apiGet<BusStationInfo[]>('Bus/Station/NearBy', {
     $spatialFilter: `nearby(${lat},${lng},${radius})`,
     $top: count.toString(),
   });
