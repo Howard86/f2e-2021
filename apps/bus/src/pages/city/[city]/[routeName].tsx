@@ -481,7 +481,7 @@ const BusRoutePage = ({
 };
 
 export const getStaticPaths = (): GetStaticPathsResult => ({
-  fallback: true,
+  fallback: 'blocking',
   paths: [],
 });
 
