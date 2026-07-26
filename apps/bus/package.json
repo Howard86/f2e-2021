@@ -29,8 +29,8 @@
   },
   "homepage": "https://github.com/Howard86/f2e-2011",
   "scripts": {
-    "check-all": "pnpm type-check && pnpm lint && pnpm format",
-    "type-check": "tsc --noEmit",
+    "check-all": "bun run typecheck && bun run lint && bun run format",
+    "typecheck": "tsc --noEmit",
     "lint": "eslint . --ext .ts,.tsx",
     "format": "prettier --write . --ignore-path ../../.prettierignore",
     "gen:theme-typings": "chakra-cli tokens src/theme/index.ts",

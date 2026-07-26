@@ -38,4 +38,5 @@ yarn-error.log*
 # for type-check
 tsconfig.tsbuildinfo
 
-nx-cloud.env
+# turbo
+.turbo

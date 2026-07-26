@@ -1,7 +1,7 @@
 {
   "name": "f2e",
   "engines": {
-    "node": ">= 18"
+    "node": "24.x"
   },
   "description": "A collection of unlicensed work for f2e open challenge",
   "repository": {
@@ -29,36 +29,32 @@
     "url": "https://github.com/Howard86/f2e-2011/issues"
   },
   "homepage": "https://github.com/Howard86/f2e-2011",
-  "private": "true",
-  "workspaces": {
-    "packages": [
-      "apps/*",
-      "libs/*"
-    ]
-  },
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "libs/*"
+  ],
   "scripts": {
-    "build": "lerna run build",
-    "build:scene": "lerna run build --scope=@f2e/scene",
-    "build:ubike": "lerna run build --scope=@f2e/ubike",
-    "build:bus": "lerna run build --scope=@f2e/bus",
-    "dev:scene": "lerna run dev --scope=@f2e/scene",
-    "dev:ubike": "lerna run dev --scope=@f2e/ubike",
-    "dev:bus": "lerna run dev --scope=@f2e/bus",
-    "start:scene": "lerna run start --scope=@f2e/scene",
-    "start:ubike": "lerna run start --scope=@f2e/ubike",
-    "start:bus": "lerna run start --scope=@f2e/bus",
-    "check-all": "pnpm type-check && pnpm lint && pnpm format",
-    "type-check": "lerna run type-check --stream",
+    "build": "turbo run build",
+    "build:scene": "turbo run build --filter=@f2e/scene",
+    "build:ubike": "turbo run build --filter=@f2e/ubike",
+    "build:bus": "turbo run build --filter=@f2e/bus",
+    "dev:scene": "turbo run dev --filter=@f2e/scene",
+    "dev:ubike": "turbo run dev --filter=@f2e/ubike",
+    "dev:bus": "turbo run dev --filter=@f2e/bus",
+    "start:scene": "turbo run start --filter=@f2e/scene",
+    "start:ubike": "turbo run start --filter=@f2e/ubike",
+    "start:bus": "turbo run start --filter=@f2e/bus",
+    "check-all": "bun run typecheck && bun run lint && bun run format",
+    "typecheck": "turbo run typecheck",
     "lint": "eslint . --ext .ts,.tsx",
     "format": "prettier --write .",
-    "release": "lerna version --conventional-commits --include-merged-tags",
     "prepare": "husky install"
   },
   "devDependencies": {
     "@chakra-ui/cli": "^2.4.1",
     "@commitlint/cli": "^18.0.0",
     "@commitlint/config-conventional": "^18.0.0",
-    "@nrwl/nx-cloud": "^16.0.5",
     "@types/lodash.throttle": "^4.1.7",
     "@types/node": "^20.3.2",
     "@types/react": "^18.2.14",
@@ -77,11 +73,10 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-simple-import-sort": "^10.0.0",
     "husky": "^8.0.3",
-    "lerna": "^8.0.0",
     "lint-staged": "^15.0.0",
-    "nx": "^17.0.0",
     "prettier": "^3.0.0",
+    "turbo": "2.10.7",
     "typescript": "^5.1.6"
   },
-  "packageManager": "pnpm@8.13.1"
+  "packageManager": "bun@1.3.14"
 }
