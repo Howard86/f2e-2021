@@ -4,19 +4,14 @@ import {
   Box,
   Container,
   Flex,
-  Select,
+  NativeSelect,
   SimpleGrid,
   SimpleGridProps,
   Spinner,
-  Tab,
-  TabList,
-  TabPanel,
-  TabPanels,
   Tabs,
 } from '@chakra-ui/react';
 import { Cities, City, CityMap } from '@f2e/tdx';
 import { motion, Variants } from 'framer-motion';
-import { BsCaretDownFill } from 'react-icons/bs';
 
 import CycleCard from '@/components/CycleCard';
 import Map from '@/components/Map';
@@ -47,8 +42,8 @@ const HomePage = () => {
     setSelectedCity(event.target.value as City);
   };
 
-  const handleTabsChange = (index: number) => {
-    setTabIndex(index);
+  const handleTabsChange = (value: string) => {
+    setTabIndex(Number(value));
   };
 
   const onToggle = () => {
@@ -57,14 +52,14 @@ const HomePage = () => {
 
   return (
     <Box h="full" color="white">
-      <Tabs
+      <Tabs.Root
         id="tab"
-        variant="unstyled"
-        index={tabIndex}
-        onChange={handleTabsChange}
+        variant="plain"
+        value={String(tabIndex)}
+        onValueChange={({ value }) => handleTabsChange(value)}
       >
-        <TabList
-          sx={{
+        <Tabs.List
+          css={{
             display: 'inline-flex',
             pos: 'relative',
             rounded: 'full',
@@ -72,7 +67,7 @@ const HomePage = () => {
             zIndex: 'docked',
             mx: 8,
             mt: 8,
-            button: {
+            '& button': {
               px: 5,
               py: 3,
               rounded: 'full',
@@ -105,69 +100,69 @@ const HomePage = () => {
             transition: 'all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1)',
           }}
         >
-          <Tab>租車/還車</Tab>
-          <Tab>騎乘路線</Tab>
-        </TabList>
-        <TabPanels p="0">
-          <TabPanel>
-            <Map />
-          </TabPanel>
-          <TabPanel>
-            <Container maxW="container.lg">
-              <Flex justify="space-between" align="center">
-                <Select
-                  icon={<BsCaretDownFill />}
-                  w="120px"
+          <Tabs.Trigger value="0">租車/還車</Tabs.Trigger>
+          <Tabs.Trigger value="1">騎乘路線</Tabs.Trigger>
+        </Tabs.List>
+        <Tabs.Content value="0">
+          <Map />
+        </Tabs.Content>
+        <Tabs.Content value="1">
+          <Container maxW="container.lg">
+            <Flex justify="space-between" align="center">
+              <NativeSelect.Root w="120px">
+                <NativeSelect.Field
                   rounded="full"
-                  placeholder="選擇地區"
                   fontWeight="bold"
                   bg="whiteAlpha.200"
                   border="none"
-                  value={selectedCity}
+                  value={selectedCity ?? ''}
                   onChange={onSelect}
-                  sx={{ div: { color: 'red.100' } }}
                 >
+                  <option value="" disabled>
+                    選擇地區
+                  </option>
                   {Cities.map((city) => (
                     <option key={city} value={city}>
                       {CityMap[city]}
                     </option>
                   ))}
-                </Select>
-                <Spinner
-                  display={isFetching ? 'block' : 'none'}
-                  thickness="3px"
-                  speed="0.65s"
-                  emptyColor="gray.200"
-                  color="secondary.main"
-                  size="lg"
-                />
-              </Flex>
-              {data && data.success && !isFetching && (
-                <MotionGrid
-                  columns={[1, 2, 4]}
-                  spacing={[4, 8]}
-                  my={[4, 8]}
-                  variants={variants}
-                  initial="hidden"
-                  animate="show"
-                >
-                  {data.data.map((path, i) => (
-                    <CycleCard
-                      // eslint-disable-next-line react/no-array-index-key
-                      key={`${path.RouteName}-${path.CyclingLength}-${i}`}
-                      name={path.RouteName}
-                      length={path.CyclingLength}
-                      city={CityMap[path.City] as City}
-                      onToggle={onToggle}
-                      geoJson={path.geoJson}
-                    />
-                  ))}
-                </MotionGrid>
-              )}
-            </Container>
-          </TabPanel>
-        </TabPanels>
-      </Tabs>
+                </NativeSelect.Field>
+                <NativeSelect.Indicator />
+              </NativeSelect.Root>
+              <Spinner
+                display={isFetching ? 'block' : 'none'}
+                borderWidth="3px"
+                animationDuration="0.65s"
+                borderColor="gray.200"
+                borderTopColor="secondary.main"
+                size="lg"
+              />
+            </Flex>
+            {data && data.success && !isFetching && (
+              <MotionGrid
+                columns={[1, 2, 4]}
+                gap={[4, 8]}
+                my={[4, 8]}
+                variants={variants}
+                initial="hidden"
+                animate="show"
+              >
+                {data.data.map((path, i) => (
+                  <CycleCard
+                    // eslint-disable-next-line react/no-array-index-key
+                    key={`${path.RouteName}-${path.CyclingLength}-${i}`}
+                    name={path.RouteName}
+                    length={path.CyclingLength}
+                    city={CityMap[path.City] as City}
+                    onToggle={onToggle}
+                    geoJson={path.geoJson}
+                  />
+                ))}
+              </MotionGrid>
+            )}
+          </Container>
+        </Tabs.Content>
+      </Tabs.Root>
     </Box>
   );
 };

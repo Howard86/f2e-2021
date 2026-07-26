@@ -2,14 +2,11 @@ import React, { useEffect, useRef, useState } from 'react';
 
 import {
   Box,
+  Dialog,
   Flex,
   Icon,
   IconButton,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalHeader,
+  Portal,
   useBreakpointValue,
   useDisclosure,
   VStack,
@@ -18,7 +15,7 @@ import type mapboxgl from 'mapbox-gl';
 import Image from 'next/image';
 import { BiMinus, BiPlus } from 'react-icons/bi';
 import { IoLocate } from 'react-icons/io5';
-import { MdOutlinePlace } from 'react-icons/md';
+import { MdClose, MdOutlinePlace } from 'react-icons/md';
 
 import { useMap } from './MapContextProvider';
 
@@ -51,7 +48,7 @@ const Map = () => {
     address: '',
   });
   const divRef = useRef<HTMLDivElement>(null);
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { open: isOpen, onOpen, onClose } = useDisclosure();
   const [getStations, { isFetching }] = useLazyGetStationsByCoordinateQuery();
 
   const [loaded, setLoaded] = useState(false);
@@ -277,12 +274,12 @@ const Map = () => {
           />
         </Box>
         <VStack
-          sx={{
+          css={{
             pos: 'absolute',
             bottom: 0,
             left: 0,
             m: 8,
-            button: {
+            '& button': {
               fontSize: '24px',
               display: 'inline-flex',
               rounded: 'full',
@@ -297,30 +294,32 @@ const Map = () => {
             },
             zIndex: 11,
           }}
-          spacing={4}
+          gap={4}
         >
           <IconButton
             aria-label="放大"
-            icon={<BiPlus />}
             onClick={onZoomIn}
             color={isFetching ? 'gray.500' : 'white'}
-          />
+          >
+            <BiPlus />
+          </IconButton>
           <IconButton
             aria-label="縮小"
-            icon={<BiMinus />}
             color={isFetching ? 'gray.500' : 'white'}
             onClick={onZoomOut}
-          />
+          >
+            <BiMinus />
+          </IconButton>
         </VStack>
         <Box
-          sx={{
+          css={{
             display: 'flex',
             justifyContent: 'center',
             pos: 'absolute',
             left: 0,
             right: 0,
             bottom: 0,
-            button: {
+            '& button': {
               display: 'inline-flex',
               fontSize: '72px',
               bg: 'primary.main',
@@ -355,50 +354,71 @@ const Map = () => {
           }}
         >
           <IconButton
-            isLoading={isFetching}
+            loading={isFetching}
             aria-label="定位"
-            icon={<IoLocate />}
             color={isFetching ? 'gray.500' : 'white'}
             onClick={onLocate}
-          />
+          >
+            <IoLocate />
+          </IconButton>
         </Box>
       </Box>
 
-      <Modal
-        isOpen={isOpen}
-        onClose={onClose}
+      <Dialog.Root
+        open={isOpen}
+        onOpenChange={({ open }) => {
+          if (!open) {
+            onClose();
+          }
+        }}
         scrollBehavior="inside"
         size="sm"
-        initialFocusRef={undefined}
       >
-        <ModalContent mt="auto" color="black" rounded="3xl">
-          <ModalHeader maxW="95%" pb="2">
-            {modalProps.name}
-          </ModalHeader>
-          <ModalCloseButton mt="1.5" />
-          <ModalBody mb="4" fontSize="lg">
-            <Flex sx={{ mb: 4, div: { w: '50%', alignItems: 'center' } }}>
-              <Flex>
-                <BikeIcon color="secondary.main" fontSize="2xl" mr="2" />
-                可租借：{modalProps.rentNumber}台
-              </Flex>
-              <Flex>
-                <DockIcon color="secondary.main" fontSize="2xl" mr="2" />
-                可歸還：{modalProps.returnNumber}台
-              </Flex>
-            </Flex>
-            <Flex>
-              <Icon
-                color="secondary.main"
-                as={MdOutlinePlace}
-                fontSize="2xl"
-                mr="2"
-              />
-              {modalProps.address}
-            </Flex>
-          </ModalBody>
-        </ModalContent>
-      </Modal>
+        <Portal>
+          <Dialog.Backdrop />
+          <Dialog.Positioner>
+            <Dialog.Content mt="auto" color="black" rounded="3xl">
+              <Dialog.Header maxW="95%" pb="2">
+                <Dialog.Title>{modalProps.name}</Dialog.Title>
+              </Dialog.Header>
+              <Dialog.CloseTrigger asChild>
+                <IconButton
+                  pos="absolute"
+                  top="2"
+                  right="2"
+                  variant="ghost"
+                  aria-label="關閉站點資訊"
+                >
+                  <MdClose />
+                </IconButton>
+              </Dialog.CloseTrigger>
+              <Dialog.Body mb="4" fontSize="lg">
+                <Flex
+                  mb="4"
+                  css={{
+                    '& > div': { w: '50%', alignItems: 'center' },
+                  }}
+                >
+                  <Flex>
+                    <BikeIcon color="secondary.main" fontSize="2xl" mr="2" />
+                    可租借：{modalProps.rentNumber}台
+                  </Flex>
+                  <Flex>
+                    <DockIcon color="secondary.main" fontSize="2xl" mr="2" />
+                    可歸還：{modalProps.returnNumber}台
+                  </Flex>
+                </Flex>
+                <Flex>
+                  <Icon color="secondary.main" fontSize="2xl" mr="2">
+                    <MdOutlinePlace />
+                  </Icon>
+                  {modalProps.address}
+                </Flex>
+              </Dialog.Body>
+            </Dialog.Content>
+          </Dialog.Positioner>
+        </Portal>
+      </Dialog.Root>
     </>
   );
 };

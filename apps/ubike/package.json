@@ -39,9 +39,8 @@
     "start": "bun --bun next start"
   },
   "dependencies": {
-    "@chakra-ui/react": "^2.7.1",
+    "@chakra-ui/react": "3.36.1",
     "@emotion/react": "^11.11.1",
-    "@emotion/styled": "^11.11.0",
     "@f2e/tdx": "workspace:^0.2.0",
     "@reduxjs/toolkit": "^2.0.0",
     "framer-motion": "^10.12.18",

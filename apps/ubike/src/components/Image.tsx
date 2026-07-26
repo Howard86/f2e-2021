@@ -16,8 +16,12 @@ const SKIPPED_PROPS: ImagePropKey[] = [
   'priority',
 ];
 
-const Image = chakra(NextImage, {
-  shouldForwardProp: (prop: ImagePropKey) => SKIPPED_PROPS.includes(prop),
-});
+const Image = chakra(
+  NextImage,
+  {},
+  {
+    shouldForwardProp: (prop: ImagePropKey) => SKIPPED_PROPS.includes(prop),
+  },
+);
 
 export default Image;

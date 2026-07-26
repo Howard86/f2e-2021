@@ -6,8 +6,8 @@ import {
   Flex,
   Heading,
   HStack,
+  Portal,
   Tooltip,
-  useTheme,
 } from '@chakra-ui/react';
 import { City, CityMap } from '@f2e/tdx';
 import { motion, Variants } from 'framer-motion';
@@ -22,6 +22,7 @@ import RouteMarker from './RouteMarker';
 import useAppToast from '@/hooks/use-app-toast';
 import { Coordinate } from '@/services/mapbox';
 import { getDifficulty } from '@/services/utils';
+import system from '@/theme';
 
 interface CycleCardProps {
   name: string;
@@ -47,7 +48,6 @@ const CycleCard = ({
 }: CycleCardProps) => {
   const toast = useAppToast();
   const { mapRef, layerIdRef, markersRef, stationIdSetRef } = useMap();
-  const theme = useTheme();
 
   const onClick = async () => {
     if (!mapRef.current) {
@@ -59,9 +59,8 @@ const CycleCard = ({
       return;
     }
 
-    const { addLayerAndSource, attachJSXMarker } = await import(
-      '@/services/mapbox'
-    );
+    const { addLayerAndSource, attachJSXMarker } =
+      await import('@/services/mapbox');
 
     if (mapRef.current.getLayer(layerIdRef.current)) {
       mapRef.current.removeLayer(layerIdRef.current);
@@ -81,7 +80,7 @@ const CycleCard = ({
       mapRef.current,
       name,
       geoJson,
-      theme.colors.primary.main,
+      system.token('colors.primary.main'),
     );
     const coordinates = geoJson.coordinates[0] as Coordinate[];
 
@@ -114,16 +113,23 @@ const CycleCard = ({
       onClick={onClick}
       variants={variants}
     >
-      <Tooltip label={name}>
-        <Heading fontSize="lg" mb="2" noOfLines={1}>
-          {name}
-        </Heading>
-      </Tooltip>
+      <Tooltip.Root>
+        <Tooltip.Trigger asChild>
+          <Heading fontSize="lg" mb="2" lineClamp={1}>
+            {name}
+          </Heading>
+        </Tooltip.Trigger>
+        <Portal>
+          <Tooltip.Positioner>
+            <Tooltip.Content>{name}</Tooltip.Content>
+          </Tooltip.Positioner>
+        </Portal>
+      </Tooltip.Root>
       <Flex
         fontSize="sm"
-        sx={{
-          mb: 4,
-          div: { w: '50%', alignItems: 'center' },
+        mb="4"
+        css={{
+          '& > div': { w: '50%', alignItems: 'center' },
         }}
       >
         <Flex>
