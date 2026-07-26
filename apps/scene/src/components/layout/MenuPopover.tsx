@@ -24,7 +24,7 @@ interface MenuPopoverProps extends PopoverProps {
 }
 
 const MenuPopover = ({ buttonBgColor, ...props }: MenuPopoverProps) => {
-  const ref = useRef<HTMLDivElement>();
+  const ref = useRef<HTMLDivElement>(null);
   const { isOpen, onClose, onToggle } = useDisclosure();
   useOutsideClick({ ref, handler: onClose });
 

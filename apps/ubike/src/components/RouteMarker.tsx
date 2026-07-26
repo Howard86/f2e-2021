@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Box, BoxProps } from '@chakra-ui/react';
 
-// here as we use ReactDOM.render, can only access css variables
+// This renders outside ChakraProvider, so only CSS variables are available.
 const RouteMarker = ({ children, ...props }: BoxProps) => (
   <Box
     px="var(--chakra-space-2)"

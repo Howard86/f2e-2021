@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React from 'react';
 
 import {
   Box,
@@ -46,7 +46,6 @@ const CycleCard = ({
   geoJson,
 }: CycleCardProps) => {
   const toast = useAppToast();
-  const ref = useRef();
   const { mapRef, layerIdRef, markersRef, stationIdSetRef } = useMap();
   const theme = useTheme();
 
@@ -104,7 +103,6 @@ const CycleCard = ({
 
   return (
     <MotionBox
-      ref={ref}
       p={[4, 6]}
       bg="white"
       color="blackAlpha.800"

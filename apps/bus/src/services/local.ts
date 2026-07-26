@@ -6,7 +6,7 @@ import type { SuccessApiResponse } from 'next-api-handler';
 import type { BusEstimationParam } from '@/pages/api/bus/estimation';
 import type { StationQueryParam } from '@/pages/api/bus/nearby';
 
-const busEstimationAdapter = createEntityAdapter<BusEstimation>({
+const busEstimationAdapter = createEntityAdapter<BusEstimation, string>({
   selectId: (busEstimation) => busEstimation.StopUID,
 });
 
@@ -17,7 +17,7 @@ export const localApi = createApi({
   }),
   endpoints: (builder) => ({
     getBusEstimation: builder.query<
-      EntityState<BusEstimation>,
+      EntityState<BusEstimation, string>,
       BusEstimationParam
     >({
       query: (params) => ({

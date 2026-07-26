@@ -50,7 +50,7 @@ const Map = () => {
     returnNumber: 0,
     address: '',
   });
-  const divRef = useRef<HTMLDivElement>();
+  const divRef = useRef<HTMLDivElement>(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [getStations, { isFetching }] = useLazyGetStationsByCoordinateQuery();
 

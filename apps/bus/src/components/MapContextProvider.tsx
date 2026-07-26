@@ -32,7 +32,7 @@ interface MapContextProviderProps {
 }
 
 const MapContextProvider = ({ children }: MapContextProviderProps) => {
-  const divRef = useRef<HTMLDivElement>();
+  const divRef = useRef<HTMLDivElement>(null);
   const mapContextRef = useRef<MapContextState>({
     map: null,
     markers: [],

@@ -1,6 +1,7 @@
 import { Fragment } from 'react';
 
 import { ChakraProvider } from '@chakra-ui/react';
+import 'mapbox-gl/dist/mapbox-gl.css';
 import type { NextComponentType } from 'next';
 import type { AppProps } from 'next/app';
 import NextHeadSeo from 'next-head-seo';

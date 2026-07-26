@@ -59,9 +59,7 @@ const NearByPage = () => {
         zoom: ZoomLevel.Stops,
       });
 
-      await new Promise<void>((res) => {
-        mapContextRef.current.map.on('load', res);
-      });
+      await mapContextRef.current.map.once('load');
 
       setLoaded();
     }

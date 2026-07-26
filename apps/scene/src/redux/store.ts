@@ -11,15 +11,9 @@ const configureAppStore = () => {
   const store = configureStore({
     reducer,
     devTools: isDev,
-    middleware: (getDefaultMiddleware) => [
-      ...getDefaultMiddleware(),
-      localApi.middleware,
-    ],
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware().concat(localApi.middleware),
   });
-
-  if (isDev && module.hot) {
-    module.hot.accept('./reducer', () => store.replaceReducer(reducer));
-  }
 
   return store;
 };

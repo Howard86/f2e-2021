@@ -28,7 +28,6 @@ import {
   CityMap,
   CitySet,
 } from '@f2e/tdx';
-import type { EntityId } from '@reduxjs/toolkit';
 import type {
   GetStaticPathsResult,
   GetStaticPropsContext,
@@ -89,7 +88,7 @@ const BusRoutePage = ({
   const [selectedDirection, setSelectedDirection] = useState<BusDirection>(
     BusDirection.去程,
   );
-  const [selectedStopId, setSelectedStopId] = useState<EntityId>(INITIAL_ID);
+  const [selectedStopId, setSelectedStopId] = useState(INITIAL_ID);
   const { divRef, mapContextRef, isLoaded, setLoaded } = useMap();
   // TODO: refactor with useReducer
   const extendDisclosure = useDisclosure();
@@ -149,9 +148,7 @@ const BusRoutePage = ({
         ),
       );
 
-      await new Promise<void>((res) => {
-        mapContextRef.current.map.on('load', res);
-      });
+      await mapContextRef.current.map.once('load');
       setLoaded();
     };
 

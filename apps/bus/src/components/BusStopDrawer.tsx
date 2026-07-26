@@ -19,7 +19,6 @@ import {
   BusRoute,
   BusStopOfRoute,
 } from '@f2e/tdx';
-import { EntityId } from '@reduxjs/toolkit';
 import { BiChevronLeft, BiChevronRight } from 'react-icons/bi';
 import { MdClose } from 'react-icons/md';
 
@@ -32,9 +31,9 @@ import { getLastElement } from '@/utils/array';
 import { getBusEstimationStatus } from '@/utils/bus';
 
 interface BusStopDrawerProps extends Omit<DrawerProps, 'children'> {
-  selectedStopId: EntityId;
+  selectedStopId: string;
   busRoute: BusRoute;
-  setSelectedStopId: Dispatch<SetStateAction<EntityId>>;
+  setSelectedStopId: Dispatch<SetStateAction<string>>;
   busEstimation: BusEstimation;
   selectedBusStop: BusStopOfRoute;
 }
