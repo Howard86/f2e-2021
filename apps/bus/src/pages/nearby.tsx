@@ -2,16 +2,13 @@ import React from 'react';
 
 import {
   Accordion,
-  AccordionButton,
-  AccordionIcon,
-  AccordionItem,
-  AccordionPanel,
   Box,
   Button,
   Center,
   Circle,
   Flex,
   IconButton,
+  IconButtonProps,
   useBreakpointValue,
   Wrap,
 } from '@chakra-ui/react';
@@ -34,7 +31,10 @@ const NearByPage = () => {
   const toast = useAppToast();
   const { currentPositionRef, onLocate } = useGetLocation();
   const router = useRouter();
-  const buttonVariant = useBreakpointValue({ base: 'ghost', md: 'solid' });
+  const buttonVariant = useBreakpointValue<IconButtonProps['variant']>({
+    base: 'ghost',
+    md: 'solid',
+  });
   const { divRef, mapContextRef, isLoaded, setLoaded } = useMap();
   const [getBusStations, { isSuccess, data }] = useGetNearByBusMutation();
 
@@ -93,78 +93,85 @@ const NearByPage = () => {
             variant={buttonVariant}
             fontSize="2xl"
             rounded="full"
-            icon={<IoHome />}
             onClick={onHomeClick}
             zIndex="overlay"
-          />
+          >
+            <IoHome />
+          </IconButton>
         </Flex>
         <Flex flexDir={['column', 'row-reverse']} flexGrow={1} overflowY="auto">
           <Center flexGrow={1}>
             <Button
               display={isSuccess ? 'none' : 'block'}
-              variant="neon"
+              variant="outline"
               onClick={onSearch}
               zIndex="overlay"
             >
               搜尋
             </Button>
           </Center>
-          <Accordion
+          <Accordion.Root
             w={['auto', DESKTOP_MAP_LEFT]}
             overflowY="auto"
-            bg="gradient.bg"
-            allowToggle
+            bgGradient="background"
+            collapsible
             maxW={DESKTOP_MAP_LEFT}
             h={[MOBILE_MAP_BOTTOM, 'auto']}
           >
             {data?.data.map((busStation) => (
-              <AccordionItem key={busStation.StationUID}>
-                <h2>
-                  <AccordionButton
-                    onFocus={async () => {
-                      const { createJSXMarker } = await import(
-                        '@/services/mapbox'
-                      );
-                      const marker = createJSXMarker(
-                        <Circle
-                          size="12px"
-                          bgColor="var(--chakra-colors-secondary-200)"
-                        />,
-                        [
-                          busStation.StationPosition.PositionLon,
-                          busStation.StationPosition.PositionLat,
-                        ],
-                      );
+              <Accordion.Item
+                key={busStation.StationUID}
+                value={busStation.StationUID}
+              >
+                <Accordion.ItemTrigger
+                  onFocus={async () => {
+                    const { createJSXMarker } = await import(
+                      '@/services/mapbox'
+                    );
+                    const marker = createJSXMarker(
+                      <Circle
+                        size="12px"
+                        bgColor="var(--chakra-colors-secondary-200)"
+                      />,
+                      [
+                        busStation.StationPosition.PositionLon,
+                        busStation.StationPosition.PositionLat,
+                      ],
+                    );
 
-                      marker.addTo(mapContextRef.current.map);
-                      mapContextRef.current.markers.push(marker);
-                    }}
-                  >
-                    <Box flex="1" textAlign="left">
-                      {busStation.StationName.Zh_tw}
-                    </Box>
-                    <AccordionIcon />
-                  </AccordionButton>
-                </h2>
-                <AccordionPanel pb={4}>
-                  <Wrap>
-                    {busStation.Stops.map((stop) => (
-                      <Button
-                        key={`${busStation.StationUID}-${stop.StopUID}-${stop.RouteUID}`}
-                        variant="neon"
-                        as={RouteLink}
-                        href={`/city/${CityMap[busStation.LocationCityCode]}/${
-                          stop.RouteName.Zh_tw
-                        }`}
-                      >
-                        {stop.RouteName.Zh_tw}
-                      </Button>
-                    ))}
-                  </Wrap>
-                </AccordionPanel>
-              </AccordionItem>
+                    marker.addTo(mapContextRef.current.map);
+                    mapContextRef.current.markers.push(marker);
+                  }}
+                >
+                  <Box flex="1" textAlign="left">
+                    {busStation.StationName.Zh_tw}
+                  </Box>
+                  <Accordion.ItemIndicator />
+                </Accordion.ItemTrigger>
+                <Accordion.ItemContent>
+                  <Accordion.ItemBody pb={4}>
+                    <Wrap>
+                      {busStation.Stops.map((stop) => (
+                        <Button
+                          key={`${busStation.StationUID}-${stop.StopUID}-${stop.RouteUID}`}
+                          variant="outline"
+                          asChild
+                        >
+                          <RouteLink
+                            href={`/city/${
+                              CityMap[busStation.LocationCityCode]
+                            }/${stop.RouteName.Zh_tw}`}
+                          >
+                            {stop.RouteName.Zh_tw}
+                          </RouteLink>
+                        </Button>
+                      ))}
+                    </Wrap>
+                  </Accordion.ItemBody>
+                </Accordion.ItemContent>
+              </Accordion.Item>
             ))}
-          </Accordion>
+          </Accordion.Root>
         </Flex>
       </Flex>
     </>

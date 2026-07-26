@@ -9,6 +9,7 @@ import { Provider as ReduxProvider } from 'react-redux';
 
 import Layout, { LayoutProps } from '@/components/Layout';
 import MapContextProvider from '@/components/MapContextProvider';
+import { AppToaster } from '@/hooks/use-app-toast';
 import store from '@/redux/store';
 import theme from '@/theme';
 
@@ -18,7 +19,7 @@ type ExtendedComponent = NextComponentType &
     layoutProps: Partial<LayoutProps>;
   }>;
 
-const App = ({ Component, pageProps }: AppProps): JSX.Element => {
+const App = ({ Component, pageProps }: AppProps) => {
   const { PageLayout = Fragment, layoutProps } = Component as ExtendedComponent;
 
   return (
@@ -34,7 +35,7 @@ const App = ({ Component, pageProps }: AppProps): JSX.Element => {
         }}
       />
       <ReduxProvider store={store}>
-        <ChakraProvider resetCSS theme={theme}>
+        <ChakraProvider value={theme}>
           <MapContextProvider>
             <Layout {...layoutProps}>
               <PageLayout>
@@ -42,6 +43,7 @@ const App = ({ Component, pageProps }: AppProps): JSX.Element => {
               </PageLayout>
             </Layout>
           </MapContextProvider>
+          <AppToaster />
         </ChakraProvider>
       </ReduxProvider>
     </>

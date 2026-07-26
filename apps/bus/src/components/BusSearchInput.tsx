@@ -1,6 +1,6 @@
 import React, { ChangeEventHandler, memo } from 'react';
 
-import { Input, InputProps, Select } from '@chakra-ui/react';
+import { Input, InputProps, NativeSelect } from '@chakra-ui/react';
 import { Cities, City, CityMap } from '@f2e/tdx';
 
 interface BusSearchInputProps {
@@ -19,19 +19,20 @@ const BusSearchInput = ({
   onSelectCity,
 }: BusSearchInputProps) => (
   <>
-    <Select
-      display={display}
-      value={defaultCity}
-      maxW="110px"
-      onChange={onSelectCity}
-      roundedRight="none"
-    >
-      {Cities.map((city) => (
-        <option key={city} value={city}>
-          {CityMap[city]}
-        </option>
-      ))}
-    </Select>
+    <NativeSelect.Root display={display} maxW="110px">
+      <NativeSelect.Field
+        value={defaultCity}
+        onChange={onSelectCity}
+        roundedRight="none"
+      >
+        {Cities.map((city) => (
+          <option key={city} value={city}>
+            {CityMap[city]}
+          </option>
+        ))}
+      </NativeSelect.Field>
+      <NativeSelect.Indicator />
+    </NativeSelect.Root>
     <Input
       display={display}
       value={searchString}

@@ -4,12 +4,9 @@ import {
   Box,
   Button,
   Drawer,
-  DrawerBody,
-  DrawerContent,
-  DrawerHeader,
-  DrawerProps,
   HStack,
   IconButton,
+  Portal,
   Tag,
   Text,
 } from '@chakra-ui/react';
@@ -30,12 +27,15 @@ import { useMap } from '@/components/MapContextProvider';
 import { getLastElement } from '@/utils/array';
 import { getBusEstimationStatus } from '@/utils/bus';
 
-interface BusStopDrawerProps extends Omit<DrawerProps, 'children'> {
+interface BusStopDrawerProps
+  extends Omit<Drawer.RootProps, 'children' | 'onOpenChange' | 'open'> {
   selectedStopId: string;
   busRoute: BusRoute;
   setSelectedStopId: Dispatch<SetStateAction<string>>;
   busEstimation: BusEstimation;
   selectedBusStop: BusStopOfRoute;
+  isOpen: boolean;
+  onClose: VoidFunction;
 }
 
 export enum ZoomLevel {
@@ -46,6 +46,7 @@ export enum ZoomLevel {
 }
 
 const BusStopDrawer = ({
+  isOpen,
   onClose,
   busRoute: route,
   selectedStopId,
@@ -84,87 +85,110 @@ const BusStopDrawer = ({
   };
 
   return (
-    <Drawer onClose={onClose} size="lg" placement="bottom" {...props}>
-      <DrawerContent minH="200px" textAlign="center">
-        <Box
-          pos="fixed"
-          w="full"
-          h="full"
-          overflow="hidden"
-          bg="gradient.bg"
-          zIndex="1"
-        >
-          <Image
-            alt="background"
-            src={background}
-            placeholder="blur"
-            layout="fill"
-            objectFit="cover"
-            objectPosition="bottom"
-          />
-        </Box>
-        <DrawerHeader pb="0" zIndex="docked" noOfLines={1}>
-          {busEstimation.StopName.Zh_tw}
-        </DrawerHeader>
-        <IconButton
-          pos="absolute"
-          right="4"
-          top="5"
-          rounded="full"
-          size="xs"
-          color="primary.600"
-          bgColor="primary.50"
-          aria-label="close modal"
-          fontSize="xl"
-          zIndex="docked"
-          icon={<MdClose />}
-          onClick={onClose}
-        />
-        <DrawerBody display="flex" flexDir="column" pt="0" zIndex="docked">
-          <Text noOfLines={1} color="primary.200">
-            往
-            {busEstimation.Direction === BusDirection.去程
-              ? route.DestinationStopNameZh
-              : route.DepartureStopNameZh}
-          </Text>
-          <HStack mx="auto" my="2">
-            <Button
-              variant="ghost"
-              size="sm"
-              leftIcon={<BiChevronLeft />}
-              isDisabled={selectedBusStop.Stops[0].StopUID === selectedStopId}
-              onClick={onPreviousStopClick}
+    <Drawer.Root
+      open={isOpen}
+      size="lg"
+      placement="bottom"
+      onOpenChange={({ open }) => {
+        if (!open) {
+          onClose();
+        }
+      }}
+      {...props}
+    >
+      <Portal>
+        <Drawer.Positioner>
+          <Drawer.Content minH="200px" textAlign="center">
+            <Box
+              pos="fixed"
+              w="full"
+              h="full"
+              overflow="hidden"
+              bgGradient="background"
+              zIndex="1"
             >
-              上一站
-            </Button>
-            <Tag colorScheme="secondary" ml="2">
-              {getBusEstimationStatus(busEstimation)}
-            </Tag>
-            <Button
-              variant="ghost"
-              rightIcon={<BiChevronRight />}
-              size="sm"
-              isDisabled={
-                getLastElement(selectedBusStop.Stops).StopUID === selectedStopId
-              }
-              onClick={onNextStopClick}
-            >
-              下一站
-            </Button>
-          </HStack>
-          <Box pos="absolute" bottom="1" left="0" right="0">
-            <Image
-              src={bus}
-              alt="bus"
-              placeholder="blur"
-              width={200}
-              height={60}
-              objectFit="contain"
-            />
-          </Box>
-        </DrawerBody>
-      </DrawerContent>
-    </Drawer>
+              <Image
+                alt="background"
+                src={background}
+                placeholder="blur"
+                layout="fill"
+                objectFit="cover"
+                objectPosition="bottom"
+              />
+            </Box>
+            <Drawer.Header pb="0" zIndex="docked">
+              <Drawer.Title lineClamp={1}>
+                {busEstimation.StopName.Zh_tw}
+              </Drawer.Title>
+            </Drawer.Header>
+            <Drawer.CloseTrigger asChild>
+              <IconButton
+                pos="absolute"
+                right="4"
+                top="5"
+                rounded="full"
+                size="xs"
+                color="primary.600"
+                bgColor="primary.50"
+                aria-label="close modal"
+                fontSize="xl"
+                zIndex="docked"
+              >
+                <MdClose />
+              </IconButton>
+            </Drawer.CloseTrigger>
+            <Drawer.Body display="flex" flexDir="column" pt="0" zIndex="docked">
+              <Text lineClamp={1} color="primary.200">
+                往
+                {busEstimation.Direction === BusDirection.去程
+                  ? route.DestinationStopNameZh
+                  : route.DepartureStopNameZh}
+              </Text>
+              <HStack mx="auto" my="2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  disabled={
+                    selectedBusStop.Stops[0].StopUID === selectedStopId
+                  }
+                  onClick={onPreviousStopClick}
+                >
+                  <BiChevronLeft />
+                  上一站
+                </Button>
+                <Tag.Root colorPalette="secondary" ml="2">
+                  <Tag.Label>
+                    {getBusEstimationStatus(busEstimation)}
+                  </Tag.Label>
+                </Tag.Root>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  disabled={
+                    getLastElement(selectedBusStop.Stops).StopUID ===
+                    selectedStopId
+                  }
+                  onClick={onNextStopClick}
+                >
+                  下一站
+                  <BiChevronRight />
+                </Button>
+              </HStack>
+              <Box pos="absolute" bottom="1" left="0" right="0">
+                <Image
+                  src={bus}
+                  alt="bus"
+                  placeholder="blur"
+                  width={200}
+                  height={60}
+                  objectFit="contain"
+                />
+              </Box>
+            </Drawer.Body>
+          </Drawer.Content>
+        </Drawer.Positioner>
+      </Portal>
+    </Drawer.Root>
   );
 };
 

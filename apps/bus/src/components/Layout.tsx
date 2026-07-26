@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 
-import { Box, keyframes } from '@chakra-ui/react';
+import { Box } from '@chakra-ui/react';
 
 import Map from './Map';
 
@@ -13,20 +13,11 @@ export interface LayoutProps {
   hideLocate?: boolean;
 }
 
-const slidingAnimation = keyframes`
-  from {
-    object-position: 0 50%;
-  }
-  to {
-    object-position: 100% 50%;
-  }
-`;
-
 export const MOBILE_MAP_BOTTOM = '200px';
 export const DESKTOP_MAP_LEFT = '400px';
 
 const Layout = ({ children, showMap, hideLocate }: LayoutProps) => (
-  <Box h="full" bgGradient="var(--chakra-colors-gradient-bg)">
+  <Box h="full" bgGradient="background">
     <Box pos="fixed" w="full" h="full" overflow="hidden">
       <Image
         alt="background"
@@ -34,7 +25,7 @@ const Layout = ({ children, showMap, hideLocate }: LayoutProps) => (
         placeholder="blur"
         layout="fill"
         objectFit="cover"
-        animation={`${slidingAnimation} 60s linear infinite alternate`}
+        animation="backgroundSlide 60s linear infinite alternate"
       />
     </Box>
     <Box

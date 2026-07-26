@@ -3,9 +3,9 @@ import React from 'react';
 import {
   Box,
   Button,
+  ButtonProps,
   Center,
   Heading,
-  keyframes,
   Stack,
   useBreakpointValue,
 } from '@chakra-ui/react';
@@ -19,44 +19,11 @@ import RouteLink from '@/components/RouteLink';
 import human from '@/human.png';
 import station from '@/station.png';
 
-const busAnimation = keyframes`
-  0% {
-    right: 150%;
-  }
-  45% {
-    right: 32%;
-  }
-  60% {
-    right: calc(32% - 2px);
-  }
-  65% {
-    right: 32%;
-  }
-  100% {
-    right: -100%;
-  }
-`;
-
-const humanAnimation = keyframes`
-  0% {
-    opacity: 1;
-  }
-  22.5% {
-    opacity: 1;
-  }
-  32.5% {
-    opacity: 0;
-  }
-  72.5% {
-    opacity: 0;
-  }
-  82.5% {
-    opacity: 1; 
-  }
-`;
-
 const HomePage = () => {
-  const size = useBreakpointValue({ base: 'md', md: 'lg' });
+  const size = useBreakpointValue<ButtonProps['size']>({
+    base: 'md',
+    md: 'lg',
+  });
 
   return (
     <Center
@@ -78,24 +45,18 @@ const HomePage = () => {
       >
         提供最即時的公車動態，讓您輕鬆掌握資訊，現在就開始規劃您的路線吧！
       </Heading>
-      <Stack direction={['column', 'row']} spacing={[4, 8]}>
-        <Button
-          as={RouteLink}
-          href="/city"
-          leftIcon={<FaBusAlt />}
-          variant="neon"
-          size={size}
-        >
-          市區公車
+      <Stack direction={['column', 'row']} gap={[4, 8]}>
+        <Button asChild variant="outline" size={size}>
+          <RouteLink href="/city">
+            <FaBusAlt />
+            市區公車
+          </RouteLink>
         </Button>
-        <Button
-          as={RouteLink}
-          href="/nearby"
-          leftIcon={<BiCurrentLocation />}
-          variant="neon"
-          size={size}
-        >
-          附近站牌
+        <Button asChild variant="outline" size={size}>
+          <RouteLink href="/nearby">
+            <BiCurrentLocation />
+            附近站牌
+          </RouteLink>
         </Button>
       </Stack>
       <Box
@@ -119,7 +80,7 @@ const HomePage = () => {
         right="35%"
         w={[25, 50]}
         h={[55, 110]}
-        animation={`${humanAnimation} 20s ease-in-out infinite`}
+        animation="humanFade 20s ease-in-out infinite"
       >
         <Image
           alt="human"
@@ -134,7 +95,7 @@ const HomePage = () => {
         bottom="4.5%"
         w={[203, 406]}
         h={['60px', 120]}
-        animation={`${busAnimation} 10s ease-in-out infinite`}
+        animation="busTravel 10s ease-in-out infinite"
       >
         <Image
           alt="bus"

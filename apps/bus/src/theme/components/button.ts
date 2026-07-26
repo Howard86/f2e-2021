@@ -1,25 +1,27 @@
-import type { ComponentStyleConfig } from '@chakra-ui/react';
-import { transparentize } from '@chakra-ui/theme-tools';
+import { defineRecipe } from '@chakra-ui/react';
 
-const Button: ComponentStyleConfig = {
+const Button = defineRecipe({
   variants: {
-    neon: ({ theme }) => ({
-      border: '1px solid',
-      borderColor: 'primary.200',
-      boxShadow: `0 0 6px -1px ${theme.colors.secondary[200]},0 0 4px -1px ${theme.colors.secondary[100]}`,
-      color: 'white',
-      bg: 'transparent',
-      transition: 'ease',
-      transitionDuration: '0.3s',
-      _hover: {
-        bg: transparentize('primary.200', 0.12)(theme),
+    variant: {
+      outline: {
+        border: '1px solid',
+        borderColor: 'primary.200',
+        boxShadow:
+          '0 0 6px -1px var(--chakra-colors-secondary-200),0 0 4px -1px var(--chakra-colors-secondary-100)',
+        color: 'white',
+        bg: 'transparent',
+        transition: 'ease',
+        transitionDuration: '0.3s',
+        _hover: {
+          bg: 'color-mix(in srgb, var(--chakra-colors-primary-200) 12%, transparent)',
+        },
+        _active: {
+          bg: 'color-mix(in srgb, var(--chakra-colors-primary-200) 24%, transparent)',
+          top: '1px',
+        },
       },
-      _active: {
-        bg: transparentize('primary.200', 0.24)(theme),
-        top: '1px',
-      },
-    }),
+    },
   },
-};
+});
 
 export default Button;

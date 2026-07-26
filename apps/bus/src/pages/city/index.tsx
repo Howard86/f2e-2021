@@ -6,13 +6,13 @@ import {
   Flex,
   Heading,
   IconButton,
-  keyframes,
   LinkBox,
   LinkOverlay,
   Text,
 } from '@chakra-ui/react';
 import { City, CityMap, CitySet } from '@f2e/tdx';
 import debounce from 'lodash.debounce';
+import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import NextHeadSeo from 'next-head-seo';
 import { BiChevronLeft } from 'react-icons/bi';
@@ -22,35 +22,11 @@ import BusSearchInput from '@/components/BusSearchInput';
 import Image from '@/components/Image';
 import NavBarItems from '@/components/NavBarItems';
 import RouteKeyBoard from '@/components/RouteKeyBoard';
-import RouteLink from '@/components/RouteLink';
 import { DESKTOP_DISPLAY, MOBILE_DISPLAY } from '@/constants/style';
 import { useLazyGetBusRoutesQuery } from '@/services/local';
 import station from '@/station.png';
 import { getBusRouteDestinations } from '@/utils/bus';
 import { addToLocalStorage, getFromLocalStorage } from '@/utils/local-storage';
-
-const busAnimation = keyframes`
-  0% {
-    top: 8px;
-  }
-  10% {
-    top: 0;
-  }
-`;
-
-const roadAnimation = keyframes`
-  0% {
-    left: 100%;
-    opacity: 0;
-  }
-  20% {
-    opacity: 1;
-  }
-  100% {
-    left: 0;
-    opacity: 0;
-  }
-`;
 
 export const CITY_STORAGE_KEY = 'selected-city';
 const DEFAULT_SEARCH_STRING = '';
@@ -102,8 +78,9 @@ const CityPage = () => {
             variant="ghost"
             fontSize="4xl"
             onClick={onArrowClick}
-            icon={<BiChevronLeft />}
-          />
+          >
+            <BiChevronLeft />
+          </IconButton>
           <BusSearchInput
             display={MOBILE_DISPLAY}
             city={city}
@@ -157,12 +134,13 @@ const CityPage = () => {
                       _active={{ borderColor: 'secondary.200' }}
                     >
                       <Heading fontSize="2xl" mb="4">
-                        <RouteLink
-                          as={LinkOverlay}
-                          href={`/city/${city}/${busRoute.RouteName.Zh_tw}`}
-                        >
-                          {busRoute.RouteName.Zh_tw}
-                        </RouteLink>
+                        <LinkOverlay asChild>
+                          <NextLink
+                            href={`/city/${city}/${busRoute.RouteName.Zh_tw}`}
+                          >
+                            {busRoute.RouteName.Zh_tw}
+                          </NextLink>
+                        </LinkOverlay>
                       </Heading>
                       <Text>{getBusRouteDestinations(busRoute)}</Text>
                     </LinkBox>
@@ -229,17 +207,20 @@ const CityPage = () => {
               <Image
                 alt="bus"
                 src={bus}
-                animation={`${busAnimation} 3s ease infinite`}
+                animation="busBounce 3s ease infinite"
               />
               <Box
                 pos="absolute"
                 rounded="2xl"
                 h="1"
                 w="20"
-                bgGradient="linear(to-r, #172E5E 0, whiteAlpha.600 50%, #172E5E)"
+                bgGradient="to-r"
+                gradientFrom="#172E5E"
+                gradientVia="whiteAlpha.600"
+                gradientTo="#172E5E"
                 zIndex=""
                 bottom="6"
-                animation={`${roadAnimation} 6s ease-out infinite`}
+                animation="roadTravel 6s ease-out infinite"
               />
             </Box>
           </Flex>

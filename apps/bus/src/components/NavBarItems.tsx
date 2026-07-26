@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { HStack, StackProps, useTheme } from '@chakra-ui/react';
+import { HStack, StackProps } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 
 import LogoIcon from './icons/Logo';
@@ -12,7 +12,6 @@ interface NavBarItemsProps {
 
 const NavBarItems = ({ display }: NavBarItemsProps) => {
   const router = useRouter();
-  const theme = useTheme();
 
   return (
     <>
@@ -22,18 +21,14 @@ const NavBarItems = ({ display }: NavBarItemsProps) => {
       <HStack display={display} fontSize="xl">
         <RouteLink
           href="/city"
-          textShadow={
-            router.pathname === '/city' ? theme.colors.shadow.text : undefined
-          }
+          textShadow={router.pathname === '/city' ? 'text' : undefined}
           mr={6}
         >
           公車定位
         </RouteLink>
         <RouteLink
           href="/nearby"
-          textShadow={
-            router.pathname === '/nearby' ? theme.colors.shadow.text : undefined
-          }
+          textShadow={router.pathname === '/nearby' ? 'text' : undefined}
         >
           附近站牌
         </RouteLink>

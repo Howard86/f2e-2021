@@ -40,11 +40,11 @@ const MapContextProvider = ({ children }: MapContextProviderProps) => {
     positionMarker: null,
     layerId: '',
   });
-  const { onOpen, isOpen } = useDisclosure();
+  const { onOpen, open } = useDisclosure();
 
   const context = useMemo(
-    () => ({ mapContextRef, isLoaded: isOpen, setLoaded: onOpen, divRef }),
-    [isOpen, onOpen],
+    () => ({ mapContextRef, isLoaded: open, setLoaded: onOpen, divRef }),
+    [onOpen, open],
   );
 
   return <MapContext.Provider value={context}>{children}</MapContext.Provider>;

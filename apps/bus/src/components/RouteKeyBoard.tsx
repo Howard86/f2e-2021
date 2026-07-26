@@ -74,23 +74,24 @@ const RouteKeyBoard = ({ setSearchString, ...props }: RouteKeyBoardProps) => {
       flex={0}
       h={[200, 'auto']}
       columns={5}
-      spacing={[2, 4]}
+      gap={[2, 4]}
       pt={[2, 3]}
       pb={[2, 1]}
       px={[2, 0]}
       {...props}
     >
       {BUTTON_TEXTS.map((text, index) => (
-        <Button variant="neon" key={text} onClick={onClickArray[index]}>
+        <Button variant="outline" key={text} onClick={onClickArray[index]}>
           {text}
         </Button>
       ))}
       <IconButton
-        variant="neon"
+        variant="outline"
         aria-label="delete one character"
         onClick={onDeleteText}
-        icon={<FiDelete />}
-      />
+      >
+        <FiDelete />
+      </IconButton>
     </SimpleGrid>
   );
 };

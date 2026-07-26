@@ -86,9 +86,10 @@ const Map = ({ hideLocate }: MapProps) => {
         shadow="lg"
         aria-label="定位"
         zIndex="docked"
-        icon={<BiCurrentLocation />}
         onClick={onLocate}
-      />
+      >
+        <BiCurrentLocation />
+      </IconButton>
     </>
   );
 };

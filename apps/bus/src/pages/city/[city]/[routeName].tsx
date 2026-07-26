@@ -6,18 +6,13 @@ import {
   Flex,
   Heading,
   IconButton,
+  IconButtonProps,
   Stack,
-  Tab,
-  TabList,
-  TabPanel,
-  TabPanels,
   Tabs,
-  TabsProps,
   Tag,
   Text,
   useBreakpointValue,
   useDisclosure,
-  useTheme,
   VStack,
 } from '@chakra-ui/react';
 import {
@@ -52,6 +47,7 @@ import {
   useGetBusEstimationQuery,
 } from '@/services/local';
 import { busService } from '@/services/tdx';
+import theme from '@/theme';
 import { getMiddleElement } from '@/utils/array';
 import { getBusEstimationStatus } from '@/utils/bus';
 import { getTwoDigitString } from '@/utils/string';
@@ -78,21 +74,25 @@ const BusRoutePage = ({
   directions,
   busStopEntity: routeStopEntity,
 }: BusRoutePageProps) => {
-  const theme = useTheme();
   const router = useRouter();
-  const tabsProps = useBreakpointValue<Omit<TabsProps, 'children'>>({
-    base: { variant: 'solid-rounded' },
-    md: { isFitted: true, variant: 'line' },
+  const tabsProps = useBreakpointValue<
+    Omit<Tabs.RootProps, 'children' | 'onValueChange' | 'value'>
+  >({
+    base: { variant: 'subtle' },
+    md: { fitted: true, variant: 'line' },
   });
-  const buttonVariant = useBreakpointValue({ base: 'ghost', md: 'solid' });
+  const buttonVariant = useBreakpointValue<IconButtonProps['variant']>({
+    base: 'ghost',
+    md: 'solid',
+  });
   const [selectedDirection, setSelectedDirection] = useState<BusDirection>(
-    BusDirection.去程,
+    directions[0] ?? BusDirection.去程,
   );
   const [selectedStopId, setSelectedStopId] = useState(INITIAL_ID);
   const { divRef, mapContextRef, isLoaded, setLoaded } = useMap();
   // TODO: refactor with useReducer
   const extendDisclosure = useDisclosure();
-  const { isOpen, onClose, onOpen } = useDisclosure();
+  const { open: isOpen, onClose, onOpen } = useDisclosure();
   const stopDisclosure = useDisclosure();
   const { data, selectedBusEstimation } = useGetBusEstimationQuery(
     { city, route: routeName },
@@ -117,8 +117,8 @@ const BusRoutePage = ({
     extendDisclosure.onOpen();
   };
 
-  const onSwitchTab = (index: number) => {
-    setSelectedDirection(index);
+  const onSwitchTab = (value: string) => {
+    setSelectedDirection(Number(value) as BusDirection);
   };
 
   const onArrowClick = () => {
@@ -181,7 +181,7 @@ const BusRoutePage = ({
       mapContextRef.current.markers = selectedBusRoute.Stops.map((stop) =>
         createJSXMarker(
           <VStack
-            spacing={0}
+            gap={0}
             cursor="pointer"
             onClick={async () => {
               const { getPosition } = await import('@/services/mapbox');
@@ -226,7 +226,7 @@ const BusRoutePage = ({
         mapContextRef.current.map,
         route.RouteUID,
         geoJson,
-        theme.colors.primary[200],
+        theme.token('colors.primary.200'),
       );
     };
 
@@ -237,7 +237,6 @@ const BusRoutePage = ({
     isLoaded,
     mapContextRef,
     router.isFallback,
-    theme.colors.primary,
     selectedBusRoute?.Stops,
   ]);
 
@@ -282,13 +281,14 @@ const BusRoutePage = ({
             variant="ghost"
             fontSize="4xl"
             onClick={onArrowClick}
-            icon={<BiChevronLeft />}
-          />
+          >
+            <BiChevronLeft />
+          </IconButton>
           <NavBarItems display={DESKTOP_DISPLAY} />
           <Stack
             direction={['row', 'column-reverse']}
             pos={['static', 'fixed']}
-            spacing={[1, 4]}
+            gap={[1, 4]}
             zIndex="overlay"
             right={[0, 4]}
             bottom={[0, '72px']}
@@ -298,34 +298,36 @@ const BusRoutePage = ({
               variant={buttonVariant}
               fontSize="2xl"
               rounded="full"
-              icon={<BsInfoCircle />}
               onClick={onOpen}
-            />
+            >
+              <BsInfoCircle />
+            </IconButton>
             <IconButton
               aria-label="move back to home"
               variant={buttonVariant}
               fontSize="2xl"
               rounded="full"
-              icon={<IoHome />}
               onClick={onHomeClick}
-            />
+            >
+              <IoHome />
+            </IconButton>
           </Stack>
         </Flex>
         <Flex flexDir={['column', 'row-reverse']} flexGrow={1}>
           <Box flexGrow={1} overflowY="auto" />
-          <Tabs
+          <Tabs.Root
             w={['auto', DESKTOP_MAP_LEFT]}
-            index={selectedDirection}
-            onChange={onSwitchTab}
+            value={String(selectedDirection)}
+            onValueChange={({ value }) => onSwitchTab(value)}
             zIndex="sticky"
             {...tabsProps}
           >
-            <TabList
-              sx={{
+            <Tabs.List
+              css={{
                 pos: 'relative',
                 p: 4,
                 bg: 'primary.600',
-                button: {
+                '& button': {
                   whiteSpace: 'noWrap',
                 },
               }}
@@ -344,27 +346,26 @@ const BusRoutePage = ({
                 display={MOBILE_DISPLAY}
                 as="h1"
                 alignSelf="center"
-                noOfLines={1}
+                lineClamp={1}
               >
                 {route.RouteName.Zh_tw}
               </Heading>
               <Box display={MOBILE_DISPLAY} flexGrow={1} />
-              {directions.length > 1 ? (
-                <>
-                  <Tab>{route.DestinationStopNameZh}</Tab>
-                  <Tab>{route.DepartureStopNameZh}</Tab>
-                </>
-              ) : (
-                <Tab>
-                  {routeStopEntity[directions[0]].Stops[0].StopName.Zh_tw}
-                </Tab>
-              )}
-            </TabList>
-            <TabPanels
+              {directions.map((direction) => (
+                <Tabs.Trigger key={direction} value={String(direction)}>
+                  {directions.length > 1
+                    ? direction === BusDirection.去程
+                      ? route.DestinationStopNameZh
+                      : route.DepartureStopNameZh
+                    : routeStopEntity[direction].Stops[0].StopName.Zh_tw}
+                </Tabs.Trigger>
+              ))}
+            </Tabs.List>
+            <Box
               bg="secondary.900"
               maxW={DESKTOP_MAP_LEFT}
               h={[
-                extendDisclosure.isOpen ? STOP_LIST_MAX_HEIGHT : 128,
+                extendDisclosure.open ? STOP_LIST_MAX_HEIGHT : 128,
                 STOP_LIST_MAX_HEIGHT,
               ]}
               transition="ease-in-out"
@@ -372,7 +373,11 @@ const BusRoutePage = ({
               overflowX="hidden"
             >
               {directions.map((busDirection) => (
-                <TabPanel key={busDirection} p="0">
+                <Tabs.Content
+                  key={busDirection}
+                  value={String(busDirection)}
+                  p="0"
+                >
                   {routeStopEntity[busDirection].Stops.map((stop) => {
                     const status = getBusEstimationStatus(
                       data?.entities[stop.StopUID],
@@ -407,11 +412,11 @@ const BusRoutePage = ({
                         }}
                       >
                         <Text>{stop.StopName.Zh_tw}</Text>
-                        <Tag colorScheme="secondary" ml="2">
-                          {status}
-                        </Tag>
+                        <Tag.Root colorPalette="secondary" ml="2">
+                          <Tag.Label>{status}</Tag.Label>
+                        </Tag.Root>
                         <Box flexGrow={1} />
-                        <VStack spacing={0}>
+                        <VStack gap={0}>
                           <Box
                             h="20px"
                             borderLeft="2px"
@@ -443,10 +448,10 @@ const BusRoutePage = ({
                       </Flex>
                     );
                   })}
-                </TabPanel>
+                </Tabs.Content>
               ))}
-            </TabPanels>
-          </Tabs>
+            </Box>
+          </Tabs.Root>
         </Flex>
       </Flex>
       <BusRouteInfoModal isOpen={isOpen} onClose={onClose} route={route} />
@@ -458,7 +463,7 @@ const BusRoutePage = ({
           busEstimation={selectedBusEstimation}
           selectedBusStop={selectedBusRoute}
           onClose={onDrawerClose}
-          isOpen={stopDisclosure.isOpen}
+          isOpen={stopDisclosure.open}
         />
       )}
     </>
