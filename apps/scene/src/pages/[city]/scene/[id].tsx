@@ -3,11 +3,8 @@ import React from 'react';
 import {
   Box,
   Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
   Flex,
   Heading,
-  Icon,
   IconButton,
   Image,
   SimpleGrid,
@@ -61,7 +58,7 @@ const getGoogleMapURL = (lat?: number, lng?: number) =>
     : undefined;
 const PAGE_PROPS = { mainColor: 'scenes.main', gradientColor: 'scenes.light' };
 
-const ScenePage = ({ scene }: ScenePageProps): JSX.Element => {
+const ScenePage = ({ scene }: ScenePageProps): React.ReactElement => {
   const router = useRouter();
 
   // TODO: add saved info
@@ -86,32 +83,39 @@ const ScenePage = ({ scene }: ScenePageProps): JSX.Element => {
       <Flex
         flexDir="column"
         pt="16"
-        bgGradient="linear(to-b, restaurants.light, white)"
+        bgGradient="to-b"
+        gradientFrom="restaurants.light"
+        gradientTo="white"
       >
-        <Breadcrumb
-          mx="8"
-          color="blackAlpha.700"
-          separator={<Icon as={BiChevronRight} />}
-        >
-          <BreadcrumbItem>
-            <RouteLink href="/scenes" as={BreadcrumbLink}>
-              景點
-            </RouteLink>
-          </BreadcrumbItem>
-          <BreadcrumbItem>
-            <RouteLink href={`/${CityMap[scene.City]}`} as={BreadcrumbLink}>
-              {scene.City}
-            </RouteLink>
-          </BreadcrumbItem>
-          <BreadcrumbItem fontWeight="bold" isCurrentPage>
-            <RouteLink
-              href={`/${CityMap[scene.City]}/scene/${scene.ScenicSpotID}`}
-              as={BreadcrumbLink}
-            >
-              {scene.ScenicSpotName}
-            </RouteLink>
-          </BreadcrumbItem>
-        </Breadcrumb>
+        <Breadcrumb.Root mx="8" color="blackAlpha.700">
+          <Breadcrumb.List>
+            <Breadcrumb.Item>
+              <RouteLink href="/scenes" as={Breadcrumb.Link}>
+                景點
+              </RouteLink>
+            </Breadcrumb.Item>
+            <Breadcrumb.Separator>
+              <BiChevronRight />
+            </Breadcrumb.Separator>
+            <Breadcrumb.Item>
+              <RouteLink href={`/${CityMap[scene.City]}`} as={Breadcrumb.Link}>
+                {scene.City}
+              </RouteLink>
+            </Breadcrumb.Item>
+            <Breadcrumb.Separator>
+              <BiChevronRight />
+            </Breadcrumb.Separator>
+            <Breadcrumb.Item fontWeight="bold">
+              <RouteLink
+                href={`/${CityMap[scene.City]}/scene/${scene.ScenicSpotID}`}
+                as={Breadcrumb.Link}
+                aria-current="page"
+              >
+                {scene.ScenicSpotName}
+              </RouteLink>
+            </Breadcrumb.Item>
+          </Breadcrumb.List>
+        </Breadcrumb.Root>
         <Flex flexDir={{ base: 'column', lg: 'row' }} m={[4, 8]}>
           <Box pos="relative" flexGrow={1} flexShrink={1} m="2">
             <IconButton
@@ -122,32 +126,40 @@ const ScenePage = ({ scene }: ScenePageProps): JSX.Element => {
               pos="absolute"
               size="lg"
               rounded="full"
-              icon={saved ? <BsBookmarkPlusFill /> : <BsBookmarkPlus />}
               color={saved ? 'red.600' : 'blackAlpha.600'}
-            />
+            >
+              {saved ? <BsBookmarkPlusFill /> : <BsBookmarkPlus />}
+            </IconButton>
             <Image
               alt={scene.Picture?.PictureDescription1 || scene.ScenicSpotName}
               src={scene.Picture?.PictureUrl1}
               align="center"
               fit="cover"
               loading="lazy"
-              fallbackSrc="/static/fallback-lg.jpg"
+              onError={(event) => {
+                event.currentTarget.src = '/static/fallback-lg.jpg';
+              }}
               width={[600, 900]}
               height={[400, 600]}
             />
           </Box>
-          <Box flexGrow={1} flexShrink={3} lineHeight="7" sx={{ p: { my: 2 } }}>
+          <Box
+            flexGrow={1}
+            flexShrink={3}
+            lineHeight="7"
+            css={{ '& p': { my: 2 } }}
+          >
             <Heading textAlign="center" mb="4">
               {scene.ScenicSpotName}
             </Heading>
             {scene.Description && (
-              <Text noOfLines={10}>{scene.Description}</Text>
+              <Text lineClamp={10}>{scene.Description}</Text>
             )}
             {scene.DescriptionDetail &&
               scene.Description !== scene.DescriptionDetail && (
-                <Text noOfLines={10}>{scene.DescriptionDetail}</Text>
+                <Text lineClamp={10}>{scene.DescriptionDetail}</Text>
               )}
-            {scene.TravelInfo && <Text noOfLines={10}>{scene.TravelInfo}</Text>}
+            {scene.TravelInfo && <Text lineClamp={10}>{scene.TravelInfo}</Text>}
           </Box>
         </Flex>
       </Flex>
@@ -155,7 +167,7 @@ const ScenePage = ({ scene }: ScenePageProps): JSX.Element => {
         <SimpleGrid columns={[1, 1, 2]} gap={[4, 8]} mx="8">
           <Box>
             <Heading>景點資訊</Heading>
-            <VStack align="flex-start" textAlign="start" mt="8" spacing={4}>
+            <VStack align="flex-start" textAlign="start" mt="8" gap={4}>
               <SceneDetailBox
                 label="地址"
                 info={

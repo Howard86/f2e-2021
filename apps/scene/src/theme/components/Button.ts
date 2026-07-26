@@ -1,27 +1,29 @@
-import type { ComponentStyleConfig } from '@chakra-ui/react';
+import { defineRecipe } from '@chakra-ui/react';
 
-const Button: ComponentStyleConfig = {
+const Button = defineRecipe({
   variants: {
-    rounded: {
-      rounded: 'full',
-      bgColor: 'blackAlpha.200',
-      _hover: {
-        bgColor: 'blackAlpha.100',
+    variant: {
+      plain: {
+        borderRadius: 'full',
+        bgColor: 'blackAlpha.200',
+        _hover: {
+          bgColor: 'blackAlpha.100',
+        },
       },
-    },
-    scenes: {
-      flexShrink: 0,
-      bgColor: 'gray.100',
-      _focus: {
-        bgColor: 'scenes.main',
-        color: 'white',
-      },
-      _hover: {
-        bgColor: 'scenes.main',
-        color: 'white',
+      subtle: {
+        flexShrink: 0,
+        bgColor: 'gray.100',
+        _focusVisible: {
+          bgColor: 'scenes.main',
+          color: 'white',
+        },
+        _hover: {
+          bgColor: 'scenes.main',
+          color: 'white',
+        },
       },
     },
   },
-};
+});
 
 export default Button;

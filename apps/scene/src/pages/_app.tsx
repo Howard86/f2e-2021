@@ -1,4 +1,4 @@
-import { Fragment } from 'react';
+import { Fragment, type ReactElement } from 'react';
 
 import { ChakraProvider } from '@chakra-ui/react';
 import type { NextComponentType } from 'next';
@@ -7,8 +7,9 @@ import NextHeadSeo from 'next-head-seo';
 import { Provider as ReduxProvider } from 'react-redux';
 
 import type { LayoutProps } from '@/components/layout/Layout';
+import { AppToaster } from '@/hooks/use-app-toast';
 import store from '@/redux/store';
-import theme from '@/theme';
+import system from '@/theme';
 
 type ExtendedComponent = NextComponentType &
   Partial<{
@@ -16,7 +17,7 @@ type ExtendedComponent = NextComponentType &
     layoutProps: LayoutProps;
   }>;
 
-const App = ({ Component, pageProps }: AppProps): JSX.Element => {
+const App = ({ Component, pageProps }: AppProps): ReactElement => {
   const { Layout = Fragment, layoutProps } = Component as ExtendedComponent;
 
   return (
@@ -34,10 +35,11 @@ const App = ({ Component, pageProps }: AppProps): JSX.Element => {
         }}
       />
       <ReduxProvider store={store}>
-        <ChakraProvider resetCSS theme={theme}>
+        <ChakraProvider value={system}>
           <Layout {...layoutProps}>
             <Component {...pageProps} />
           </Layout>
+          <AppToaster />
         </ChakraProvider>
       </ReduxProvider>
     </>

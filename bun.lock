@@ -64,9 +64,8 @@
       "name": "@f2e/scene",
       "version": "0.3.2",
       "dependencies": {
-        "@chakra-ui/react": "^2.7.1",
+        "@chakra-ui/react": "3.36.1",
         "@emotion/react": "^11.11.1",
-        "@emotion/styled": "^11.11.0",
         "@f2e/tdx": "workspace:^0.2.0",
         "@reduxjs/toolkit": "^2.0.0",
         "framer-motion": "^10.12.18",
@@ -2225,8 +2224,6 @@
     "@commitlint/is-ignored/semver": ["semver@7.6.0", "", { "dependencies": { "lru-cache": "^6.0.0" }, "bin": { "semver": "bin/semver.js" } }, "sha512-EnwXhrlwXMk9gKu5/flx5sv/an57AkRplG3hTK68W7FRDN+k+OWBj65M7719OkA82XLBxrcX0KSHj+X5COhOVg=="],
 
     "@emotion/babel-plugin/convert-source-map": ["convert-source-map@1.9.0", "", {}, "sha512-ASFBup0Mz1uyiIjANan1jzLQami9z1PoYSZCiiYW2FczPbenXc45FZdBZLzOT+r6+iciuEModtmCti+hjaAk0A=="],
-
-    "@f2e/scene/@chakra-ui/react": ["@chakra-ui/react@2.10.10", "", { "dependencies": { "@chakra-ui/hooks": "2.4.6", "@chakra-ui/styled-system": "2.12.5", "@chakra-ui/theme": "3.4.10", "@chakra-ui/utils": "2.2.6", "@popperjs/core": "^2.11.8", "@zag-js/focus-visible": "^0.31.1", "aria-hidden": "^1.2.3", "react-fast-compare": "3.2.2", "react-focus-lock": "^2.9.6", "react-remove-scroll": "^2.5.7" }, "peerDependencies": { "@emotion/react": ">=11", "@emotion/styled": ">=11", "framer-motion": ">=4.0.0", "react": ">=18", "react-dom": ">=18" } }, "sha512-uahxAfb83/O9fcgBm3ew/nVeQiNgE0uQf8NdQQp3I6u/PCuR2OjSEneV4Ba86W8z50Ppwcxvf9XDk5btYceggQ=="],
 
     "@f2e/ubike/@chakra-ui/react": ["@chakra-ui/react@2.10.10", "", { "dependencies": { "@chakra-ui/hooks": "2.4.6", "@chakra-ui/styled-system": "2.12.5", "@chakra-ui/theme": "3.4.10", "@chakra-ui/utils": "2.2.6", "@popperjs/core": "^2.11.8", "@zag-js/focus-visible": "^0.31.1", "aria-hidden": "^1.2.3", "react-fast-compare": "3.2.2", "react-focus-lock": "^2.9.6", "react-remove-scroll": "^2.5.7" }, "peerDependencies": { "@emotion/react": ">=11", "@emotion/styled": ">=11", "framer-motion": ">=4.0.0", "react": ">=18", "react-dom": ">=18" } }, "sha512-uahxAfb83/O9fcgBm3ew/nVeQiNgE0uQf8NdQQp3I6u/PCuR2OjSEneV4Ba86W8z50Ppwcxvf9XDk5btYceggQ=="],
 

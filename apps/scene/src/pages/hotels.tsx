@@ -4,11 +4,11 @@ import {
   Box,
   Button,
   Center,
+  Field,
   Flex,
-  FormControl,
-  FormLabel,
   Grid,
   Input,
+  Portal,
   SimpleGrid,
   Stack,
   Text,
@@ -46,7 +46,7 @@ interface HotelsPageProps {
 
 const PAGE_PROPS = { mainColor: 'hotels.dark', gradientColor: 'hotels.light' };
 
-const HotelsPage = ({ hotels }: HotelsPageProps): JSX.Element => {
+const HotelsPage = ({ hotels }: HotelsPageProps): React.ReactElement => {
   const toast = useAppToast();
   const [fetch, { data, isUninitialized, isLoading, isError, originalArgs }] =
     useLazyGetHotelCardsQuery();
@@ -69,14 +69,14 @@ const HotelsPage = ({ hotels }: HotelsPageProps): JSX.Element => {
   };
 
   useEffect(() => {
-    if (isError && messageSentStatus.isOpen) {
+    if (isError && messageSentStatus.open) {
       toast({
         description: `查無"${keyword.trim()}"的結果`,
         status: 'warning',
       });
       messageSentStatus.onClose();
     }
-  }, [isError, keyword, messageSentStatus, messageSentStatus.isOpen, toast]);
+  }, [isError, keyword, messageSentStatus, messageSentStatus.open, toast]);
 
   return (
     <>
@@ -103,52 +103,63 @@ const HotelsPage = ({ hotels }: HotelsPageProps): JSX.Element => {
           bg="whiteAlpha.500"
           rounded="2xl"
           zIndex="2"
-          sx={{ button: { rounded: '2xl' } }}
+          css={{ '& button': { rounded: '2xl' } }}
         >
-          <FormControl>
-            <FormLabel fontWeight="bold">目的地</FormLabel>
+          <Field.Root>
+            <Field.Label fontWeight="bold">目的地</Field.Label>
             <Input
               bg="white"
               value={keyword}
               onChange={handleOnType}
               placeholder="你要去哪裡？"
             />
-          </FormControl>
-          <Tooltip label="功能尚未上線">
-            <Box>
-              <Text fontWeight="bold" mb="2">
-                入住-退房
-              </Text>
-              <Button
-                bg="white"
-                onClick={handleShowMaintainingMessage}
-                leftIcon={<BsCalendar />}
-              >
-                2021/10/6~10/9
-              </Button>
-            </Box>
-          </Tooltip>
-          <Tooltip label="功能尚未上線">
-            <Box w={['full', 'initial']}>
-              <Text fontWeight="bold" mb="2">
-                房間及人數
-              </Text>
-              <Button
-                w="full"
-                bg="white"
-                onClick={handleShowMaintainingMessage}
-              >
-                2位成人，1間房間
-              </Button>
-            </Box>
-          </Tooltip>
+          </Field.Root>
+          <Tooltip.Root>
+            <Tooltip.Trigger asChild>
+              <Box>
+                <Text fontWeight="bold" mb="2">
+                  入住-退房
+                </Text>
+                <Button bg="white" onClick={handleShowMaintainingMessage}>
+                  <BsCalendar />
+                  2021/10/6~10/9
+                </Button>
+              </Box>
+            </Tooltip.Trigger>
+            <Portal>
+              <Tooltip.Positioner>
+                <Tooltip.Content>功能尚未上線</Tooltip.Content>
+              </Tooltip.Positioner>
+            </Portal>
+          </Tooltip.Root>
+          <Tooltip.Root>
+            <Tooltip.Trigger asChild>
+              <Box w={['full', 'initial']}>
+                <Text fontWeight="bold" mb="2">
+                  房間及人數
+                </Text>
+                <Button
+                  w="full"
+                  bg="white"
+                  onClick={handleShowMaintainingMessage}
+                >
+                  2位成人，1間房間
+                </Button>
+              </Box>
+            </Tooltip.Trigger>
+            <Portal>
+              <Tooltip.Positioner>
+                <Tooltip.Content>功能尚未上線</Tooltip.Content>
+              </Tooltip.Positioner>
+            </Portal>
+          </Tooltip.Root>
           <Button
             alignSelf={['center', 'center', 'initial']}
             flexShrink={0}
             bg="white"
-            leftIcon={<FiSearch />}
             onClick={onSearch}
           >
+            <FiSearch />
             搜尋
           </Button>
         </Stack>
@@ -194,7 +205,9 @@ const HotelsPage = ({ hotels }: HotelsPageProps): JSX.Element => {
       </Background>
       <Box
         h={['340px', '620px', '520px']}
-        bgGradient={`linear(to-b, ${PAGE_PROPS.gradientColor}, white)`}
+        bgGradient="to-b"
+        gradientFrom={PAGE_PROPS.gradientColor}
+        gradientTo="white"
       />
       <Flex flexDir="column" bg="white">
         {!isUninitialized && !isError && (
@@ -207,7 +220,7 @@ const HotelsPage = ({ hotels }: HotelsPageProps): JSX.Element => {
             />
             {isLoading && <LoadingScreen mainColor={PAGE_PROPS.mainColor} />}
             {data?.success && (
-              <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
+              <SimpleGrid columns={[1, 2, 3]} gap={6} mx="8">
                 {data.data.map((hotel) => (
                   <PlaceCard key={hotel.href} {...hotel} />
                 ))}
@@ -221,7 +234,7 @@ const HotelsPage = ({ hotels }: HotelsPageProps): JSX.Element => {
           href="/scenes"
           hideButton
         />
-        <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
+        <SimpleGrid columns={[1, 2, 3]} gap={6} mx="8">
           {hotels
             .slice(
               DEFAULT_CARD_NUMBER * page,

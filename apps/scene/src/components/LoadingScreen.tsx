@@ -9,11 +9,12 @@ interface LoadingScreenProps extends CenterProps {
 const LoadingScreen = ({ mainColor, ...props }: LoadingScreenProps) => (
   <Center h="full" w="full" {...props}>
     <Spinner
-      speed="0.66s"
-      emptyColor="gray.200"
+      animationDuration="0.66s"
+      borderBottomColor="gray.200"
+      borderInlineStartColor="gray.200"
       color={mainColor}
       size="xl"
-      thickness="4px"
+      borderWidth="4px"
     />
   </Center>
 );

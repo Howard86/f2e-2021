@@ -1,13 +1,6 @@
 import React from 'react';
 
-import {
-  Flex,
-  FlexProps,
-  Link,
-  Tag,
-  TagLabel,
-  TagRightIcon,
-} from '@chakra-ui/react';
+import { Flex, FlexProps, Icon, Link, Tag } from '@chakra-ui/react';
 import { IconType } from 'react-icons';
 
 interface SceneDetailBoxProps extends FlexProps {
@@ -29,21 +22,23 @@ const SceneDetailBox = ({
   }
 
   return (
-    <Flex directions={['column', 'row']} space={2} align="center" {...props}>
-      <Tag
+    <Flex direction={['column', 'row']} gap={2} align="center" {...props}>
+      <Tag.Root
         flexShrink={0}
         flexGrow={0}
-        colorScheme="blue"
+        colorPalette="blue"
         variant="outline"
         size="lg"
         m="2"
       >
-        <TagLabel>{label}</TagLabel>
-        <TagRightIcon as={icon} />
-      </Tag>
+        <Tag.Label>{label}</Tag.Label>
+        <Tag.EndElement>
+          <Icon as={icon} />
+        </Tag.EndElement>
+      </Tag.Root>
 
       {href ? (
-        <Link href={href} isExternal>
+        <Link href={href} target="_blank" rel="noreferrer">
           {info}
         </Link>
       ) : (

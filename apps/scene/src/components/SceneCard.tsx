@@ -32,7 +32,9 @@ const SceneCard = ({ name, city, image, href }: SceneCardProps) => (
     <Image
       objectFit="cover"
       objectPosition="center"
-      fallbackSrc="/static/fallback.jpg"
+      onError={(event) => {
+        event.currentTarget.src = '/static/fallback.jpg';
+      }}
       src={image}
       w="full"
       h="full"
@@ -63,7 +65,7 @@ const SceneCard = ({ name, city, image, href }: SceneCardProps) => (
         roundedBottom="3xl"
         zIndex="docked"
       >
-        <Text variant="headline-3">
+        <Text textStyle="headline-3">
           <RouteLink as={LinkOverlay} href={href}>
             {name}
           </RouteLink>

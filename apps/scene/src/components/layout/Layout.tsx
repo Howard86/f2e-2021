@@ -7,7 +7,7 @@ import Header from './Header';
 
 export interface LayoutProps extends BoxProps {
   mainColor: BoxProps['color'];
-  gradientColor: BoxProps['color'];
+  gradientColor: string;
   children: ReactNode;
 }
 

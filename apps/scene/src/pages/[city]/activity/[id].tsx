@@ -3,11 +3,8 @@ import React from 'react';
 import {
   Box,
   Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
   Flex,
   Heading,
-  Icon,
   IconButton,
   Image,
   SimpleGrid,
@@ -58,7 +55,7 @@ const PAGE_PROPS = {
   gradientColor: 'activities.light',
 };
 
-const ActivityPage = ({ activity }: ActivityPageProps): JSX.Element => {
+const ActivityPage = ({ activity }: ActivityPageProps): React.ReactElement => {
   const router = useRouter();
 
   // TODO: add saved info
@@ -83,34 +80,44 @@ const ActivityPage = ({ activity }: ActivityPageProps): JSX.Element => {
       <Flex
         flexDir="column"
         pt="16"
-        bgGradient="linear(to-b, restaurants.light, white)"
+        bgGradient="to-b"
+        gradientFrom="restaurants.light"
+        gradientTo="white"
       >
-        <Breadcrumb
-          mx="8"
-          color="blackAlpha.700"
-          separator={<Icon as={BiChevronRight} />}
-        >
-          <BreadcrumbItem>
-            <RouteLink href="/" as={BreadcrumbLink}>
-              活動新訊
-            </RouteLink>
-          </BreadcrumbItem>
-          <BreadcrumbItem>
-            <RouteLink href={`/${CityMap[activity.City]}`} as={BreadcrumbLink}>
-              {activity.City}
-            </RouteLink>
-          </BreadcrumbItem>
-          <BreadcrumbItem fontWeight="bold" isCurrentPage>
-            <RouteLink
-              href={`/${CityMap[activity.City]}/activity/${
-                activity.ActivityID
-              }`}
-              as={BreadcrumbLink}
-            >
-              {activity.ActivityName}
-            </RouteLink>
-          </BreadcrumbItem>
-        </Breadcrumb>
+        <Breadcrumb.Root mx="8" color="blackAlpha.700">
+          <Breadcrumb.List>
+            <Breadcrumb.Item>
+              <RouteLink href="/" as={Breadcrumb.Link}>
+                活動新訊
+              </RouteLink>
+            </Breadcrumb.Item>
+            <Breadcrumb.Separator>
+              <BiChevronRight />
+            </Breadcrumb.Separator>
+            <Breadcrumb.Item>
+              <RouteLink
+                href={`/${CityMap[activity.City]}`}
+                as={Breadcrumb.Link}
+              >
+                {activity.City}
+              </RouteLink>
+            </Breadcrumb.Item>
+            <Breadcrumb.Separator>
+              <BiChevronRight />
+            </Breadcrumb.Separator>
+            <Breadcrumb.Item fontWeight="bold">
+              <RouteLink
+                href={`/${CityMap[activity.City]}/activity/${
+                  activity.ActivityID
+                }`}
+                as={Breadcrumb.Link}
+                aria-current="page"
+              >
+                {activity.ActivityName}
+              </RouteLink>
+            </Breadcrumb.Item>
+          </Breadcrumb.List>
+        </Breadcrumb.Root>
         <Flex flexDir={{ base: 'column', lg: 'row' }} m={[4, 8]}>
           <Box pos="relative" flexGrow={1} flexShrink={1} m="2">
             <IconButton
@@ -121,9 +128,10 @@ const ActivityPage = ({ activity }: ActivityPageProps): JSX.Element => {
               pos="absolute"
               size="lg"
               rounded="full"
-              icon={saved ? <BsBookmarkPlusFill /> : <BsBookmarkPlus />}
               color={saved ? 'red.600' : 'blackAlpha.600'}
-            />
+            >
+              {saved ? <BsBookmarkPlusFill /> : <BsBookmarkPlus />}
+            </IconButton>
             <Image
               alt={
                 activity.Picture?.PictureDescription1 || activity.ActivityName
@@ -132,23 +140,30 @@ const ActivityPage = ({ activity }: ActivityPageProps): JSX.Element => {
               align="center"
               fit="cover"
               loading="lazy"
-              fallbackSrc="/static/fallback-lg.jpg"
+              onError={(event) => {
+                event.currentTarget.src = '/static/fallback-lg.jpg';
+              }}
               width={[600, 900]}
               height={[400, 600]}
             />
           </Box>
-          <Box flexGrow={1} flexShrink={3} lineHeight="7" sx={{ p: { my: 2 } }}>
+          <Box
+            flexGrow={1}
+            flexShrink={3}
+            lineHeight="7"
+            css={{ '& p': { my: 2 } }}
+          >
             <Heading textAlign="center" mb="4">
               {activity.ActivityName}
             </Heading>
             {activity.Description && (
-              <Text noOfLines={10}>{activity.Description}</Text>
+              <Text lineClamp={10}>{activity.Description}</Text>
             )}
             {activity.TravelInfo && (
-              <Text noOfLines={10}>{activity.TravelInfo}</Text>
+              <Text lineClamp={10}>{activity.TravelInfo}</Text>
             )}
             {activity.ParkingInfo && (
-              <Text noOfLines={10}>{activity.ParkingInfo}</Text>
+              <Text lineClamp={10}>{activity.ParkingInfo}</Text>
             )}
           </Box>
         </Flex>
@@ -157,7 +172,7 @@ const ActivityPage = ({ activity }: ActivityPageProps): JSX.Element => {
         <SimpleGrid columns={[1, 1, 2]} gap={[4, 8]} mx="8">
           <Box>
             <Heading>景點資訊</Heading>
-            <VStack align="flex-start" textAlign="start" mt="8" spacing={4}>
+            <VStack align="flex-start" textAlign="start" mt="8" gap={4}>
               <SceneDetailBox
                 label="地址"
                 info={

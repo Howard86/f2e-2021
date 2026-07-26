@@ -63,7 +63,9 @@ const PlaceCard = ({
     />
     <Image
       src={image}
-      fallbackSrc="/static/fallback.jpg"
+      onError={(event) => {
+        event.currentTarget.src = '/static/fallback.jpg';
+      }}
       objectFit="cover"
       align="center"
       w="full"
@@ -82,9 +84,9 @@ const PlaceCard = ({
         </Flex>
       </Flex>
       <Text fontWeight="bold">{address}</Text>
-      {contactNumber && <Text variant="body">電話：{contactNumber}</Text>}
-      {openingHours && <Text variant="body">營業時間：{openingHours}</Text>}
-      {serviceInfo && <Text variant="body">{serviceInfo}</Text>}
+      {contactNumber && <Text textStyle="body">電話：{contactNumber}</Text>}
+      {openingHours && <Text textStyle="body">營業時間：{openingHours}</Text>}
+      {serviceInfo && <Text textStyle="body">{serviceInfo}</Text>}
     </Flex>
   </LinkBox>
 );

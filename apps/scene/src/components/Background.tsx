@@ -66,7 +66,7 @@ const Background = ({
       maxW="152"
       maxH="117"
     />
-    <SimpleGrid mx="10%" spacing={[2, 4, 8]} columns={2}>
+    <SimpleGrid mx="10%" gap={[2, 4, 8]} columns={2}>
       <Image
         alt={wordOneAlt}
         src={wordOne}

@@ -8,7 +8,7 @@ import {
 } from '@chakra-ui/react';
 import { BiChevronLeft, BiChevronRight } from 'react-icons/bi';
 
-interface PaginationProps extends ButtonGroupProps {
+interface PaginationProps extends Omit<ButtonGroupProps, 'page'> {
   colorTheme: string;
   page: number; // page starts with 0
   total: number;
@@ -34,17 +34,18 @@ const Pagination = ({
 
   return (
     <ButtonGroup
-      variant="rounded"
+      variant="plain"
       color={`${colorTheme}.main`}
-      spacing={6}
+      gap={6}
       {...props}
     >
       <IconButton
         aria-label="show previous page"
-        icon={<BiChevronLeft />}
         onClick={decrement}
         disabled={isFirst}
-      />
+      >
+        <BiChevronLeft />
+      </IconButton>
       <Button disabled={isFirst} onClick={decrement}>
         {isFirst ? '' : page}
       </Button>
@@ -60,10 +61,11 @@ const Pagination = ({
       </Button>
       <IconButton
         aria-label="show next page"
-        icon={<BiChevronRight />}
         onClick={increment}
         disabled={isLast}
-      />
+      >
+        <BiChevronRight />
+      </IconButton>
     </ButtonGroup>
   );
 };

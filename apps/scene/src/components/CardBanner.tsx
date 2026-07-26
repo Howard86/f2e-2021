@@ -33,7 +33,7 @@ const CardBanner = ({ rate, view, saved, ...props }: CardBannerProps) => {
         bg="white"
         px={[2, 2, 4]}
         py={[1, 1, 2]}
-        spacing={[1, 1, 2]}
+        gap={[1, 1, 2]}
         rounded="full"
         shadow="dark-lg"
       >

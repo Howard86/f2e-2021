@@ -34,7 +34,7 @@ const Banner = ({
       align="center"
       {...props}
     >
-      <Text as="h2" variant="headline-2" color="white">
+      <Text as="h2" textStyle="headline-2" color="white">
         {title}
       </Text>
       {!hideButton && (

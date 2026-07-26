@@ -3,11 +3,11 @@ import React, { useEffect, useRef, useState } from 'react';
 import {
   Avatar,
   Box,
-  Divider,
   Flex,
   FlexProps,
   HStack,
   IconButton,
+  Separator,
 } from '@chakra-ui/react';
 import throttle from 'lodash.throttle';
 import { useRouter } from 'next/router';
@@ -91,13 +91,13 @@ const Header = ({ mainColor, ...props }: HeaderProps) => {
         display={['none', 'flex']}
         h="4"
         fontWeight="bold"
-        divider={
-          <Divider
+        separator={
+          <Separator
             orientation="vertical"
             borderColor={isSolid ? 'white' : 'text.body'}
           />
         }
-        spacing={[2, 2, 4]}
+        gap={[2, 2, 4]}
       >
         {ROUTES.map((route) => (
           <RouteLink key={route.label} href={route.href}>
@@ -109,14 +109,18 @@ const Header = ({ mainColor, ...props }: HeaderProps) => {
           aria-label="search scene"
           fontSize={['xl', '2xl']}
           rounded="full"
-          icon={<FiSearch />}
           onClick={handleOnSearch}
           _hover={{
             bgColor: isSolid ? mainColor : 'white',
           }}
-        />
+        >
+          <FiSearch />
+        </IconButton>
       </HStack>
-      <Avatar bg="white" src={getAvatar('f2e')} size="sm" ml="4" />
+      <Avatar.Root bg="white" size="sm" ml="4">
+        <Avatar.Fallback name="f2e" />
+        <Avatar.Image src={getAvatar('f2e')} />
+      </Avatar.Root>
     </Flex>
   );
 };

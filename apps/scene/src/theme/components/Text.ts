@@ -1,27 +1,35 @@
-import type { ComponentStyleConfig } from '@chakra-ui/react';
+import { defineTextStyles } from '@chakra-ui/react';
 
-const Text: ComponentStyleConfig = {
-  variants: {
-    'headline-1': {
+const Text = defineTextStyles({
+  'headline-1': {
+    value: {
       fontWeight: 'bold',
       fontSize: 48,
     },
-    'headline-2': {
+  },
+  'headline-2': {
+    value: {
       fontWeight: 'bold',
       fontSize: 32,
     },
-    'headline-3': {
+  },
+  'headline-3': {
+    value: {
       fontWeight: 'bold',
       fontSize: 28,
     },
-    subtitle: {
+  },
+  subtitle: {
+    value: {
       fontWeight: 'bold',
       fontSize: 16,
     },
-    body: {
+  },
+  body: {
+    value: {
       fontSize: 14,
     },
   },
-};
+});
 
 export default Text;

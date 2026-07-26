@@ -3,21 +3,12 @@ import React, { useState } from 'react';
 import {
   BoxProps,
   Button,
+  CloseButton,
+  Dialog,
   Menu,
-  MenuButton,
-  MenuDivider,
-  MenuGroup,
-  MenuItem,
-  MenuList,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  ModalProps,
+  Portal,
   SimpleGrid,
+  useDisclosure,
 } from '@chakra-ui/react';
 import { City, CityMap, counties, majorCities } from '@f2e/tdx';
 import { useRouter } from 'next/router';
@@ -27,9 +18,17 @@ import useAppToast from '@/hooks/use-app-toast';
 
 const DEFAULT_MENU_VALUE = '選擇縣市' as const;
 
-const SceneModal = ({ onClose, ...props }: Omit<ModalProps, 'children'>) => {
+interface SceneModalProps extends Omit<
+  Dialog.RootProps,
+  'children' | 'onOpenChange'
+> {
+  onClose: () => void;
+}
+
+const SceneModal = ({ onClose, ...props }: SceneModalProps) => {
   const router = useRouter();
   const toast = useAppToast();
+  const menu = useDisclosure();
   const [selectedCity, setSelectedCity] = useState<
     City | typeof DEFAULT_MENU_VALUE
   >(DEFAULT_MENU_VALUE);
@@ -53,81 +52,96 @@ const SceneModal = ({ onClose, ...props }: Omit<ModalProps, 'children'>) => {
   };
 
   return (
-    <Modal onClose={onClose} scrollBehavior="inside" {...props}>
-      <ModalOverlay />
-      <ModalContent>
-        <ModalHeader roundedTop="md" bgColor="scenes.main" color="white">
-          進階搜尋
-        </ModalHeader>
-        <ModalCloseButton my="2" color="white" />
-        <ModalBody mt="2">
-          <Menu isLazy>
-            {({ onClose: onMenuClose }) => (
-              <>
-                <MenuButton as={Button} variant="outline" flexShrink={0}>
-                  {CityMap[selectedCity] || selectedCity}
-                </MenuButton>
-                <MenuList
-                  minWidth="240px"
-                  textAlign="center"
-                  zIndex="popover"
-                  pt="0"
-                  overflow="hidden"
-                >
-                  <MenuGroup title="6直轄市" {...menuGroupStyle}>
-                    <SimpleGrid columns={[4, 5]} gap={2} m="2">
-                      {majorCities.map((city) => (
-                        <MenuItem
-                          as={Button}
-                          key={city}
-                          size="sm"
-                          variant="outline"
-                          value={city}
-                          onClick={() => setSelectedCity(city)}
-                        >
-                          {CityMap[city]}
-                        </MenuItem>
-                      ))}
-                    </SimpleGrid>
-                  </MenuGroup>
-                  <MenuGroup title="16縣市" {...menuGroupStyle}>
-                    <SimpleGrid columns={[4, 5]} gap={2} m="2">
-                      {counties.map((city) => (
-                        <MenuItem
-                          as={Button}
-                          key={city}
-                          size="sm"
-                          variant="outline"
-                          value={city}
-                          onClick={() => setSelectedCity(city)}
-                        >
-                          {CityMap[city]}
-                        </MenuItem>
-                      ))}
-                    </SimpleGrid>
-                  </MenuGroup>
-                  <MenuDivider />
-                  <MenuGroup>
-                    <Button variant="scenes" onClick={onMenuClose}>
-                      取消
-                    </Button>
-                  </MenuGroup>
-                </MenuList>
-              </>
-            )}
-          </Menu>
-        </ModalBody>
-        <ModalFooter justifyContent="center">
-          <Button
-            variant="scenes"
-            onClick={onAdvanceSearch}
-            leftIcon={<FiSearch />}
-          >
-            搜尋
-          </Button>
-        </ModalFooter>
-      </ModalContent>
-    </Modal>
+    <Dialog.Root
+      onOpenChange={({ open }) => {
+        if (!open) onClose();
+      }}
+      scrollBehavior="inside"
+      {...props}
+    >
+      <Portal>
+        <Dialog.Backdrop />
+        <Dialog.Positioner>
+          <Dialog.Content>
+            <Dialog.Header roundedTop="md" bgColor="scenes.main" color="white">
+              <Dialog.Title>進階搜尋</Dialog.Title>
+            </Dialog.Header>
+            <Dialog.CloseTrigger asChild>
+              <CloseButton pos="absolute" top="2" right="2" color="white" />
+            </Dialog.CloseTrigger>
+            <Dialog.Body mt="2">
+              <Menu.Root
+                open={menu.open}
+                onOpenChange={({ open }) => menu.setOpen(open)}
+                lazyMount
+              >
+                <Menu.Trigger asChild>
+                  <Button variant="outline" flexShrink={0}>
+                    {CityMap[selectedCity] || selectedCity}
+                  </Button>
+                </Menu.Trigger>
+                <Portal>
+                  <Menu.Positioner>
+                    <Menu.Content
+                      minWidth="240px"
+                      textAlign="center"
+                      zIndex="popover"
+                      pt="0"
+                      overflow="hidden"
+                    >
+                      <Menu.ItemGroup {...menuGroupStyle}>
+                        <Menu.ItemGroupLabel>6直轄市</Menu.ItemGroupLabel>
+                        <SimpleGrid columns={[4, 5]} gap={2} m="2">
+                          {majorCities.map((city) => (
+                            <Menu.Item key={city} value={city} asChild>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => setSelectedCity(city)}
+                              >
+                                {CityMap[city]}
+                              </Button>
+                            </Menu.Item>
+                          ))}
+                        </SimpleGrid>
+                      </Menu.ItemGroup>
+                      <Menu.ItemGroup {...menuGroupStyle}>
+                        <Menu.ItemGroupLabel>16縣市</Menu.ItemGroupLabel>
+                        <SimpleGrid columns={[4, 5]} gap={2} m="2">
+                          {counties.map((city) => (
+                            <Menu.Item key={city} value={city} asChild>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => setSelectedCity(city)}
+                              >
+                                {CityMap[city]}
+                              </Button>
+                            </Menu.Item>
+                          ))}
+                        </SimpleGrid>
+                      </Menu.ItemGroup>
+                      <Menu.Separator />
+                      <Menu.ItemGroup>
+                        <Button variant="subtle" onClick={menu.onClose}>
+                          取消
+                        </Button>
+                      </Menu.ItemGroup>
+                    </Menu.Content>
+                  </Menu.Positioner>
+                </Portal>
+              </Menu.Root>
+            </Dialog.Body>
+            <Dialog.Footer justifyContent="center">
+              <Button variant="subtle" onClick={onAdvanceSearch}>
+                <FiSearch />
+                搜尋
+              </Button>
+            </Dialog.Footer>
+          </Dialog.Content>
+        </Dialog.Positioner>
+      </Portal>
+    </Dialog.Root>
   );
 };
 

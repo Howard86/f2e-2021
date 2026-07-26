@@ -14,7 +14,7 @@ import Logo from '../icons/Logo';
 
 interface FooterProps extends BoxProps {
   mainColor: BoxProps['color'];
-  gradientColor: BoxProps['color'];
+  gradientColor: string;
 }
 
 const Footer = ({ mainColor, gradientColor, ...props }: FooterProps) => {
@@ -28,7 +28,9 @@ const Footer = ({ mainColor, gradientColor, ...props }: FooterProps) => {
         px="8"
         pt={[12, 20]}
         pb={[20, 36]}
-        bgGradient={`linear(to-t, ${gradientColor}, white)`}
+        bgGradient="to-t"
+        gradientFrom={gradientColor}
+        gradientTo="white"
       >
         <Center display={['flex', 'flex', 'none']} textAlign="center">
           <IconButton
@@ -42,9 +44,10 @@ const Footer = ({ mainColor, gradientColor, ...props }: FooterProps) => {
             fontSize="2xl"
             p="3"
             rounded="full"
-            icon={<BsChevronUp />}
             onClick={onClick}
-          />
+          >
+            <BsChevronUp />
+          </IconButton>
         </Center>
       </Box>
       <Flex

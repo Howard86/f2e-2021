@@ -39,7 +39,9 @@ const GridCard = ({
     <Image
       alt={title}
       src={image}
-      fallbackSrc="/static/fallback.jpg"
+      onError={(event) => {
+        event.currentTarget.src = '/static/fallback.jpg';
+      }}
       fit="cover"
       align="center"
       h="full"
@@ -62,7 +64,13 @@ const GridCard = ({
       }}
     >
       {isExternal ? (
-        <LinkOverlay fontWeight="bold" fontSize="lg" href={href} isExternal>
+        <LinkOverlay
+          fontWeight="bold"
+          fontSize="lg"
+          href={href}
+          target="_blank"
+          rel="noreferrer"
+        >
           {title}
         </LinkOverlay>
       ) : (

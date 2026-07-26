@@ -7,7 +7,6 @@ import {
   IconButton,
   Input,
   InputGroup,
-  InputRightElement,
   SimpleGrid,
   useDisclosure,
 } from '@chakra-ui/react';
@@ -45,7 +44,7 @@ const PAGE_PROPS = {
 
 const RestaurantsPage = ({
   restaurants,
-}: RestaurantsPageProps): JSX.Element => {
+}: RestaurantsPageProps): React.ReactElement => {
   const toast = useAppToast();
   const [fetch, { data, isUninitialized, isLoading, isError, originalArgs }] =
     useLazyGetRestaurantCardsQuery();
@@ -64,14 +63,14 @@ const RestaurantsPage = ({
   };
 
   useEffect(() => {
-    if (isError && messageSentStatus.isOpen) {
+    if (isError && messageSentStatus.open) {
       toast({
         description: `查無"${keyword.trim()}"的結果`,
         status: 'warning',
       });
       messageSentStatus.onClose();
     }
-  }, [isError, keyword, messageSentStatus, messageSentStatus.isOpen, toast]);
+  }, [isError, keyword, messageSentStatus, messageSentStatus.open, toast]);
 
   return (
     <>
@@ -90,23 +89,29 @@ const RestaurantsPage = ({
         wordTwo={wordTwo}
         bgColor={PAGE_PROPS.gradientColor}
       >
-        <InputGroup size="lg" my="8" maxW="container.md">
+        <InputGroup
+          my="8"
+          maxW="container.md"
+          endElement={
+            <IconButton
+              variant="ghost"
+              rounded="full"
+              aria-label="search"
+              onClick={onSearch}
+            >
+              <FiSearch />
+            </IconButton>
+          }
+          endElementProps={{ pointerEvents: 'auto' }}
+        >
           <Input
+            size="lg"
             rounded="2xl"
             value={keyword}
             onChange={handleOnType}
             bg="white"
             placeholder="請輸入關鍵字"
           />
-          <InputRightElement>
-            <IconButton
-              variant="ghost"
-              rounded="full"
-              aria-label="search"
-              onClick={onSearch}
-              icon={<FiSearch />}
-            />
-          </InputRightElement>
         </InputGroup>
         <SimpleGrid h={['160px', '220px']} columns={3} gap={[2, 0]}>
           <BackgroundCard
@@ -128,7 +133,9 @@ const RestaurantsPage = ({
       </Background>
       <Box
         h={['40px', '120px', '220px']}
-        bgGradient={`linear(to-b, ${PAGE_PROPS.gradientColor}, white)`}
+        bgGradient="to-b"
+        gradientFrom={PAGE_PROPS.gradientColor}
+        gradientTo="white"
       />
       <Flex flexDir="column" bg="white">
         {!isUninitialized && !isError && (
@@ -142,7 +149,7 @@ const RestaurantsPage = ({
             />
             {isLoading && <LoadingScreen mainColor={PAGE_PROPS.mainColor} />}
             {data?.success && (
-              <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
+              <SimpleGrid columns={[1, 2, 3]} gap={6} mx="8">
                 {data.data.map((restaurant) => (
                   <PlaceCard key={restaurant.href} {...restaurant} />
                 ))}
@@ -156,7 +163,7 @@ const RestaurantsPage = ({
           href="/scenes"
           hideButton
         />
-        <SimpleGrid columns={[1, 2, 3]} spacingX={8} spacingY={12} mx="8">
+        <SimpleGrid columns={[1, 2, 3]} columnGap={8} rowGap={12} mx="8">
           {restaurants
             .slice(
               DEFAULT_CARD_NUMBER * page,

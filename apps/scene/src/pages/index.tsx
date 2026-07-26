@@ -85,10 +85,12 @@ const HomePage = ({
       justify="center"
       py="14"
       minH="360"
-      bgGradient={`linear(to-b, ${PAGE_PROPS.gradientColor}, white)`}
+      bgGradient="to-b"
+      gradientFrom={PAGE_PROPS.gradientColor}
+      gradientTo="white"
     >
       <Container maxW="container.md" textAlign="center" px="0">
-        <Text mx="8" variant="subtitle" color="blackAlpha.500">
+        <Text mx="8" textStyle="subtitle" color="blackAlpha.500">
           台灣許多美景媲美國外，值此五倍券、國旅券及觀光業者加碼優惠盡出之際，旅行台灣就是現在！
           到哪裡旅遊還沒有想法的民眾，歡迎到台灣觀光，體驗「台灣之美」!
         </Text>
@@ -103,7 +105,7 @@ const HomePage = ({
         mainColor={PAGE_PROPS.mainColor}
         href="/scenes"
       />
-      <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
+      <SimpleGrid columns={[1, 2, 3]} gap={6} mx="8">
         {scenes.map((item) => (
           <SceneCard key={item.href} {...item} />
         ))}
@@ -115,7 +117,7 @@ const HomePage = ({
         href="/scenes"
         hideButton
       />
-      <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
+      <SimpleGrid columns={[1, 2, 3]} gap={6} mx="8">
         {activities.map((activity) => (
           <PlaceCard key={activity.href} {...activity} />
         ))}
@@ -127,14 +129,14 @@ const HomePage = ({
         href="/restaurants"
       />
 
-      <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
+      <SimpleGrid columns={[1, 2, 3]} gap={6} mx="8">
         {restaurants.map((item) => (
           <PlaceCard key={item.href} {...item} />
         ))}
       </SimpleGrid>
       <Banner title="住宿推薦" mainColor="hotels.main" href="/hotels" />
 
-      <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
+      <SimpleGrid columns={[1, 2, 3]} gap={6} mx="8">
         {hotels.map((item) => (
           <PlaceCard key={item.href} {...item} />
         ))}

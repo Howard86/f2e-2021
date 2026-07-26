@@ -33,8 +33,8 @@ const WeatherCarousel = ({ weathers, ...props }: WeatherCarouselProps) => {
       pos="relative"
       maxW="container.md"
       align="center"
-      sx={{
-        button: {
+      css={{
+        '& button': {
           bgColor: ['transparent', 'gray.100'],
           h: ['full', 10],
           pos: ['absolute', 'initial'],
@@ -44,33 +44,29 @@ const WeatherCarousel = ({ weathers, ...props }: WeatherCarouselProps) => {
             bgColor: ['whiteAlpha.800', 'gray.200'],
           },
           _first: {
-            bgGradient: [
-              'linear(to-r, whiteAlpha.800, whiteAlpha.100)',
-              'none',
-            ],
+            bgGradient: ['to-r', 'none'],
+            gradientFrom: ['whiteAlpha.800', 'transparent'],
+            gradientTo: ['whiteAlpha.100', 'transparent'],
             left: 0,
           },
           _last: {
-            bgGradient: [
-              'linear(to-l, whiteAlpha.800, whiteAlpha.100)',
-              'none',
-            ],
+            bgGradient: ['to-l', 'none'],
+            gradientFrom: ['whiteAlpha.800', 'transparent'],
+            gradientTo: ['whiteAlpha.100', 'transparent'],
             right: 0,
           },
         },
         _hover: {
-          button: {
+          '& button': {
             opacity: 1,
           },
         },
       }}
     >
       <Box display={['none', 'inline']} flexGrow={1} />
-      <IconButton
-        aria-label="show previous wether"
-        icon={<BiChevronLeft />}
-        onClick={decrement}
-      />
+      <IconButton aria-label="show previous wether" onClick={decrement}>
+        <BiChevronLeft />
+      </IconButton>
       <Flex
         color="blackAlpha.500"
         justify="center"
@@ -89,11 +85,9 @@ const WeatherCarousel = ({ weathers, ...props }: WeatherCarouselProps) => {
           />
         ))}
       </Flex>
-      <IconButton
-        aria-label="show next wether"
-        icon={<BiChevronRight />}
-        onClick={increment}
-      />
+      <IconButton aria-label="show next wether" onClick={increment}>
+        <BiChevronRight />
+      </IconButton>
       <Box display={['none', 'inline']} flexGrow={1} />
     </Flex>
   );

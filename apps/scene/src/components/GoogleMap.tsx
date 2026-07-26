@@ -1,19 +1,17 @@
 import React from 'react';
 
-import { Box, BoxProps } from '@chakra-ui/react';
+import { chakra, type HTMLChakraProps } from '@chakra-ui/react';
 
-interface GoogleMapProps extends BoxProps {
+interface GoogleMapProps extends HTMLChakraProps<'iframe'> {
   lat: number;
   lng: number;
   query?: string;
 }
 
 const GoogleMap = ({ query, lat, lng, ...props }: GoogleMapProps) => (
-  <Box
-    as="iframe"
+  <chakra.iframe
     w="full"
     h={['300px', '600px', '700px']}
-    loading="lazy"
     title="google-map"
     frameBorder="0"
     allowFullScreen

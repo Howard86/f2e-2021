@@ -2,12 +2,9 @@ import React, { useState } from 'react';
 
 import {
   Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
   Center,
   Flex,
   Heading,
-  Icon,
   SimpleGrid,
 } from '@chakra-ui/react';
 import { City, CityMap, CitySet } from '@f2e/tdx';
@@ -61,7 +58,7 @@ const CategoryPage = ({
   restaurants,
   hotels,
   activities,
-}: CityPageProps): JSX.Element => {
+}: CityPageProps): React.ReactElement => {
   const router = useRouter();
 
   const [scenePage, setScenePage] = useState(0);
@@ -90,28 +87,27 @@ const CategoryPage = ({
       </Background>
 
       <Flex flexDir="column" bg="white">
-        <Breadcrumb
-          m="4"
-          color="blackAlpha.700"
-          separator={<Icon as={BiChevronRight} />}
-        >
-          <BreadcrumbItem>
-            <RouteLink href="/" as={BreadcrumbLink}>
-              景點
-            </RouteLink>
-          </BreadcrumbItem>
-          {/* TODO: add custom utils */}
-          {/* <BreadcrumbItem>
-            <RouteLink href="#" as={BreadcrumbLink}>
-              北部地區
-            </RouteLink>
-          </BreadcrumbItem> */}
-          <BreadcrumbItem fontWeight="bold" isCurrentPage>
-            <RouteLink href={`/${city}`} as={BreadcrumbLink}>
-              {CityMap[city]}
-            </RouteLink>
-          </BreadcrumbItem>
-        </Breadcrumb>
+        <Breadcrumb.Root m="4" color="blackAlpha.700">
+          <Breadcrumb.List>
+            <Breadcrumb.Item>
+              <RouteLink href="/" as={Breadcrumb.Link}>
+                景點
+              </RouteLink>
+            </Breadcrumb.Item>
+            <Breadcrumb.Separator>
+              <BiChevronRight />
+            </Breadcrumb.Separator>
+            <Breadcrumb.Item fontWeight="bold">
+              <RouteLink
+                href={`/${city}`}
+                as={Breadcrumb.Link}
+                aria-current="page"
+              >
+                {CityMap[city]}
+              </RouteLink>
+            </Breadcrumb.Item>
+          </Breadcrumb.List>
+        </Breadcrumb.Root>
         <Heading as="h1" textAlign="center" mb="4">
           {CityMap[city]}
         </Heading>
@@ -123,7 +119,7 @@ const CategoryPage = ({
               href="/scenes"
               hideButton
             />
-            <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
+            <SimpleGrid columns={[1, 2, 3]} gap={6} mx="8">
               {activities
                 .slice(
                   DEFAULT_CARD_NUMBER * activityPage,
@@ -151,7 +147,7 @@ const CategoryPage = ({
               href="/scenes"
               hideButton
             />
-            <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
+            <SimpleGrid columns={[1, 2, 3]} gap={6} mx="8">
               {scenes
                 .slice(
                   scenePage * DEFAULT_CARD_NUMBER,
@@ -179,7 +175,7 @@ const CategoryPage = ({
               href="/scenes"
               hideButton
             />
-            <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
+            <SimpleGrid columns={[1, 2, 3]} gap={6} mx="8">
               {restaurants
                 .slice(
                   DEFAULT_CARD_NUMBER * restaurantPage,
@@ -207,7 +203,7 @@ const CategoryPage = ({
               href="/scenes"
               hideButton
             />
-            <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
+            <SimpleGrid columns={[1, 2, 3]} gap={6} mx="8">
               {hotels
                 .slice(
                   DEFAULT_CARD_NUMBER * hotelPage,

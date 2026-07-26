@@ -51,7 +51,7 @@ const BackgroundCard = ({
         align="center"
       >
         <Text as="h3" fontWeight="bold" color="white" fontSize={['sm', '2xl']}>
-          <LinkOverlay href={href} isExternal>
+          <LinkOverlay href={href} target="_blank" rel="noreferrer">
             {name}
           </LinkOverlay>
         </Text>

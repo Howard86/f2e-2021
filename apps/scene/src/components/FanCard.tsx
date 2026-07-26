@@ -53,10 +53,9 @@ const FanCard = ({
 
   return (
     <Box mt={[8, 8, 16]} pos="relative" {...props}>
-      <Avatar
+      <Avatar.Root
         w={size}
         h={size}
-        src={getAvatar(name)}
         bg="white"
         border="1px"
         pos="absolute"
@@ -64,18 +63,22 @@ const FanCard = ({
         zIndex="docked"
         top={[-8, -8, -16]}
         left={['calc(50% - 32px)', 'calc(50% - 32px)', 'calc(50% - 64px)']}
-      />
+      >
+        <Avatar.Fallback name={name} />
+        <Avatar.Image src={getAvatar(name)} />
+      </Avatar.Root>
       <IconButton
         pos="absolute"
         right="0"
         m="4"
         aria-label="save-as-bookmark"
         rounded="full"
-        icon={saved ? <BsBookmarkPlusFill /> : <BsBookmarkPlus />}
         fontSize="2xl"
         color={saved ? 'red.600' : 'blackAlpha.600'}
         zIndex="docked"
-      />
+      >
+        {saved ? <BsBookmarkPlusFill /> : <BsBookmarkPlus />}
+      </IconButton>
       <Flex
         pos="relative"
         flexDir="column"
@@ -95,7 +98,9 @@ const FanCard = ({
           src={image}
           w="full"
           h={[300, 200]}
-          fallbackSrc="/static/fallback.jpg"
+          onError={(event) => {
+            event.currentTarget.src = '/static/fallback.jpg';
+          }}
           objectFit="cover"
           objectPosition="center"
         />
@@ -111,13 +116,13 @@ const FanCard = ({
             mb="4"
             fontSize={['xl', '2xl']}
             fontWeight="bold"
-            noOfLines={1}
+            lineClamp={1}
           >
             <RouteLink as={LinkOverlay} href={href}>
               {name}
             </RouteLink>
           </Text>
-          <Text noOfLines={[4, 3]}>{description}</Text>
+          <Text lineClamp={[4, 3]}>{description}</Text>
           <Box flexGrow={1} />
           <Flex justify="flex-end" mt="8">
             <HStack color="blackAlpha.600">

@@ -6,7 +6,6 @@ import {
   IconButton,
   Input,
   InputGroup,
-  InputRightElement,
   SimpleGrid,
   useBreakpointValue,
   useDisclosure,
@@ -37,7 +36,7 @@ interface ScenesPageProps {
 
 const PAGE_PROPS = { mainColor: 'scenes.main', gradientColor: 'scenes.light' };
 
-const ScenesPage = ({ scenes }: ScenesPageProps): JSX.Element => {
+const ScenesPage = ({ scenes }: ScenesPageProps): React.ReactElement => {
   const toast = useAppToast();
   const [
     fetch,
@@ -59,14 +58,14 @@ const ScenesPage = ({ scenes }: ScenesPageProps): JSX.Element => {
   };
 
   useEffect(() => {
-    if (isError && messageSentStatus.isOpen) {
+    if (isError && messageSentStatus.open) {
       toast({
         description: `查無"${keyword.trim()}"的結果`,
         status: 'warning',
       });
       messageSentStatus.onClose();
     }
-  }, [isError, keyword, messageSentStatus, messageSentStatus.isOpen, toast]);
+  }, [isError, keyword, messageSentStatus, messageSentStatus.open, toast]);
 
   return (
     <>
@@ -86,31 +85,35 @@ const ScenesPage = ({ scenes }: ScenesPageProps): JSX.Element => {
         bgColor={PAGE_PROPS.gradientColor}
       >
         <Flex flexDir={['column', 'row']} align="center" mt="4">
-          <InputGroup size="lg">
-            <Input
-              bg="white"
-              placeholder="請輸入關鍵字"
-              value={keyword}
-              onChange={handleOnType}
-            />
-            <InputRightElement>
+          <InputGroup
+            endElement={
               <IconButton
                 variant="ghost"
                 rounded="full"
                 aria-label="search"
                 onClick={onSearch}
-                icon={<FiSearch />}
-              />
-            </InputRightElement>
+              >
+                <FiSearch />
+              </IconButton>
+            }
+            endElementProps={{ pointerEvents: 'auto' }}
+          >
+            <Input
+              size="lg"
+              bg="white"
+              placeholder="請輸入關鍵字"
+              value={keyword}
+              onChange={handleOnType}
+            />
           </InputGroup>
           <Button
-            variant="scenes"
+            variant="subtle"
             onClick={modal.onOpen}
             flexShrink={0}
-            leftIcon={<BsGrid3X3GapFill />}
             size="lg"
             m="4"
           >
+            <BsGrid3X3GapFill />
             進階搜尋
           </Button>
         </Flex>
@@ -118,7 +121,9 @@ const ScenesPage = ({ scenes }: ScenesPageProps): JSX.Element => {
 
       <Flex
         flexDir="column"
-        bgGradient={`linear(to-b, ${PAGE_PROPS.gradientColor}, white)`}
+        bgGradient="to-b"
+        gradientFrom={PAGE_PROPS.gradientColor}
+        gradientTo="white"
       >
         {!isUninitialized && !isError && (
           <>
@@ -131,7 +136,7 @@ const ScenesPage = ({ scenes }: ScenesPageProps): JSX.Element => {
             />
             {isLoading && <LoadingScreen mainColor={PAGE_PROPS.mainColor} />}
             {data?.success && (
-              <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
+              <SimpleGrid columns={[1, 2, 3]} gap={6} mx="8">
                 {data.data.map((scene) => (
                   <SceneCard key={scene.href} {...scene} />
                 ))}
@@ -146,16 +151,16 @@ const ScenesPage = ({ scenes }: ScenesPageProps): JSX.Element => {
           // TODO: fix with CSS selector
           mt={isSuccess ? undefined : 0}
         />
-        <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
+        <SimpleGrid columns={[1, 2, 3]} gap={6} mx="8">
           {scenes.map((scene) => (
             <SceneCard key={scene.href} {...scene} />
           ))}
         </SimpleGrid>
       </Flex>
       <SceneModal
-        isOpen={modal.isOpen}
+        open={modal.open}
         onClose={modal.onClose}
-        isCentered={isModalCentered}
+        placement={isModalCentered ? 'center' : 'top'}
       />
     </>
   );

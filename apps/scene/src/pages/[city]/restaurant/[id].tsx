@@ -3,11 +3,8 @@ import React from 'react';
 import {
   Box,
   Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
   Flex,
   Heading,
-  Icon,
   IconButton,
   Image,
   SimpleGrid,
@@ -49,7 +46,9 @@ const PAGE_PROPS = {
   gradientColor: 'restaurants.light',
 };
 
-const RestaurantPage = ({ restaurant }: RestaurantPageProps): JSX.Element => {
+const RestaurantPage = ({
+  restaurant,
+}: RestaurantPageProps): React.ReactElement => {
   const router = useRouter();
 
   // TODO: add saved info
@@ -73,37 +72,44 @@ const RestaurantPage = ({ restaurant }: RestaurantPageProps): JSX.Element => {
       <Flex
         flexDir="column"
         pt="16"
-        bgGradient="linear(to-b, restaurants.light, white)"
+        bgGradient="to-b"
+        gradientFrom="restaurants.light"
+        gradientTo="white"
       >
-        <Breadcrumb
-          mx="8"
-          color="blackAlpha.700"
-          separator={<Icon as={BiChevronRight} />}
-        >
-          <BreadcrumbItem>
-            <RouteLink href="/restaurants" as={BreadcrumbLink}>
-              美食
-            </RouteLink>
-          </BreadcrumbItem>
-          <BreadcrumbItem>
-            <RouteLink
-              href={`/${CityMap[restaurant.City]}`}
-              as={BreadcrumbLink}
-            >
-              {restaurant.City}
-            </RouteLink>
-          </BreadcrumbItem>
-          <BreadcrumbItem fontWeight="bold" isCurrentPage>
-            <RouteLink
-              href={`/${CityMap[restaurant.City]}/restaurant/${
-                restaurant.RestaurantID
-              }`}
-              as={BreadcrumbLink}
-            >
-              {restaurant.RestaurantName}
-            </RouteLink>
-          </BreadcrumbItem>
-        </Breadcrumb>
+        <Breadcrumb.Root mx="8" color="blackAlpha.700">
+          <Breadcrumb.List>
+            <Breadcrumb.Item>
+              <RouteLink href="/restaurants" as={Breadcrumb.Link}>
+                美食
+              </RouteLink>
+            </Breadcrumb.Item>
+            <Breadcrumb.Separator>
+              <BiChevronRight />
+            </Breadcrumb.Separator>
+            <Breadcrumb.Item>
+              <RouteLink
+                href={`/${CityMap[restaurant.City]}`}
+                as={Breadcrumb.Link}
+              >
+                {restaurant.City}
+              </RouteLink>
+            </Breadcrumb.Item>
+            <Breadcrumb.Separator>
+              <BiChevronRight />
+            </Breadcrumb.Separator>
+            <Breadcrumb.Item fontWeight="bold">
+              <RouteLink
+                href={`/${CityMap[restaurant.City]}/restaurant/${
+                  restaurant.RestaurantID
+                }`}
+                as={Breadcrumb.Link}
+                aria-current="page"
+              >
+                {restaurant.RestaurantName}
+              </RouteLink>
+            </Breadcrumb.Item>
+          </Breadcrumb.List>
+        </Breadcrumb.Root>
         <Flex flexDir={{ base: 'column', lg: 'row' }} m={[4, 8]}>
           <Box pos="relative" flexGrow={1} flexShrink={1} m="2">
             <IconButton
@@ -114,9 +120,10 @@ const RestaurantPage = ({ restaurant }: RestaurantPageProps): JSX.Element => {
               pos="absolute"
               size="lg"
               rounded="full"
-              icon={saved ? <BsBookmarkPlusFill /> : <BsBookmarkPlus />}
               color={saved ? 'red.600' : 'blackAlpha.600'}
-            />
+            >
+              {saved ? <BsBookmarkPlusFill /> : <BsBookmarkPlus />}
+            </IconButton>
             <Image
               alt={
                 restaurant.Picture?.PictureDescription1 ||
@@ -126,20 +133,27 @@ const RestaurantPage = ({ restaurant }: RestaurantPageProps): JSX.Element => {
               align="center"
               fit="cover"
               loading="lazy"
-              fallbackSrc="/static/fallback-lg.jpg"
+              onError={(event) => {
+                event.currentTarget.src = '/static/fallback-lg.jpg';
+              }}
               width={[600, 900]}
               height={[400, 600]}
             />
           </Box>
-          <Box flexGrow={1} flexShrink={3} lineHeight="7" sx={{ p: { my: 2 } }}>
+          <Box
+            flexGrow={1}
+            flexShrink={3}
+            lineHeight="7"
+            css={{ '& p': { my: 2 } }}
+          >
             <Heading textAlign="center" mb="4">
               {restaurant.RestaurantName}
             </Heading>
             {restaurant.Description && (
-              <Text noOfLines={10}>{restaurant.Description}</Text>
+              <Text lineClamp={10}>{restaurant.Description}</Text>
             )}
             {restaurant.ParkingInfo && (
-              <Text noOfLines={10}>{restaurant.ParkingInfo}</Text>
+              <Text lineClamp={10}>{restaurant.ParkingInfo}</Text>
             )}
           </Box>
         </Flex>
@@ -148,7 +162,7 @@ const RestaurantPage = ({ restaurant }: RestaurantPageProps): JSX.Element => {
         <SimpleGrid columns={[1, 1, 2]} gap={[4, 8]} mx="8">
           <Box>
             <Heading>餐廳資訊</Heading>
-            <VStack align="flex-start" textAlign="start" mt="8" spacing={4}>
+            <VStack align="flex-start" textAlign="start" mt="8" gap={4}>
               <SceneDetailBox
                 label="地址"
                 info={

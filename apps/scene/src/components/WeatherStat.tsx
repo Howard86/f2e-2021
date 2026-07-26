@@ -64,7 +64,7 @@ const WeatherStat = ({
         {city}
       </Text>
       <WeatherIcon boxSize="20" my="4" />
-      <HStack spacing={1}>
+      <HStack gap={1}>
         <TemperatureText text={minT} />
         <Text>-</Text>
         <TemperatureText text={maxT} />

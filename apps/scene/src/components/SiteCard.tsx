@@ -58,7 +58,7 @@ const SiteCard = ({ title, href, image, ...props }: SiteCardProps) => (
         bg="white"
         shadow="dark-lg"
         py={[2, 4]}
-        sx={{ writingMode: 'vertical-rl' }}
+        css={{ writingMode: 'vertical-rl' }}
       >
         <Text as="h2">
           <RouteLink

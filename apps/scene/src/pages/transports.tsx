@@ -17,7 +17,7 @@ const PAGE_PROPS = {
   gradientColor: 'transports.light',
 };
 
-const TransportsPage = (): JSX.Element => (
+const TransportsPage = (): React.ReactElement => (
   <>
     <NextHeadSeo
       og={{
@@ -77,7 +77,9 @@ const TransportsPage = (): JSX.Element => (
     </Background>
     <Box
       h={['90px', '280px', '360px']}
-      bgGradient={`linear(to-b, ${PAGE_PROPS.gradientColor}, white)`}
+      bgGradient="to-b"
+      gradientFrom={PAGE_PROPS.gradientColor}
+      gradientTo="white"
     />
     <Flex flexDir="column" bg="white">
       <Banner
@@ -86,7 +88,7 @@ const TransportsPage = (): JSX.Element => (
         href="/scenes"
         hideButton
       />
-      <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
+      <SimpleGrid columns={[1, 2, 3]} gap={6} mx="8">
         <ThemeCard
           id="省道"
           theme="省道即時交通資訊"
@@ -113,7 +115,7 @@ const TransportsPage = (): JSX.Element => (
         hideButton
       />
 
-      <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
+      <SimpleGrid columns={[1, 2, 3]} gap={6} mx="8">
         <ThemeCard
           id="汽車"
           theme="汽車"

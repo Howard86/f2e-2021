@@ -25,7 +25,9 @@ const ThemeCard = ({ id, theme, image, href, ...props }: ThemeCardProps) => (
       alt={theme}
       objectFit="cover"
       objectPosition="center"
-      fallbackSrc="/static/fallback.jpg"
+      onError={(event) => {
+        event.currentTarget.src = '/static/fallback.jpg';
+      }}
       src={image}
       w="full"
       h="full"
@@ -55,7 +57,7 @@ const ThemeCard = ({ id, theme, image, href, ...props }: ThemeCardProps) => (
           fontSize={['xl', '2xl']}
         >
           {href ? (
-            <LinkOverlay href={href} isExternal>
+            <LinkOverlay href={href} target="_blank" rel="noreferrer">
               {theme}
             </LinkOverlay>
           ) : (
