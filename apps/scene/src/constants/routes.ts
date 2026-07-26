@@ -1,4 +1,4 @@
-export interface Route {
+interface Route {
   href: string;
   label: string;
 }

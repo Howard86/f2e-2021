@@ -22,11 +22,7 @@
   },
   "overrides": [
     {
-      "includes": [
-        "libs/ptx/src/index.ts",
-        "libs/ptx/src/lib/index.ts",
-        "libs/tdx/index.ts"
-      ],
+      "includes": ["libs/tdx/index.ts"],
       "linter": {
         "rules": {
           "performance": {

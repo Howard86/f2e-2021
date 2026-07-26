@@ -28,9 +28,7 @@
         "@emotion/react": "^11.14.0",
         "@f2e/tdx": "workspace:^0.2.0",
         "@reduxjs/toolkit": "^2.12.0",
-        "framer-motion": "^12.42.2",
         "lodash.debounce": "^4.0.8",
-        "lodash.throttle": "^4.1.1",
         "mapbox-gl": "^3.27.0",
         "next": "16.2.12",
         "next-api-handler": "^0.4.10",
@@ -54,8 +52,6 @@
         "@emotion/react": "^11.14.0",
         "@f2e/tdx": "workspace:^0.2.0",
         "@reduxjs/toolkit": "^2.12.0",
-        "framer-motion": "^12.42.2",
-        "jssha": "^3.3.2",
         "lodash.throttle": "^4.1.1",
         "next": "16.2.12",
         "next-api-handler": "^0.4.10",
@@ -75,7 +71,6 @@
         "@f2e/tdx": "workspace:^0.2.0",
         "@reduxjs/toolkit": "^2.12.0",
         "framer-motion": "^12.42.2",
-        "lodash.throttle": "^4.1.1",
         "mapbox-gl": "^3.27.0",
         "next": "16.2.12",
         "next-api-handler": "^0.4.10",
@@ -88,13 +83,6 @@
       },
       "devDependencies": {
         "@types/wellknown": "^0.5.8",
-      },
-    },
-    "libs/ptx": {
-      "name": "@f2e/ptx",
-      "version": "0.6.3",
-      "dependencies": {
-        "jssha": "^3.3.2",
       },
     },
     "libs/tdx": {
@@ -240,8 +228,6 @@
     "@eslint/js": ["@eslint/js@8.57.1", "", {}, "sha512-d9zaMRSTIKDLhctzH12MtXvJKSSUhaHcjV+2Z+GK+EEY7XKpP5yR4x+N3TAcHTcu963nIr+TMcCb4DBCYX1z6Q=="],
 
     "@f2e/bus": ["@f2e/bus@workspace:apps/bus"],
-
-    "@f2e/ptx": ["@f2e/ptx@workspace:libs/ptx"],
 
     "@f2e/scene": ["@f2e/scene@workspace:apps/scene"],
 
@@ -864,8 +850,6 @@
     "json5": ["json5@2.2.3", "", { "bin": { "json5": "lib/cli.js" } }, "sha512-XmOWe7eyHYH14cLdVPoyg+GOH3rYX++KpzrylJwSW98t3Nk+U8XOl8FWKOgwtzdb8lXGf6zYwDUzeHMWfxasyg=="],
 
     "jsonc-parser": ["jsonc-parser@3.3.1", "", {}, "sha512-HUgH65KyejrUFPvHFPbqOY0rsFip3Bo5wb4ngvdi1EpCYWUQDC5V+Y7mZws+DLkr4M//zQJoanu1SP+87Dv1oQ=="],
-
-    "jssha": ["jssha@3.3.2", "", {}, "sha512-0RhFxzijV4W0qTXa97D5b6twAWXX7SEOpw8qzAZyZ+oeGOP9e84PnDSLjl7SBB1vBQ+chSUwsZR06i1AzA+nEA=="],
 
     "keyv": ["keyv@4.5.4", "", { "dependencies": { "json-buffer": "3.0.1" } }, "sha512-oxVHkHR/EJf2CNXnWxRLW6mg7JyCCUcG0DtEGmL2ctUo1PNTin1PUil+r/+4r5MpVgC/fn1kjsx7mjSujKqIpw=="],
 

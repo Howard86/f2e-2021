@@ -7,15 +7,6 @@ export type Coordinate = [number, number];
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
 
-export const getPosition = (
-  lat: number,
-  lng: number,
-  zoom: number,
-): Partial<mapboxgl.MapboxOptions> => ({
-  center: [lng, lat],
-  zoom,
-});
-
 export const initialize = (
   container: HTMLDivElement,
   options?: Partial<mapboxgl.MapboxOptions>,

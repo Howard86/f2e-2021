@@ -1,6 +1,3 @@
-export const parseCoordinate = (value: number, fixed: number) =>
-  Number.parseFloat(value.toFixed(fixed));
-
 export const CyclingDifficulty = {
   EASY: 1,
   EXPERT: 4,

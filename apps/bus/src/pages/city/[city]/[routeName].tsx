@@ -89,6 +89,7 @@ const BusRoutePage = ({
   );
   const [selectedStopId, setSelectedStopId] = useState(INITIAL_ID);
   const { divRef, mapContextRef, isLoaded, setLoaded } = useMap();
+  const routeId = (route as BusRoute | undefined)?.RouteUID;
   // TODO: refactor with useReducer
   const extendDisclosure = useDisclosure();
   const { open: isOpen, onClose, onOpen } = useDisclosure();
@@ -173,7 +174,7 @@ const BusRoutePage = ({
   ]);
 
   useEffect(() => {
-    if (!isLoaded || router.isFallback) {
+    if (!isLoaded || router.isFallback || !routeId) {
       return;
     }
 
@@ -235,7 +236,7 @@ const BusRoutePage = ({
 
       mapContextRef.current.layerId = addLayerAndSource(
         mapContextRef.current.map,
-        route.RouteUID,
+        routeId,
         geoJson,
         theme.token('colors.primary.200'),
       );
@@ -243,8 +244,7 @@ const BusRoutePage = ({
 
     handleAttachStops();
   }, [
-    // biome-ignore lint/suspicious/noUnnecessaryConditions: route is absent during fallback rendering.
-    route?.RouteUID,
+    routeId,
     geoJson,
     isLoaded,
     mapContextRef,

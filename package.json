@@ -49,6 +49,11 @@
     "knip": "knip",
     "prepare": "husky"
   },
+  "knip": {
+    "ignoreDependencies": [
+      "@biomejs/biome"
+    ]
+  },
   "devDependencies": {
     "@biomejs/biome": "2.5.5",
     "@commitlint/cli": "^21.2.1",

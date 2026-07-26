@@ -3,7 +3,7 @@ import type { ReactElement } from 'react';
 import { createRoot } from 'react-dom/client';
 import type { GeoJSONLineString } from 'wellknown';
 
-export type Coordinate = [number, number];
+type Coordinate = [number, number];
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
 

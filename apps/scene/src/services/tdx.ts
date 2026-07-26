@@ -11,7 +11,7 @@ import {
 import type { PlaceCardProps } from '@/components/place-card';
 import type { SceneCardProps } from '@/components/scene-card';
 
-export const service = new TdxService({
+const service = new TdxService({
   baseUrl: process.env.TDX_BASE_URL,
   clientId: process.env.TDX_CLIENT_ID,
   clientSecret: process.env.TDX_CLIENT_SECRET,
