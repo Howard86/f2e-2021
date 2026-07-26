@@ -6,7 +6,6 @@ import {
   Flex,
   NativeSelect,
   SimpleGrid,
-  SimpleGridProps,
   Spinner,
   Tabs,
 } from '@chakra-ui/react';
@@ -17,7 +16,7 @@ import CycleCard from '@/components/CycleCard';
 import Map from '@/components/Map';
 import { useGetCyclingByCityQuery } from '@/services/local';
 
-const MotionGrid = motion<SimpleGridProps>(SimpleGrid);
+const MotionGrid = motion.create(SimpleGrid);
 
 const variants: Variants = {
   hidden: { opacity: 0 },

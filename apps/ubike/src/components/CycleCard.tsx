@@ -2,7 +2,6 @@ import React from 'react';
 
 import {
   Box,
-  BoxProps,
   Flex,
   Heading,
   HStack,
@@ -32,7 +31,7 @@ interface CycleCardProps {
   geoJson: GeoJSONMultiLineString;
 }
 
-const MotionBox = motion<BoxProps>(Box);
+const MotionBox = motion.create(Box);
 
 const variants: Variants = {
   hidden: { opacity: 0, translateY: 20 },
