@@ -3,8 +3,8 @@ import { createEntityAdapter, type EntityState } from '@reduxjs/toolkit';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import type { SuccessApiResponse } from 'next-api-handler';
 
-import type { BusEstimationParam } from '@/pages/api/bus/estimation';
-import type { StationQueryParam } from '@/pages/api/bus/nearby';
+import type { BusEstimationParam } from '@/pages/api/bus-estimation';
+import type { StationQueryParam } from '@/pages/api/bus-nearby';
 
 const busEstimationAdapter = createEntityAdapter<BusEstimation, string>({
   selectId: (busEstimation) => busEstimation.StopUID,
