@@ -1,18 +1,15 @@
-import { ChakraTheme } from '@chakra-ui/react';
-
-const styles: ChakraTheme['styles'] = {
-  global: {
-    html: {
-      h: 'full',
-      scrollBehavior: 'smooth',
-    },
-    body: {
-      fontFamily: 'Noto Sans TC, sans-serif',
-      h: 'full',
-    },
-    '#__next': {
-      h: 'full',
-    },
+const styles = {
+  '#__next': {
+    h: 'full',
+  },
+  body: {
+    fontFamily: 'Noto Sans TC, sans-serif',
+    h: 'full',
+  },
+  html: {
+    colorPalette: 'primary',
+    h: 'full',
+    scrollBehavior: 'smooth',
   },
 };
 

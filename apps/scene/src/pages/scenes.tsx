@@ -1,27 +1,26 @@
-import React, { ChangeEvent, useEffect, useState } from 'react';
-
 import {
   Button,
   Flex,
   IconButton,
   Input,
   InputGroup,
-  InputRightElement,
   SimpleGrid,
   useBreakpointValue,
   useDisclosure,
 } from '@chakra-ui/react';
-import { GetStaticPropsContext, GetStaticPropsResult } from 'next';
+import type { GetStaticPropsContext, GetStaticPropsResult } from 'next';
 import NextHeadSeo from 'next-head-seo';
+import type React from 'react';
+import { type ChangeEvent, useEffect, useState } from 'react';
 import { BsGrid3X3GapFill } from 'react-icons/bs';
 import { FiSearch } from 'react-icons/fi';
 
-import Background from '@/components/Background';
-import Banner from '@/components/Banner';
-import Layout from '@/components/layout/Layout';
-import LoadingScreen from '@/components/LoadingScreen';
-import SceneCard, { SceneCardProps } from '@/components/SceneCard';
-import SceneModal from '@/components/SceneModal';
+import Background from '@/components/background';
+import Banner from '@/components/banner';
+import Layout from '@/components/layout/layout';
+import LoadingScreen from '@/components/loading-screen';
+import SceneCard, { type SceneCardProps } from '@/components/scene-card';
+import SceneModal from '@/components/scene-modal';
 import { DEFAULT_FETCHED_REMARK_NUMBER } from '@/constants/pagination';
 import { SIX_HOURS_IN_SECONDS } from '@/constants/time';
 import useAppToast from '@/hooks/use-app-toast';
@@ -35,9 +34,9 @@ interface ScenesPageProps {
   scenes: SceneCardProps[];
 }
 
-const PAGE_PROPS = { mainColor: 'scenes.main', gradientColor: 'scenes.light' };
+const PAGE_PROPS = { gradientColor: 'scenes.light', mainColor: 'scenes.main' };
 
-const ScenesPage = ({ scenes }: ScenesPageProps): JSX.Element => {
+const ScenesPage = ({ scenes }: ScenesPageProps): React.ReactElement => {
   const toast = useAppToast();
   const [
     fetch,
@@ -59,14 +58,14 @@ const ScenesPage = ({ scenes }: ScenesPageProps): JSX.Element => {
   };
 
   useEffect(() => {
-    if (isError && messageSentStatus.isOpen) {
+    if (isError && messageSentStatus.open) {
       toast({
         description: `查無"${keyword.trim()}"的結果`,
         status: 'warning',
       });
       messageSentStatus.onClose();
     }
-  }, [isError, keyword, messageSentStatus, messageSentStatus.isOpen, toast]);
+  }, [isError, keyword, messageSentStatus, messageSentStatus.open, toast]);
 
   return (
     <>
@@ -77,61 +76,69 @@ const ScenesPage = ({ scenes }: ScenesPageProps): JSX.Element => {
         }}
       />
       <Background
-        name="景點"
-        image={background}
-        wordOneAlt="景"
-        wordOne={wordOne}
-        wordTwoAlt="點"
-        wordTwo={wordTwo}
         bgColor={PAGE_PROPS.gradientColor}
+        image={background}
+        name="景點"
+        wordOne={wordOne}
+        wordOneAlt="景"
+        wordTwo={wordTwo}
+        wordTwoAlt="點"
       >
-        <Flex flexDir={['column', 'row']} align="center" mt="4">
-          <InputGroup size="lg">
-            <Input
-              bg="white"
-              placeholder="請輸入關鍵字"
-              value={keyword}
-              onChange={handleOnType}
-            />
-            <InputRightElement>
+        <Flex align="center" flexDir={['column', 'row']} mt="4">
+          <InputGroup
+            endElement={
               <IconButton
-                variant="ghost"
-                rounded="full"
                 aria-label="search"
                 onClick={onSearch}
-                icon={<FiSearch />}
-              />
-            </InputRightElement>
+                rounded="full"
+                variant="ghost"
+              >
+                <FiSearch />
+              </IconButton>
+            }
+            endElementProps={{ pointerEvents: 'auto' }}
+          >
+            <Input
+              bg="white"
+              onChange={handleOnType}
+              placeholder="請輸入關鍵字"
+              size="lg"
+              value={keyword}
+            />
           </InputGroup>
           <Button
-            variant="scenes"
-            onClick={modal.onOpen}
             flexShrink={0}
-            leftIcon={<BsGrid3X3GapFill />}
-            size="lg"
             m="4"
+            onClick={modal.onOpen}
+            size="lg"
+            variant="subtle"
           >
+            <BsGrid3X3GapFill />
             進階搜尋
           </Button>
         </Flex>
       </Background>
 
       <Flex
+        bgGradient="to-b"
         flexDir="column"
-        bgGradient={`linear(to-b, ${PAGE_PROPS.gradientColor}, white)`}
+        gradientFrom={PAGE_PROPS.gradientColor}
+        gradientTo="white"
       >
-        {!isUninitialized && !isError && (
+        {!(isUninitialized || isError) && (
           <>
             <Banner
-              title={`搜尋『${originalArgs?.keyword}』的結果...`}
-              mainColor={PAGE_PROPS.mainColor}
-              href="/scenes"
-              mt="0"
               hideButton
+              href="/scenes"
+              mainColor={PAGE_PROPS.mainColor}
+              mt="0"
+              title={`搜尋『${originalArgs?.keyword}』的結果...`}
             />
-            {isLoading && <LoadingScreen mainColor={PAGE_PROPS.mainColor} />}
-            {data?.success && (
-              <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
+            {Boolean(isLoading) && (
+              <LoadingScreen mainColor={PAGE_PROPS.mainColor} />
+            )}
+            {data?.success === true && (
+              <SimpleGrid columns={[1, 2, 3]} gap={6} mx="8">
                 {data.data.map((scene) => (
                   <SceneCard key={scene.href} {...scene} />
                 ))}
@@ -140,22 +147,22 @@ const ScenesPage = ({ scenes }: ScenesPageProps): JSX.Element => {
           </>
         )}
         <Banner
-          title="熱門景點"
-          mainColor={PAGE_PROPS.mainColor}
           href="/scenes"
+          mainColor={PAGE_PROPS.mainColor}
           // TODO: fix with CSS selector
           mt={isSuccess ? undefined : 0}
+          title="熱門景點"
         />
-        <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
+        <SimpleGrid columns={[1, 2, 3]} gap={6} mx="8">
           {scenes.map((scene) => (
             <SceneCard key={scene.href} {...scene} />
           ))}
         </SimpleGrid>
       </Flex>
       <SceneModal
-        isOpen={modal.isOpen}
         onClose={modal.onClose}
-        isCentered={isModalCentered}
+        open={modal.open}
+        placement={isModalCentered ? 'center' : 'top'}
       />
     </>
   );
@@ -169,10 +176,10 @@ export const getStaticProps = async (
 ): Promise<GetStaticPropsResult<ScenesPageProps>> => {
   try {
     const scenes = await tourismService.getScenicSpots({
-      top: DEFAULT_FETCHED_REMARK_NUMBER,
-      select: 'ScenicSpotID,ScenicSpotName,City,Picture',
       filter: 'Picture/PictureUrl1 ne null and City ne null',
       orderBy: 'SrcUpdateTime desc, TicketInfo desc',
+      select: 'ScenicSpotID,ScenicSpotName,City,Picture',
+      top: DEFAULT_FETCHED_REMARK_NUMBER,
     });
 
     return {

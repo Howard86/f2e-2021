@@ -1,55 +1,42 @@
-import { Activity, Hotel, Restaurant, ScenicSpot } from './tourism';
-
-const SCENE_KEYWORDS: (keyof ScenicSpot)[] = [
+const SCENE_KEYWORDS = [
   'Description',
-  'ScenicSpotName',
-  'DescriptionDetail',
-  'Keyword',
+  'AttractionName',
   'Remarks',
-  'TravelInfo',
-  'TicketInfo',
-  'Address',
-  'Class1',
-  'Class2',
-  'Class3',
+  'TrafficInfo',
+  'FeeInfo',
+  'PostalAddress/StreetAddress',
 ];
 
-const RESTAURANT_KEYWORDS: (keyof Restaurant)[] = [
+const RESTAURANT_KEYWORDS = [
   'RestaurantName',
   'Description',
-  'Address',
-  'OpenTime',
-  'Class',
-  'City',
+  'PostalAddress/StreetAddress',
+  'ServiceTimeInfo',
+  'PostalAddress/City',
   'ParkingInfo',
 ];
 
-const HOTEL_KEYWORDS: (keyof Hotel)[] = [
-  'Address',
-  'City',
-  'Class',
+const HOTEL_KEYWORDS = [
+  'PostalAddress/StreetAddress',
+  'PostalAddress/City',
   'Description',
-  'Grade',
   'HotelName',
   'ParkingInfo',
   'ServiceInfo',
-  'Spec',
+  'RoomInfo',
 ];
 
-const ACTIVITY_KEYWORDS: (keyof Activity)[] = [
-  'ActivityName',
+const ACTIVITY_KEYWORDS = [
+  'EventName',
   'Description',
-  'Particpation',
-  'Address',
-  'Organizer',
-  'StartTime',
-  'EndTime',
-  'Class1',
-  'Class2',
-  'City',
+  'Participant',
+  'PostalAddress/StreetAddress',
+  'StartDateTime',
+  'EndDateTime',
+  'PostalAddress/City',
   'ParkingInfo',
-  'Charge',
-  'TravelInfo',
+  'FeeInfo',
+  'TrafficInfo',
 ];
 
 const getODataSearchCriteria = (keyword: string, value: string) =>

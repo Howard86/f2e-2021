@@ -9,9 +9,6 @@
   "private": true,
   "scripts": {
     "clean": "rm -r build",
-    "lint": "eslint src --ext ts",
-    "format": "prettier --write src --ignore-path ../../.prettierignore",
-    "build": "tsc",
-    "build:fresh": "pnpm clean && pnpm build"
+    "build": "tsc"
   }
 }

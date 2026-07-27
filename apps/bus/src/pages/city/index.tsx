@@ -1,56 +1,31 @@
-import React, { ChangeEvent, useEffect, useState } from 'react';
-
 import {
   Box,
   Center,
   Flex,
   Heading,
   IconButton,
-  keyframes,
   LinkBox,
   LinkOverlay,
   Text,
 } from '@chakra-ui/react';
-import { City, CityMap, CitySet } from '@f2e/tdx';
+import { type City, CityMap, CitySet } from '@f2e/tdx';
 import debounce from 'lodash.debounce';
+import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import NextHeadSeo from 'next-head-seo';
+import { type ChangeEvent, useEffect, useState } from 'react';
 import { BiChevronLeft } from 'react-icons/bi';
 
 import bus from '@/bus.png';
-import BusSearchInput from '@/components/BusSearchInput';
-import Image from '@/components/Image';
-import NavBarItems from '@/components/NavBarItems';
-import RouteKeyBoard from '@/components/RouteKeyBoard';
-import RouteLink from '@/components/RouteLink';
+import BusSearchInput from '@/components/bus-search-input';
+import Image from '@/components/image';
+import NavBarItems from '@/components/nav-bar-items';
+import RouteKeyBoard from '@/components/route-key-board';
 import { DESKTOP_DISPLAY, MOBILE_DISPLAY } from '@/constants/style';
 import { useLazyGetBusRoutesQuery } from '@/services/local';
 import station from '@/station.png';
 import { getBusRouteDestinations } from '@/utils/bus';
 import { addToLocalStorage, getFromLocalStorage } from '@/utils/local-storage';
-
-const busAnimation = keyframes`
-  0% {
-    top: 8px;
-  }
-  10% {
-    top: 0;
-  }
-`;
-
-const roadAnimation = keyframes`
-  0% {
-    left: 100%;
-    opacity: 0;
-  }
-  20% {
-    opacity: 1;
-  }
-  100% {
-    left: 0;
-    opacity: 0;
-  }
-`;
 
 export const CITY_STORAGE_KEY = 'selected-city';
 const DEFAULT_SEARCH_STRING = '';
@@ -93,97 +68,99 @@ const CityPage = () => {
   return (
     <>
       <NextHeadSeo title={`Iro Bus | ${CityMap[city]}`} />
-      <Flex pos="relative" flexDir="column" h="full" color="white">
-        <Flex p="4" bg="primary.800" align="center" justify="space-between">
+      <Flex color="white" flexDir="column" h="full" pos="relative">
+        <Flex align="center" bg="primary.800" justify="space-between" p="4">
           <NavBarItems display={DESKTOP_DISPLAY} />
           <IconButton
-            display={MOBILE_DISPLAY}
             aria-label="back to previous page"
-            variant="ghost"
+            display={MOBILE_DISPLAY}
             fontSize="4xl"
             onClick={onArrowClick}
-            icon={<BiChevronLeft />}
-          />
+            variant="ghost"
+          >
+            <BiChevronLeft />
+          </IconButton>
           <BusSearchInput
-            display={MOBILE_DISPLAY}
             city={city}
+            display={MOBILE_DISPLAY}
+            onSearch={onSearch}
             onSelectCity={onSelectCity}
             searchString={searchString}
-            onSearch={onSearch}
           />
         </Flex>
         <Flex
           flexDir={['column', 'column', 'column', 'row-reverse']}
           flexGrow={1}
-          overflowY="auto"
-          maxW="100vw"
           gap={[0, 12, 12, 0]}
+          maxW="100vw"
+          overflowY="auto"
         >
           <Flex
-            flexGrow={1}
-            flexDir="column"
-            mx={[0, 12]}
-            mt={[0, 16]}
-            mb={[0, 4]}
-            minH={400}
-            rounded={['none', '3xl']}
             borderColor="secondary.900"
             borderWidth={[0, '12px']}
+            flexDir="column"
+            flexGrow={1}
+            mb={[0, 4]}
+            minH={400}
+            mt={[0, 16]}
+            mx={[0, 12]}
             overflowY="auto"
+            rounded={['none', '3xl']}
           >
-            <Flex display={['none', 'flex']} p="4" bg="primary.700">
+            <Flex bg="primary.700" display={['none', 'flex']} p="4">
               <BusSearchInput
                 city={city}
+                onSearch={onSearch}
                 onSelectCity={onSelectCity}
                 searchString={searchString}
-                onSearch={onSearch}
               />
             </Flex>
             <Box flex={1} overflowY="auto">
-              {/* eslint-disable-next-line no-nested-ternary */}
               {isSuccess ? (
+                // biome-ignore lint/style/noNestedTernary: the nested branches map the three search states directly.
                 data && data.data.length > 0 ? (
                   data.data.map((busRoute) => (
                     <LinkBox
-                      key={busRoute.RouteUID}
-                      p="4"
-                      m="4"
+                      _active={{ borderColor: 'secondary.200' }}
+                      _hover={{ borderColor: 'secondary.200' }}
+                      backdropFilter="blur(8px)"
+                      bgColor="whiteAlpha.100"
                       border="2px"
                       borderColor="primary.200"
+                      key={busRoute.RouteUID}
+                      m="4"
+                      p="4"
                       rounded="2xl"
-                      bgColor="whiteAlpha.100"
-                      backdropFilter="blur(8px)"
-                      _hover={{ borderColor: 'secondary.200' }}
-                      _active={{ borderColor: 'secondary.200' }}
                     >
                       <Heading fontSize="2xl" mb="4">
-                        <RouteLink
-                          as={LinkOverlay}
-                          href={`/city/${city}/${busRoute.RouteName.Zh_tw}`}
-                        >
-                          {busRoute.RouteName.Zh_tw}
-                        </RouteLink>
+                        <LinkOverlay asChild>
+                          <NextLink
+                            href={`/city/${city}/${busRoute.RouteName.Zh_tw}`}
+                          >
+                            {busRoute.RouteName.Zh_tw}
+                          </NextLink>
+                        </LinkOverlay>
                       </Heading>
                       <Text>{getBusRouteDestinations(busRoute)}</Text>
                     </LinkBox>
                   ))
                 ) : (
                   // TODO: add animation
-                  <Center h="full" flexDir="column" bg="primary.500">
-                    <Image alt="查無公車" src={bus} placeholder="blur" />
-                    <Heading mt="4" fontSize="lg">
+                  <Center bg="primary.500" flexDir="column" h="full">
+                    <Image alt="查無公車" placeholder="blur" src={bus} />
+                    <Heading fontSize="lg" mt="4">
                       Ooops, 查無公車
                     </Heading>
                   </Center>
                 )
               ) : (
-                <Center h="full" flexDir="column" bg="primary.500">
+                <Center bg="primary.500" flexDir="column" h="full">
                   <Image
                     alt="請輸入公車路線編號"
-                    src={station}
                     placeholder="blur"
+                    src={station}
                   />
-                  <Heading mt="4" fontSize="lg">
+                  <Heading fontSize="lg" mt="4">
                     請輸入公車路線編號
                   </Heading>
                 </Center>
@@ -193,31 +170,31 @@ const CityPage = () => {
           <Flex flexDir="column" flexShrink={0}>
             <Box flexGrow={4} />
             <Box
-              pos="relative"
-              mx={[0, 12]}
-              p={[0, 4]}
               bg="primary.800"
               borderTopRadius="3xl"
+              mx={[0, 12]}
+              p={[0, 4]}
+              pos="relative"
               shadow="xl"
             >
               <Box
                 display={DESKTOP_DISPLAY}
-                pos="absolute"
                 left="0"
+                pos="absolute"
                 right="0"
                 top="-12"
               >
                 <Box
-                  w="120px"
                   bg="secondary.800"
-                  p="4"
-                  mx="auto"
-                  textAlign="center"
-                  fontWeight="bold"
-                  roundedTop="2xl"
-                  zIndex="docked"
                   border="2px"
                   borderColor="secondary.400"
+                  fontWeight="bold"
+                  mx="auto"
+                  p="4"
+                  roundedTop="2xl"
+                  textAlign="center"
+                  w="120px"
+                  zIndex="docked"
                 >
                   快速搜尋
                 </Box>
@@ -225,21 +202,24 @@ const CityPage = () => {
               <RouteKeyBoard setSearchString={setSearchString} />
             </Box>
             <Box flexGrow={1} />
-            <Box pos="relative" ml="16" p="8" display={DESKTOP_DISPLAY}>
+            <Box display={DESKTOP_DISPLAY} ml="16" p="8" pos="relative">
               <Image
                 alt="bus"
+                animation="busBounce 3s ease infinite"
                 src={bus}
-                animation={`${busAnimation} 3s ease infinite`}
               />
               <Box
+                animation="roadTravel 6s ease-out infinite"
+                bgGradient="to-r"
+                bottom="6"
+                gradientFrom="#172E5E"
+                gradientTo="#172E5E"
+                gradientVia="whiteAlpha.600"
+                h="1"
                 pos="absolute"
                 rounded="2xl"
-                h="1"
                 w="20"
-                bgGradient="linear(to-r, #172E5E 0, whiteAlpha.600 50%, #172E5E)"
                 zIndex=""
-                bottom="6"
-                animation={`${roadAnimation} 6s ease-out infinite`}
               />
             </Box>
           </Flex>

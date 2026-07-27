@@ -1,39 +1,31 @@
-import React from 'react';
-
+import type { ParsedUrlQuery } from 'node:querystring';
 import {
   Box,
   Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
   Flex,
   Heading,
-  Icon,
   IconButton,
   Image,
   SimpleGrid,
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { City, CityMap, CitySet, ScenicSpot } from '@f2e/tdx';
-import {
+import { type City, CityMap, CitySet, type ScenicSpot } from '@f2e/tdx';
+import type {
   GetStaticPathsResult,
   GetStaticPropsContext,
   GetStaticPropsResult,
 } from 'next';
 import { useRouter } from 'next/router';
 import NextHeadSeo from 'next-head-seo';
-import type { ParsedUrlQuery } from 'querystring';
+import type React from 'react';
 import {
   BiChevronRight,
   BiLinkExternal,
   BiMoney,
   BiSync,
 } from 'react-icons/bi';
-import {
-  BsBookmarkPlus,
-  BsBookmarkPlusFill,
-  BsLightbulb,
-} from 'react-icons/bs';
+import { BsBookmarkPlusFill, BsLightbulb } from 'react-icons/bs';
 import {
   FiClock,
   FiMapPin,
@@ -43,11 +35,11 @@ import {
 } from 'react-icons/fi';
 import { MdPhotoAlbum } from 'react-icons/md';
 
-import GoogleMap from '@/components/GoogleMap';
-import Layout from '@/components/layout/Layout';
-import LoadingScreen from '@/components/LoadingScreen';
-import RouteLink from '@/components/RouteLink';
-import SceneDetailBox from '@/components/SceneDetailText';
+import GoogleMap from '@/components/google-map';
+import Layout from '@/components/layout/layout';
+import LoadingScreen from '@/components/loading-screen';
+import RouteLink from '@/components/route-link';
+import SceneDetailBox from '@/components/scene-detail-text';
 import { ONE_DAY_IN_SECONDS } from '@/constants/time';
 import { tourismService } from '@/services/tdx';
 
@@ -59,95 +51,110 @@ const getGoogleMapURL = (lat?: number, lng?: number) =>
   lat && lng
     ? `https://www.google.com/maps/search/?api=1&query=${lat}%2C${lng}`
     : undefined;
-const PAGE_PROPS = { mainColor: 'scenes.main', gradientColor: 'scenes.light' };
+const PAGE_PROPS = { gradientColor: 'scenes.light', mainColor: 'scenes.main' };
 
-const ScenePage = ({ scene }: ScenePageProps): JSX.Element => {
+const ScenePage = ({ scene }: ScenePageProps): React.ReactElement => {
   const router = useRouter();
 
-  // TODO: add saved info
-  const saved = true;
-
   if (router.isFallback) {
-    return <LoadingScreen minH="400px" mainColor={PAGE_PROPS.mainColor} />;
+    return <LoadingScreen mainColor={PAGE_PROPS.mainColor} minH="400px" />;
   }
 
   return (
     <>
       <NextHeadSeo
-        title={`台灣旅遊導覽網 | ${scene.ScenicSpotName}`}
         description={scene.Description}
         og={{
-          type: 'article',
+          description: scene.Picture?.PictureDescription1,
+          image: scene.Picture?.PictureUrl1,
           title: scene.ScenicSpotName,
-          description: scene.Picture.PictureDescription1,
-          image: scene.Picture.PictureUrl1,
+          type: 'article',
         }}
+        title={`台灣旅遊導覽網 | ${scene.ScenicSpotName}`}
       />
       <Flex
+        bgGradient="to-b"
         flexDir="column"
+        gradientFrom="restaurants.light"
+        gradientTo="white"
         pt="16"
-        bgGradient="linear(to-b, restaurants.light, white)"
       >
-        <Breadcrumb
-          mx="8"
-          color="blackAlpha.700"
-          separator={<Icon as={BiChevronRight} />}
-        >
-          <BreadcrumbItem>
-            <RouteLink href="/scenes" as={BreadcrumbLink}>
-              景點
-            </RouteLink>
-          </BreadcrumbItem>
-          <BreadcrumbItem>
-            <RouteLink href={`/${CityMap[scene.City]}`} as={BreadcrumbLink}>
-              {scene.City}
-            </RouteLink>
-          </BreadcrumbItem>
-          <BreadcrumbItem fontWeight="bold" isCurrentPage>
-            <RouteLink
-              href={`/${CityMap[scene.City]}/scene/${scene.ScenicSpotID}`}
-              as={BreadcrumbLink}
-            >
-              {scene.ScenicSpotName}
-            </RouteLink>
-          </BreadcrumbItem>
-        </Breadcrumb>
+        <Breadcrumb.Root color="blackAlpha.700" mx="8">
+          <Breadcrumb.List>
+            <Breadcrumb.Item>
+              <RouteLink as={Breadcrumb.Link} href="/scenes">
+                景點
+              </RouteLink>
+            </Breadcrumb.Item>
+            <Breadcrumb.Separator>
+              <BiChevronRight />
+            </Breadcrumb.Separator>
+            <Breadcrumb.Item>
+              <RouteLink as={Breadcrumb.Link} href={`/${CityMap[scene.City]}`}>
+                {scene.City}
+              </RouteLink>
+            </Breadcrumb.Item>
+            <Breadcrumb.Separator>
+              <BiChevronRight />
+            </Breadcrumb.Separator>
+            <Breadcrumb.Item fontWeight="bold">
+              <RouteLink
+                aria-current="page"
+                as={Breadcrumb.Link}
+                href={`/${CityMap[scene.City]}/scene/${scene.ScenicSpotID}`}
+              >
+                {scene.ScenicSpotName}
+              </RouteLink>
+            </Breadcrumb.Item>
+          </Breadcrumb.List>
+        </Breadcrumb.Root>
         <Flex flexDir={{ base: 'column', lg: 'row' }} m={[4, 8]}>
-          <Box pos="relative" flexGrow={1} flexShrink={1} m="2">
+          <Box flexGrow={1} flexShrink={1} m="2" pos="relative">
             <IconButton
-              top="0"
-              right="0"
-              m="4"
               aria-label="save to favorite"
+              color="red.600"
+              m="4"
               pos="absolute"
-              size="lg"
+              right="0"
               rounded="full"
-              icon={saved ? <BsBookmarkPlusFill /> : <BsBookmarkPlus />}
-              color={saved ? 'red.600' : 'blackAlpha.600'}
-            />
+              size="lg"
+              top="0"
+            >
+              <BsBookmarkPlusFill />
+            </IconButton>
             <Image
-              alt={scene.Picture?.PictureDescription1 || scene.ScenicSpotName}
-              src={scene.Picture?.PictureUrl1}
               align="center"
+              alt={scene.Picture?.PictureDescription1 || scene.ScenicSpotName}
               fit="cover"
-              loading="lazy"
-              fallbackSrc="/static/fallback-lg.jpg"
-              width={[600, 900]}
               height={[400, 600]}
+              loading="lazy"
+              // biome-ignore lint/performance/noJsxPropsBind: callback needs local render state or the current event target.
+              onError={(event) => {
+                event.currentTarget.src = '/static/fallback-lg.jpg';
+              }}
+              src={scene.Picture?.PictureUrl1}
+              width={[600, 900]}
             />
           </Box>
-          <Box flexGrow={1} flexShrink={3} lineHeight="7" sx={{ p: { my: 2 } }}>
-            <Heading textAlign="center" mb="4">
+          <Box
+            css={{ '& p': { my: 2 } }}
+            flexGrow={1}
+            flexShrink={3}
+            lineHeight="7"
+          >
+            <Heading mb="4" textAlign="center">
               {scene.ScenicSpotName}
             </Heading>
-            {scene.Description && (
-              <Text noOfLines={10}>{scene.Description}</Text>
+            {Boolean(scene.Description) && (
+              <Text lineClamp={10}>{scene.Description}</Text>
             )}
-            {scene.DescriptionDetail &&
-              scene.Description !== scene.DescriptionDetail && (
-                <Text noOfLines={10}>{scene.DescriptionDetail}</Text>
-              )}
-            {scene.TravelInfo && <Text noOfLines={10}>{scene.TravelInfo}</Text>}
+            {Boolean(
+              scene.DescriptionDetail &&
+                scene.Description !== scene.DescriptionDetail,
+            ) && <Text lineClamp={10}>{scene.DescriptionDetail}</Text>}
+            {Boolean(scene.TravelInfo) && (
+              <Text lineClamp={10}>{scene.TravelInfo}</Text>
+            )}
           </Box>
         </Flex>
       </Flex>
@@ -155,15 +162,8 @@ const ScenePage = ({ scene }: ScenePageProps): JSX.Element => {
         <SimpleGrid columns={[1, 1, 2]} gap={[4, 8]} mx="8">
           <Box>
             <Heading>景點資訊</Heading>
-            <VStack align="flex-start" textAlign="start" mt="8" spacing={4}>
+            <VStack align="flex-start" gap={4} mt="8" textAlign="start">
               <SceneDetailBox
-                label="地址"
-                info={
-                  scene.Address ||
-                  (scene.Position?.PositionLat &&
-                    scene.Position?.PositionLon &&
-                    '查看地圖')
-                }
                 href={
                   scene.MapUrl ||
                   getGoogleMapURL(
@@ -172,67 +172,76 @@ const ScenePage = ({ scene }: ScenePageProps): JSX.Element => {
                   )
                 }
                 icon={FiMapPin}
+                info={
+                  scene.Address ||
+                  (scene.Position?.PositionLat &&
+                    scene.Position?.PositionLon &&
+                    '查看地圖')
+                }
+                label="地址"
               />
               <SceneDetailBox
-                label="電話"
-                info={scene.Phone}
-                icon={FiPhoneIncoming}
                 href={`tel:${scene.Phone}`}
+                icon={FiPhoneIncoming}
+                info={scene.Phone}
+                label="電話"
               />
               <SceneDetailBox
-                label="開放時間"
-                info={scene.OpenTime}
                 icon={FiClock}
+                info={scene.OpenTime}
+                label="開放時間"
               />
               <SceneDetailBox
-                label="相關鏈結"
-                info={scene.WebsiteUrl && '官網'}
                 href={scene.WebsiteUrl}
                 icon={BiLinkExternal}
+                info={scene.WebsiteUrl && '官網'}
+                label="相關鏈結"
               />
               <SceneDetailBox
-                label="票價資訊"
-                info={scene.TicketInfo}
                 icon={BiMoney}
+                info={scene.TicketInfo}
+                label="票價資訊"
               />
               <SceneDetailBox
-                label="主題"
+                href={`/scenes/${scene.Class1 || scene.Class2 || scene.Class3}`}
+                icon={MdPhotoAlbum}
                 info={[scene.Class1, scene.Class2, scene.Class3]
                   .filter(Boolean)
                   .join(', ')}
-                href={`/scenes/${scene.Class1 || scene.Class2 || scene.Class3}`}
-                icon={MdPhotoAlbum}
+                label="主題"
               />
               <SceneDetailBox
-                label="關鍵字"
-                info={scene.Keyword}
                 icon={FiSearch}
+                info={scene.Keyword}
+                label="關鍵字"
               />
               <SceneDetailBox
-                label="古蹟分級"
-                info={scene.Level}
                 icon={FiStopCircle}
+                info={scene.Level}
+                label="古蹟分級"
               />
               <SceneDetailBox
-                label="相關備註"
-                info={scene.Remarks}
                 icon={BsLightbulb}
+                info={scene.Remarks}
+                label="相關備註"
               />
               <SceneDetailBox
-                label="更新時間"
+                icon={BiSync}
                 info={
                   scene.SrcUpdateTime &&
                   new Date(scene.SrcUpdateTime).toLocaleDateString()
                 }
-                icon={BiSync}
+                label="更新時間"
               />
             </VStack>
           </Box>
-          {scene.Position?.PositionLat && scene.Position?.PositionLon && (
+          {Boolean(
+            scene.Position?.PositionLat && scene.Position?.PositionLon,
+          ) && (
             <GoogleMap
-              query={scene.Address}
               lat={scene.Position.PositionLat}
               lng={scene.Position.PositionLon}
+              query={scene.Address}
             />
           )}
         </SimpleGrid>
@@ -259,16 +268,21 @@ export const getStaticProps = async (
   if (
     typeof context.params.id !== 'string' ||
     typeof context.params.city !== 'string'
-  )
+  ) {
     return { notFound: true };
+  }
 
   const city = context.params.city as City;
 
-  if (!CitySet.has(city)) return { notFound: true };
+  if (!CitySet.has(city)) {
+    return { notFound: true };
+  }
 
   const scene = await tourismService.getScenicSpotById(context.params.id);
 
-  if (!scene) return { notFound: true };
+  if (!scene) {
+    return { notFound: true };
+  }
 
   return {
     props: { scene },

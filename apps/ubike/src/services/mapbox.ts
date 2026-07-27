@@ -1,19 +1,11 @@
 import mapboxgl from 'mapbox-gl';
-import { render } from 'react-dom';
+import type { ReactElement } from 'react';
+import { createRoot } from 'react-dom/client';
 import type { GeoJSONMultiLineString } from 'wellknown';
 
 export type Coordinate = [number, number];
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
-
-export const getPosition = (
-  lat: number,
-  lng: number,
-  zoom: number,
-): Partial<mapboxgl.MapboxOptions> => ({
-  center: [lng, lat],
-  zoom,
-});
 
 export const initialize = (
   container: HTMLDivElement,
@@ -25,21 +17,30 @@ export const initialize = (
 
   return new mapboxgl.Map({
     container,
-    style: 'mapbox://styles/mapbox/dark-v10',
     localIdeographFontFamily: "'Roboto', sans-serif",
+    style: 'mapbox://styles/mapbox/dark-v10',
     ...options,
   });
 };
 
 export const attachJSXMarker = (
   map: mapboxgl.Map,
-  Element: JSX.Element,
+  Element: ReactElement,
   coordinates: mapboxgl.LngLatLike,
 ) => {
   const node = document.createElement('div');
-  render(Element, node);
+  const root = createRoot(node);
+  root.render(Element);
 
-  return new mapboxgl.Marker(node).setLngLat(coordinates).addTo(map);
+  const marker = new mapboxgl.Marker(node).setLngLat(coordinates).addTo(map);
+  const remove = marker.remove.bind(marker);
+  marker.remove = () => {
+    root.unmount();
+    marker.remove = remove;
+    return remove();
+  };
+
+  return marker;
 };
 
 export const addLayerAndSource = (
@@ -49,23 +50,23 @@ export const addLayerAndSource = (
   color: string,
 ) => {
   map.addSource(sourceName, {
-    type: 'geojson',
     data: {
-      type: 'Feature',
       geometry: geoJson,
       properties: {},
+      type: 'Feature',
     },
+    type: 'geojson',
   });
 
   map.addLayer({
     id: sourceName,
-    type: 'line',
-    source: sourceName,
     layout: {},
     paint: {
       'line-color': color,
       'line-width': 3,
     },
+    source: sourceName,
+    type: 'line',
   });
 
   const bounds = new mapboxgl.LngLatBounds();

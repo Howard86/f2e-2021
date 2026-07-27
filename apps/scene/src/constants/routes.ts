@@ -1,7 +1,7 @@
-export type Route = {
-  label: string;
+interface Route {
   href: string;
-};
+  label: string;
+}
 
 const ROUTES: Route[] = [
   { href: '/', label: '活動新訊' },

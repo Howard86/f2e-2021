@@ -1,37 +1,37 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { ApiResponse } from 'next-api-handler';
+import type { ApiResponse } from 'next-api-handler';
 
-import { PlaceCardProps } from '@/components/PlaceCard';
-import { SceneCardProps } from '@/components/SceneCard';
+import type { PlaceCardProps } from '@/components/place-card';
+import type { SceneCardProps } from '@/components/scene-card';
 
 export const localApi = createApi({
-  reducerPath: 'local',
   baseQuery: fetchBaseQuery({
     baseUrl: '/api',
   }),
   endpoints: (builder) => ({
-    getSceneCards: builder.query<
-      ApiResponse<SceneCardProps[]>,
-      { keyword: string } & Partial<Local.SearchQuery>
+    getHotelCards: builder.query<
+      ApiResponse<PlaceCardProps[]>,
+      { keyword: string }
     >({
-      query: (params) => ({
-        url: 'scenes',
-        params,
-      }),
+      query: (params) => ({ params, url: 'hotels' }),
     }),
     getRestaurantCards: builder.query<
       ApiResponse<PlaceCardProps[]>,
       { keyword: string }
     >({
-      query: (params) => ({ url: 'restaurants', params }),
+      query: (params) => ({ params, url: 'restaurants' }),
     }),
-    getHotelCards: builder.query<
-      ApiResponse<PlaceCardProps[]>,
-      { keyword: string }
+    getSceneCards: builder.query<
+      ApiResponse<SceneCardProps[]>,
+      { keyword: string } & Partial<Local.SearchQuery>
     >({
-      query: (params) => ({ url: 'hotels', params }),
+      query: (params) => ({
+        params,
+        url: 'scenes',
+      }),
     }),
   }),
+  reducerPath: 'local',
 });
 
 export const {

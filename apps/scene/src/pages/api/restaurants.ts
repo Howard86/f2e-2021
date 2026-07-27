@@ -11,20 +11,22 @@ const router = new RouterBuilder();
 router.get(async (req) => {
   const { keyword } = req.query;
 
-  if (typeof keyword !== 'string')
+  if (typeof keyword !== 'string') {
     throw new BadRequestException('keyword not found');
+  }
 
   const results = await tourismService.getRestaurants({
-    top: 30,
-    select: 'RestaurantID,RestaurantName,City,Address,OpenTime,Phone,Picture',
     filter: `Picture/PictureUrl1 ne null and City ne null and (${constructRestaurantsSearch(
       keyword,
     )})`,
     orderBy: 'SrcUpdateTime desc, Description desc',
+    select: 'RestaurantID,RestaurantName,City,Address,OpenTime,Phone,Picture',
+    top: 30,
   });
 
-  if (results.length === 0)
+  if (results.length === 0) {
     throw new NotFoundException('not results are found');
+  }
 
   return results.map(mapRestaurantToPlaceCard);
 });

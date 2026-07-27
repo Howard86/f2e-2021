@@ -1,11 +1,8 @@
-import React, { useCallback, useRef } from 'react';
-
 import { Box } from '@chakra-ui/react';
-
+import { useCallback, useRef } from 'react';
+import { ZoomLevel } from '@/components/bus-stop-drawer';
+import { useMap } from '@/components/map-context-provider';
 import useAppToast from './use-app-toast';
-
-import { ZoomLevel } from '@/components/BusStopDrawer';
-import { useMap } from '@/components/MapContextProvider';
 
 const useGetLocation = () => {
   const toast = useAppToast();
@@ -23,8 +20,8 @@ const useGetLocation = () => {
         (resolve, reject) => {
           window.navigator.geolocation.getCurrentPosition(resolve, reject, {
             enableHighAccuracy: true,
-            timeout: 5000,
             maximumAge: 0,
+            timeout: 5000,
           });
         },
       );
@@ -64,11 +61,11 @@ const useGetLocation = () => {
 
       mapContextRef.current.positionMarker = attachJSXMarker(
         <Box
-          id="current"
-          h="40px"
-          w="40px"
           bgImage="url(/current.png)"
+          h="40px"
+          id="current"
           onClick={flyToCurrent}
+          w="40px"
           zIndex="modal"
         />,
         newPosition.center,

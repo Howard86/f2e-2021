@@ -1,0 +1,13 @@
+[default.extend-words]
+Particpation = "Particpation"
+TPE = "TPE"
+
+[files]
+extend-exclude = [
+  "**/CHANGELOG.md",
+  "bun.lock",
+  "**/build/**",
+  "**/.next/**",
+  "**/output/**",
+  "**/node_modules/**",
+]

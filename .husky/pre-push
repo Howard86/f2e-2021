@@ -1,5 +1,8 @@
 #!/bin/sh
-. "$(dirname "$0")/_/husky.sh"
+set -e
 
-pnpm type-check 
-
+bun run check
+bun run typecheck --force
+bun run knip
+typos
+gitleaks git --redact --log-opts="origin/main..HEAD"

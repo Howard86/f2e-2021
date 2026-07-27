@@ -1,34 +1,31 @@
-import React, { useState } from 'react';
-
+import type { ParsedUrlQuery } from 'node:querystring';
 import {
   Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
   Center,
   Flex,
   Heading,
-  Icon,
   SimpleGrid,
 } from '@chakra-ui/react';
-import { City, CityMap, CitySet } from '@f2e/tdx';
-import {
+import { type City, CityMap, CitySet } from '@f2e/tdx';
+import type {
   GetStaticPathsResult,
   GetStaticPropsContext,
   GetStaticPropsResult,
 } from 'next';
 import { useRouter } from 'next/router';
 import NextHeadSeo from 'next-head-seo';
-import type { ParsedUrlQuery } from 'querystring';
+import type React from 'react';
+import { useState } from 'react';
 import { BiChevronRight } from 'react-icons/bi';
 
-import Background from '@/components/Background';
-import Banner from '@/components/Banner';
-import Layout from '@/components/layout/Layout';
-import LoadingScreen from '@/components/LoadingScreen';
-import Pagination from '@/components/Pagination';
-import PlaceCard, { PlaceCardProps } from '@/components/PlaceCard';
-import RouteLink from '@/components/RouteLink';
-import SceneCard, { SceneCardProps } from '@/components/SceneCard';
+import Background from '@/components/background';
+import Banner from '@/components/banner';
+import Layout from '@/components/layout/layout';
+import LoadingScreen from '@/components/loading-screen';
+import Pagination from '@/components/pagination';
+import PlaceCard, { type PlaceCardProps } from '@/components/place-card';
+import RouteLink from '@/components/route-link';
+import SceneCard, { type SceneCardProps } from '@/components/scene-card';
 import {
   DEFAULT_CARD_NUMBER,
   DEFAULT_FETCHED_CARD_NUMBER,
@@ -46,14 +43,14 @@ import wordOne from '@/static/background/scenes-1.png';
 import wordTwo from '@/static/background/scenes-2.png';
 
 interface CityPageProps {
-  city: City;
-  scenes: SceneCardProps[];
-  restaurants: PlaceCardProps[];
-  hotels: PlaceCardProps[];
   activities: PlaceCardProps[];
+  city: City;
+  hotels: PlaceCardProps[];
+  restaurants: PlaceCardProps[];
+  scenes: SceneCardProps[];
 }
 
-const PAGE_PROPS = { mainColor: 'scenes.main', gradientColor: 'scenes.light' };
+const PAGE_PROPS = { gradientColor: 'scenes.light', mainColor: 'scenes.main' };
 
 const CategoryPage = ({
   city,
@@ -61,7 +58,7 @@ const CategoryPage = ({
   restaurants,
   hotels,
   activities,
-}: CityPageProps): JSX.Element => {
+}: CityPageProps): React.ReactElement => {
   const router = useRouter();
 
   const [scenePage, setScenePage] = useState(0);
@@ -77,53 +74,52 @@ const CategoryPage = ({
     <>
       <NextHeadSeo title={`台灣旅遊導覽網 | ${city}`} />
       <Background
-        name="景點"
-        image={background}
-        wordOneAlt="景"
-        wordOne={wordOne}
-        wordTwoAlt="點"
-        wordTwo={wordTwo}
         bgColor={PAGE_PROPS.gradientColor}
+        image={background}
+        name="景點"
+        wordOne={wordOne}
+        wordOneAlt="景"
+        wordTwo={wordTwo}
+        wordTwoAlt="點"
       >
         {/* TODO: add BackgroundCard */}
         <Flex align="center" mt="8" />
       </Background>
 
-      <Flex flexDir="column" bg="white">
-        <Breadcrumb
-          m="4"
-          color="blackAlpha.700"
-          separator={<Icon as={BiChevronRight} />}
-        >
-          <BreadcrumbItem>
-            <RouteLink href="/" as={BreadcrumbLink}>
-              景點
-            </RouteLink>
-          </BreadcrumbItem>
-          {/* TODO: add custom utils */}
-          {/* <BreadcrumbItem>
-            <RouteLink href="#" as={BreadcrumbLink}>
-              北部地區
-            </RouteLink>
-          </BreadcrumbItem> */}
-          <BreadcrumbItem fontWeight="bold" isCurrentPage>
-            <RouteLink href={`/${city}`} as={BreadcrumbLink}>
-              {CityMap[city]}
-            </RouteLink>
-          </BreadcrumbItem>
-        </Breadcrumb>
-        <Heading as="h1" textAlign="center" mb="4">
+      <Flex bg="white" flexDir="column">
+        <Breadcrumb.Root color="blackAlpha.700" m="4">
+          <Breadcrumb.List>
+            <Breadcrumb.Item>
+              <RouteLink as={Breadcrumb.Link} href="/">
+                景點
+              </RouteLink>
+            </Breadcrumb.Item>
+            <Breadcrumb.Separator>
+              <BiChevronRight />
+            </Breadcrumb.Separator>
+            <Breadcrumb.Item fontWeight="bold">
+              <RouteLink
+                aria-current="page"
+                as={Breadcrumb.Link}
+                href={`/${city}`}
+              >
+                {CityMap[city]}
+              </RouteLink>
+            </Breadcrumb.Item>
+          </Breadcrumb.List>
+        </Breadcrumb.Root>
+        <Heading as="h1" mb="4" textAlign="center">
           {CityMap[city]}
         </Heading>
         {activities.length > 0 && (
           <>
             <Banner
-              title="最新活動"
-              mainColor="activities.main"
-              href="/scenes"
               hideButton
+              href="/scenes"
+              mainColor="activities.main"
+              title="最新活動"
             />
-            <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
+            <SimpleGrid columns={[1, 2, 3]} gap={6} mx="8">
               {activities
                 .slice(
                   DEFAULT_CARD_NUMBER * activityPage,
@@ -136,9 +132,9 @@ const CategoryPage = ({
             <Center mt="8">
               <Pagination
                 colorTheme="activities"
+                onPageChange={setActivityPage}
                 page={activityPage}
                 total={Math.ceil(activities.length / DEFAULT_CARD_NUMBER)}
-                onPageChange={setActivityPage}
               />
             </Center>
           </>
@@ -146,12 +142,12 @@ const CategoryPage = ({
         {scenes.length > 0 && (
           <>
             <Banner
-              title="熱門景點"
-              mainColor="scenes.main"
-              href="/scenes"
               hideButton
+              href="/scenes"
+              mainColor="scenes.main"
+              title="熱門景點"
             />
-            <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
+            <SimpleGrid columns={[1, 2, 3]} gap={6} mx="8">
               {scenes
                 .slice(
                   scenePage * DEFAULT_CARD_NUMBER,
@@ -164,9 +160,9 @@ const CategoryPage = ({
             <Center mt="8">
               <Pagination
                 colorTheme="scenes"
+                onPageChange={setScenePage}
                 page={scenePage}
                 total={Math.ceil(scenes.length / DEFAULT_CARD_NUMBER)}
-                onPageChange={setScenePage}
               />
             </Center>
           </>
@@ -174,12 +170,12 @@ const CategoryPage = ({
         {restaurants.length > 0 && (
           <>
             <Banner
-              title="熱門美食"
-              mainColor="restaurants.main"
-              href="/scenes"
               hideButton
+              href="/scenes"
+              mainColor="restaurants.main"
+              title="熱門美食"
             />
-            <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
+            <SimpleGrid columns={[1, 2, 3]} gap={6} mx="8">
               {restaurants
                 .slice(
                   DEFAULT_CARD_NUMBER * restaurantPage,
@@ -192,9 +188,9 @@ const CategoryPage = ({
             <Center mt="8">
               <Pagination
                 colorTheme="restaurants"
+                onPageChange={setRestaurantPage}
                 page={restaurantPage}
                 total={Math.ceil(restaurants.length / DEFAULT_CARD_NUMBER)}
-                onPageChange={setRestaurantPage}
               />
             </Center>
           </>
@@ -202,12 +198,12 @@ const CategoryPage = ({
         {hotels.length > 0 && (
           <>
             <Banner
-              title="住宿推薦"
-              mainColor="hotels.main"
-              href="/scenes"
               hideButton
+              href="/scenes"
+              mainColor="hotels.main"
+              title="住宿推薦"
             />
-            <SimpleGrid columns={[1, 2, 3]} spacing={6} mx="8">
+            <SimpleGrid columns={[1, 2, 3]} gap={6} mx="8">
               {hotels
                 .slice(
                   DEFAULT_CARD_NUMBER * hotelPage,
@@ -220,9 +216,9 @@ const CategoryPage = ({
             <Center mt="8">
               <Pagination
                 colorTheme="hotels"
+                onPageChange={setHotelPage}
                 page={hotelPage}
                 total={Math.ceil(hotels.length / DEFAULT_CARD_NUMBER)}
-                onPageChange={setHotelPage}
               />
             </Center>
           </>
@@ -249,45 +245,47 @@ export const getStaticProps = async (
 ): Promise<GetStaticPropsResult<CityPageProps>> => {
   const city = context.params.city as City;
 
-  if (typeof city !== 'string' || !CitySet.has(city)) return { notFound: true };
+  if (typeof city !== 'string' || !CitySet.has(city)) {
+    return { notFound: true };
+  }
 
   try {
     const [scenes, restaurants, hotels, activities] = await Promise.all([
       tourismService.getScenicSpotsByCity(city, {
-        top: DEFAULT_FETCHED_CARD_NUMBER,
-        select: 'ScenicSpotID,ScenicSpotName,City,Picture',
         filter: 'Picture/PictureUrl1 ne null',
         orderBy: 'SrcUpdateTime desc, TicketInfo desc',
+        select: 'ScenicSpotID,ScenicSpotName,City,Picture',
+        top: DEFAULT_FETCHED_CARD_NUMBER,
       }),
       tourismService.getRestaurantsByCity(city, {
-        top: DEFAULT_FETCHED_CARD_NUMBER,
-        select:
-          'RestaurantID,RestaurantName,City,Address,OpenTime,Phone,Picture',
         filter: 'Picture/PictureUrl1 ne null and Address ne null',
         orderBy: 'SrcUpdateTime desc, Description desc',
+        select:
+          'RestaurantID,RestaurantName,City,Address,OpenTime,Phone,Picture',
+        top: DEFAULT_FETCHED_CARD_NUMBER,
       }),
       tourismService.getHotelsByCity(city, {
-        top: DEFAULT_FETCHED_CARD_NUMBER,
-        select: 'HotelID,HotelName,City,Address,ServiceInfo,Phone,Picture',
         filter: 'Picture/PictureUrl1 ne null and Address ne null',
         orderBy: 'SrcUpdateTime desc, ServiceInfo desc',
+        select: 'HotelID,HotelName,City,Address,ServiceInfo,Phone,Picture',
+        top: DEFAULT_FETCHED_CARD_NUMBER,
       }),
       tourismService.getActivitiesByCity(city, {
-        top: DEFAULT_FETCHED_CARD_NUMBER,
-        select:
-          'ActivityID,ActivityName,City,Address,StartTime,EndTime,Phone,Picture',
         filter: 'Picture/PictureUrl1 ne null and Address ne null',
         orderBy: 'StartTime desc',
+        select:
+          'ActivityID,ActivityName,City,Address,StartTime,EndTime,Phone,Picture',
+        top: DEFAULT_FETCHED_CARD_NUMBER,
       }),
     ]);
 
     return {
       props: {
-        city,
-        scenes: scenes.map(mapScenicSpotToSceneCard),
-        restaurants: restaurants.map(mapRestaurantToPlaceCard),
-        hotels: hotels.map(mapHotelToPlaceCard),
         activities: activities.map(mapActivityToPlaceCard),
+        city,
+        hotels: hotels.map(mapHotelToPlaceCard),
+        restaurants: restaurants.map(mapRestaurantToPlaceCard),
+        scenes: scenes.map(mapScenicSpotToSceneCard),
       },
       revalidate: SIX_HOURS_IN_SECONDS,
     };

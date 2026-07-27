@@ -1,13 +1,14 @@
-import React, { Fragment } from 'react';
-
 import { ChakraProvider } from '@chakra-ui/react';
+import { Fragment } from 'react';
+import 'mapbox-gl/dist/mapbox-gl.css';
 import type { NextComponentType } from 'next';
 import type { AppProps } from 'next/app';
 import NextHeadSeo from 'next-head-seo';
 import { Provider as ReduxProvider } from 'react-redux';
 
-import Layout, { LayoutProps } from '@/components/Layout';
-import MapContextProvider from '@/components/MapContextProvider';
+import Layout, { type LayoutProps } from '@/components/layout';
+import MapContextProvider from '@/components/map-context-provider';
+import { AppToaster } from '@/hooks/use-app-toast';
 import store from '@/redux/store';
 import theme from '@/theme';
 
@@ -17,23 +18,23 @@ type ExtendedComponent = NextComponentType &
     layoutProps: Partial<LayoutProps>;
   }>;
 
-const App = ({ Component, pageProps }: AppProps): JSX.Element => {
+const App = ({ Component, pageProps }: AppProps) => {
   const { PageLayout = Fragment, layoutProps } = Component as ExtendedComponent;
 
   return (
     <>
       <NextHeadSeo
-        title="Iro Bus"
         description="設計理念的取名來自於公車與捷運都會以顏色做為路線的區分，能有助於乘客辨別搭乘路線，節省時間，因而取名為Iro Bus，Iro為日文顏色的意思。Iro Bus整體色系偏暗色，營造科技感，帶給乘客能自由的創新自己的公車路線，穿梭全台各地，輕鬆掌握全台的公車訊息。"
         og={{
-          title: 'Iro Bus',
           description:
             '設計理念的取名來自於公車與捷運都會以顏色做為路線的區分，能有助於乘客辨別搭乘路線，節省時間',
           image: '/preview.jpg',
+          title: 'Iro Bus',
         }}
+        title="Iro Bus"
       />
       <ReduxProvider store={store}>
-        <ChakraProvider resetCSS theme={theme}>
+        <ChakraProvider value={theme}>
           <MapContextProvider>
             <Layout {...layoutProps}>
               <PageLayout>
@@ -41,6 +42,7 @@ const App = ({ Component, pageProps }: AppProps): JSX.Element => {
               </PageLayout>
             </Layout>
           </MapContextProvider>
+          <AppToaster />
         </ChakraProvider>
       </ReduxProvider>
     </>

@@ -12,20 +12,22 @@ const router = new RouterBuilder();
 router.get(async (req) => {
   const { keyword } = req.query;
 
-  if (typeof keyword !== 'string')
+  if (typeof keyword !== 'string') {
     throw new BadRequestException('keyword not found');
+  }
 
   const results = await tourismService.getHotels({
-    top: 30,
-    select: 'HotelID,HotelName,City,Address,ServiceInfo,Phone,Picture',
     filter: `Picture/PictureUrl1 ne null and City ne null and (${constructHotelsSearch(
       keyword,
     )})`,
     orderBy: 'SrcUpdateTime desc, ServiceInfo desc',
+    select: 'HotelID,HotelName,City,Address,ServiceInfo,Phone,Picture',
+    top: 30,
   });
 
-  if (results.length === 0)
+  if (results.length === 0) {
     throw new NotFoundException('not results are found');
+  }
 
   return results.map(mapHotelToPlaceCard);
 });

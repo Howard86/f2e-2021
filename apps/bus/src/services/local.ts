@@ -1,28 +1,27 @@
-import { BusEstimation, BusRoute, BusStation, City } from '@f2e/tdx';
-import { createEntityAdapter, EntityState } from '@reduxjs/toolkit';
+import type { BusEstimation, BusRoute, BusStation, City } from '@f2e/tdx';
+import { createEntityAdapter, type EntityState } from '@reduxjs/toolkit';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import type { SuccessApiResponse } from 'next-api-handler';
 
-import type { BusEstimationParam } from '@/pages/api/bus/estimation';
-import type { StationQueryParam } from '@/pages/api/bus/nearby';
+import type { BusEstimationParam } from '@/pages/api/bus-estimation';
+import type { StationQueryParam } from '@/pages/api/bus-nearby';
 
-const busEstimationAdapter = createEntityAdapter<BusEstimation>({
+const busEstimationAdapter = createEntityAdapter<BusEstimation, string>({
   selectId: (busEstimation) => busEstimation.StopUID,
 });
 
 export const localApi = createApi({
-  reducerPath: 'local',
   baseQuery: fetchBaseQuery({
     baseUrl: '/api',
   }),
   endpoints: (builder) => ({
     getBusEstimation: builder.query<
-      EntityState<BusEstimation>,
+      EntityState<BusEstimation, string>,
       BusEstimationParam
     >({
       query: (params) => ({
-        url: 'bus/estimation',
         params,
+        url: 'bus/estimation',
       }),
       transformResponse: (res: SuccessApiResponse<BusEstimation[]>) =>
         busEstimationAdapter.addMany(
@@ -30,22 +29,23 @@ export const localApi = createApi({
           res.data,
         ),
     }),
+    getBusRoutes: builder.query<
+      SuccessApiResponse<BusRoute[]>,
+      { city: City; route: string }
+    >({
+      query: ({ city, route }) => ({
+        params: { city, route },
+        url: 'bus/route',
+      }),
+    }),
     getNearByBus: builder.mutation<
       SuccessApiResponse<BusStation[]>,
       Record<keyof StationQueryParam, number>
     >({
       query: ({ lat, lng }) => `bus/nearby?lat=${lat}&lng=${lng}`,
     }),
-    getBusRoutes: builder.query<
-      SuccessApiResponse<BusRoute[]>,
-      { city: City; route: string }
-    >({
-      query: ({ city, route }) => ({
-        url: 'bus/route',
-        params: { city, route },
-      }),
-    }),
   }),
+  reducerPath: 'local',
 });
 
 export const busEstimationSelector = busEstimationAdapter.getSelectors();

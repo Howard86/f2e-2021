@@ -1,10 +1,10 @@
 declare namespace OpenData {
   // TODO: replace with real api from https://opendata.cwb.gov.tw/dist/opendata-swagger.html#/預報/get_v1_rest_datastore_F_C0032_001
   interface CityWeather {
-    id: string;
     city: string;
-    minT: string;
+    id: string;
     maxT: string;
+    minT: string;
     weather: Weather;
   }
 
@@ -23,10 +23,10 @@ declare namespace OpenData {
 
   interface WeatherParam {
     Authorization: string;
+    elementName: string[];
+    format: string;
     limit: string; // as number
     offset: string; // as number;
-    format: string;
-    elementName: string[];
     // locationName: string[];
     sort: string;
     // startTime: string[]; // can be array
@@ -35,15 +35,15 @@ declare namespace OpenData {
   }
 
   interface WeatherResponse {
-    success: string;
-    result: {
-      resource_id: string;
-      fields: Field[];
-    };
     records: {
       datasetDescription: string;
       location: Location[];
     };
+    result: {
+      resource_id: string;
+      fields: Field[];
+    };
+    success: string;
   }
 
   interface Field {
@@ -62,12 +62,12 @@ declare namespace OpenData {
   }
 
   interface Time {
-    startTime: string;
     endTime: string;
     parameter: {
       parameterName: string;
       parameterValue?: string;
       parameterUnit?: string;
     };
+    startTime: string;
   }
 }

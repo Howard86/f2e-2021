@@ -3,38 +3,69 @@ export interface NearByApiParam extends ApiParam {
 }
 
 export interface ApiParam {
-  select?: string;
   filter?: string;
   orderBy?: string;
-  top?: string | number;
+  select?: string;
   skip?: string | number;
+  top?: string | number;
 }
 
-export type TdxServiceParams = {
+export interface TdxServiceParams {
+  baseUrl: string;
   clientId: string;
   clientSecret: string;
-  baseUrl: string;
+}
+
+const getRequiredParam = (
+  params: Partial<TdxServiceParams>,
+  key: keyof TdxServiceParams,
+) => {
+  const value = params[key];
+
+  if (!value) {
+    throw new Error(`Missing env ${key}`);
+  }
+
+  return value;
+};
+
+const fetchWithRateLimitRetry = async (...args: Parameters<typeof fetch>) => {
+  let response = await fetch(...args);
+
+  for (let attempt = 1; response.status === 429 && attempt <= 2; attempt += 1) {
+    const resetSeconds = Number(response.headers.get('ratelimit-reset'));
+    const delay =
+      Number.isFinite(resetSeconds) && resetSeconds >= 0
+        ? Math.min(resetSeconds + 1, 60) * 1000
+        : attempt * 1000;
+
+    // biome-ignore lint/performance/noAwaitInLoops: rate-limit retries must remain sequential.
+    await new Promise((resolve) => setTimeout(resolve, delay));
+    response = await fetch(...args);
+  }
+
+  return response;
 };
 
 export class TdxService {
-  private clientId: string;
+  private readonly clientId: string;
 
-  private clientSecret: string;
+  private readonly clientSecret: string;
 
-  private baseUrl: string;
+  private readonly baseUrl: string;
 
   private accessToken: string | undefined;
 
   private expirationTimestamp: number | undefined;
 
-  private refreshed = false;
+  private refreshPromise: Promise<void> | undefined;
 
-  public DEFAULT_API_PARAMS: ApiParam = { top: 20 };
+  DEFAULT_API_PARAMS: ApiParam = { top: 20 };
 
   constructor(params: Partial<TdxServiceParams>) {
-    this.setPrivateVariable(params, 'clientId');
-    this.setPrivateVariable(params, 'clientSecret');
-    this.setPrivateVariable(params, 'baseUrl');
+    this.clientId = getRequiredParam(params, 'clientId');
+    this.clientSecret = getRequiredParam(params, 'clientSecret');
+    this.baseUrl = getRequiredParam(params, 'baseUrl');
   }
 
   static checkExistence<T>(items: T[]): T | null {
@@ -46,41 +77,49 @@ export class TdxService {
     params: P,
   ): Promise<T> {
     if (
-      !this.refreshed &&
-      (!this.accessToken ||
-        !this.expirationTimestamp ||
-        this.expirationTimestamp >= Date.now())
+      !(this.accessToken && this.expirationTimestamp) ||
+      this.expirationTimestamp <= Date.now()
     ) {
-      await this.refreshToken();
+      this.refreshPromise ??= this.refreshToken();
+      const { refreshPromise } = this;
+      try {
+        await refreshPromise;
+      } finally {
+        if (this.refreshPromise === refreshPromise) {
+          this.refreshPromise = undefined;
+        }
+      }
     }
 
-    if (!this.accessToken) throw new Error('Already refreshed existed token');
+    if (!this.accessToken) {
+      throw new Error('Already refreshed existed token');
+    }
 
     const query = new URLSearchParams();
 
     for (const key of Object.keys(params)) {
       if (params[key]) {
-        query.append(`$${key}`, params[key]);
+        query.append(`$${key === 'orderBy' ? 'orderby' : key}`, params[key]);
       }
     }
 
     query.append('$format', 'JSON');
 
-    const response = await fetch(
+    const response = await fetchWithRateLimitRetry(
       `${this.baseUrl}/api${encodeURI(path)}?${query.toString()}`,
       {
         headers: {
-          Authorization: `Bearer ${this.accessToken}`,
           Accept: 'application/json',
+          Authorization: `Bearer ${this.accessToken}`,
         },
       },
     );
 
     const json = await response.json();
 
-    if (!response.ok) throw new Error(JSON.stringify(json));
-
-    this.refreshed = false;
+    if (!response.ok) {
+      throw new Error(JSON.stringify(json));
+    }
 
     return json;
   }
@@ -89,19 +128,21 @@ export class TdxService {
     const response = await fetch(
       `${this.baseUrl}/auth/realms/TDXConnect/protocol/openid-connect/token`,
       {
-        method: 'POST',
+        body: new URLSearchParams({
+          client_id: this.clientId,
+          client_secret: this.clientSecret,
+          grant_type: 'client_credentials',
+        }),
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
         },
-        body: new URLSearchParams({
-          grant_type: 'client_credentials',
-          client_id: this.clientId,
-          client_secret: this.clientSecret,
-        }),
+        method: 'POST',
       },
     );
 
-    if (!response.ok) throw new Error(JSON.stringify(response));
+    if (!response.ok) {
+      throw new Error(JSON.stringify(response));
+    }
 
     const json = (await response.json()) as {
       access_token: string;
@@ -109,17 +150,7 @@ export class TdxService {
       token_type: string;
     };
 
-    this.refreshed = true;
     this.accessToken = json.access_token;
-    this.expirationTimestamp = json.expires_in + Date.now();
-  }
-
-  private setPrivateVariable(
-    params: Partial<TdxServiceParams>,
-    key: keyof TdxServiceParams,
-  ) {
-    if (!params[key]) throw new Error(`Missing env ${key}`);
-
-    this[key] = params[key];
+    this.expirationTimestamp = Date.now() + json.expires_in * 1000;
   }
 }

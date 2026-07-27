@@ -1,21 +1,18 @@
-import { extendTheme } from '@chakra-ui/react';
-
-import Button from './components/Button';
-import Text from './components/Text';
+import { createSystem, defaultConfig, defineConfig } from '@chakra-ui/react';
 import colors from './colors';
+import Button from './components/button';
+import Text from './components/text';
 import styles from './styles';
 
-const theme = extendTheme({
-  colors,
-  styles,
-  components: {
-    Button,
-    Text,
-  },
-  config: {
-    initialColorMode: 'light',
-    useSystemColorMode: false,
+const config = defineConfig({
+  globalCss: styles,
+  theme: {
+    recipes: {
+      button: Button,
+    },
+    textStyles: Text,
+    tokens: { colors },
   },
 });
 
-export default theme;
+export default createSystem(defaultConfig, config);

@@ -1,0 +1,17 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  ci:
+    uses: howard86/actions/.github/workflows/ci.yml@402ce305af6a7cd037b84c13b41134f451708cdc # v2.0.2
+    permissions:
+      contents: read
+    with:
+      node-version: '24'
+      run-test: false
+      run-build: false

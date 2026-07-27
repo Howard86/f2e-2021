@@ -1,72 +1,75 @@
 import { TdxService } from './base';
-import { City } from './constants';
+import { type City, CityMap } from './constants';
 
 export interface ScenicSpot extends TourismCommonProperty {
-  ScenicSpotID: string;
-  ScenicSpotName: string;
-  DescriptionDetail: string;
-  ZipCode: string;
-  TravelInfo: string;
-  OpenTime: string;
   Class1: string;
   Class2: string;
   Class3: string;
+  DescriptionDetail?: string;
+  Keyword: string;
   Level: string;
+  OpenTime: string;
   ParkingPosition: Partial<{
     PositionLon: number;
     PositionLat: number;
     GeoHash: string;
   }>;
-  TicketInfo: string;
   Remarks: string;
-  Keyword: string;
+  ScenicSpotID: string;
+  ScenicSpotName: string;
+  TicketInfo: string;
+  TravelInfo?: string;
+  ZipCode: string;
 }
 
 export interface Restaurant extends TourismCommonProperty {
+  Class: string;
+  OpenTime: string;
   RestaurantID: string;
   RestaurantName: string;
   ZipCode: string;
-  OpenTime: string;
-  Class: string;
 }
 
 export interface Hotel extends TourismCommonProperty {
+  Class: string;
+  Fax: string;
+  Grade: string;
   HotelID: string;
   HotelName: string;
+  ServiceInfo?: string;
+  Spec?: string;
   ZipCode: string;
-  Grade: string;
-  Fax: string;
-  Class: string;
-  Spec: string;
-  ServiceInfo: string;
 }
 
 export interface Activity extends TourismCommonProperty {
   ActivityID: string;
   ActivityName: string;
-  Particpation: string;
-  Location: string;
-  Organizer: string;
-  StartTime: string;
-  EndTime: string;
-  Cycle: string;
-  NonCycle: string;
+  Charge: string;
   Class1: string;
   Class2: string;
-  TravelInfo: string;
+  Cycle: string;
+  EndTime?: string;
+  Location: string;
+  NonCycle: string;
+  Organizer: string;
   ParkingInfo: string;
-  Charge: string;
+  Particpation: string;
   Remarks: string;
   SrcUpdateTime: string;
+  StartTime?: string;
+  TravelInfo?: string;
   UpdateTime: string;
 }
 
 export interface TourismCommonProperty {
-  Description: string;
-  Address: string;
-  Phone: string;
-  WebsiteUrl: string;
-  Picture: {
+  // TDX omits these fields from otherwise valid records at runtime.
+  Address?: string;
+  City: string;
+  Description?: string;
+  MapUrl?: string;
+  ParkingInfo?: string;
+  Phone?: string;
+  Picture?: {
     PictureUrl1: string;
     PictureDescription1?: string;
     PictureUrl2?: string;
@@ -74,16 +77,14 @@ export interface TourismCommonProperty {
     PictureUrl3?: string;
     PictureDescription3?: string;
   };
-  Position: Partial<{
+  Position?: Partial<{
     PositionLon: number;
     PositionLat: number;
     GeoHash: string;
   }>;
-  MapUrl: string;
-  ParkingInfo: string;
-  City: string;
-  SrcUpdateTime: string;
+  SrcUpdateTime?: string;
   UpdateTime: string;
+  WebsiteUrl?: string;
 }
 
 export type TourismPropertyType =
@@ -92,10 +93,250 @@ export type TourismPropertyType =
   | 'Hotel'
   | 'Activity';
 
-export class TourismService {
-  private BASE_PATH = '/basic/v2/Tourism';
+type TourismV2PropertyType = 'Attraction' | 'Restaurant' | 'Hotel' | 'Event';
 
-  private service: TdxService;
+interface TourismV2Item {
+  AssetsClass?: number;
+  AttractionClasses?: number[];
+  AttractionID?: string;
+  AttractionName?: string;
+  CuisineClasses?: number[];
+  Description?: string;
+  EndDateTime?: string;
+  EventClasses?: number[];
+  EventID?: string;
+  EventName?: string;
+  FeeInfo?: string;
+  HotelClasses?: number[];
+  HotelID?: string;
+  HotelName?: string;
+  HotelStars?: number;
+  Images?: Array<{
+    Description?: string;
+    Name?: string;
+    URL?: string;
+  }>;
+  LocatedCities?: Array<{ City?: string }>;
+  MapURLs?: string[];
+  Organizations?: Array<{
+    Faxes?: string[];
+    Name?: string;
+  }>;
+  ParkingInfo?: string;
+  Participant?: string;
+  PositionLat?: number;
+  PositionLon?: number;
+  PostalAddress?: {
+    City?: string;
+    StreetAddress?: string;
+    Town?: string;
+    ZipCode?: string;
+  };
+  Remarks?: string;
+  RestaurantID?: string;
+  RestaurantName?: string;
+  RoomInfo?: string;
+  ServiceInfo?: string;
+  ServiceTimeInfo?: string;
+  StartDateTime?: string;
+  Tags?: string[];
+  Telephones?: Array<{
+    Ext?: number;
+    Tel?: string;
+  }>;
+  TrafficInfo?: string;
+  UpdateTime?: string;
+  WebsiteUrl?: string;
+}
+
+interface TourismV2Response {
+  value: TourismV2Item[];
+}
+
+const V2_TYPE_MAP: Record<TourismPropertyType, TourismV2PropertyType> = {
+  Activity: 'Event',
+  Hotel: 'Hotel',
+  Restaurant: 'Restaurant',
+  ScenicSpot: 'Attraction',
+};
+
+const mapClasses = (classes?: number[]) =>
+  classes?.map(String).join(', ') || '';
+
+const mapPicture = (images?: TourismV2Item['Images']) => {
+  const [first, second, third] = images?.filter((image) => image.URL) || [];
+
+  if (!first?.URL) {
+    return;
+  }
+
+  return {
+    PictureDescription1: first.Description || first.Name || '',
+    PictureUrl1: first.URL,
+    ...(second?.URL
+      ? {
+          PictureDescription2: second.Description || second.Name || '',
+          PictureUrl2: second.URL,
+        }
+      : {}),
+    ...(third?.URL
+      ? {
+          PictureDescription3: third.Description || third.Name || '',
+          PictureUrl3: third.URL,
+        }
+      : {}),
+  };
+};
+
+const mapCommonProperty = (item: TourismV2Item): TourismCommonProperty => {
+  const picture = mapPicture(item.Images);
+  const position =
+    item.PositionLat !== undefined && item.PositionLon !== undefined
+      ? {
+          PositionLat: item.PositionLat,
+          PositionLon: item.PositionLon,
+        }
+      : undefined;
+  const telephone = item.Telephones?.[0];
+
+  return {
+    Address:
+      [
+        item.PostalAddress?.City,
+        item.PostalAddress?.Town,
+        item.PostalAddress?.StreetAddress,
+      ]
+        .filter(Boolean)
+        .join('') || '',
+    City: item.PostalAddress?.City || item.LocatedCities?.[0]?.City || '',
+    Description: item.Description || '',
+    MapUrl: item.MapURLs?.[0] || '',
+    ParkingInfo: item.ParkingInfo || '',
+    Phone: telephone?.Tel
+      ? `${telephone.Tel}${telephone.Ext ? ` #${telephone.Ext}` : ''}`
+      : '',
+    ...(picture ? { Picture: picture } : {}),
+    ...(position ? { Position: position } : {}),
+    SrcUpdateTime: item.UpdateTime || '',
+    UpdateTime: item.UpdateTime || '',
+    WebsiteUrl: item.WebsiteUrl || '',
+  };
+};
+
+const mapScenicSpot = (
+  item: TourismV2Item,
+  common: TourismCommonProperty,
+): ScenicSpot => ({
+  ...common,
+  Class1: item.AttractionClasses?.[0]?.toString() || '',
+  Class2: item.AttractionClasses?.[1]?.toString() || '',
+  Class3: item.AttractionClasses?.[2]?.toString() || '',
+  DescriptionDetail: item.Description || '',
+  Keyword: item.Tags?.join(', ') || '',
+  Level: item.AssetsClass?.toString() || '',
+  OpenTime: item.ServiceTimeInfo || '',
+  ParkingPosition: common.Position || {},
+  Remarks: item.Remarks || '',
+  ScenicSpotID: item.AttractionID || '',
+  ScenicSpotName: item.AttractionName || '',
+  TicketInfo: item.FeeInfo || '',
+  TravelInfo: item.TrafficInfo || '',
+  ZipCode: item.PostalAddress?.ZipCode || '',
+});
+
+const mapRestaurant = (
+  item: TourismV2Item,
+  common: TourismCommonProperty,
+): Restaurant => ({
+  ...common,
+  Class: mapClasses(item.CuisineClasses),
+  OpenTime: item.ServiceTimeInfo || '',
+  RestaurantID: item.RestaurantID || '',
+  RestaurantName: item.RestaurantName || '',
+  ZipCode: item.PostalAddress?.ZipCode || '',
+});
+
+const mapHotel = (
+  item: TourismV2Item,
+  common: TourismCommonProperty,
+): Hotel => ({
+  ...common,
+  Class: mapClasses(item.HotelClasses),
+  Fax:
+    item.Organizations?.flatMap(
+      (organization) => organization.Faxes || [],
+    )[0] || '',
+  Grade: item.HotelStars?.toString() || '',
+  HotelID: item.HotelID || '',
+  HotelName: item.HotelName || '',
+  ServiceInfo: item.ServiceInfo || '',
+  Spec: item.RoomInfo || '',
+  ZipCode: item.PostalAddress?.ZipCode || '',
+});
+
+const mapActivity = (
+  item: TourismV2Item,
+  common: TourismCommonProperty,
+): Activity => ({
+  ...common,
+  ActivityID: item.EventID || '',
+  ActivityName: item.EventName || '',
+  Charge: item.FeeInfo || '',
+  Class1: item.EventClasses?.[0]?.toString() || '',
+  Class2: item.EventClasses?.[1]?.toString() || '',
+  Cycle: '',
+  EndTime: item.EndDateTime || '',
+  Location: common.Address || '',
+  NonCycle: '',
+  Organizer:
+    item.Organizations?.map((organization) => organization.Name)
+      .filter(Boolean)
+      .join(', ') || '',
+  ParkingInfo: item.ParkingInfo || '',
+  Particpation: item.Participant || '',
+  Remarks: item.Remarks || '',
+  SrcUpdateTime: item.UpdateTime || '',
+  StartTime: item.StartDateTime || '',
+  TravelInfo: item.TrafficInfo || '',
+  UpdateTime: item.UpdateTime || '',
+});
+
+const mapTourismItem = (
+  type: TourismPropertyType,
+  item: TourismV2Item,
+): Activity | Hotel | Restaurant | ScenicSpot => {
+  const common = mapCommonProperty(item);
+
+  switch (type) {
+    case 'ScenicSpot':
+      return mapScenicSpot(item, common);
+    case 'Restaurant':
+      return mapRestaurant(item, common);
+    case 'Hotel':
+      return mapHotel(item, common);
+    case 'Activity':
+      return mapActivity(item, common);
+    default:
+      throw new Error(`Unknown tourism type: ${type}`);
+  }
+};
+
+const translateFilter = (filter?: string) =>
+  filter
+    ?.replaceAll('Picture/PictureUrl1 ne null', 'Images/any()')
+    .replace(/\bAddress ne null\b/g, 'PostalAddress/StreetAddress ne null')
+    .replace(/\bCity ne null\b/g, 'PostalAddress/City ne null');
+
+const translateOrderBy = (orderBy?: string) =>
+  orderBy
+    ?.replaceAll('SrcUpdateTime', 'UpdateTime')
+    .replaceAll('StartTime', 'StartDateTime')
+    .replaceAll('TicketInfo', 'FeeInfo');
+
+export class TourismService {
+  private readonly BASE_PATH = '/tourism/service/odata/V2/Tourism';
+
+  private readonly service: TdxService;
 
   constructor(service: TdxService) {
     this.service = service;
@@ -127,9 +368,10 @@ export class TourismService {
 
   private generateGetById<T>(type: TourismPropertyType) {
     return async (id: string) => {
-      const items = await this.service.get<T[]>(`${this.BASE_PATH}/${type}`, {
+      const v2Type = V2_TYPE_MAP[type];
+      const items = await this.getItems<T>(type, {
+        filter: `${v2Type}ID eq '${id.replaceAll("'", "''")}'`,
         top: 1,
-        filter: `${type}ID eq '${id}'`,
       });
 
       return TdxService.checkExistence(items);
@@ -138,11 +380,37 @@ export class TourismService {
 
   private generateGetItems<T>(type: TourismPropertyType) {
     return async (params = this.service.DEFAULT_API_PARAMS) =>
-      this.service.get<T[]>(`${this.BASE_PATH}/${type}`, params);
+      this.getItems<T>(type, params);
   }
 
   private generateGetItemsByCity<T>(type: TourismPropertyType) {
     return async (city: City, params = this.service.DEFAULT_API_PARAMS) =>
-      this.service.get<T[]>(`${this.BASE_PATH}/${type}/${city}`, params);
+      this.getItems<T>(type, params, city);
+  }
+
+  private async getItems<T>(
+    type: TourismPropertyType,
+    params: import('./base').ApiParam,
+    city?: City,
+  ): Promise<T[]> {
+    const filter = [
+      translateFilter(params.filter),
+      city ? `PostalAddress/City eq '${CityMap[city]}'` : '',
+    ]
+      .filter(Boolean)
+      .join(' and ');
+    const response = await this.service.get<TourismV2Response>(
+      `${this.BASE_PATH}/${V2_TYPE_MAP[type]}`,
+      {
+        ...(filter ? { filter } : {}),
+        ...(params.orderBy
+          ? { orderBy: translateOrderBy(params.orderBy) }
+          : {}),
+        ...(params.skip === undefined ? {} : { skip: params.skip }),
+        ...(params.top === undefined ? {} : { top: params.top }),
+      },
+    );
+
+    return response.value.map((item) => mapTourismItem(type, item) as T);
   }
 }
