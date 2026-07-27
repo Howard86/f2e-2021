@@ -29,6 +29,24 @@ const getRequiredParam = (
   return value;
 };
 
+const fetchWithRateLimitRetry = async (...args: Parameters<typeof fetch>) => {
+  let response = await fetch(...args);
+
+  for (let attempt = 1; response.status === 429 && attempt <= 2; attempt += 1) {
+    const resetSeconds = Number(response.headers.get('ratelimit-reset'));
+    const delay =
+      Number.isFinite(resetSeconds) && resetSeconds >= 0
+        ? Math.min(resetSeconds + 1, 60) * 1000
+        : attempt * 1000;
+
+    // biome-ignore lint/performance/noAwaitInLoops: rate-limit retries must remain sequential.
+    await new Promise((resolve) => setTimeout(resolve, delay));
+    response = await fetch(...args);
+  }
+
+  return response;
+};
+
 export class TdxService {
   private readonly clientId: string;
 
@@ -40,7 +58,7 @@ export class TdxService {
 
   private expirationTimestamp: number | undefined;
 
-  private refreshed = false;
+  private refreshPromise: Promise<void> | undefined;
 
   DEFAULT_API_PARAMS: ApiParam = { top: 20 };
 
@@ -59,12 +77,18 @@ export class TdxService {
     params: P,
   ): Promise<T> {
     if (
-      // biome-ignore lint/suspicious/noUnnecessaryConditions: tracks concurrent token refreshes across async calls.
-      !this.refreshed &&
-      (!(this.accessToken && this.expirationTimestamp) ||
-        this.expirationTimestamp >= Date.now())
+      !(this.accessToken && this.expirationTimestamp) ||
+      this.expirationTimestamp <= Date.now()
     ) {
-      await this.refreshToken();
+      this.refreshPromise ??= this.refreshToken();
+      const { refreshPromise } = this;
+      try {
+        await refreshPromise;
+      } finally {
+        if (this.refreshPromise === refreshPromise) {
+          this.refreshPromise = undefined;
+        }
+      }
     }
 
     if (!this.accessToken) {
@@ -75,13 +99,13 @@ export class TdxService {
 
     for (const key of Object.keys(params)) {
       if (params[key]) {
-        query.append(`$${key}`, params[key]);
+        query.append(`$${key === 'orderBy' ? 'orderby' : key}`, params[key]);
       }
     }
 
     query.append('$format', 'JSON');
 
-    const response = await fetch(
+    const response = await fetchWithRateLimitRetry(
       `${this.baseUrl}/api${encodeURI(path)}?${query.toString()}`,
       {
         headers: {
@@ -96,8 +120,6 @@ export class TdxService {
     if (!response.ok) {
       throw new Error(JSON.stringify(json));
     }
-
-    this.refreshed = false;
 
     return json;
   }
@@ -128,8 +150,7 @@ export class TdxService {
       token_type: string;
     };
 
-    this.refreshed = true;
     this.accessToken = json.access_token;
-    this.expirationTimestamp = json.expires_in + Date.now();
+    this.expirationTimestamp = Date.now() + json.expires_in * 1000;
   }
 }
